@@ -19,7 +19,7 @@
   <rect x="0" y="0" width="1200" height="4" fill="url(#accent)"/>
   <!-- Logo badge -->
   <rect x="80" y="80" width="56" height="56" rx="12" fill="url(#accent)"/>
-  <text x="108" y="118" font-family="system-ui,sans-serif" font-size="22" font-weight="800" fill="white" text-anchor="middle">FI</text>
+  <text x="108" y="118" font-family="system-ui,sans-serif" font-size="22" font-weight="800" fill="white" text-anchor="middle">M</text>
   <!-- Brand -->
   <text x="152" y="102" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="white">MOY IQ Invest</text>
   <text x="152" y="124" font-family="monospace" font-size="12" fill="#6b7280">invest.financeospro.com</text>
