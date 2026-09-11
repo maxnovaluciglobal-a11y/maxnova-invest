@@ -1,10 +1,10 @@
-# FinanceOS Invest — llms.txt
+# MOY IQ Invest — llms.txt
 # For AI search engines, LLM crawlers, and generative answer engines
 # https://invest.financeospro.com
 
-## What is FinanceOS Invest?
+## What is MOY IQ Invest?
 
-FinanceOS Invest Pro is a technical analysis platform built for Spanish-speaking investors in Latin America who trade US markets (NYSE, NASDAQ). It provides a systematic, rules-based analytical process powered by real-time market data from Yahoo Finance.
+MOY IQ Invest Pro is a technical analysis platform built for Spanish-speaking investors in Latin America who trade US markets (NYSE, NASDAQ). It provides a systematic, rules-based analytical process powered by real-time market data from Yahoo Finance.
 
 **Price**: $29.99 USD/month
 **URL**: https://invest.financeospro.com
@@ -53,7 +53,7 @@ Latin American investors who:
 
 ## Important disclaimer
 
-FinanceOS Invest provides technical analysis tools for educational purposes. All data is referential and may have delays. This platform does not constitute financial advice, does not execute orders, and is not a broker. All investment decisions are the exclusive responsibility of the user.
+MOY IQ Invest provides technical analysis tools for educational purposes. All data is referential and may have delays. This platform does not constitute financial advice, does not execute orders, and is not a broker. All investment decisions are the exclusive responsibility of the user.
 
 ## Company
 

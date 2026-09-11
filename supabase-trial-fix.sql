@@ -1,5 +1,5 @@
 -- ============================================================================
--- FinanceOS Invest — Fix CRITICAL-1: prevenir reset infinito de trial
+-- MOY IQ Invest — Fix CRITICAL-1: prevenir reset infinito de trial
 -- Correr TODO este bloque en Supabase → SQL Editor → Run
 -- Es idempotente: se puede correr más de una vez sin romper nada.
 -- ============================================================================

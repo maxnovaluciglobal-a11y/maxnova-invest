@@ -18,7 +18,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CRON_SECRET = process.env.CRON_SECRET;
 
 const APP_URL = 'https://invest.financeospro.com';
-const FROM = 'FinanceOS Invest <invest@financeospro.com>';
+const FROM = 'MOY IQ Invest <invest@financeospro.com>';
 
 // Which day-marks trigger which template
 const SCHEDULE = { 1: 'welcome', 7: 'midpoint', 12: 'urgency', 14: 'lastday' };
@@ -80,7 +80,7 @@ function shell(headline, bodyHtml, ctaLabel) {
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#111827;border:1px solid #1f2937;border-radius:14px;overflow:hidden;">
 <tr><td style="padding:28px 32px 8px 32px;">
-<span style="font-size:18px;font-weight:700;color:#22c55e;">FinanceOS</span><span style="font-size:18px;font-weight:700;color:#e5e7eb;"> Invest</span>
+<span style="font-size:18px;font-weight:700;color:#22c55e;">MOY IQ</span><span style="font-size:18px;font-weight:700;color:#e5e7eb;"> Invest</span>
 </td></tr>
 <tr><td style="padding:8px 32px 0 32px;">
 <h1 style="margin:12px 0 16px 0;font-size:24px;line-height:1.3;color:#f9fafb;">${headline}</h1>
@@ -95,7 +95,7 @@ ${bodyHtml}
 </td></tr></table>
 </td></tr>
 <tr><td style="padding:20px 32px;border-top:1px solid #1f2937;font-size:12px;line-height:1.6;color:#6b7280;">
-FinanceOS Invest te ofrece herramientas de análisis y seguimiento de mercado. No es asesoría de inversión.<br>
+MOY IQ Invest te ofrece herramientas de análisis y seguimiento de mercado. No es asesoría de inversión.<br>
 ¿No quieres recibir estos correos? Responde a <a href="mailto:invest@financeospro.com" style="color:#9ca3af;">invest@financeospro.com</a> y te damos de baja.<br>
 <a href="${APP_URL}/privacy.html" style="color:#9ca3af;">Política de privacidad</a>
 </td></tr>
@@ -110,7 +110,7 @@ function tplWelcome() {
     subject: 'Tu prueba Pro está activa — esto es lo que desbloqueaste',
     html: shell(
       'Bienvenido a tu prueba Pro de 14 días',
-      `<p>Ya tienes acceso completo a las herramientas Pro de FinanceOS Invest. Esto es lo que puedes empezar a usar hoy:</p>
+      `<p>Ya tienes acceso completo a las herramientas Pro de MOY IQ Invest. Esto es lo que puedes empezar a usar hoy:</p>
       <ul style="padding-left:20px;margin:16px 0;">
         <li style="margin-bottom:8px;"><strong style="color:#e5e7eb;">Motor de Análisis</strong> — lectura integral de cada activo.</li>
         <li style="margin-bottom:8px;"><strong style="color:#e5e7eb;">Comparador</strong> — contrasta varios activos lado a lado.</li>

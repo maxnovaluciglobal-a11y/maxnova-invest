@@ -21,7 +21,7 @@
   <rect x="80" y="80" width="56" height="56" rx="12" fill="url(#accent)"/>
   <text x="108" y="118" font-family="system-ui,sans-serif" font-size="22" font-weight="800" fill="white" text-anchor="middle">FI</text>
   <!-- Brand -->
-  <text x="152" y="102" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="white">FinanceOS Invest</text>
+  <text x="152" y="102" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="white">MOY IQ Invest</text>
   <text x="152" y="124" font-family="monospace" font-size="12" fill="#6b7280">invest.financeospro.com</text>
   <!-- Main headline -->
   <text x="80" y="240" font-family="system-ui,sans-serif" font-size="52" font-weight="800" fill="white">Analiza. Decide.</text>
@@ -46,5 +46,5 @@
   <text x="980" y="375" font-family="monospace" font-size="11" fill="#4b5563" text-anchor="middle">Régimen: RISK ON · SPY &gt; SMA200</text>
   <!-- Footer disclaimer -->
   <text x="80" y="580" font-family="monospace" font-size="11" fill="#374151">Datos referenciales con posible retraso · Análisis educativo · No constituye asesoría financiera</text>
-  <text x="1120" y="580" font-family="monospace" font-size="11" fill="#374151" text-anchor="end">© 2026 FinanceOS</text>
+  <text x="1120" y="580" font-family="monospace" font-size="11" fill="#374151" text-anchor="end">© 2026 MOY IQ</text>
 </svg>
