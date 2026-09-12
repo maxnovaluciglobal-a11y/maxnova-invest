@@ -10621,9 +10621,16 @@ function getRequiredConsents(){
 // Read all consent records for the authenticated user from Supabase
 async function readUserConsents(userId){
   try{
-    var res=await sb.from('consents')
-      .select('document_type,version')
-      .eq('user_id',userId);
+    // Timeout de 8s: esta llamada se ejecuta en cada login/signup (via
+    // checkConsentGate <- _sbLoadUserDataImpl) y no tenia guardia — un cuelgue
+    // de Supabase aca freezaba el post-login entero, igual que el resto de
+    // los awaits ya corregidos en esta misma funcion.
+    var res=await Promise.race([
+      sb.from('consents')
+        .select('document_type,version')
+        .eq('user_id',userId),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+    ]);
     if(res.error) throw res.error;
     return res.data||[];
   }catch(e){
@@ -10658,7 +10665,12 @@ async function recordUserConsents(userId,source){
         user_agent:   ua
       };
     });
-    var res=await sb.from('consents').insert(rows);
+    // Timeout de 8s: mismo riesgo que readUserConsents — sin guardia, un
+    // cuelgue en el insert freezaba el modal de consentimiento sin salida.
+    var res=await Promise.race([
+      sb.from('consents').insert(rows),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+    ]);
     if(res.error) throw res.error;
     return {ok:true,inserted:rows.length};
   }catch(e){
@@ -10758,19 +10770,38 @@ function sbLoadUserData(authUser){
 }
 async function _sbLoadUserDataImpl(authUser){
   try{
-    var profRes=await sb.from("profiles").select("*").eq("id",authUser.id).single();
+    // Timeout de 8s en las 3 queries de abajo: ninguna tenia guardia — un
+    // cuelgue de Supabase en cualquiera de ellas freezaba sbLoadUserData (y
+    // con el, boot()/render()) para siempre, misma clase de falla ya
+    // corregida en el fetch de /api/check-plan mas abajo.
+    var profRes=await Promise.race([
+      sb.from("profiles").select("*").eq("id",authUser.id).single(),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+    ]);
     var prof=profRes.data;
 
-    var holdRes=await sb.from("portfolio_holdings").select("*").eq("user_id",authUser.id).order("id");
+    var holdRes=await Promise.race([
+      sb.from("portfolio_holdings").select("*").eq("user_id",authUser.id).order("id"),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+    ]);
     var holdings=(holdRes.data||[]).map(rowToHolding);
 
-    var wlRes=await sb.from("watchlist").select("ticker").eq("user_id",authUser.id);
+    var wlRes=await Promise.race([
+      sb.from("watchlist").select("ticker").eq("user_id",authUser.id),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+    ]);
     var watch=(wlRes.data||[]).map(function(r){return r.ticker;});
 
     // Verify plan server-side to prevent client-side bypass (S.user.plan='pro' in console)
     var verifiedPlan=(prof&&prof.plan)||"free";
     try{
-      var sess=await sb.auth.getSession();
+      // Timeout de 8s: mismo riesgo — getSession() sin guardia podia colgar
+      // esta rama entera antes de llegar al fetch de check-plan (que ya
+      // tiene su propio timeout desde hoy).
+      var sess=await Promise.race([
+        sb.auth.getSession(),
+        new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+      ]);
       var tok=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
       if(tok){
         // Timeout de 8s: fetch() no tiene limite propio — si /api/check-plan
@@ -10995,7 +11026,22 @@ async function doRegister(){
   if(p.length<6){err.style.display="block";err.textContent="La contraseña debe tener al menos 6 caracteres.";return;}
   if(!disc.checked){err.style.display="block";err.textContent="Debes aceptar el aviso educativo para continuar.";return;}
   if(btn){btn.disabled=true;btn.textContent="Creando cuenta...";}
-  var res=await sb.auth.signUp({email:e,password:p,options:{data:{name:name}}});
+  // Timeout de 15s: mismo patron que doLogin (mas arriba) — si signUp se
+  // cuelga (p.ej. proyecto Supabase pausado o sin red), el boton se quedaba
+  // en "Creando cuenta..." para siempre sin mensaje. Ahora siempre se
+  // resuelve y avisa.
+  var res;
+  try{
+    res=await Promise.race([
+      sb.auth.signUp({email:e,password:p,options:{data:{name:name}}}),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},15000);})
+    ]);
+  }catch(netErr){
+    if(btn){btn.disabled=false;btn.textContent="Crear cuenta";}
+    err.style.display="block";
+    err.textContent='No se pudo conectar con el servidor de autenticación (se agotó el tiempo). Puede que el proyecto Supabase esté pausado o sin conexión. Reintenta en un momento.';
+    return;
+  }
   if(btn){btn.disabled=false;btn.textContent="Crear cuenta";}
   if(res.error){
     err.style.display="block";
