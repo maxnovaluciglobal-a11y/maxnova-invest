@@ -74,6 +74,21 @@ body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-ser
    con el contenido. pointer-events:none para no interferir con clicks. */
 .grain{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px 180px}
 
+/* ── GLOBO 3D DE FONDO — mismo recurso que moyiq.app: puntos que dibujan la
+   tierra firme, proyectados sobre una esfera que gira lento, fijo detrás de
+   toda la página (motor portado tal cual desde financeos-landing/index.html,
+   solo cambia el color de los puntos: latón sobre fondo oscuro en vez de
+   latón-800 sobre Papel). Nunca compite con el texto porque cada bloque abre
+   un hueco degradado sobre el globo — ver el script al final del body. */
+#globo-bg{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+/* Los hijos directos del body pasan a z-index:1 para pintarse arriba del
+   globo (fixed+z-index:0, sin esto, pintaría encima del contenido en flujo
+   normal). .grain queda afuera a propósito: ya tiene su propio
+   position:fixed;z-index:999 y esta regla se lo pisaría por la especificidad
+   de nivel-ID de :not(#id) — es un bug real que hoy existe en moyiq.app
+   (el grain quedó position:relative ahí), no conviene repetirlo acá. */
+body>*:not(#globo-bg):not(.grain){position:relative;z-index:1}
+
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(18,22,31,.82);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
 .nav-links{display:flex;align-items:center;gap:28px}
@@ -293,6 +308,8 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
 </symbol>
 </defs>
 </svg>
+
+<canvas id="globo-bg" aria-hidden="true"></canvas>
 
 <div class="grain" aria-hidden="true"></div>
 
@@ -612,6 +629,114 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
  </div>
 </footer>
 
+<script>
+/* ── MASCARA DE TIERRA FIRME — idéntica a la de moyiq.app ────────────────────
+   Rejilla 180x90 (2 grados) rasterizada de un GeoJSON de países y empaquetada
+   a bits: 2,7 KB en base64, sin peticiones ni dependencias. La usa el globo
+   de fondo de abajo. Se copia tal cual — es solo datos, no depende de tema. */
+window.__TIERRA=(function(){
+  var MW=180,MH=90;
+  var B='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf4AP/AAAAAAAAAAAAAAAAAAAAAAAAX/z///+AAAAAAAABAAAAAAAAAAAAAYd8P///wAA+AAAAAA8AAAAAAAAAAAwAnw////4AAIAAAAAAGAAAAAAAAAAADivwAf//wAAAAADAAf/wAHYAAAAAADoi3sAP//gAAAAAMAD///sAAAAgBgACfwz/AD/+gAAAwAEHf///+/8gBAP/7/nJdjwD/+AAAH/AA7f///////f4P//////h8H/gAAAf/6//f////////Mf/////9H4D8AeAA+ev///////////AP/////4A0B4AAAD5/////////////Af3////gHgA4AAAH5///////////LwAHgH///gHkAAAAAH4/////////+CIAABAB///4D+AAAAGCx/////////4A8AAIAAf///n/gAAAOCD/////////wA4AAAAAf///n/wAAAbP///////////AgAAAAAP/////wAAADf//////////9AAAAAAAF////0YAAAB///////////9AAAAAAAD////8EAAAB///////////5AAAAAAAD////2AAAAB/f5fP//////wAAAAAAAD////gAAAAfxnwPP//////jAAAAAAAD////AAAAAPCb3/n/////+CAAAAAAAD///8AAAAAfALf/n////+ECAAAAAAAB///8AAAAAGHQP/n/////mMAAAAAAAA///8AAAAAH+Ai///////E8AAAAAAAAf//wAAAAAP/AA///////BgAAAAAAAAP//gAAAAAf/73///////gAAAAAAAAAD/AQAAAAAf////f/////gAAAAAAAAAF+AQAAAAB///+/n/////AAAAAAAAAAC+AAAAAAB///+f0H////AAAAAAAAAAAeAwAAAAD////f/B///8gAAAAAAAAAAeGEAAAAH////v+B/z/AAAAAAAAAAAAPMAgAAAD////n+A/B+gAAAAAAAAAAAD8AAAAAD////n4AeB/AgAAAAAAAAAAAPAAAAAH////3gAcAfAgAAAAAAAAAAADAAAAAD////6AAcAfggAAAAAAAAAAABDwAAAD////8wAMATAIAAAAAAAAAAAAr/AAAB/////gAKASAAAAAAAAAAAAAAH/gAAA/////gACAAAIAAAAAAAAAAAAH/8AAAaH///AAAAsGAAAAAAAAAAAAAH/+AAAAB//+AAAAUOAAAAAAAAAAAAAP/+AAAAB//8AAAAYegAAAAAAAAAAAAP//gAAAD//4AAAAMeBgAAAAAAAAAAAP//8AAAB//wAAAAGdiuAAAAAAAAAAAf///AAAA//wAAAACAQHgAAAAAAAAAAP///gAAA//wAAAABwAHwgAAAAAAAAAH///AAAA//wAAAAACIDQIAAAAAAAAAH//+AAAAf/wAAAAAAAAAAAAAAAAAAAD//+AAAA//wgAAAAABxAAAAAAAAAAAD//+AAAA//wgAAAAAPxgBAAAAAAAAAA//8AAAA//jgAAAAAf5gAAAAAAAAAAAf/8AAAA//DgAAAAAf/gAAAAAAAAAAAf/8AAAAf/DAAAAAD//4CAAAAAAAAAAf/wAAAAf/DAAAAAH//4AAAAAAAAAAAf/AAAAAf+CAAAAAH//8AAAAAAAAAAAf/AAAAAP8AAAAAAH//+AAAAAAAAAAA/+AAAAAP8AAAAAAH//+AAAAAAAAAAA/+AAAAAH4AAAAAAD//+AAAAAAAAAAA/8AAAAAHwAAAAAADwf8AAAAAAAAAAA/gAAAAAAAAAAAAACAH4AIAAAAAAAAB/wAAAAAAAAAAAAAAAD4AEAAAAAAAAB+AAAAAAAAAAAAAAAAAAAGAAAAAAAAB6AAAAAAAAAAAAAAAAAwAMAAAAAAAAA8AAAAAAAAAAAAAAAAAQAYAAAAAAAAB4AAAAAAAAAAAAAAAAAAAwAAAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAACAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAeAAIP+f/gAAAAAAAAAAAMAAAAAAABP/+H//////AAAAAAAAAAA+AAAAAf////8////////AAAAAAAOEAPAAAB///////////////gAAAP//T//8AAAH//////////////+AAAH/////4AAAH///////////////8AAE//////4ABw////////////////8AAAD//////gCA////////////////wAAAf/////////////////////////+AAH/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  var by=atob(B), d=new Uint8Array(MW*MH);
+  for(var i=0;i<d.length;i++) d[i]=(by.charCodeAt(i>>3)>>(7-(i&7)))&1;
+  return {ancho:MW, alto:MH, datos:d};
+})();
+</script>
+<script>
+/* ── GLOBO 3D DE FONDO ───────────────────────────────────────────────────────
+   Motor portado tal cual desde financeos-landing/index.html (moyiq.app). El
+   3D sale de tres señales, no de una librería:
+     1. la profundidad z gobierna tamaño y opacidad de cada punto
+     2. la cara trasera se ve, muy tenue: eso es lo que lo hace leerse como
+        esfera hueca y no como disco plano
+     3. eje inclinado, para que no parezca un círculo girando sobre sí mismo
+
+   Único cambio real respecto al original: el color de los puntos. moyiq.app
+   pinta latón-800 (#8A6329) porque su fondo es Papel, claro. Acá el fondo es
+   oscuro (--bg:#12161F), así que el punto usa el latón real del tema oscuro
+   (--laton:#CC9A52 → rgb(204,154,82)) para que se lea sobre el fondo en vez
+   de fundirse con él. */
+(function(){
+  var cv=document.getElementById('globo-bg'); if(!cv||!window.__TIERRA) return;
+  var ctx=cv.getContext('2d');
+  var T=window.__TIERRA, MW=T.ancho, MH=T.alto, tierra=T.datos;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var P=[],N=0;
+  for(var iy=0;iy<MH;iy++)for(var ix=0;ix<MW;ix++){
+    if(!tierra[iy*MW+ix]) continue;
+    var la=(90-(iy+0.5)*180/MH)*Math.PI/180,
+        lo=(-180+(ix+0.5)*360/MW)*Math.PI/180;
+    P.push(Math.sin(la),Math.cos(la),Math.sin(lo),Math.cos(lo)); N++;
+  }
+  var TILT=0.38, ct=Math.cos(TILT), st=Math.sin(TILT);
+  var CUBOS=7, cubos=[]; for(var c=0;c<CUBOS;c++) cubos.push([]);
+  var rot=0, OPAC=1.0, W=0, H=0, dpr=1;
+
+  function medir(){
+    W=innerWidth; H=innerHeight;
+    dpr=Math.min(devicePixelRatio||1,2);
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  var SEL='h1,h2,h3,h4,p,li,a,button,td,th,label,div,span,strong,em';
+  function abrirClaro(){
+    var els=document.querySelectorAll(SEL);
+    ctx.save(); ctx.globalCompositeOperation='destination-out';
+    for(var i=0;i<els.length;i++){
+      var e=els[i];
+      if(e.querySelector(SEL)) continue;          // solo bloques hoja
+      if(!e.textContent.trim()) continue;
+      var q=e.getBoundingClientRect();
+      if(!q.width || q.bottom<-40 || q.top>H+40) continue;
+      if(q.height>120) continue;
+      var cx=q.left+q.width/2, cy=q.top+q.height/2;
+      var rx=q.width*0.62+22, ry=q.height*0.62+16;
+      ctx.save(); ctx.translate(cx,cy); ctx.scale(1,ry/rx);
+      var g=ctx.createRadialGradient(0,0,rx*0.85,0,0,rx*1.30);
+      g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,rx*1.30,0,6.2832); ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function pintar(){
+    if(!W) medir();
+    ctx.clearRect(0,0,W,H);
+    var cx=W*0.5, cy=H*0.48, R=Math.min(W,H)*0.46;
+    var cr=Math.cos(rot), sr=Math.sin(rot);
+    for(var c=0;c<CUBOS;c++) cubos[c].length=0;
+    for(var k=0;k<N;k++){
+      var o=k*4, sla=P[o],cla=P[o+1],slo=P[o+2],clo=P[o+3];
+      var sl=slo*cr+clo*sr, cl=clo*cr-slo*sr;   // giro sobre el eje polar
+      var x=cla*sl, y0=-sla, z0=cla*cl;
+      var y=y0*ct-z0*st, z=y0*st+z0*ct;         // inclinacion del eje
+      var frente=z>0;
+      var a=frente?(0.52+0.48*z):(0.10+0.14*(1+z));
+      var s=frente?(1.3+1.0*z):1.0;
+      var cu=Math.min(CUBOS-1,Math.max(0,Math.round(a*(CUBOS-1))));
+      cubos[cu].push(cx+x*R, cy+y*R, s);
+    }
+    for(var c2=0;c2<CUBOS;c2++){
+      var arr=cubos[c2]; if(!arr.length) continue;
+      ctx.fillStyle='rgba(204,154,82,'+((c2/(CUBOS-1))*OPAC).toFixed(3)+')';
+      for(var m=0;m<arr.length;m+=3){
+        var s2=arr[m+2]; ctx.fillRect(arr[m]-s2/2, arr[m+1]-s2/2, s2, s2);
+      }
+    }
+    abrirClaro();
+  }
+
+  function bucle(){ requestAnimationFrame(bucle); if(!reduce) rot+=0.0016; pintar(); }
+  addEventListener('resize',function(){ medir(); pintar(); });
+  addEventListener('scroll',pintar,{passive:true});
+  medir(); pintar();
+  if(reduce) return;
+  bucle();
+})();
+</script>
 
 </body>
 </html>
