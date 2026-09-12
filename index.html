@@ -37,19 +37,25 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  /* MOY — "El Instrumento": Navy (estructura), Latón (acento), Papel (superficie), Verde (positivo) */
-  --grn:#8A6329;--grn-bg:#F7F0E3;--grn-lt:#E4D4B0;--grn-d:#6B4A1E;
-  --laton:#B8863B;
-  --verde:#5FA98C;--verde-800:#356E57;--verde-bg:rgba(95,169,140,.12);
-  --red:#c0392b;--amber:#b45309;--amber-bg:#fef3c7;
-  --blue:#14213D;--blue-bg:#EEF1F6;
-  --bg:#F1EEE6;--card:#ffffff;--card2:#F1EEE6;--card3:#E8E2D3;
-  --text:#3A4256;--text2:#5B6275;--text3:#5B6275;--bright:#14213D;--white:#ffffff;
-  --border:rgba(20,33,61,0.10);--border2:rgba(20,33,61,0.16);
+  /* MOY — "El Instrumento", variantes DARK — mismos hex exactos que ya corren
+     en producción en /app (extraídos en vivo de getComputedStyle, no
+     inventados): --bg/--card/--card3 de la app real, --grn/--verde/--blue/
+     --red/--amber son las variantes "-dark" ya definidas en financeos-app/
+     globals.css (--accent-dark, --verde-dark, --info-dark, --error-dark,
+     --warning-dark) — la landing y la app comparten paleta real, no dos
+     sistemas que coinciden por casualidad. */
+  --grn:#CC9A52;--grn-bg:rgba(204,154,82,.14);--grn-lt:rgba(204,154,82,.22);--grn-d:#E3B36B;
+  --laton:#CC9A52;--on-accent:#14213D;
+  --verde:#74C2A3;--verde-800:#74C2A3;--verde-bg:rgba(116,194,163,.14);
+  --red:#C96856;--amber:#E0975A;--amber-bg:rgba(224,151,90,.14);
+  --blue:#89A6C2;--blue-bg:rgba(137,166,194,.14);
+  --bg:#12161F;--card:#181D29;--card2:#1E2433;--card3:#242B3B;
+  --text:#C7C2B2;--text2:#9C9686;--text3:#7D7869;--bright:#FAF8F2;--white:#FAF8F2;
+  --border:rgba(228,223,209,0.10);--border2:rgba(228,223,209,0.20);
   --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:12px;
-  --shadow-sm:0 1px 3px rgba(20,33,61,.06),0 1px 2px rgba(20,33,61,.04);
-  --shadow-md:0 4px 12px rgba(20,33,61,.08),0 2px 4px rgba(20,33,61,.04);
-  --shadow-lg:0 20px 48px rgba(20,33,61,.14),0 8px 16px rgba(20,33,61,.06);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --shadow-md:0 4px 12px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.25);
+  --shadow-lg:0 20px 48px rgba(0,0,0,.5),0 8px 16px rgba(0,0,0,.3);
 }
 
 /* ── LOGO — mismo lockup que moyiq.app: dial + "MOY" + placa "IQ" ────────────
@@ -69,16 +75,18 @@ body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-ser
 .grain{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px 180px}
 
 /* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(18,22,31,.82);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
 .nav-links{display:flex;align-items:center;gap:28px}
 .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s cubic-bezier(.23,1,.32,1)}
 .nav-links a:hover{color:var(--grn)}
-.nav-cta{background:var(--grn);color:#fff;border:none;padding:9px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;transition:background-color .15s cubic-bezier(.23,1,.32,1);text-decoration:none}
+.nav-cta{background:var(--grn);color:var(--on-accent);border:none;padding:9px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;transition:background-color .15s cubic-bezier(.23,1,.32,1);text-decoration:none}
 .nav-cta:hover{background:var(--grn-d)}
 /* Fix contraste: `.nav-links a` (0,1,1) ganaba a `.nav-cta` (0,1,0) y pintaba el
-   CTA gris sobre verde (1.34:1). Se sube especificidad en vez de usar !important. */
+   CTA gris sobre el acento. Se sube especificidad en vez de usar !important.
+   Texto Navy (no blanco) sobre el fill dorado — mismo criterio que el botón
+   "Entrar" real de /app: nunca blanco sobre el acento, falla contraste. */
 .nav-links a.nav-cta,
-.nav-links a.nav-cta:hover{color:#fff;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.nav-links a.nav-cta:hover{color:var(--on-accent);transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 
 @media(max-width:860px){.nav-links a:not(.nav-cta){display:none}}
 
@@ -93,12 +101,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
 /* ── HERO MOCKUP — mismo lenguaje visual que el mockup de moyiq.app: tarjeta
    Navy con el dial + score, panel oscuro debajo con filas de datos reales. */
 .hero-mock{display:flex;flex-direction:column;gap:14px}
-.mock-score-card{display:flex;align-items:center;gap:14px;background:var(--bright);border-radius:var(--r-lg);padding:16px 20px;box-shadow:0 16px 40px rgba(20,33,61,.18)}
-.mock-score-card .dial{width:40px;height:40px;color:var(--bg);flex-shrink:0}
+.mock-score-card{display:flex;align-items:center;gap:14px;background:var(--card3);border:0.5px solid var(--border2);border-radius:var(--r-lg);padding:16px 20px;box-shadow:var(--shadow-lg)}
+.mock-score-card .dial{width:40px;height:40px;color:var(--bright);flex-shrink:0}
 .mock-score-num{font-family:'Instrument Sans',Georgia,serif;font-size:32px;font-weight:700;color:var(--laton);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.mock-score-num span{font-size:.52em;color:var(--bg);opacity:.6;font-weight:500}
-.mock-score-lbl{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:var(--bg);opacity:.75;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
-.mock-panel{background:#101a30;border-radius:var(--r-lg);padding:18px 20px;box-shadow:0 16px 40px rgba(20,33,61,.14)}
+.mock-score-num span{font-size:.52em;color:var(--text2);font-weight:500}
+.mock-score-lbl{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+.mock-panel{background:var(--card3);border:0.5px solid var(--border2);border-radius:var(--r-lg);padding:18px 20px;box-shadow:var(--shadow-lg)}
 .mock-panel-head{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.5px;color:#8a93ab;text-transform:uppercase;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
 .mock-panel-head span:nth-child(2){flex:1}
 .mock-dots{display:inline-flex;gap:4px}
@@ -118,15 +126,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
   .hero-copy{text-align:center}
   .hero-copy .hero-actions,.hero-copy .hero-stats{justify-content:center}
 }
-/* Resplandor decorativo detras del texto: un solo acento con los tokens
-   propios (--grn), no compite con el contenido (z-index:-1, sin pointer
-   events) y .hero ya tenia overflow:hidden para contenerlo. */
-.hero-glow{
-  position:absolute;top:-220px;left:50%;transform:translateX(-50%);
-  width:900px;height:520px;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at center,var(--grn-lt) 0%,rgba(228,212,176,.35) 45%,rgba(228,212,176,0) 72%);
-  filter:blur(40px);
-}
+/* Sin glow de color: en fondo oscuro un halo radial cromático lee como
+   "AI slop" (mismo hallazgo que sacó el glow del CTA final). La textura de
+   grano (.grain) ya aporta la profundidad táctil que el glow buscaba dar —
+   el propio /app resuelve el fondo del hero así, sin resplandor de color. */
+.hero-glow{display:none}
 
 .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--grn-bg);border:0.5px solid var(--grn-lt);border-radius:8px;font-size:11px;font-weight:600;color:var(--grn);font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;margin-bottom:28px}
 
@@ -137,7 +141,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
 
 .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 .btn-hero{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--r-md);font-size:14px;font-weight:700;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1),border-color .15s cubic-bezier(.23,1,.32,1),color .15s cubic-bezier(.23,1,.32,1);text-decoration:none;border:0.5px solid var(--border2)}
-.btn-primary{background:var(--grn);color:#fff;border-color:var(--grn)}
+.btn-primary{background:var(--grn);color:var(--on-accent);border-color:var(--grn)}
 .btn-primary:hover{background:var(--grn-d)}
 .btn-secondary{background:var(--card);color:var(--bright)}
 .btn-secondary:hover{border-color:var(--grn);color:var(--grn)}
@@ -192,7 +196,7 @@ section{padding:80px 0}
 .price-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .price-card.featured{border-color:var(--grn);box-shadow:var(--shadow-lg)}
 .price-card.featured:hover{transform:translateY(-2px)}
-.price-badge{position:absolute;top:-11px;left:24px;background:var(--grn);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;letter-spacing:.4px;font-family:'IBM Plex Mono',monospace}
+.price-badge{position:absolute;top:-11px;left:24px;background:var(--grn);color:var(--on-accent);font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;letter-spacing:.4px;font-family:'IBM Plex Mono',monospace}
 .plan-name{font-size:14px;font-weight:700;color:var(--bright);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .plan-price{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
 .plan-price-val{font-size:34px;font-weight:800;color:var(--bright);letter-spacing:-1px}
@@ -202,7 +206,7 @@ section{padding:80px 0}
 .plan-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text)}
 .plan-feat .ck{color:var(--grn);font-weight:700;flex-shrink:0}
 .plan-btn{display:flex;align-items:center;justify-content:center;width:100%;padding:12px;border-radius:var(--r-md);font-size:13px;font-weight:700;text-decoration:none;transition:background-color .15s cubic-bezier(.23,1,.32,1),border-color .15s cubic-bezier(.23,1,.32,1),color .15s cubic-bezier(.23,1,.32,1);border:0.5px solid var(--border2)}
-.plan-btn-primary{background:var(--grn);color:#fff;border-color:var(--grn)}
+.plan-btn-primary{background:var(--grn);color:var(--on-accent);border-color:var(--grn)}
 .plan-btn-primary:hover{background:var(--grn-d)}
 .plan-btn-outline{background:var(--card);color:var(--bright)}
 .plan-btn-outline:hover{border-color:var(--grn);color:var(--grn)}
@@ -235,13 +239,12 @@ section{padding:80px 0}
    principio que el cierre `#cta-verde` de moyiq.app (única sección con color
    de fondo real, como puntuación final), pero en la superficie oscura propia
    de Invest en vez del verde de MOY IQ. ── */
-.cta-dark{background:var(--bright);position:relative;overflow:hidden;text-align:center}
+.cta-dark{background:var(--card3);border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);position:relative;overflow:hidden;text-align:center}
 .cta-inner{position:relative;max-width:600px;margin:0 auto;padding:0 24px}
 .cta-dark .section-label{color:var(--laton)}
-.cta-dark .section-title{color:#fff}
-.cta-copy{font-size:15px;color:rgba(241,238,230,.72);margin-bottom:32px;line-height:1.7}
-.cta-fine{font-size:11px;color:rgba(241,238,230,.62);margin-top:14px;font-family:'IBM Plex Mono',monospace}
-.cta-dark :focus-visible{outline-color:#fff!important}
+.cta-dark .section-title{color:var(--bright)}
+.cta-copy{font-size:15px;color:var(--text);margin-bottom:32px;line-height:1.7}
+.cta-fine{font-size:11px;color:var(--text3);margin-top:14px;font-family:'IBM Plex Mono',monospace}
 
 /* ── FOOTER ── */
 footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
