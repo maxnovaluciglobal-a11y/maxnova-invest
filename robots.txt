@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /app
 
 # AI crawlers — explicitly allowed for GEO (Generative Engine Optimization)
 User-agent: GPTBot
@@ -33,4 +34,4 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
-Sitemap: https://invest.financeospro.com/sitemap.xml
+Sitemap: https://invest.moyiq.app/sitemap.xml
