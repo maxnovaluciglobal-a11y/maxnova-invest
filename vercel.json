@@ -9,15 +9,11 @@
   "rewrites": [
     {
       "source": "/app",
-      "destination": "/index.html"
+      "destination": "/app/index.html"
     },
     {
       "source": "/landing",
-      "destination": "/landing.html"
-    },
-    {
-      "source": "/",
-      "destination": "/landing.html"
+      "destination": "/index.html"
     }
   ],
   "headers": [
