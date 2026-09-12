@@ -236,6 +236,20 @@ section{padding:80px 0}
 .test-name{font-size:13px;font-weight:600;color:var(--bright)}
 .test-role{font-size:11px;color:var(--text3)}
 
+/* ── SEAMOS HONESTOS — patrón de dypos.app: admitir para quién NO es el
+   producto construye más confianza que listar solo ventajas. Contenido
+   verificado contra lo que esta misma página ya afirma (hero, FAQ, features)
+   — no se promete ni se admite nada nuevo acá. */
+.honest-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-top:8px;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md)}
+.honest-col{background:var(--card);padding:28px}
+.honest-col-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px}
+.honest-no .honest-col-title{color:var(--text3)}
+.honest-yes .honest-col-title{color:var(--grn)}
+.honest-item{font-size:13px;color:var(--text2);line-height:1.6;padding:12px 0;border-top:0.5px solid var(--border)}
+.honest-item:first-of-type{border-top:none;padding-top:0}
+.honest-item strong{color:var(--bright);font-weight:600}
+@media(max-width:700px){.honest-grid{grid-template-columns:1fr}}
+
 /* ── FAQ ── */
 .faq{display:flex;flex-direction:column;gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:24px;box-shadow:var(--shadow-sm)}
 .faq-item{background:var(--card)}
@@ -564,6 +578,30 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     </div>
     <div class="test-card">
       <div class="test-text"><strong style="color:var(--bright)">¿Querías entender el "por qué" detrás de los números, no solo verlos?</strong><br><br>El Análisis Comparativo combina tendencia, volumen, RSI y MACD en un score educativo — contexto, no una señal de compra o venta.</div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- SEAMOS HONESTOS -->
+<section id="honest">
+ <div class="wrap">
+  <div style="text-align:center;margin-bottom:0">
+    <div class="section-label">Seamos honestos</div>
+    <h2 class="section-title">¿Es para vos?</h2>
+  </div>
+  <div class="honest-grid">
+    <div class="honest-col honest-no">
+      <div class="honest-col-title">No es para vos si…</div>
+      <div class="honest-item"><strong>Buscás señales de compra o venta.</strong> El Análisis Comparativo es contexto educativo — tendencia, volumen, RSI y MACD — no una recomendación.</div>
+      <div class="honest-item"><strong>Necesitás ejecutar órdenes desde acá.</strong> No somos bróker: hoy el portfolio se carga a mano, la integración con brokers está en desarrollo.</div>
+      <div class="honest-item"><strong>Esperás datos sin ningún retraso.</strong> Los precios son referenciales vía Yahoo Finance — pueden tener demora.</div>
+    </div>
+    <div class="honest-col honest-yes">
+      <div class="honest-col-title">Es para vos si…</div>
+      <div class="honest-item"><strong>Ya llevás tu portfolio</strong> (aunque sea en una hoja de cálculo) y querés verlo con contexto técnico real, no a ojo.</div>
+      <div class="honest-item"><strong>Sos inversor de LATAM</strong> y te falta el contexto regional — tipo de cambio, IPSA — que las plataformas gringas no dan.</div>
+      <div class="honest-item"><strong>Querés un proceso, no instinto.</strong> El Position Builder aplica la Regla del 2% antes de cada operación.</div>
     </div>
   </div>
  </div>
