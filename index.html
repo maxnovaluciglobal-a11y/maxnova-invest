@@ -10372,7 +10372,7 @@ function renderRebal(){
 
   var tradeRows=trades.map(function(tr){
     return '<tr style="background:'+(tr.buy?'rgba(34,197,94,.04)':'rgba(239,68,68,.04)')+'">'+
-      '<td style="font-weight:700;color:var(--bright)">'+tr.t+'</td>'+
+      '<td style="font-weight:700;color:var(--bright)">'+esc(tr.t)+'</td>'+
       // El signo y color de Monto USD ya dicen si es aumentar o reducir; en
       // movil la etiqueta queda de detalle, no hace falta para leer la fila.
       '<td class="col-sec"><span class="badge '+(tr.buy?'buy':'sell')+'">'+(tr.buy?'Aumentar':'Reducir')+'</span></td>'+
@@ -10439,7 +10439,7 @@ function rebalUpdate(){
   }).filter(Boolean);
   var tradeRows=trades.map(function(tr){
     return '<tr style="background:'+(tr.buy?'rgba(34,197,94,.04)':'rgba(239,68,68,.04)')+'">'+
-      '<td style="font-weight:700;color:var(--bright)">'+tr.t+'</td>'+
+      '<td style="font-weight:700;color:var(--bright)">'+esc(tr.t)+'</td>'+
       '<td><span class="badge '+(tr.buy?'buy':'sell')+'">'+(tr.buy?'Aumentar':'Reducir')+'</span></td>'+
       '<td style="color:'+(tr.buy?'var(--pos)':'var(--neg)')+'">'+Math.abs(tr.shares).toFixed(4)+' acc.</td>'+
       '<td style="color:'+(tr.buy?'var(--pos)':'var(--neg)')+'">'+(tr.buy?'+':'-')+'$'+fmt(Math.abs(tr.diff))+'</td>'+
