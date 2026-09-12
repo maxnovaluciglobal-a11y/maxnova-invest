@@ -10752,7 +10752,14 @@ async function sbLoadUserData(authUser){
       var sess=await sb.auth.getSession();
       var tok=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
       if(tok){
-        var cpRes=await fetch('/api/check-plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok})});
+        // Timeout de 8s: fetch() no tiene limite propio — si /api/check-plan
+        // se cuelga (cold start, Supabase lento), este await nunca resolvia
+        // y dejaba sbLoadUserData (y con el, boot()) girando para siempre.
+        // El catch de abajo ya manejaba errores rapidos, no un cuelgue mudo.
+        var cpRes=await Promise.race([
+          fetch('/api/check-plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok})}),
+          new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
+        ]);
         if(cpRes.ok){var cpData=await cpRes.json();if(cpData&&cpData.valid){verifiedPlan=cpData.plan;if(cpData.trialUsed!==undefined)S._trialUsedFromServer=cpData.trialUsed;}}
       }
     }catch(e){/* fallback to DB value already set above */}
