@@ -37,10 +37,10 @@ export default async function handler(req) {
 
   // Price IDs — set these in Vercel env vars after creating products in Stripe
   const PRICES = {
-    personal:          process.env.STRIPE_PRICE_PERSONAL,         // One-time $29.99
-    pro:               process.env.STRIPE_PRICE_PRO,               // One-time $49
-    invest_pro:        process.env.STRIPE_PRICE_INVEST_PRO,        // Subscription $29.99/mes
-    invest_pro_annual: process.env.STRIPE_PRICE_INVEST_PRO_ANNUAL, // Subscription $199/año
+    personal:          process.env.STRIPE_PRICE_PERSONAL,         // One-time — env var no existe en Vercel, nunca se lanzó
+    pro:               process.env.STRIPE_PRICE_PRO,               // One-time — env var no existe en Vercel, nunca se lanzó
+    invest_pro:        process.env.STRIPE_PRICE_INVEST_PRO,        // Subscription $9.99/mes
+    invest_pro_annual: process.env.STRIPE_PRICE_INVEST_PRO_ANNUAL, // Subscription $99/año
   };
 
   // Route invest_pro to annual price when interval='annual'
