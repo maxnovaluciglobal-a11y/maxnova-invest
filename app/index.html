@@ -4626,6 +4626,11 @@ function renderSettings(){
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Se eliminará la sesión actual</div></div>'+
     '<button class="btn btn-r" onclick="logout()">Cerrar sesión</button>'+
     '</div>'+
+    (u?'<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:12px;padding-top:12px">'+
+    '<div><div style="font-size:13px;font-weight:500;color:var(--bright)">Eliminar cuenta</div>'+
+    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Borra tu cuenta y todos tus datos de forma permanente e inmediata</div></div>'+
+    '<button class="btn btn-r" onclick="openModal(\'delacct\')">Eliminar cuenta</button>'+
+    '</div>':'')+
     '</div>'+
 
     '<div style="font-size:11px;color:var(--text3);text-align:center;font-family:\'IBM Plex Mono\',monospace;padding:8px 0">'+
@@ -6845,7 +6850,66 @@ function renderModal(){
   else if(S.modal==="score-info") mScoreInfo(mr);
   else if(S.modal==="como-calcula") mComoCalcula(mr);
   else if(S.modal==="addalert") mAlert(mr);
+  else if(S.modal==="delacct") mDelAccount(mr);
   _setupModalFocus();
+}
+
+// Modal de eliminacion de cuenta (borrado real — ver api/delete-account.js).
+// Requiere escribir "ELIMINAR" para habilitar el boton: es una accion
+// irreversible que borra portfolio, watchlist, bitacora, consentimientos,
+// la suscripcion Pro activa (si existe) y la cuenta de acceso en Supabase Auth.
+function mDelAccount(mr){
+  var email=(S.user&&S.user.email)?esc(S.user.email):'';
+  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:440px" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="da-tit">'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<h2 id="da-tit" style="color:var(--red)">Eliminar cuenta</h2>'+
+    '<p class="msub">'+(email?'Cuenta: <b style="color:var(--bright)">'+email+'</b><br>':'')+
+    'Esta acción es <b style="color:var(--bright)">irreversible</b>. Se borra de inmediato, para siempre:</p>'+
+    '<ul style="font-size:12px;color:var(--text2);margin:-12px 0 16px 18px;line-height:1.7">'+
+      '<li>Tu portfolio y watchlist</li>'+
+      '<li>Tu historial de operaciones (Bitácora) y alertas</li>'+
+      '<li>Tu suscripción Pro, si tenés una activa (se cancela)</li>'+
+      '<li>Tu cuenta de acceso (email, autenticación) en Supabase</li>'+
+    '</ul>'+
+    '<div id="da-err" class="err" style="display:none;color:var(--red);font-size:12px;margin-bottom:10px"></div>'+
+    '<label class="lb" for="da-confirm">Escribí <b style="color:var(--bright)">ELIMINAR</b> para confirmar</label>'+
+    '<input id="da-confirm" class="inp ifu" autocomplete="off" spellcheck="false" oninput="daSync()" placeholder="ELIMINAR" style="margin-top:6px"/>'+
+    '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">'+
+    '<button class="btn" onclick="closeModal()">Cancelar</button>'+
+    '<button id="da-btn" class="btn btn-r" disabled onclick="confirmDeleteAccount()">Eliminar cuenta definitivamente</button>'+
+    '</div>'+
+    '</div></div>';
+}
+function daSync(){
+  var v=(document.getElementById('da-confirm')||{}).value||'';
+  var btn=document.getElementById('da-btn');
+  if(btn) btn.disabled=(v.trim().toUpperCase()!=='ELIMINAR');
+}
+async function confirmDeleteAccount(){
+  var btn=document.getElementById('da-btn');
+  var err=document.getElementById('da-err');
+  if(err){ err.style.display='none'; }
+  if(btn){ btn.disabled=true; btn.textContent='Eliminando…'; }
+  try{
+    if(typeof sb==='undefined'||!sb||!sb.auth){ throw new Error('No se pudo cargar el servicio de autenticación. Recargá la página.'); }
+    var sess=await sb.auth.getSession();
+    var tok=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
+    if(!tok){ throw new Error('Debés iniciar sesión de nuevo para poder eliminar la cuenta.'); }
+    var res=await fetch('/api/delete-account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok})});
+    var data=await res.json().catch(function(){return {};});
+    if(!res.ok||!data.ok){
+      throw new Error(data.error||'No se pudo eliminar la cuenta. Intentá de nuevo o escribinos a invest@moyiq.app.');
+    }
+    // La cuenta ya no existe del lado del servidor: limpiar sesión local y
+    // volver a la landing (no tiene sentido re-renderizar la app logueada).
+    if(typeof stopBoot==='function') stopBoot();
+    try{ await sb.auth.signOut(); }catch(e){}
+    S.user=null;
+    window.location.href='/';
+  }catch(e){
+    if(err){ err.textContent=e.message||'Error de conexión. Intentá de nuevo.'; err.style.display='block'; }
+    if(btn){ btn.textContent='Eliminar cuenta definitivamente'; daSync(); }
+  }
 }
 
 // Modal de creacion de alerta. Sustituye a la lista de ejemplos hardcodeada:
