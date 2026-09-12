@@ -4287,7 +4287,7 @@ function renderDecisionEngineBody(){
         '<div style="position:absolute;bottom:40px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:20px">'+
           '<div style="font-size:13px;font-weight:700;color:var(--bright)">Análisis completo de '+scores.length+' activos disponible en Pro</div>'+
           '<div style="font-size:11px;color:var(--text2)">Estás viendo el régimen de mercado. Activa Pro para el scoring de cada activo con Entry, Stop y Target.</div>'+
-          '<button onclick="openModal(\'upgrade\')" class="btn-big" style="padding:10px 28px">'+icon('bolt')+'Activar Pro — desde $8.25/mes →</button>'+
+          '<button onclick="openModal(\'upgrade\')" class="btn-big" style="padding:10px 28px">'+icon('bolt')+'Activar Pro — desde $8.33/mes →</button>'+
         '</div>'+
         '</div>';
     }
@@ -6948,9 +6948,9 @@ function setBillingPeriod(period){
   if(period==='annual'){
     mo.style.background='transparent'; mo.style.color='var(--text3)'; mo.style.borderColor='var(--border)';
     yr.style.background='var(--orange-bg)'; yr.style.color='var(--amber)'; yr.style.borderColor='var(--orange-bd)';
-    if(priceEl) priceEl.innerHTML='$99<span style="font-size:13px;color:var(--text3)">/año</span>';
-    if(subEl) subEl.textContent='$8.25/mes efectivo · ~17% ahorro vs mensual';
-    if(ctaEl) ctaEl.textContent='Después del trial: $99/año · Cancela en 1 click';
+    if(priceEl) priceEl.innerHTML='$99.99<span style="font-size:13px;color:var(--text3)">/año</span>';
+    if(subEl) subEl.textContent='$8.33/mes efectivo · ~17% ahorro vs mensual';
+    if(ctaEl) ctaEl.textContent='Después del trial: $99.99/año · Cancela en 1 click';
   }else{
     yr.style.background='transparent'; yr.style.color='var(--text3)'; yr.style.borderColor='var(--border)';
     mo.style.background='var(--orange-bg)'; mo.style.color='var(--amber)'; mo.style.borderColor='var(--orange-bd)';
@@ -9437,8 +9437,8 @@ function mUpgrade(mr){
     '<div style="background:var(--orange-bg);border:2px solid var(--orange-bd);border-radius:var(--r-md);padding:16px;position:relative">'+
     '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--amber);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-xl);letter-spacing:.5px;font-family:\'JetBrains Mono\',monospace">MÁS POPULAR</div>'+
     '<div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px">PRO</div>'+
-    '<div id="pro-price-display" style="font-size:24px;font-weight:700;color:var(--bright);font-family:\'JetBrains Mono\',monospace">$99<span style="font-size:13px;color:var(--text3)">/año</span></div>'+
-    '<div id="pro-price-sub" style="font-size:11px;color:var(--text3);margin-bottom:12px">$8.25/mes efectivo · ~17% ahorro vs mensual</div>'+
+    '<div id="pro-price-display" style="font-size:24px;font-weight:700;color:var(--bright);font-family:\'JetBrains Mono\',monospace">$99.99<span style="font-size:13px;color:var(--text3)">/año</span></div>'+
+    '<div id="pro-price-sub" style="font-size:11px;color:var(--text3);margin-bottom:12px">$8.33/mes efectivo · ~17% ahorro vs mensual</div>'+
     proFeatures.slice(0,8).map(function(f){
       return '<div style="font-size:11px;color:var(--bright);padding:3px 0;border-bottom:1px solid var(--orange-bd);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">✓</span>'+f[0]+' '+f[1]+'</div>';
     }).join('')+
@@ -9447,7 +9447,7 @@ function mUpgrade(mr){
 
     // CTA
     '<div style="padding:20px 28px 24px">'+
-    '<button onclick="doUpgrade()" class="btn-big" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px">'+icon('bolt')+'Activar Pro ahora — $99/año</button>'+
+    '<button onclick="doUpgrade()" class="btn-big" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px">'+icon('bolt')+'Activar Pro ahora — $99.99/año</button>'+
     '<button onclick="startTrial()" class="btn" style="width:100%;padding:11px;font-size:13px;margin-bottom:10px;border:1px solid var(--border);background:transparent;color:var(--text2)">Iniciar prueba gratuita — 14 días sin tarjeta</button>'+
     '<p id="pro-cta-sub" style="font-size:11px;color:var(--text3);text-align:center;font-family:\'JetBrains Mono\',monospace">Cancela en 1 click · Sin compromisos</p>'+
     '<div style="margin-top:14px;padding:10px 14px;background:var(--card2);border-radius:var(--r-md);font-size:11px;font-family:\'JetBrains Mono\',monospace;color:var(--text3);text-align:center;line-height:1.6">'+

@@ -1,7 +1,7 @@
 // api/create-checkout.js — Vercel Edge Function
-// Creates a Stripe Checkout session for App purchases or Invest subscriptions
+// Creates a Stripe Checkout session for the Invest Pro subscription.
 // Usage: POST /api/create-checkout
-// Body: { product: 'personal' | 'pro' | 'invest_pro', email?: string, userId?: string }
+// Body: { product: 'invest_pro', email?: string, userId?: string, interval?: 'annual' }
 
 export const config = { runtime: 'edge' };
 
@@ -34,21 +34,18 @@ export default async function handler(req) {
   try { body = await req.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
   const { product, email, userId, successUrl, cancelUrl, interval } = body;
+  if (product !== 'invest_pro') return json({ error: `Unknown product: ${product}` }, 400);
 
   // Price IDs — set these in Vercel env vars after creating products in Stripe
   const PRICES = {
-    personal:          process.env.STRIPE_PRICE_PERSONAL,         // One-time — env var no existe en Vercel, nunca se lanzó
-    pro:               process.env.STRIPE_PRICE_PRO,               // One-time — env var no existe en Vercel, nunca se lanzó
     invest_pro:        process.env.STRIPE_PRICE_INVEST_PRO,        // Subscription $9.99/mes
-    invest_pro_annual: process.env.STRIPE_PRICE_INVEST_PRO_ANNUAL, // Subscription $99/año
+    invest_pro_annual: process.env.STRIPE_PRICE_INVEST_PRO_ANNUAL, // Subscription $99.99/año
   };
 
-  // Route invest_pro to annual price when interval='annual'
-  const priceKey = (product === 'invest_pro' && interval === 'annual') ? 'invest_pro_annual' : product;
+  const priceKey = interval === 'annual' ? 'invest_pro_annual' : 'invest_pro';
   const priceId = PRICES[priceKey];
-  if (!priceId) return json({ error: `Unknown product or price not configured: ${priceKey}` }, 400);
+  if (!priceId) return json({ error: `Price not configured: ${priceKey}` }, 400);
 
-  const isSubscription = product === 'invest_pro';
   const origin = req.headers.get('origin') || 'https://invest.moyiq.app';
 
   // Seguridad: solo aceptar success/cancelUrl del cliente si son del mismo origen
@@ -63,18 +60,16 @@ export default async function handler(req) {
   };
 
   const sessionPayload = {
-    mode: isSubscription ? 'subscription' : 'payment',
+    mode: 'subscription',
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: safeRedirect(successUrl, `${origin}/activate?session_id={CHECKOUT_SESSION_ID}&product=${product}`),
+    success_url: safeRedirect(successUrl, `${origin}/app?upgraded=1`),
     cancel_url: safeRedirect(cancelUrl, `${origin}/`),
     metadata: { product, userId: userId || '' },
     ...(email ? { customer_email: email } : {}),
-    ...(isSubscription ? {
-      subscription_data: {
-        trial_period_days: 14,
-        metadata: { product, userId: userId || '' },
-      },
-    } : {}),
+    subscription_data: {
+      trial_period_days: 14,
+      metadata: { product, userId: userId || '' },
+    },
   };
 
   try {

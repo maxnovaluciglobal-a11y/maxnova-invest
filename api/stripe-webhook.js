@@ -1,7 +1,8 @@
 // api/stripe-webhook.js — Vercel Edge Function
-// Handles Stripe webhook events:
-//   checkout.session.completed  → generate license key (App) or activate plan (Invest)
-//   customer.subscription.deleted → downgrade Invest user to free
+// Handles Stripe webhook events for the Invest Pro subscription:
+//   checkout.session.completed    → activate plan
+//   customer.subscription.updated → sync plan with subscription status
+//   customer.subscription.deleted → downgrade to free
 
 export const config = { runtime: 'edge' };
 
@@ -28,23 +29,6 @@ async function sbFetch(path, method, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   return res.ok ? res.json().catch(() => null) : null;
-}
-
-function generateLicenseKey() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin caracteres ambiguos
-  // crypto.getRandomValues y no Math.random: en un isolate V8 Math.random no es
-  // un generador criptografico y las claves emitidas seguidas pueden compartir
-  // entropia predecible. Se descartan los valores por encima del mayor multiplo
-  // de 32 para no sesgar el modulo.
-  const rnd = new Uint8Array(24);
-  crypto.getRandomValues(rnd);
-  let out = '', i = 0;
-  while (out.length < 12) {
-    if (i >= rnd.length) { crypto.getRandomValues(rnd); i = 0; }
-    const v = rnd[i++];
-    if (v < 256 - (256 % chars.length)) out += chars[v % chars.length];
-  }
-  return `FNOS-${out.slice(0,4)}-${out.slice(4,8)}-${out.slice(8,12)}`;
 }
 
 // Stripe webhook signature verification (Ed25519 / HMAC-SHA256)
@@ -107,32 +91,6 @@ export default async function handler(req) {
 
   const type = event.type;
   const obj = event.data?.object;
-
-  // ── App one-time purchase ────────────────────────────────────────
-  if (type === 'checkout.session.completed' && obj.mode === 'payment') {
-    const product = obj.metadata?.product; // 'personal' | 'pro'
-    const email = obj.customer_details?.email || obj.customer_email;
-    const stripeSessionId = obj.id;
-
-    if (product === 'personal' || product === 'pro') {
-      // Generate unique license key
-      let key = generateLicenseKey();
-      // Ensure uniqueness (retry once on collision, extremely rare)
-      const existing = await sbFetch(`licenses?key=eq.${key}`, 'GET');
-      if (existing && existing.length > 0) key = generateLicenseKey();
-
-      await sbFetch('licenses', 'POST', {
-        key,
-        plan: product,
-        stripe_session_id: stripeSessionId,
-        customer_email: email,
-        stripe_amount: obj.amount_total,
-      });
-
-      // Send license key email via Supabase Edge Function (if configured)
-      // For now the key is shown on the activate page via /api/get-license
-    }
-  }
 
   // ── Invest subscription activated / renewed ──────────────────────
   if (type === 'checkout.session.completed' && obj.mode === 'subscription') {
