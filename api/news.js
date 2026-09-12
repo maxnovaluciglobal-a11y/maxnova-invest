@@ -34,7 +34,7 @@ function bestImage(thumbnail) {
   return best?.url || null;
 }
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com', 'https://financeospro.com', 'https://app.financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 export default async function handler(req) {
   const origin = req.headers.get('origin') || '';

@@ -9,7 +9,7 @@ const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com','https://financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com','https://financeospro.com'];
 function getCorsHeaders(req) {
   const origin = (req&&req.headers&&req.headers.get('origin')) || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];

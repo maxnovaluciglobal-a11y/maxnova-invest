@@ -4,7 +4,7 @@
 
 export const config = { runtime: 'edge' };
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com', 'https://financeospro.com', 'https://app.financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';

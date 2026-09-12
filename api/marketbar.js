@@ -29,7 +29,7 @@ const SYMBOLS = [
   { sym: '^VIX',     label: 'VIX'          },
 ];
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com', 'https://financeospro.com', 'https://app.financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 function buildCors(req) {
   const origin = req.headers.get('origin') || '';

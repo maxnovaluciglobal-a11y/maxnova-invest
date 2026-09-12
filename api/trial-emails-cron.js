@@ -17,7 +17,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY; // service_role k
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CRON_SECRET = process.env.CRON_SECRET;
 
-const APP_URL = 'https://invest.financeospro.com';
+const APP_URL = 'https://invest.moyiq.app';
 const FROM = 'MOY IQ Invest <invest@financeospro.com>';
 
 // Which day-marks trigger which template

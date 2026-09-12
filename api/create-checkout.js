@@ -5,7 +5,7 @@
 
 export const config = { runtime: 'edge' };
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com','https://financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com','https://financeospro.com'];
 function getCorsHeaders(req) {
   const origin = req.headers.get('origin') || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -49,11 +49,11 @@ export default async function handler(req) {
   if (!priceId) return json({ error: `Unknown product or price not configured: ${priceKey}` }, 400);
 
   const isSubscription = product === 'invest_pro';
-  const origin = req.headers.get('origin') || 'https://invest.financeospro.com';
+  const origin = req.headers.get('origin') || 'https://invest.moyiq.app';
 
   // Seguridad: solo aceptar success/cancelUrl del cliente si son del mismo origen
   // permitido (evita open-redirect / phishing). Si no, usar el default.
-  const ALLOWED_REDIRECT_HOSTS = ['invest.financeospro.com','financeospro.com'];
+  const ALLOWED_REDIRECT_HOSTS = ['invest.moyiq.app', 'invest.financeospro.com','financeospro.com'];
   const safeRedirect = (candidate, fallback) => {
     if (!candidate || typeof candidate !== 'string') return fallback;
     try {

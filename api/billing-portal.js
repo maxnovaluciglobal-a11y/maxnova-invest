@@ -5,7 +5,7 @@
 // Usage: POST /api/billing-portal  { token: "<supabase access token>" }
 export const config = { runtime: 'edge' };
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com', 'https://financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com'];
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
@@ -55,7 +55,7 @@ export default async function handler(req) {
     return json({ error: 'No hay una suscripcion activa asociada a esta cuenta.' }, 404, req);
   }
 
-  const origin = req.headers.get('origin') || 'https://invest.financeospro.com';
+  const origin = req.headers.get('origin') || 'https://invest.moyiq.app';
   const params = new URLSearchParams();
   params.set('customer', customerId);
   params.set('return_url', `${origin}/app`);

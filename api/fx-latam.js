@@ -15,7 +15,7 @@ const PAIRS = {
 
 const FALLBACKS = { CLP: 960, MXN: 17.3, COP: 4200, ARS: 1060, PEN: 3.75 }; // updated Jul 2026 — ARS es tipo oficial BCRA
 
-const ALLOWED_ORIGINS = ['https://invest.financeospro.com', 'https://financeospro.com', 'https://app.financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
