@@ -4781,6 +4781,13 @@ function renderWelcome(){
     '<button id="wv3-tab-login" class="wv3-tab-btn active" onclick="wv3Tab(\'login\')">Iniciar sesión</button>'+
     '<button id="wv3-tab-reg" class="wv3-tab-btn" onclick="wv3Tab(\'reg\')">Crear cuenta</button>'+
     '</div>'+
+    // Google — mismo botón sirve para iniciar sesión o crear cuenta (Supabase
+    // crea el usuario solo si no existe), no hace falta duplicarlo por panel.
+    '<button type="button" class="wv3-google-btn" onclick="doGoogleAuth()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text1);font-size:13px;font-weight:500;cursor:pointer;margin:14px 0 12px">'+
+    '<svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.9l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>'+
+    'Continuar con Google'+
+    '</button>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--text3)">o con email</span><div style="flex:1;height:1px;background:var(--border)"></div></div>'+
     // Panel login
     '<div id="wv3-panel-login" class="wv3-panel show">'+
     '<div><label class="wv3-field-label" for="le">EMAIL</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
@@ -10979,6 +10986,17 @@ async function doRegister(){
     err.style.color="var(--grn)";
     err.textContent="Cuenta creada. Revisa tu email para confirmar antes de entrar.";
   }
+}
+
+async function doGoogleAuth(){
+  if(typeof sb==='undefined'||!sb||!sb.auth){
+    alert('No se pudo cargar el servicio de autenticación. Recarga la página.');
+    return;
+  }
+  // signInWithOAuth redirige a Google y vuelve a esta misma URL; el listener
+  // onAuthStateChange (SIGNED_IN) ya maneja la sesión resultante igual que un
+  // login por password — no hace falta lógica de callback aparte acá.
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+window.location.pathname}});
 }
 
 async function logout(){
