@@ -2,5 +2,11 @@
   "name": "maxnova-invest",
   "version": "1.0.0",
   "private": true,
-  "description": "MAXNOVA Invest — Plataforma de análisis de inversiones para LATAM"
+  "description": "MAXNOVA Invest — Plataforma de análisis de inversiones para LATAM",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.9"
+  }
 }
