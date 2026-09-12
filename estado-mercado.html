@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Estado del Mercado Hoy — MOY IQ Invest</title>
+<meta name="description" content="Snapshot gratis del mercado hoy: índices de EE.UU., VIX (volatilidad), oro, petróleo, bitcoin y tipos de cambio USD para LATAM (CLP, MXN, COP, ARS, PEN). Datos referenciales, actualizados cada minuto."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://invest.moyiq.app/estado-mercado.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<!-- Open Graph -->
+<meta property="og:type"         content="website"/>
+<meta property="og:url"          content="https://invest.moyiq.app/estado-mercado.html"/>
+<meta property="og:title"        content="Estado del Mercado Hoy — MOY IQ Invest"/>
+<meta property="og:description"  content="Índices, volatilidad (VIX) y tipos de cambio LATAM en un vistazo. Gratis, sin cuenta."/>
+<meta property="og:image"        content="https://invest.moyiq.app/og-invest.png"/>
+<meta property="og:image:width"  content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:locale"       content="es_419"/>
+<meta property="og:site_name"    content="MOY IQ Invest"/>
+<meta name="twitter:card"        content="summary_large_image"/>
+<meta name="twitter:title"       content="Estado del Mercado Hoy — MOY IQ Invest"/>
+<meta name="twitter:description" content="Índices, volatilidad (VIX) y tipos de cambio LATAM en un vistazo. Gratis, sin cuenta."/>
+<meta name="twitter:image"       content="https://invest.moyiq.app/og-invest.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --grn:#8A6329;--grn-bg:#F7F0E3;--grn-lt:#E4D4B0;--grn-d:#6B4A1E;
+  --red:#c0392b;--amber:#b45309;--amber-bg:#fef3c7;
+  --blue:#14213D;--blue-bg:#EEF1F6;
+  --bg:#F1EEE6;--card:#ffffff;--card2:#F1EEE6;--card3:#E8E2D3;
+  --text:#3A4256;--text2:#5B6275;--text3:#5B6275;--bright:#14213D;--white:#ffffff;
+  --border:rgba(20,33,61,0.10);--border2:rgba(20,33,61,0.16);
+  --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:12px;
+  --shadow-sm:0 1px 3px rgba(20,33,61,.06),0 1px 2px rgba(20,33,61,.04);
+  --shadow-md:0 4px 12px rgba(20,33,61,.08),0 2px 4px rgba(20,33,61,.04);
+  --pos:#3f7a52;--neg:#c0392b;
+}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:1200px;margin:0 auto;padding:0 max(24px,calc(50% - 600px))}
+a{color:inherit}
+
+/* ── NAV (idéntico al de index.html) ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-icon{width:32px;height:32px;background:var(--grn);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.nav-logo-name{font-size:15px;font-weight:700;color:var(--bright);letter-spacing:-.2px}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s cubic-bezier(.23,1,.32,1)}
+.nav-links a:hover{color:var(--grn)}
+.nav-cta{background:var(--grn);color:#fff;border:none;padding:9px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;transition:background-color .15s cubic-bezier(.23,1,.32,1);text-decoration:none}
+.nav-cta:hover{background:var(--grn-d)}
+.nav-links a.nav-cta,.nav-links a.nav-cta:hover{color:#fff}
+@media(max-width:860px){.nav-links a:not(.nav-cta){display:none}}
+
+main{padding-top:64px}
+
+.hero{padding:56px 0 32px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--grn-bg);border:0.5px solid var(--grn-lt);border-radius:8px;font-size:11px;font-weight:600;color:var(--grn);font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;margin-bottom:20px}
+.hero h1{font-size:36px;font-weight:700;font-family:'Instrument Sans',Georgia,serif;color:var(--bright);letter-spacing:-0.5px;line-height:1.15;margin-bottom:14px}
+.hero h1 span{color:var(--grn);font-style:italic}
+.hero-sub{font-size:15px;color:var(--text2);max-width:560px;margin:0 auto;line-height:1.65}
+
+.snap-banner{max-width:640px;margin:20px auto 0;padding:12px 18px;background:var(--amber-bg);border:0.5px solid #e6c88a;border-radius:var(--r-md);font-size:12px;color:#7a5a12;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.snap-banner a{font-weight:700;text-decoration:underline}
+
+section{padding:32px 0}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--grn);font-family:'IBM Plex Mono',monospace;margin-bottom:14px}
+.section-title{font-size:22px;font-weight:800;color:var(--bright);letter-spacing:-.4px;margin-bottom:6px}
+
+.upd-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.upd-time{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.actions-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn-share{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--r-md);font-size:12px;font-weight:700;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;border:0.5px solid var(--border2);background:var(--card);color:var(--bright);transition:border-color .15s,color .15s}
+.btn-share:hover{border-color:var(--grn);color:var(--grn)}
+.btn-share.primary{background:var(--grn);color:#fff;border-color:var(--grn)}
+.btn-share.primary:hover{background:var(--grn-d)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.card{background:var(--card);padding:18px}
+.card-label{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.card-val{font-size:22px;font-weight:800;color:var(--bright);font-family:'IBM Plex Mono',monospace;margin-bottom:4px}
+.card-chg{font-size:12px;font-weight:600;font-family:'IBM Plex Mono',monospace}
+.up{color:var(--pos)}
+.down{color:var(--neg)}
+.flat{color:var(--text3)}
+
+.vix-card{display:flex;align-items:center;gap:16px;background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:22px;margin-top:18px}
+.vix-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.vix-val{font-size:30px;font-weight:800;font-family:'IBM Plex Mono',monospace;color:var(--bright)}
+.vix-label{font-size:13px;font-weight:700;margin-bottom:2px}
+.vix-tip{font-size:12px;color:var(--text2)}
+
+.err-note{font-size:12px;color:var(--text3);margin-top:10px}
+
+.cta-box{text-align:center;padding:44px max(24px,calc(50% - 480px));background:var(--card);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+.cta-box .section-title{max-width:480px;margin:0 auto 12px}
+.cta-box p{font-size:14px;color:var(--text2);margin-bottom:22px;line-height:1.7}
+.btn-hero{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:var(--r-md);font-size:14px;font-weight:700;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;text-decoration:none;border:0.5px solid var(--border2)}
+.btn-primary{background:var(--grn);color:#fff;border-color:var(--grn)}
+.btn-primary:hover{background:var(--grn-d)}
+.cta-note{font-size:11px;color:var(--text3);margin-top:12px;font-family:'IBM Plex Mono',monospace}
+
+.disclaimer{font-size:11px;color:var(--text3);line-height:1.7;max-width:760px;margin:0 auto}
+
+footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
+.footer-logo{font-size:13px;font-weight:700;color:var(--bright);letter-spacing:1px;margin-bottom:14px}
+.footer-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.footer-links a{font-size:12px;color:var(--text2);text-decoration:none}
+.footer-links a:hover{color:var(--grn)}
+.footer-copy{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bright);color:#fff;padding:10px 18px;border-radius:var(--r-md);font-size:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">M</div>
+    <div class="nav-logo-name">MOY IQ Invest</div>
+  </a>
+  <div class="nav-links">
+    <a href="/#features">Funcionalidades</a>
+    <a href="/#pricing">Precios</a>
+    <a href="/app" class="nav-cta">Abrir app →</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero wrap">
+    <div class="hero-badge">📊 Gratis · sin cuenta</div>
+    <h1>Estado del <span>mercado</span> hoy</h1>
+    <p class="hero-sub">Un vistazo honesto a índices de EE.UU., volatilidad y tipos de cambio para LATAM. Sin promesas de tiempo real: cada dato trae su hora exacta de actualización.</p>
+    <div id="snapBanner"></div>
+  </div>
+
+  <section class="wrap">
+    <div class="upd-row">
+      <div class="upd-time" id="updTime"><span class="dot"></span>Cargando datos…</div>
+      <div class="actions-row">
+        <button class="btn-share primary" id="btnShare" type="button">↗ Compartir este estado</button>
+        <a class="btn-share" href="/app">Ver en la app →</a>
+      </div>
+    </div>
+
+    <div class="section-label">Índices y activos clave</div>
+    <div class="grid" id="grid"></div>
+    <div class="err-note" id="errNote" style="display:none"></div>
+
+    <div class="vix-card" id="vixCard" style="display:none">
+      <div class="vix-dot" id="vixDot"></div>
+      <div style="flex:1">
+        <div class="vix-label" id="vixLabel"></div>
+        <div class="vix-tip" id="vixTip"></div>
+      </div>
+      <div class="vix-val" id="vixVal">—</div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-label">Tipo de cambio USD → LATAM</div>
+    <div class="grid" id="fxGrid"></div>
+  </section>
+
+  <section class="wrap">
+    <p class="disclaimer">Datos de mercado provistos por Yahoo Finance y, para el peso chileno, por mindicador.cl (Banco Central de Chile) como fuente de respaldo. Los precios de EE.UU. pueden traer hasta 15-20 minutos de retraso respecto al mercado en vivo y los tipos de cambio LATAM se cachean hasta 1 hora en nuestro servidor — no son cotizaciones de tesorería ni deben usarse para ejecutar operaciones. Esto es información educativa y referencial, no asesoría financiera.</p>
+  </section>
+
+  <div class="cta-box">
+    <div class="section-label" style="text-align:center">Andá más allá del snapshot</div>
+    <div class="section-title">Seguí esto automáticamente, con contexto</div>
+    <p>La app de MOY IQ Invest agrega régimen de mercado, scoring técnico por activo y gestión de riesgo a estos mismos datos. Plan Free disponible desde el primer día.</p>
+    <a href="/app" class="btn-hero btn-primary">Crear cuenta gratis →</a>
+    <div class="cta-note">Análisis técnico educativo · No asesoría financiera · No ejecutamos órdenes</div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">MOY IQ INVEST</div>
+    <div class="footer-links">
+      <a href="/">Inicio</a>
+      <a href="/app">App</a>
+      <a href="mailto:invest@financeospro.com">Soporte</a>
+      <a href="https://moyiq.app">Parte de la familia MOY</a>
+    </div>
+    <div class="footer-copy">© 2026 MOY IQ Invest · by MAXNOVA & LUCI Global LLC</div>
+  </footer>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  function fmtPrice(sym, v){
+    if (v == null) return '—';
+    if (sym === 'BTC-USD') return '$'+ (v/1000).toFixed(1) + 'K';
+    if (sym === '^VIX' || sym === '^TNX') return v.toFixed(2);
+    if (v >= 1000) return v.toLocaleString('en-US',{maximumFractionDigits:0});
+    return v.toFixed(2);
+  }
+  function fmtPct(p){
+    if (p == null) return '';
+    var s = (p >= 0 ? '+' : '') + p.toFixed(2) + '%';
+    return s;
+  }
+  function pctClass(p){ if (p == null || Math.abs(p) < 0.005) return 'flat'; return p > 0 ? 'up' : 'down'; }
+
+  function vixRegime(v){
+    if (v == null) return {label:'VIX N/D', color:'var(--text3)', tip:'No se pudo obtener el VIX en este momento.'};
+    if (v < 15) return {label:'VIX Bajo — calma', color:'var(--pos)', tip:'Volatilidad por debajo del promedio histórico. Entorno de baja incertidumbre.'};
+    if (v < 20) return {label:'VIX Normal', color:'var(--grn)', tip:'Volatilidad dentro del rango histórico promedio.'};
+    if (v < 30) return {label:'VIX Elevado — atención', color:'var(--amber)', tip:'Volatilidad por encima del promedio. Mayor incertidumbre de mercado.'};
+    return {label:'VIX en niveles de crisis', color:'var(--red)', tip:'Volatilidad históricamente muy elevada — movimientos bruscos son más probables.'};
+  }
+
+  function b64urlEncode(str){
+    var b64 = btoa(unescape(encodeURIComponent(str)));
+    return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function b64urlDecode(str){
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while (str.length % 4) str += '=';
+    return decodeURIComponent(escape(atob(str)));
+  }
+
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2400);
+  }
+
+  function renderGrid(items, missing){
+    var grid = document.getElementById('grid');
+    grid.innerHTML = items.map(function(it){
+      var cls = pctClass(it.changePct);
+      return '<div class="card">'+
+        '<div class="card-label">'+it.label+'</div>'+
+        '<div class="card-val">'+fmtPrice(it.sym, it.price)+'</div>'+
+        '<div class="card-chg '+cls+'">'+fmtPct(it.changePct)+'</div>'+
+      '</div>';
+    }).join('');
+    var errNote = document.getElementById('errNote');
+    if (missing && missing.length){
+      errNote.style.display = 'block';
+      errNote.textContent = 'No se pudo obtener en este momento: ' + missing.join(', ') + '. El resto de los datos sí está actualizado.';
+    } else {
+      errNote.style.display = 'none';
+    }
+  }
+
+  function renderVix(vixItem){
+    if (!vixItem || vixItem.price == null) return;
+    var r = vixRegime(vixItem.price);
+    var card = document.getElementById('vixCard');
+    card.style.display = 'flex';
+    document.getElementById('vixDot').style.background = r.color;
+    document.getElementById('vixLabel').textContent = r.label;
+    document.getElementById('vixLabel').style.color = r.color;
+    document.getElementById('vixTip').textContent = r.tip;
+    document.getElementById('vixVal').textContent = vixItem.price.toFixed(1);
+    document.getElementById('vixVal').style.color = r.color;
+  }
+
+  function renderFx(rates){
+    var LABELS = {CLP:'Chile (CLP)', MXN:'México (MXN)', COP:'Colombia (COP)', ARS:'Argentina (ARS)', PEN:'Perú (PEN)'};
+    var grid = document.getElementById('fxGrid');
+    grid.innerHTML = Object.keys(LABELS).map(function(cur){
+      var v = rates && rates[cur];
+      return '<div class="card">'+
+        '<div class="card-label">USD → '+LABELS[cur]+'</div>'+
+        '<div class="card-val">'+(v ? v.toLocaleString('en-US',{maximumFractionDigits:2}) : '—')+'</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  function timeAgo(ts){
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return 'hace instantes';
+    var m = Math.floor(s/60);
+    if (m < 60) return 'hace ' + m + ' min';
+    var h = Math.floor(m/60);
+    return 'hace ' + h + ' h';
+  }
+
+  function buildSnapshot(items, fxRates, vixItem){
+    return {
+      t: Date.now(),
+      items: items.map(function(it){ return {s: it.sym, l: it.label, p: it.price, c: it.changePct}; }),
+      fx: fxRates
+    };
+  }
+
+  function shareUrl(snapshot){
+    var payload = b64urlEncode(JSON.stringify(snapshot));
+    var url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('snap', payload);
+    return url.toString();
+  }
+
+  function renderSnapshotBanner(ts){
+    var d = new Date(ts);
+    var fecha = d.toLocaleString('es-419', {dateStyle:'medium', timeStyle:'short'});
+    document.getElementById('snapBanner').innerHTML =
+      '<div class="snap-banner">📌 Estás viendo un snapshot compartido, tomado el ' + fecha + '. '+
+      '<a href="'+window.location.pathname+'">Ver el estado en vivo →</a></div>';
+  }
+
+  function renderFromSnapshot(snap){
+    renderSnapshotBanner(snap.t);
+    var items = (snap.items || []).map(function(i){ return {sym:i.s, label:i.l, price:i.p, changePct:i.c}; });
+    renderGrid(items, []);
+    var vixItem = items.filter(function(i){ return i.sym === '^VIX'; })[0];
+    renderVix(vixItem);
+    renderFx(snap.fx);
+    document.getElementById('updTime').innerHTML = 'Snapshot fijo · no se actualiza';
+    document.getElementById('btnShare').style.display = 'none';
+  }
+
+  var LIVE_STATE = null;
+
+  function fetchLive(){
+    document.getElementById('updTime').innerHTML = '<span class="dot"></span>Cargando datos…';
+    Promise.all([
+      fetch('/api/marketbar').then(function(r){ return r.json(); }).catch(function(){ return {items:[], missing:['índices']}; }),
+      fetch('/api/fx-latam').then(function(r){ return r.json(); }).catch(function(){ return {rates:null}; })
+    ]).then(function(res){
+      var mb = res[0], fx = res[1];
+      var items = mb.items || [];
+      renderGrid(items, mb.missing);
+      var vixItem = items.filter(function(i){ return i.sym === '^VIX'; })[0];
+      renderVix(vixItem);
+      renderFx(fx.rates);
+      var now = Date.now();
+      document.getElementById('updTime').textContent = 'Última actualización: ' + timeAgo(now) + ' (' + new Date(now).toLocaleTimeString('es-419',{hour:'2-digit',minute:'2-digit'}) + ')';
+      LIVE_STATE = buildSnapshot(items, fx.rates, vixItem);
+    }).catch(function(){
+      document.getElementById('updTime').textContent = 'No se pudieron cargar los datos. Reintentá en unos minutos.';
+    });
+  }
+
+  document.getElementById('btnShare').addEventListener('click', function(){
+    if (!LIVE_STATE){ showToast('Esperá a que carguen los datos…'); return; }
+    var url = shareUrl(LIVE_STATE);
+    var text = 'Estado del mercado hoy — vía MOY IQ Invest';
+    if (navigator.share){
+      navigator.share({ title: text, text: text, url: url }).catch(function(){});
+    } else if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){ showToast('Link copiado al portapapeles'); }, function(){ showToast(url); });
+    } else {
+      window.prompt('Copiá este link para compartir:', url);
+    }
+  });
+
+  var params = new URLSearchParams(window.location.search);
+  var snapParam = params.get('snap');
+  if (snapParam){
+    try {
+      var snap = JSON.parse(b64urlDecode(snapParam));
+      renderFromSnapshot(snap);
+    } catch(e){
+      fetchLive();
+    }
+  } else {
+    fetchLive();
+  }
+})();
+</script>
+
+</body>
+</html>
