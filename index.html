@@ -2185,6 +2185,21 @@ window.addEventListener('unhandledrejection', function(ev){
 // MOY IQ INVEST — Real market data · Clean build
 // ═══════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════
+// VERCEL SPEED INSIGHTS — Web Vitals performance tracking
+// Automatically tracks Core Web Vitals (LCP, FID, CLS) and other performance
+// metrics. Data visible in Vercel Dashboard > Speed Insights.
+// Only tracks in production (no tracking in development mode).
+// ═══════════════════════════════════════════════════════════════
+(function initSpeedInsights(){
+  // Initialize Speed Insights queue for vanilla JS
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+})();
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+<script>
+
+
 // ── FEATURE FLAGS ──────────────────────────────────────────────
 // Set to true only after Commit 4 (consent gate modal) is reviewed and approved.
 const CONSENT_GATE_ENABLED = true;
