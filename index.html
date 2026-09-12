@@ -10734,8 +10734,29 @@ async function checkConsentGate(userId){
   S.consentGateRequired=missing.length>0;
 }
 
-// Load profile + portfolio + watchlist from Supabase for the logged-in user
-async function sbLoadUserData(authUser){
+// Load profile + portfolio + watchlist from Supabase for the logged-in user.
+//
+// sbLoadUserData(authUser) es la funcion publica: de-duplica llamadas
+// concurrentes para el mismo usuario. Todo login/registro/vuelta de Google
+// dispara DOS invocaciones para el mismo evento — boot()/doLogin()/doRegister()
+// la llaman directo, y sb.auth.onAuthStateChange (SIGNED_IN) la llama de
+// nuevo para el MISMO evento (comportamiento normal del SDK). Sin este guard,
+// las dos corrian en paralelo pisandose el mismo estado global (window.cgConfirm/
+// window._cgResolve del consent gate, el mismo #mroot, los mismos inserts a
+// portfolio_holdings/watchlist/consents) — eso producia un 409 (insert
+// duplicado) y, peor, un freeze real del render al pisarse las dos el mismo
+// modal. Reproducido en vivo el 12-sep: signup nuevo -> consent gate ->
+// "Confirmar y continuar" -> pagina congelada (hasta un JSON.stringify vacio
+// via CDP se colgaba, senal de deadlock real, no solo una promesa lenta).
+var _sbLoadUserDataCache={};
+function sbLoadUserData(authUser){
+  var existing=_sbLoadUserDataCache[authUser.id];
+  if(existing) return existing;
+  var p=_sbLoadUserDataImpl(authUser);
+  _sbLoadUserDataCache[authUser.id]=p;
+  return p;
+}
+async function _sbLoadUserDataImpl(authUser){
   try{
     var profRes=await sb.from("profiles").select("*").eq("id",authUser.id).single();
     var prof=profRes.data;
@@ -11009,6 +11030,7 @@ async function doGoogleAuth(){
 async function logout(){
   if(typeof stopBoot==="function") stopBoot();
   await sb.auth.signOut();
+  _sbLoadUserDataCache={}; // limpia el guard de de-dup — el proximo login (mismo u otro usuario) debe cargar fresco
   S.user=null;S.page="dash";
   LIVE={};REBAL.targets={};DIVS.data={};
   S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
