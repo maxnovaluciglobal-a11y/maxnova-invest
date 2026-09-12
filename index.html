@@ -11062,8 +11062,15 @@ renderDisclaimer();
 
 (async function boot(){
   document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando MOY IQ Invest...</div>';
+  // Timeout de 10s: igual que doLogin (mas arriba), si getSession() se cuelga
+  // (intercambio OAuth interrumpido, proyecto Supabase pausado, storage de auth
+  // corrupto) la app entera quedaba congelada en este spinner para siempre, sin
+  // mensaje ni forma de salir. Con el timeout, cae al render() de mas abajo.
   try{
-    var sess=await sb.auth.getSession();
+    var sess=await Promise.race([
+      sb.auth.getSession(),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},10000);})
+    ]);
     if(sess.data.session&&sess.data.session.user){
       await sbLoadUserData(sess.data.session.user);
     }
