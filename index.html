@@ -49,6 +49,7 @@
   --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:12px;
   --shadow-sm:0 1px 3px rgba(20,33,61,.06),0 1px 2px rgba(20,33,61,.04);
   --shadow-md:0 4px 12px rgba(20,33,61,.08),0 2px 4px rgba(20,33,61,.04);
+  --shadow-lg:0 20px 48px rgba(20,33,61,.14),0 8px 16px rgba(20,33,61,.06);
 }
 
 /* ── LOGO — mismo lockup que moyiq.app: dial + "MOY" + placa "IQ" ────────────
@@ -61,6 +62,11 @@
 .lockup .suffix{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:.62em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.1em}
 body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
 .wrap{max-width:1200px;margin:0 auto;padding:0 max(24px,calc(50% - 600px))}
+
+/* ── TEXTURA DE PÁGINA — grano sutil fijo, mismo recurso que moyiq.app.
+   Opacidad muy baja: aporta profundidad táctil sin volverse ruido ni competir
+   con el contenido. pointer-events:none para no interferir con clicks. */
+.grain{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px 180px}
 
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
@@ -142,17 +148,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
 .stat-val{font-size:28px;font-weight:800;color:var(--bright);letter-spacing:-1px;font-family:'IBM Plex Mono',monospace}
 .stat-label{font-size:11px;color:var(--text3);margin-top:3px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.8px}
 
-.divider{height:1px;background:var(--border)}
-
-/* ── SECTIONS — shared ── */
-section{padding:64px 0}
+/* ── SECTIONS — shared ──
+   Un solo fondo de página (var(--bg), body) de punta a punta: las secciones
+   NO tienen color propio. La separación entre ellas la da el aire (padding),
+   no una franja de color — ver CLAUDE.md de financeos-landing, mismo principio. */
+section{padding:80px 0}
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--grn);font-family:'IBM Plex Mono',monospace;margin-bottom:14px}
 .section-title{font-size:28px;font-weight:800;color:var(--bright);letter-spacing:-.6px;margin-bottom:10px}
 .section-sub{font-size:15px;color:var(--text2);max-width:580px;line-height:1.6}
 
-/* ── FEATURES ── */
-.features{background:var(--card);border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);margin-top:8px}
+/* ── FEATURES ──
+   La grilla es su propio panel elevado (radio + sombra) flotando sobre el
+   fondo de página, en vez de una sección con su propio color de borde a
+   borde. El truco de "gap:1px + background:var(--border)" sigue dibujando
+   las líneas finas entre tarjetas, pero ahora todo el panel tiene profundidad
+   real vía box-shadow, no vía un bloque de color. */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);margin-top:8px;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md)}
 .feat-card{background:var(--card);padding:28px;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 .feat-card:hover{background:var(--card2)}
 .feat-icon{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:26px;padding:0 8px;margin-bottom:14px;border:1.5px solid var(--grn);border-radius:6px;color:var(--grn);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.4px}
@@ -165,7 +176,7 @@ section{padding:64px 0}
 .tag-unique{background:var(--grn-bg);color:var(--grn-d)}
 
 /* ── COMPARISON TABLE ── */
-.vs-table{width:100%;border-collapse:collapse;margin-top:24px;font-size:13px;background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.vs-table{width:100%;border-collapse:collapse;margin-top:24px;font-size:13px;background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
 .vs-table th,.vs-table td{padding:12px 16px;text-align:center;border-bottom:0.5px solid var(--border)}
 .vs-table th{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;background:var(--card2)}
 .vs-table td:first-child,.vs-table th:first-child{text-align:left;font-weight:600;color:var(--bright)}
@@ -177,8 +188,10 @@ section{padding:64px 0}
 
 /* ── PRICING ── */
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:32px}
-.price-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:28px;position:relative}
-.price-card.featured{border-color:var(--grn);box-shadow:var(--shadow-md)}
+.price-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:28px;position:relative;box-shadow:var(--shadow-sm);transition:box-shadow .2s cubic-bezier(.23,1,.32,1),transform .2s cubic-bezier(.23,1,.32,1)}
+.price-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.price-card.featured{border-color:var(--grn);box-shadow:var(--shadow-lg)}
+.price-card.featured:hover{transform:translateY(-2px)}
 .price-badge{position:absolute;top:-11px;left:24px;background:var(--grn);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;letter-spacing:.4px;font-family:'IBM Plex Mono',monospace}
 .plan-name{font-size:14px;font-weight:700;color:var(--bright);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .plan-price{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
@@ -196,7 +209,8 @@ section{padding:64px 0}
 
 /* ── TESTIMONIALS ── */
 .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:32px}
-.test-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:24px}
+.test-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow-sm);transition:box-shadow .2s cubic-bezier(.23,1,.32,1),transform .2s cubic-bezier(.23,1,.32,1)}
+.test-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
 .test-text{font-size:13px;color:var(--text);line-height:1.65;margin-bottom:18px}
 .test-author{display:flex;align-items:center;gap:10px}
 .test-avatar{width:36px;height:36px;border-radius:50%;background:var(--grn-bg);color:var(--grn-d);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
@@ -204,7 +218,7 @@ section{padding:64px 0}
 .test-role{font-size:11px;color:var(--text3)}
 
 /* ── FAQ ── */
-.faq{display:flex;flex-direction:column;gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:24px}
+.faq{display:flex;flex-direction:column;gap:1px;background:var(--border);border:0.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:24px;box-shadow:var(--shadow-sm)}
 .faq-item{background:var(--card)}
 /* .faq-q es un <button> real (antes div[onclick]): reset de estilos nativos
    para conservar el aspecto, ganando teclado y semantica de forma gratuita. */
@@ -213,6 +227,21 @@ section{padding:64px 0}
 .faq-item.open .faq-arrow{transform:rotate(45deg)}
 .faq-a{padding:0 20px;font-size:13px;color:var(--text2);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.23,1,.32,1),padding .2s cubic-bezier(.23,1,.32,1)}
 .faq-item.open .faq-a{padding:0 20px 16px;max-height:300px}
+
+/* ── CTA FINAL — única sección con fondo propio de la página, junto con el
+   panel elevado de features/pricing (que se resuelven con sombra, no color).
+   El Navy hace de "bookend" con el mock-score-card/mock-panel oscuros del
+   hero: abre y cierra la página con la misma superficie oscura. Mismo
+   principio que el cierre `#cta-verde` de moyiq.app (única sección con color
+   de fondo real, como puntuación final), pero en la superficie oscura propia
+   de Invest en vez del verde de MOY IQ. ── */
+.cta-dark{background:var(--bright);position:relative;overflow:hidden;text-align:center}
+.cta-inner{position:relative;max-width:600px;margin:0 auto;padding:0 24px}
+.cta-dark .section-label{color:var(--laton)}
+.cta-dark .section-title{color:#fff}
+.cta-copy{font-size:15px;color:rgba(241,238,230,.72);margin-bottom:32px;line-height:1.7}
+.cta-fine{font-size:11px;color:rgba(241,238,230,.62);margin-top:14px;font-family:'IBM Plex Mono',monospace}
+.cta-dark :focus-visible{outline-color:#fff!important}
 
 /* ── FOOTER ── */
 footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
@@ -261,6 +290,8 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
 </symbol>
 </defs>
 </svg>
+
+<div class="grain" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav aria-label="Principal">
@@ -322,10 +353,9 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
   </div>
 </div>
 
-<div class="divider"></div>
-
 <!-- FEATURES -->
-<section class="features" id="features">
+<section id="features">
+ <div class="wrap">
   <div style="text-align:center;margin-bottom:48px">
     <div class="section-label">Funcionalidades</div>
     <h2 class="section-title">Todo lo que necesitas para invertir mejor</h2>
@@ -388,10 +418,12 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
       <span class="feat-tag tag-free">✓ FREE</span>
     </div>
   </div>
+ </div>
 </section>
 
 <!-- COMPARISON -->
 <section id="compare">
+ <div class="wrap">
   <div style="text-align:center;margin-bottom:40px">
     <div class="section-label">Comparativa</div>
     <h2 class="section-title">¿Por qué MOY IQ Invest?</h2>
@@ -423,6 +455,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     </tbody>
   </table>
   </div>
+ </div>
 </section>
 
 <!-- LATAM SECTION -->
@@ -430,6 +463,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
 
 <!-- PRICING -->
 <section id="pricing">
+ <div class="wrap">
   <div style="text-align:center;margin-bottom:0">
     <div class="section-label">Precios</div>
     <h2 class="section-title">Elige tu plan</h2>
@@ -491,10 +525,12 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     </div>
 
   </div>
+ </div>
 </section>
 
 <!-- POR QUÉ MOY IQ INVEST (antes: testimonios inventados, sin clientes reales confirmados que citar) -->
-<section style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<section id="why">
+ <div class="wrap">
   <div style="text-align:center;margin-bottom:0">
     <div class="section-label">Por qué existe</div>
     <h2 class="section-title">Pensado para quien recién empieza a invertir en LATAM</h2>
@@ -510,10 +546,12 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
       <div class="test-text"><strong style="color:var(--bright)">¿Querías entender el "por qué" detrás de los números, no solo verlos?</strong><br><br>El Análisis Comparativo combina tendencia, volumen, RSI y MACD en un score educativo — contexto, no una señal de compra o venta.</div>
     </div>
   </div>
+ </div>
 </section>
 
 <!-- FAQ -->
 <section id="faq">
+ <div class="wrap">
   <div style="text-align:center;margin-bottom:40px">
     <div class="section-label">FAQ</div>
     <h2 class="section-title">Preguntas frecuentes</h2>
@@ -540,18 +578,23 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
       <div class="faq-a" id="faq-a-5" role="region">Sí. Cancela en 1 click desde tu perfil. Si cancelas, mantienes acceso Pro hasta el fin del período pagado y luego pasas automáticamente al plan Free sin perder tus datos.</div>
     </div>
   </div>
+ </div>
 </section>
 
-<!-- CTA FINAL -->
-<section style="text-align:center;padding:80px max(24px,calc(50% - 480px))">
-  <div class="section-label">Empieza hoy</div>
-  <div class="section-title" style="max-width:500px;margin:0 auto 16px">¿Listo para invertir con datos reales?</div>
-  <p style="font-size:15px;color:var(--text);margin-bottom:32px;line-height:1.7">Crea tu cuenta gratis y empieza a analizar el mercado con contexto SPY, scoring por activo y gestión de riesgo. Plan Free disponible desde el primer día.</p>
-  <a href="/app" class="btn-hero btn-primary" style="font-size:15px;padding:16px 36px">Empezar gratis →</a>
-  <p style="font-size:11px;color:var(--text3);margin-top:14px;font-family:'IBM Plex Mono',monospace">Análisis técnico educativo · No asesoría financiera · No ejecutamos órdenes</p>
+<!-- CTA FINAL — Navy, bookend con el mockup oscuro del hero; única sección
+     con fondo propio junto con los paneles con sombra de arriba. -->
+<section id="cta-final" class="cta-dark">
+  <div class="cta-inner">
+    <div class="section-label">Empieza hoy</div>
+    <h2 class="section-title" style="max-width:500px;margin:0 auto 16px">¿Listo para invertir con datos reales?</h2>
+    <p class="cta-copy">Crea tu cuenta gratis y empieza a analizar el mercado con contexto SPY, scoring por activo y gestión de riesgo. Plan Free disponible desde el primer día.</p>
+    <a href="/app" class="btn-hero btn-primary" style="font-size:15px;padding:16px 36px">Empezar gratis →</a>
+    <p class="cta-fine">Análisis técnico educativo · No asesoría financiera · No ejecutamos órdenes</p>
+  </div>
 </section>
 
 <footer>
+ <div class="wrap">
   <div class="footer-logo lockup"><svg class="dial" viewBox="0 0 100 100"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></div>
   <div class="footer-links">
     <a href="#features">Funcionalidades</a>
@@ -563,6 +606,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     <a href="https://moyiq.app">Parte de la familia MOY</a>
   </div>
   <div class="footer-copy">© 2026 MOY IQ Invest · by MAXNOVA & LUCI Global LLC</div>
+ </div>
 </footer>
 
 
