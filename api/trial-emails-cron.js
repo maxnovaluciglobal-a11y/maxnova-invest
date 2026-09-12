@@ -18,7 +18,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CRON_SECRET = process.env.CRON_SECRET;
 
 const APP_URL = 'https://invest.moyiq.app';
-const FROM = 'MOY IQ Invest <invest@financeospro.com>';
+const FROM = 'MOY IQ Invest <invest@moyiq.app>';
 
 // Which day-marks trigger which template
 const SCHEDULE = { 1: 'welcome', 7: 'midpoint', 12: 'urgency', 14: 'lastday' };
@@ -96,7 +96,7 @@ ${bodyHtml}
 </td></tr>
 <tr><td style="padding:20px 32px;border-top:1px solid #1f2937;font-size:12px;line-height:1.6;color:#6b7280;">
 MOY IQ Invest te ofrece herramientas de análisis y seguimiento de mercado. No es asesoría de inversión.<br>
-¿No quieres recibir estos correos? Responde a <a href="mailto:invest@financeospro.com" style="color:#9ca3af;">invest@financeospro.com</a> y te damos de baja.<br>
+¿No quieres recibir estos correos? Responde a <a href="mailto:invest@moyiq.app" style="color:#9ca3af;">invest@moyiq.app</a> y te damos de baja.<br>
 <a href="${APP_URL}/privacy.html" style="color:#9ca3af;">Política de privacidad</a>
 </td></tr>
 </table>
