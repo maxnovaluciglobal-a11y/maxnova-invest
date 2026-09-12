@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,interactive-widget=resizes-content"/>
 <title>MOY IQ Invest — Análisis Técnico de Inversiones</title>
-<meta name="description" content="Motor de análisis técnico para invertir en acciones de EE. UU. (NYSE/NASDAQ): régimen SPY/SMA200, scoring RSI/MACD/ATR, screener y portafolio con P&amp;L. Desde $29.99 USD/mes."/>
+<meta name="description" content="Motor de análisis técnico para invertir en acciones de EE. UU. (NYSE/NASDAQ): régimen SPY/SMA200, scoring RSI/MACD/ATR, screener y portafolio con P&amp;L. Desde $19.99 USD/mes."/>
 <!-- Preconnect for critical origins -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -71,7 +71,7 @@
     "operatingSystem": "Web, iOS, Android",
     "offers": {
       "@type": "Offer",
-      "price": "29.99",
+      "price": "19.99",
       "priceCurrency": "USD",
       "priceValidUntil": "2027-01-01",
       "availability": "https://schema.org/InStock"
@@ -136,7 +136,7 @@
         "name": "¿Cuánto cuesta MOY IQ Invest Pro?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "MOY IQ Invest Pro tiene un costo de $29.99 USD por mes. Incluye acceso completo al Motor de Análisis, screener ilimitado, portafolio con tracking de P&L, y actualizaciones continuas."
+          "text": "MOY IQ Invest Pro tiene un costo de $19.99 USD por mes. Incluye acceso completo al Motor de Análisis, screener ilimitado, portafolio con tracking de P&L, y actualizaciones continuas."
         }
       },
       {
@@ -2035,7 +2035,7 @@ div:has(>.dtab), div:has(>.rtab) {
 <noscript>
 <main style="max-width:720px;margin:0 auto;padding:32px 20px;font-family:system-ui,sans-serif;line-height:1.6">
 <h1>Análisis técnico de inversiones</h1>
-<p>MOY IQ Invest es una plataforma de análisis técnico para invertir en acciones y ETFs de Estados Unidos (NYSE, NASDAQ). Evalúa el régimen de mercado con SPY frente a su media móvil de 200 sesiones (SMA200) y calcula un puntaje técnico de 0 a 100 por activo usando RSI, MACD y ATR(14). Desde $29.99 USD al mes.</p>
+<p>MOY IQ Invest es una plataforma de análisis técnico para invertir en acciones y ETFs de Estados Unidos (NYSE, NASDAQ). Evalúa el régimen de mercado con SPY frente a su media móvil de 200 sesiones (SMA200) y calcula un puntaje técnico de 0 a 100 por activo usando RSI, MACD y ATR(14). Desde $19.99 USD al mes.</p>
 <h2>Características principales</h2>
 <ul>
 <li>Motor de Análisis con régimen de mercado SPY/SMA200</li>
@@ -2046,7 +2046,7 @@ div:has(>.dtab), div:has(>.rtab) {
 <li>Plan de capital y rebalanceo</li>
 </ul>
 <h2>¿Cuánto cuesta MOY IQ Invest Pro?</h2>
-<p>$29.99 USD al mes: screener ilimitado, Motor de Análisis completo y portafolio con P&amp;L. Análisis educativo — no constituye asesoría financiera ni ejecuta órdenes.</p>
+<p>$19.99 USD al mes: screener ilimitado, Motor de Análisis completo y portafolio con P&amp;L. Análisis educativo — no constituye asesoría financiera ni ejecuta órdenes.</p>
 </main>
 </noscript>
 <!-- Sprite de iconos. Linea de 1.5px sobre viewBox 24 y stroke=currentColor:
@@ -2202,7 +2202,7 @@ const PLANS={
   trial:{label:"Trial",maxT:999,maxA:999,maxS:999,locked:[],
     price:0,desc:"Acceso completo · Todo incluido",trialDays:14},
   pro:{label:"Pro",maxT:999,maxA:999,maxS:999,locked:[],
-    price:29.99,desc:"Todo ilimitado · Motor de Análisis · Soporte prioritario"},
+    price:19.99,desc:"Todo ilimitado · Motor de Análisis · Soporte prioritario"},
   teams:{label:"Teams",maxT:999,maxA:999,maxS:999,locked:[],
     price:99,desc:"Multi-usuario · API access · SLA 99.9%"},
 };
@@ -2433,7 +2433,7 @@ var fetchStats={ok:0,fail:0,lastErr:null,lastOk:null};
 // ── APP CONSTANTS ────────────────────────────────────────────────
 var TRIAL_DAYS=14;
 var TRIAL_MS=TRIAL_DAYS*24*60*60*1000;
-var PRO_PRICE_USD=29.99;
+var PRO_PRICE_USD=19.99;
 var DE_CACHE_TTL=30*60*1000;
 var LIVE_CACHE_TTL=2*60*60*1000;
 var FX_CACHE_TTL=24*60*60*1000;
@@ -4546,7 +4546,7 @@ function renderSettings(){
     '<div style="font-size:13px;color:var(--bright);font-weight:500">'+plan.label+(plan.price>0?' — $'+plan.price+'/mes':'')+'</div></div>'+
     '</div>'+
     (trialInfo?'<div style="margin-top:12px">'+trialInfo+'</div>':'')+
-    (u&&u.plan==='free'?'<div style="margin-top:12px"><button class="btn-big" onclick="openModal(\'upgrade\')" style="padding:10px 24px">'+icon('bolt')+'Actualizar a Pro — $29.99/mes</button></div>':'')+
+    (u&&u.plan==='free'?'<div style="margin-top:12px"><button class="btn-big" onclick="openModal(\'upgrade\')" style="padding:10px 24px">'+icon('bolt')+'Actualizar a Pro — $19.99/mes</button></div>':'')+
     // Gestionar/cancelar suscripcion via el Billing Portal de Stripe. Solo se
     // ofrece a quien tiene una suscripcion de pago (pro/teams), no en trial ni free.
     ((u&&(u.plan==='pro'||u.plan==='teams'))?'<div style="margin-top:12px"><button class="btn" id="btn-portal" onclick="abrirPortalPago()">Gestionar o cancelar suscripción</button><div style="font-size:11px;color:var(--text3);font-family:\'JetBrains Mono\',monospace;margin-top:6px">Cambiar tarjeta, ver facturas o cancelar. Se abre el portal seguro de Stripe.</div></div>':'')+
@@ -4799,7 +4799,7 @@ function renderWelcome(){
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis →</button>'+
     '</div>'+
     '</div>'+ // end wv3-auth-card
-    '<div class="wv3-pricing"><div><span class="wv3-grn">✓</span> Plan Free incluido sin tarjeta de crédito</div><div><span class="wv3-grn">✓</span> Invest Pro · US$29.99/mes — cancela cuando quieras</div></div>'+
+    '<div class="wv3-pricing"><div><span class="wv3-grn">✓</span> Plan Free incluido sin tarjeta de crédito</div><div><span class="wv3-grn">✓</span> Invest Pro · US$19.99/mes — cancela cuando quieras</div></div>'+
     '</div>'+ // end wv3-right
     '</div>'+ // end wv3-wrap
     '<div class="wv3-footer">© 2025–2026 MAXNOVA &amp; LUCI Global LLC · No somos asesores financieros · Datos referenciales</div>'+
@@ -6949,14 +6949,14 @@ function setBillingPeriod(period){
     mo.style.background='transparent'; mo.style.color='var(--text3)'; mo.style.borderColor='var(--border)';
     yr.style.background='var(--orange-bg)'; yr.style.color='var(--amber)'; yr.style.borderColor='var(--orange-bd)';
     if(priceEl) priceEl.innerHTML='$199<span style="font-size:13px;color:var(--text3)">/año</span>';
-    if(subEl) subEl.textContent='$16.58/mes efectivo · ~45% ahorro vs mensual';
+    if(subEl) subEl.textContent='$16.58/mes efectivo · ~17% ahorro vs mensual';
     if(ctaEl) ctaEl.textContent='Después del trial: $199/año · Cancela en 1 click';
   }else{
     yr.style.background='transparent'; yr.style.color='var(--text3)'; yr.style.borderColor='var(--border)';
     mo.style.background='var(--orange-bg)'; mo.style.color='var(--amber)'; mo.style.borderColor='var(--orange-bd)';
-    if(priceEl) priceEl.innerHTML='$29.99<span style="font-size:13px;color:var(--text3)">/mes</span>';
+    if(priceEl) priceEl.innerHTML='$19.99<span style="font-size:13px;color:var(--text3)">/mes</span>';
     if(subEl) subEl.textContent='USD / mes · Cancela cuando quieras';
-    if(ctaEl) ctaEl.textContent='Después del trial: $29.99/mes · Cancela en 1 click';
+    if(ctaEl) ctaEl.textContent='Después del trial: $19.99/mes · Cancela en 1 click';
   }
 }
 
@@ -9415,7 +9415,7 @@ function mUpgrade(mr){
     // Billing toggle
     '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px">'+
     '<button id="tog-mo" onclick="setBillingPeriod(\'monthly\')" style="padding:5px 16px;border-radius:var(--r-xl);font-size:11px;font-family:\'JetBrains Mono\',monospace;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3)">Mensual</button>'+
-    '<button id="tog-yr" onclick="setBillingPeriod(\'annual\')" style="padding:5px 16px;border-radius:var(--r-xl);font-size:11px;font-family:\'JetBrains Mono\',monospace;cursor:pointer;border:1px solid var(--orange-bd);background:var(--orange-bg);color:var(--amber);font-weight:700">Anual <span style="background:var(--grn);color:#fff;font-size:11px;padding:1px 5px;border-radius:3px;margin-left:2px">Ahorra 44%</span></button>'+
+    '<button id="tog-yr" onclick="setBillingPeriod(\'annual\')" style="padding:5px 16px;border-radius:var(--r-xl);font-size:11px;font-family:\'JetBrains Mono\',monospace;cursor:pointer;border:1px solid var(--orange-bd);background:var(--orange-bg);color:var(--amber);font-weight:700">Anual <span style="background:var(--grn);color:#fff;font-size:11px;padding:1px 5px;border-radius:3px;margin-left:2px">Ahorra 17%</span></button>'+
     '</div>'+
 
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
@@ -9438,7 +9438,7 @@ function mUpgrade(mr){
     '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--amber);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-xl);letter-spacing:.5px;font-family:\'JetBrains Mono\',monospace">MÁS POPULAR</div>'+
     '<div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:4px">PRO</div>'+
     '<div id="pro-price-display" style="font-size:24px;font-weight:700;color:var(--bright);font-family:\'JetBrains Mono\',monospace">$199<span style="font-size:13px;color:var(--text3)">/año</span></div>'+
-    '<div id="pro-price-sub" style="font-size:11px;color:var(--text3);margin-bottom:12px">$16.58/mes efectivo · ~45% ahorro vs mensual</div>'+
+    '<div id="pro-price-sub" style="font-size:11px;color:var(--text3);margin-bottom:12px">$16.58/mes efectivo · ~17% ahorro vs mensual</div>'+
     proFeatures.slice(0,8).map(function(f){
       return '<div style="font-size:11px;color:var(--bright);padding:3px 0;border-bottom:1px solid var(--orange-bd);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">✓</span>'+f[0]+' '+f[1]+'</div>';
     }).join('')+
