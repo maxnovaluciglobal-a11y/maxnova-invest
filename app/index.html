@@ -5692,7 +5692,7 @@ function deleteTrade(id){
 }
 
 function exportTradesCSV(){
-  if(!S.trades.length){alert("No hay operaciones para exportar.");return;}
+  if(!S.trades.length){showToast("No hay operaciones para exportar.","warning");return;}
   var rows=[["ID","Fecha","Ticker","Tipo","Precio","Qty","Monto","RSI","P&L","Nota"]];
   S.trades.slice().sort(function(a,b){return b.id-a.id;}).forEach(function(t){
     rows.push([t.id,t.date,t.ticker||'',t.type,t.price||'',t.qty||'',t.amount,t.rsi||'',t.pnl!=null?t.pnl:'',t.note||'']);
@@ -5706,7 +5706,7 @@ function exportTradesCSV(){
 
 function exportScreenerCSV(){
   var results=S.screenerResults.filter(function(r){return !r.error;});
-  if(!results.length){alert("No hay resultados para exportar.");return;}
+  if(!results.length){showToast("No hay resultados para exportar.","warning");return;}
   var rows=[["Ticker","Precio","Score DE","Acción","RSI","PQ Score","Entrada","Stop","R:R","Sector RS"]];
   results.sort(function(a,b){return b.score-a.score;}).forEach(function(s){
     rows.push([s.ticker,s.last,s.score,s.action,s.rsi,s.pqScore!=null?s.pqScore:'',s.entry,s.stop,s.rr,s.sectorRS?s.sectorRS.etf+' '+s.sectorRS.label:'']);
@@ -9851,7 +9851,7 @@ function renderComp(){
 async function compLoad(){
   if(COMP.loading) return;
   COMP.tickers=COMP.tickers.filter(function(t){return t&&t.trim().length>0;});
-  if(COMP.tickers.length<2){alert('Selecciona al menos 2 tickers');return;}
+  if(COMP.tickers.length<2){showToast('Selecciona al menos 2 tickers','warning');return;}
   COMP.loading=true;COMP.data={};COMP.spy=null;COMP.synthetic=[];renderComp();
   var rangeMap={30:'1mo',60:'3mo',90:'3mo',130:'6mo',365:'1y',1095:'5y'}; // 2mo y 3y no existen en Yahoo: devolvian 400
   var rng=rangeMap[COMP.range]||'3mo';
@@ -11105,7 +11105,7 @@ async function doRegister(){
 
 async function doGoogleAuth(){
   if(typeof sb==='undefined'||!sb||!sb.auth){
-    alert('No se pudo cargar el servicio de autenticación. Recarga la página.');
+    showToast('No se pudo cargar el servicio de autenticación. Recarga la página.','error');
     return;
   }
   // signInWithOAuth redirige a Google y vuelve a esta misma URL; el listener
