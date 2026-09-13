@@ -259,8 +259,15 @@ section{padding:80px 0}
 .faq-q{width:100%;padding:16px 20px;font-size:14px;font-weight:600;color:var(--bright);display:flex;justify-content:space-between;align-items:center;gap:12px;background:none;border:none;font-family:inherit;text-align:left;cursor:pointer}
 .faq-arrow{color:var(--text3);font-weight:400;transition:transform .2s cubic-bezier(.23,1,.32,1)}
 .faq-item.open .faq-arrow{transform:rotate(45deg)}
-.faq-a{padding:0 20px;font-size:13px;color:var(--text2);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.23,1,.32,1),padding .2s cubic-bezier(.23,1,.32,1)}
-.faq-item.open .faq-a{padding:0 20px 16px;max-height:300px}
+/* grid-template-rows 0fr→1fr en vez de max-height: anima la altura real del
+   contenido sin layout thrash (max-height fuerza reflow en cada frame porque
+   el navegador no puede animar directo a una altura desconocida). Requiere el
+   div interno .faq-a-inner porque un grid track no puede recortar overflow
+   por sí solo — el hijo con overflow:hidden hace ese trabajo. */
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s cubic-bezier(.23,1,.32,1)}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+.faq-a-inner{overflow:hidden;min-height:0;padding:0 20px;font-size:13px;color:var(--text2);line-height:1.6}
+.faq-item.open .faq-a-inner{padding-bottom:16px}
 
 /* ── CTA FINAL — única sección con fondo propio de la página, junto con el
    panel elevado de features/pricing (que se resuelven con sombra, no color).
@@ -618,23 +625,23 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
   <div class="faq">
     <div class="faq-item">
       <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-1" onclick="var i=this.closest('.faq-item'),o=i.classList.toggle('open');this.setAttribute('aria-expanded',o)">¿Los precios son realmente en tiempo real?<span class="faq-arrow" aria-hidden="true">+</span></button>
-      <div class="faq-a" id="faq-a-1" role="region">Sí. MOY IQ Invest conecta con Yahoo Finance API para obtener precios de mercado en tiempo real. Verás un badge verde "LIVE · HH:MM" cuando los datos están actualizados. Si el proxy falla temporalmente, muestra datos cacheados (máx 2h) con badge naranja.</div>
+      <div class="faq-a" id="faq-a-1" role="region"><div class="faq-a-inner">Sí. MOY IQ Invest conecta con Yahoo Finance API para obtener precios de mercado en tiempo real. Verás un badge verde "LIVE · HH:MM" cuando los datos están actualizados. Si el proxy falla temporalmente, muestra datos cacheados (máx 2h) con badge naranja.</div></div>
     </div>
     <div class="faq-item">
       <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-2" onclick="var i=this.closest('.faq-item'),o=i.classList.toggle('open');this.setAttribute('aria-expanded',o)">¿Necesito tarjeta de crédito para el trial?<span class="faq-arrow" aria-hidden="true">+</span></button>
-      <div class="faq-a" id="faq-a-2" role="region">No. El trial de 14 días es completamente gratuito, sin tarjeta de crédito. Al finalizar, puedes continuar con el plan Free (5 activos) o activar Pro con tu tarjeta.</div>
+      <div class="faq-a" id="faq-a-2" role="region"><div class="faq-a-inner">No. El trial de 14 días es completamente gratuito, sin tarjeta de crédito. Al finalizar, puedes continuar con el plan Free (5 activos) o activar Pro con tu tarjeta.</div></div>
     </div>
     <div class="faq-item">
       <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-3" onclick="var i=this.closest('.faq-item'),o=i.classList.toggle('open');this.setAttribute('aria-expanded',o)">¿Cómo funcionan los indicadores de Análisis Comparativo?<span class="faq-arrow" aria-hidden="true">+</span></button>
-      <div class="faq-a" id="faq-a-3" role="region">Combinan tendencia, volumen, RSI y MACD de cada activo en un score histórico (Alto/Medio/Bajo). Es contexto educativo sobre el comportamiento pasado del activo — no una señal de compra o venta ni una predicción.</div>
+      <div class="faq-a" id="faq-a-3" role="region"><div class="faq-a-inner">Combinan tendencia, volumen, RSI y MACD de cada activo en un score histórico (Alto/Medio/Bajo). Es contexto educativo sobre el comportamiento pasado del activo — no una señal de compra o venta ni una predicción.</div></div>
     </div>
     <div class="faq-item">
       <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-4" onclick="var i=this.closest('.faq-item'),o=i.classList.toggle('open');this.setAttribute('aria-expanded',o)">¿MOY IQ Invest conecta con mi broker?<span class="faq-arrow" aria-hidden="true">+</span></button>
-      <div class="faq-a" id="faq-a-4" role="region">Actualmente el portfolio se ingresa manualmente (ticker, shares, precio de entrada). La integración con brokers (IBKR, Fidelity, Charles Schwab) está en desarrollo para Q3 2026.</div>
+      <div class="faq-a" id="faq-a-4" role="region"><div class="faq-a-inner">Actualmente el portfolio se ingresa manualmente (ticker, shares, precio de entrada). La integración con brokers (IBKR, Fidelity, Charles Schwab) está en desarrollo para Q3 2026.</div></div>
     </div>
     <div class="faq-item">
       <button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-a-5" onclick="var i=this.closest('.faq-item'),o=i.classList.toggle('open');this.setAttribute('aria-expanded',o)">¿Puedo cancelar en cualquier momento?<span class="faq-arrow" aria-hidden="true">+</span></button>
-      <div class="faq-a" id="faq-a-5" role="region">Sí. Cancela en 1 click desde tu perfil. Si cancelas, mantienes acceso Pro hasta el fin del período pagado y luego pasas automáticamente al plan Free sin perder tus datos.</div>
+      <div class="faq-a" id="faq-a-5" role="region"><div class="faq-a-inner">Sí. Cancela en 1 click desde tu perfil. Si cancelas, mantienes acceso Pro hasta el fin del período pagado y luego pasas automáticamente al plan Free sin perder tus datos.</div></div>
     </div>
   </div>
  </div>
@@ -659,6 +666,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     <a href="#features">Funcionalidades</a>
     <a href="#pricing">Precios</a>
     <a href="#faq">FAQ</a>
+    <a href="/faq.html">FAQ completo</a>
     <a href="/app">App</a>
     <a href="/estado-mercado.html">Estado del mercado</a>
     <a href="/docs/novedades.html">Novedades</a>
