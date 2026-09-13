@@ -5301,29 +5301,6 @@ function renderDash(){
     '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>Nombre</th><th>Precio</th><th>Cambio</th><th>P&amp;L</th><th>Peso%</th></tr></thead>'+
     '<tbody>'+portRows+'</tbody></table></div></div>';
 
-  // ── Mini-news widget ──
-  var miniNews=(function(){
-    var news=getNewsData().slice(0,10);  // maximo 10 noticias, pedido del usuario
-    var impColor={'critical':'var(--red)','bullish':'var(--grn)','bearish':'var(--red)','neutral':'var(--amber)'};
-    var items=news.map(function(n){
-      var c=impColor[n.impact]||'var(--text3)';
-      var ago=n.hoursAgo?n.hoursAgo+'h ago':'—';
-      return '<div role="button" tabindex="0" style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;cursor:pointer" onclick="setPage(\'news\')">'+
-        '<div style="width:4px;height:4px;border-radius:50%;background:'+c+';margin-top:6px;flex-shrink:0"></div>'+
-        '<div style="flex:1;min-width:0">'+
-        '<div style="font-size:11px;font-weight:600;color:var(--bright);line-height:1.4;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(n.title)+'</div>'+
-        '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+n.cat+' · '+ago+'</div>'+
-        '</div></div>';
-    }).join('');
-    return '<div class="fos-card">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 12px">'+
-      '<div class="fos-card-title">Noticias del mercado</div>'+
-      '<button onclick="setPage(\'news\')" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:\'IBM Plex Mono\',monospace">Ver todo →</button>'+
-      '</div>'+
-      '<div style="padding:0 20px 10px">'+items+'</div>'+
-      '</div>';
-  })();
-
   // El banner de Régimen ya NO va full-width aqui: vive en el rail de
   // contexto (debajo de Índices) junto a Top Señales/Portafolio, mas abajo en
   // este mismo render. dashLoadContext() lo llena async buscando su id.
@@ -5370,23 +5347,21 @@ function renderDash(){
       '<div style="display:flex;flex-direction:column;gap:16px">'+
         sigCard+portCard+
       '</div>'+
-      miniNews+
+      // El feed completo de noticias (antes una banda full-width al pie,
+      // "BANDA MERCADO HOY") se subio aca por pedido de Walter: la queria
+      // completa (con destacada, tabs de categoria, tendencias), no el
+      // resumen de 10 titulares que habia antes. mercadoHoyBody() ya trae su
+      // propio header ("Ultimas Noticias" + contador), por eso solo se envuelve
+      // en fos-card sin duplicar titulo. La tarjeta destacada dentro de la
+      // funcion se adapto (ver mas abajo) para apilarse en vertical: a este
+      // ancho de columna (~1fr, compartido con Top Senales/Portafolio y el
+      // rail de 268px) la miniatura fija de 195px al lado del texto no entraba.
+      '<div class="fos-card">'+mercadoHoyBody()+'</div>'+
       '<div style="display:flex;flex-direction:column;gap:14px">'+
         indicesCard()+
         '<div id="de-regime-banner" class="fos-card" style="padding:12px 14px"><div class="dash-ctx-loading" style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">// Cargando contexto…</div></div>'+
         moversCard()+
       '</div>'+
-    '</div>'+
-    // ── BANDA "MERCADO HOY" ──
-    // Solo noticias ahora: Índices/Régimen/Movers se subieron a la fila de
-    // arriba (junto a Top Señales/Portafolio). El feed queda solo, de extremo
-    // a extremo, en vez de compartir la franja con el rail.
-    '<div style="padding-top:22px;border-top:1px solid var(--border)">'+
-      '<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;flex-wrap:wrap">'+
-        '<h2 style="font-family:\'Instrument Sans\',Georgia,serif;font-size:20px;font-weight:600;color:var(--bright);margin:0;letter-spacing:-.01em">Últimas noticias</h2>'+
-        '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Mercado · Fed · earnings · geopolítica</span>'+
-      '</div>'+
-      mercadoHoyBody()+
     '</div>'+
     '</div>';
 
@@ -6212,7 +6187,11 @@ function mercadoHoyBody(){
     var sparkCol=impCol[featItem.impact]||'var(--amber)';
     var pts=sparkPts[featItem.impact]||sparkPts.neutral;
     featCard=
-      '<div role="button" tabindex="0" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:10px;display:flex;min-height:145px;cursor:pointer;transition:.15s" '+(featItem.link?'onclick="window.open(\''+featItem.link+'\',\'_blank\',\'noopener\')"':'')+' onmouseover="this.style.borderColor=\'rgba(247,147,26,.3)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
+      // display:column (no row): la tarjeta destacada vive ahora en la
+      // columna angosta del Panorama (~1fr junto a Top Señales/Portafolio y
+      // el rail de 268px) — miniatura+texto lado a lado con 195px fijos no
+      // entraba, se apila miniatura arriba/texto abajo.
+      '<div role="button" tabindex="0" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:10px;display:flex;flex-direction:column;cursor:pointer;transition:.15s" '+(featItem.link?'onclick="window.open(\''+featItem.link+'\',\'_blank\',\'noopener\')"':'')+' onmouseover="this.style.borderColor=\'rgba(247,147,26,.3)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
       // Thumbnail: imagen real si existe, sino gradiente+emoji+favicon
       (function(){
         var grad=catGrad[featItem.cat]||'linear-gradient(160deg,#091428,#0e2244)';
@@ -6221,7 +6200,7 @@ function mercadoHoyBody(){
         var realImg=featItem.image||null;
         if(realImg){
           // Real photo from Yahoo Finance — show it with dark overlay for text legibility
-          return '<div style="width:195px;flex-shrink:0;position:relative;overflow:hidden;background:#0a0e17">'+
+          return '<div style="width:100%;height:140px;flex-shrink:0;position:relative;overflow:hidden;background:#0a0e17">'+
             '<img src="'+realImg+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block" '+
               'onerror="this.parentElement.style.background=\''+grad+'\';this.remove()">'+
             // gradient overlay so breaking badge is readable
@@ -6235,7 +6214,7 @@ function mercadoHoyBody(){
           '</div>';
         }
         // Fallback: category gradient + emoji + favicon
-        return '<div style="width:195px;flex-shrink:0;background:'+grad+';position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
+        return '<div style="width:100%;height:140px;flex-shrink:0;background:'+grad+';position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
           '<div style="width:52px;height:52px;opacity:.85;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));color:#fff">'+emoji.replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
           (fav?'<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:var(--r-sm);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;overflow:hidden">'+
             '<img src="'+fav+'" style="width:18px;height:18px;object-fit:contain" onerror="this.parentElement.style.display=\'none\'">'+
