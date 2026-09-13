@@ -5095,7 +5095,11 @@ function moversCard(){
         : '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;width:116px;text-align:right">sin dato</span>')+
       '</div>';
   }).join('');
-  return '<div class="cb" style="padding:0;overflow:hidden">'+
+  // flex:1: es la ultima tarjeta del rail de contexto en el grid de Panorama
+  // (junto a Top Señales/Portafolio y las noticias) — sin esto, si esa fila
+  // termina mas abajo por las otras columnas, el rail queda corto y deja un
+  // hueco de fondo de pagina debajo. Con flex:1 absorbe ese sobrante.
+  return '<div class="cb" style="padding:0;overflow:hidden;flex:1">'+
     '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;justify-content:space-between;align-items:center">'+
       '<span class="fos-section-label" style="margin:0">Market Movers</span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+(conDato?upd:'sin datos en vivo')+'</span>'+
@@ -5290,8 +5294,13 @@ function renderDash(){
     '<tbody>'+sigRows+'</tbody></table></div></div>';
 
   // ── Portfolio card ──
+  // flex:1 (no solo el ancho estandar de .fos-card): es la ultima tarjeta de
+  // su columna en el grid de Panorama — sin esto, cuando la columna del medio
+  // (noticias) o la del rail terminan mas abajo, esta tarjeta se queda corta
+  // y deja un hueco de fondo de pagina antes del borde inferior de la fila.
+  // Con flex:1 absorbe ese sobrante como padding interno de la propia tarjeta.
   var portCard=
-    '<div class="fos-card">'+
+    '<div class="fos-card" style="flex:1">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">'+
     '<div class="fos-card-title">Portafolio</div>'+
     '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">'+port.length+' de '+(S.portfolio.length)+' posiciones</span>'+
@@ -6386,22 +6395,27 @@ function mercadoHoyBody(){
       '</div>'+
     '</div>'+
 
-    // ── FEED, FULL-WIDTH ──
+    // ── FEED ──
     // Índices/Régimen/Movers ya no comparten esta franja: se subieron al rail
     // junto a Top Señales/Portafolio (ver renderDash). El feed de noticias
-    // queda solo, de extremo a extremo.
+    // vive ahora en la columna del medio de esa misma fila (ver renderDash) —
+    // la lista de articulos scrollea dentro de un alto maximo para que las 3
+    // columnas terminen a la misma altura en vez de que esta se estire mucho
+    // mas que Top Señales/Portafolio y el rail de Indices/Regimen/Movers.
     '<div style="padding:16px 20px">'+
 
-    // feed header
+    // feed header (fuera del area con scroll: siempre visible)
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
       '<div class="fos-section-label">'+
         (f==='Todo'?'Últimas Noticias':'Noticias — '+f)+
       '</div>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:2px 7px">'+filtered.length+' artículos</span>'+
     '</div>'+
+    '<div style="max-height:560px;overflow-y:auto">'+
     (filtered.length===0
       ?'<div style="text-align:center;color:var(--text3);padding:48px 20px;font-family:\'IBM Plex Mono\',monospace;font-size:11px">'+(f!=='Todo'?'Sin noticias en la categoría “'+esc(f)+'”.':(_newsFetched?'Sin titulares en vivo ahora mismo. Reintentando…':'Cargando titulares…'))+'</div>'
       :featCard+'<div style="margin-top:10px">'+newsListHtml+'</div>')+
+    '</div>'+
     '</div>'+
     // El indice de sentimiento se retira de Contexto: se repite identico en la
     // pagina Sentimiento dentro de Analisis. Se conserva la marca de ultima
