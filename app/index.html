@@ -4365,14 +4365,16 @@ function renderDecisionEngineBody(){
 }
 
 // ── SCREENER (Pro) ─────────────────────────────────────────────
-function renderScreenerBody(){
+// renderScreenerBody() solo re-dispara el render combinado de Investigar
+// (ver renderInvestigar) — la construccion real del HTML vive en
+// renderScreenerSection(), que devuelve un string en vez de pisar #main
+// directamente, para poder incrustarse junto a Watchlist y Comparador.
+function renderScreenerBody(){ renderInvestigar('screener'); }
+function renderScreenerSection(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('screener')>=0){
-    document.getElementById('main').innerHTML=
-      _ph('Investigar · Screener','Screener','// Filtro técnico · Score Motor · Export CSV')+
-    analisisTabs()+
+    return _ph('Investigar · Screener','Screener','// Filtro técnico · Score Motor · Export CSV')+
       lockedBanner('Screener','Filtra más de 50 activos simultáneamente por score técnico, señal y sector. Exporta resultados a CSV.');
-    return;
   }
   var f=S.screenerFilters;
   var running=S.screenerRunning;
@@ -4450,8 +4452,7 @@ function renderScreenerBody(){
       '</div>';
   }
 
-  document.getElementById('main').innerHTML=
-    _ph('Investigar · Screener','Screener','// Filtra el universo de activos por Score DE, RSI, acción y sector')+
+  return _ph('Investigar · Screener','Screener','// Filtra el universo de activos por Score DE, RSI, acción y sector')+
 
     '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px">'+
     '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">'+
@@ -4702,8 +4703,14 @@ function renderSettings(){
 function renderMain(){
   if(!S.user){renderWelcome();return;}
   var plan=planOf();
-  if(plan.locked.indexOf(S.page)>=0){renderPaywall();return;}
-  var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:function(){RISK_TAB='nueva';renderRisk();},comp:renderComp,sentiment:renderSentimentWidget,radar:renderRadar,decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:function(){RISK_TAB='mis';renderRisk();},back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:function(){ANALISIS_TAB='buscar';renderAnalisis();},capital:renderCapital,settings:renderSettings,help:renderHelp};
+  // screener/comp quedan afuera de este bloqueo generico: renderPaywall() no
+  // tiene copy propio para ellos (cae en el "Modulo Pro" generico sin lista de
+  // features) y ademas tapa completo el resto de Investigar. Sus secciones ya
+  // muestran su propio lockedBanner con el detalle correcto (ver
+  // renderScreenerSection/renderCompSection) dentro de renderInvestigar,
+  // dejando Watchlist visible y utilizable igual para el usuario free.
+  if(plan.locked.indexOf(S.page)>=0 && S.page!=='screener' && S.page!=='comp'){renderPaywall();return;}
+  var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:function(){RISK_TAB='nueva';renderRisk();},comp:renderComp,sentiment:renderSentimentWidget,radar:renderRadar,decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:function(){RISK_TAB='mis';renderRisk();},back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
   (pages[S.page]||renderDash)();
   var curPage=PAGES.find(function(p){return p.id===S.page;});
   var mLabel=document.getElementById('mobile-page-label');
@@ -5824,7 +5831,14 @@ function sigTableRow(s, opts){
     '</tr>';
 }
 
-function renderWatch(){
+// renderWatch() solo re-dispara el render combinado de Investigar (ver
+// renderInvestigar) — la construccion real del HTML vive en
+// renderWatchSection(), que devuelve un string en vez de pisar #main
+// directamente, para poder incrustarse junto a Screener y Comparador. El
+// loader async de DE Score se separo a investigarWatchPostRender() porque
+// necesita que las celdas #des-<ticker> ya esten en el DOM real.
+function renderWatch(){ renderInvestigar('watch'); }
+function renderWatchSection(){
   var wl=S.watchlist;
   var avail=["AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","SPY","QQQ","VTI","IVV","DIA","XLK","XLV","XLE","JPM","V","UNH","WMT","JNJ","AMD","NKE","PG","HD","MA","DIS"].filter(function(t){return wl.indexOf(t)<0;});
 
@@ -5851,7 +5865,7 @@ function renderWatch(){
     ?'<th onclick="setPage(\'decision\')" style="cursor:pointer;color:var(--blue)" title="Ver Motor de Análisis completo">'+icon('target')+' DE Score</th>'
     :'<th style="color:var(--text3)">'+icon('target')+' DE</th>';
 
-  document.getElementById("main").innerHTML=
+  return (
     // El boton "Motor →" de esta cabecera se quito el 13-sep-2026: era el
     // 5to de 5 caminos redundantes a Analizar -> Motor de Analisis (la
     // pestaña del nav principal ya cubre esto).
@@ -5868,9 +5882,12 @@ function renderWatch(){
     // sin esto la tabla no tenia NINGUNA columna oculta en movil y quedaban
     // 410px de scroll horizontal, mas ancho que la pantalla misma.
     '<div class="tw"><table id="tbl-watch" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("watch","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("watch","price","Precio")+sortTh("watch","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th>'+deHeader.replace('<th ','<th class="col-sec" ')+'<th>Quitar</th></tr></thead>'+
-    '<tbody>'+emptyMsg+wRows+'</tbody></table></div>'+
-    '';
-
+    '<tbody>'+emptyMsg+wRows+'</tbody></table></div>'
+  );
+}
+function investigarWatchPostRender(){
+  var wl=S.watchlist;
+  var isPro=S.user&&planOf().locked.indexOf('decision')<0;
   // Async DE scores — update cells one by one as they load
   if(isPro&&wl.length){
     wl.forEach(function(t){
@@ -5884,12 +5901,53 @@ function renderWatch(){
     });
   }
 }
+
+// ── INVESTIGAR (combinado) ────────────────────────────────────────────────
+// Watchlist, Screener y Comparador vivian como 3 paginas separadas que se
+// pisaban entre si en #main — Walter pidio verlas las 3 sin click extra.
+// Se apilan verticalmente en una sola pagina (en vez de 3 columnas lado a
+// lado): Screener tiene una tabla de 10 columnas y Comparador un grafico de
+// ~520px, ninguno de los dos entra en una columna angosta sin romperse.
+// S.page sigue siendo 'watch'/'screener'/'comp' (nav, deep links, locks de
+// plan por seccion) — solo cambia CUAL de las 3 se autoscrollea al entrar.
+var _invLastFocus=null;
+function renderInvestigar(focus){
+  focus = (focus==='screener'||focus==='comp')?focus:'watch';
+  var jumpBtn=function(id,label){
+    return '<button class="btn" style="font-size:11px" onclick="document.getElementById(\'inv-'+id+'\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">'+label+'</button>';
+  };
+  document.getElementById('main').innerHTML=
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar</div><h1 class="fos-module-title">Investigar</h1><div class="fos-module-sub">Watchlist, Screener y Comparador en una sola pantalla</div></div><div class="ph-right">'+
+      jumpBtn('watch','Watchlist')+' '+jumpBtn('screener','Screener')+' '+jumpBtn('comp','Comparador')+
+    '</div></div>'+
+    '<div id="inv-watch">'+renderWatchSection()+'</div>'+
+    '<div id="inv-screener" style="margin-top:36px;padding-top:28px;border-top:1px solid var(--border)">'+renderScreenerSection()+'</div>'+
+    '<div id="inv-comp" style="margin-top:36px;padding-top:28px;border-top:1px solid var(--border)">'+renderCompSection()+'</div>';
+
+  investigarWatchPostRender();
+
+  // Solo autoscrollea en la entrada real a esa seccion (S.page cambio hacia
+  // ella) — sin este chequeo, cada re-render interno disparado por el propio
+  // Screener/Comparador (tipear un ticker, aplicar filtros, compLoad) volvia
+  // a saltar el scroll y le tironeaba la pantalla al usuario a mitad de uso.
+  if(focus!=='watch' && focus!==_invLastFocus){
+    var el=document.getElementById('inv-'+focus);
+    if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); },30);
+  }
+  _invLastFocus=focus;
+}
+
+// Watchlist ahora se ve siempre en las 3 sub-paginas de Investigar (ver
+// renderInvestigar): un re-render debe dispararse desde cualquiera de las
+// tres, no solo desde 'watch' — antes de renderInvestigar cada una vivia
+// aislada y este chequeo bastaba con 'watch'.
+function isInvestigarPage(p){ p=p||S.page; return p==='watch'||p==='screener'||p==='comp'; }
 function addWatch(t){
   if(S.watchlist.indexOf(t)<0){
     S.watchlist.push(t);persist();
     sbAddWatch(t);
     showToast(t+' agregado al watchlist');
-    if(S.page==="watch") renderMain();
+    if(isInvestigarPage()) renderMain();
   }
 }
 function addCustomW(){var t=(document.getElementById("wc").value||"").toUpperCase().trim();if(t.length>=1&&t.length<=6&&S.watchlist.indexOf(t)<0){S.watchlist.push(t);persist();renderWatch();}}
@@ -5907,10 +5965,10 @@ function rmWatch(t){
       persist();
       sbAddWatch(t);
       showToast(t+' restaurado');
-      if(S.page==='watch') renderMain();
+      if(isInvestigarPage()) renderMain();
     }
   });
-  if(S.page==="watch") renderMain();
+  if(isInvestigarPage()) renderMain();
 }
 function resetWatch(){S.watchlist=[...DEF_WATCH];persist();renderWatch();}
 
@@ -9787,8 +9845,13 @@ function compChangeTicker(i,val){
   COMP.loading=false;
 }
 
-function renderComp(){
-  var plan=planOf();if(plan.locked&&plan.locked.indexOf('comp')>=0){document.getElementById('main').innerHTML=lockedBanner('Comparador de Activos','Compara hasta 4 activos simultáneamente con métricas de precio, retorno y fundamentos.');return;}
+// renderComp() solo re-dispara el render combinado de Investigar (ver
+// renderInvestigar) — la construccion real del HTML vive en
+// renderCompSection(), que devuelve un string en vez de pisar #main
+// directamente, para poder incrustarse junto a Watchlist y Screener.
+function renderComp(){ renderInvestigar('comp'); }
+function renderCompSection(){
+  var plan=planOf();if(plan.locked&&plan.locked.indexOf('comp')>=0){return lockedBanner('Comparador de Activos','Compara hasta 4 activos simultáneamente con métricas de precio, retorno y fundamentos.');}
   var colors=["var(--amber)","var(--blue)","var(--grn)","#a78bfa"];
 
   var tickerInputs=COMP.tickers.map(function(t,i){
@@ -9994,8 +10057,7 @@ function renderComp(){
     '<span style="font-size:11px;color:rgba(156,163,175,.8);font-family:\'IBM Plex Mono\',monospace">SPY Benchmark</span></span>':'')+
   '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-left:8px">Retorno acumulado base-100</span>';
 
-  document.getElementById('main').innerHTML=
-    _ph('Investigar · Comparador','Comparador de Activos','// Performance normalizado · Correlación · Sharpe ratio',liveBadge())+
+  return _ph('Investigar · Comparador','Comparador de Activos','// Performance normalizado · Correlación · Sharpe ratio',liveBadge())+
     '<div class="resp2" style="display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start">'+
     '<div>'+
     '<div class="cb">'+
@@ -10727,7 +10789,7 @@ async function bootLiveData(){
     checkAlerts();
     // El dashboard arma sus tablas en render-time (sin data-live-*), así que
     // necesita un re-render completo para mostrar precios y Δ% live.
-    if(S.user&&(S.page==='dash'||S.page==='port'||S.page==='watch')){
+    if(S.user&&(S.page==='dash'||S.page==='port'||isInvestigarPage())){
       try{ renderMain(); }catch(e){/* silent */}
     }
   }).catch(function(){});
