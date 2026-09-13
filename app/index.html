@@ -4547,7 +4547,7 @@ function renderSettings(){
     '<div class="st"><div class="stbar"></div>Cuenta</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
     '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:4px">EMAIL</div>'+
-    '<div style="font-size:13px;color:var(--bright);font-weight:500">'+(u?u.email:'—')+'</div></div>'+
+    '<div style="font-size:13px;color:var(--bright);font-weight:500">'+(u?esc(u.email):'—')+'</div></div>'+
     '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:4px">PLAN ACTUAL</div>'+
     '<div style="font-size:13px;color:var(--bright);font-weight:500">'+plan.label+(plan.price>0?' — $'+plan.price+'/mes':'')+'</div></div>'+
     '</div>'+
@@ -5127,9 +5127,9 @@ function renderDash(){
     var chgColor=chgV===null?'var(--text3)':chgV>=0?'var(--pos)':'var(--neg)';
     var chgStr=chgV===null?'—':(chgV>=0?'+':'')+chgV.toFixed(2)+'%';
     var wt=totM>0?Math.round(h.sh*h.cur/totM*100):0;
-    return '<tr role="button" tabindex="0" style="cursor:pointer" onclick="openDrawer(\''+h.t+'\','+h.cur+')" onmouseenter="this.style.background=\'var(--card3)\'" onmouseleave="this.style.background=\'\'">'+
-      '<td style="font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+h.t+'</td>'+
-      '<td style="color:var(--text2);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_tname(h.t)+'</td>'+
+    return '<tr role="button" tabindex="0" style="cursor:pointer" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')" onmouseenter="this.style.background=\'var(--card3)\'" onmouseleave="this.style.background=\'\'">'+
+      '<td style="font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(h.t)+'</td>'+
+      '<td style="color:var(--text2);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(_tname(h.t))+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--text)">'+fmtMoney(h.cur)+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+chgColor+'">'+chgStr+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+pc+'">'+(pnlH>=0?'+':'')+fmtMoney(Math.abs(pnlH))+'</td>'+
@@ -5186,10 +5186,10 @@ function renderDash(){
     kpi('Portfolio Total',fmtMoney(totM),(pnl>=0?'+':'')+pnlPct.toFixed(2)+'% total','n')+
     kpi('Posiciones',String(port.length),'<span style="color:var(--pos)">'+winners+' positivas</span> · <span style="color:var(--neg)">'+losers+' neg.</span>','n')+
     (bestPos
-      ?kpi('Mejor Activo','<span style="color:'+(bestPos.pct>=0?'var(--pos)':'var(--neg)')+'">'+bestPos.t+'</span>',(bestPos.pct>=0?'+':'')+bestPos.pct.toFixed(1)+'%',bestPos.pct>=0?'g':'r')
+      ?kpi('Mejor Activo','<span style="color:'+(bestPos.pct>=0?'var(--pos)':'var(--neg)')+'">'+esc(bestPos.t)+'</span>',(bestPos.pct>=0?'+':'')+bestPos.pct.toFixed(1)+'%',bestPos.pct>=0?'g':'r')
       :kpi('Mejor Activo','—','','n'))+
     (bestDay
-      ?kpi('Mejor Hoy','<span style="color:'+(bestDay.chg>=0?'var(--pos)':'var(--neg)')+'">'+bestDay.t+'</span>',(bestDay.chg>=0?'+':'')+bestDay.chg.toFixed(2)+'% hoy',bestDay.chg>=0?'g':'r')
+      ?kpi('Mejor Hoy','<span style="color:'+(bestDay.chg>=0?'var(--pos)':'var(--neg)')+'">'+esc(bestDay.t)+'</span>',(bestDay.chg>=0?'+':'')+bestDay.chg.toFixed(2)+'% hoy',bestDay.chg>=0?'g':'r')
       :kpi('Mejor Hoy','—','','n'));
 
   // ── Top Señales card ──
@@ -5377,7 +5377,7 @@ function portRebalHint(port,totM){
     statusDot('🟡',12)+
     '<div style="flex:1;min-width:200px;font-size:12px;color:var(--text);line-height:1.5">'+
       '<b>Rebalanceo sugerido:</b> '+drifts.length+' posición'+(drifts.length!==1?'es se desviaron':' se desvió')+' de tus objetivos'+
-      ' <span style="color:var(--text3)">(mayor: '+top.t+' '+(top.diff>0?'+':'')+top.diff.toFixed(1)+'%, '+dir+')</span>.'+
+      ' <span style="color:var(--text3)">(mayor: '+esc(top.t)+' '+(top.diff>0?'+':'')+top.diff.toFixed(1)+'%, '+dir+')</span>.'+
     '</div>'+
     '<button class="btn" style="border-color:var(--amber);color:var(--amber)" onclick="setPage(\'rebal\')">'+icon('rebal')+' Ver ajustes →</button>'+
   '</div>';
@@ -5400,11 +5400,11 @@ function renderPort(){
     var lq=LIVE[h.t];
     var hj=JSON.stringify(h).replace(/"/g,"&quot;");
     return '<tr class="trow" data-pnl="'+pnl.toFixed(2)+'" data-ret="'+ret.toFixed(4)+'" data-val="'+(h.sh*h.cur).toFixed(2)+'" data-chg="'+(lq?(lq.changePct||0):0)+'">'+
-      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+h.t+'\','+h.cur+')">'+h.t+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')">'+esc(h.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td class="col-sec">'+typeTag(h.type)+'</td>'+
       '<td class="col-sec">'+h.sh+'</td>'+
       '<td class="col-sec">$'+fmtD(h.cost)+'</td>'+
-      '<td style="font-weight:600;cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+h.t+'\','+h.cur+')">$'+fmtD(h.cur)+'</td>'+
+      '<td style="font-weight:600;cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')">$'+fmtD(h.cur)+'</td>'+
       '<td>'+chgCell(lq)+'</td>'+
       '<td class="col-sec">$'+fmt(h.sh*h.cur)+'</td>'+
       '<td style="color:'+(pnl>=0?"var(--pos)":"var(--neg)")+';font-weight:600">'+(pnl>=0?"+":"")+'$'+fmt(pnl)+'</td>'+
@@ -5590,7 +5590,7 @@ function renderBitacora(){
     '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">'+
     '<span style="font-size:11px;color:var(--text2)">Filtrar:</span>'+
     '<select class="inp" style="width:auto;padding:4px 8px;font-size:11px" onchange="S.tradeFilter.ticker=this.value;renderBitacora()">'+
-    tickers.map(function(t){return '<option value="'+t+'"'+(S.tradeFilter.ticker===t?' selected':'')+'>'+t+'</option>';}).join("")+
+    tickers.map(function(t){return '<option value="'+esc(t)+'"'+(S.tradeFilter.ticker===t?' selected':'')+'>'+esc(t)+'</option>';}).join("")+
     '</select>'+
     '<select class="inp" style="width:auto;padding:4px 8px;font-size:11px" onchange="S.tradeFilter.type=this.value;renderBitacora()">'+
     ['ALL','buy','sell','deposit','withdrawal','dividend'].map(function(v){
@@ -5724,7 +5724,7 @@ function renderWatch(){
   var avail=["AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","SPY","QQQ","VTI","IVV","DIA","XLK","XLV","XLE","JPM","V","UNH","WMT","JNJ","AMD","NKE","PG","HD","MA","DIS"].filter(function(t){return wl.indexOf(t)<0;});
 
   var quickTags=avail.slice(0,20).map(function(t){
-    return '<span class="wtag" role="button" tabindex="0" onclick="addWatch(\''+t+'\')" aria-label="Agregar '+t+' al watchlist">'+t+'</span>';
+    return '<span class="wtag" role="button" tabindex="0" onclick="addWatch(\''+esc(t)+'\')" aria-label="Agregar '+esc(t)+' al watchlist">'+esc(t)+'</span>';
   }).join("");
 
   var isPro=S.user&&planOf().locked.indexOf('decision')<0;
@@ -5738,8 +5738,8 @@ function renderWatch(){
     var deCell=isPro
       ?'<td class="col-sec" id="des-'+t+'" style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">…</td>'
       :'<td class="col-sec" style="color:var(--text3);font-size:11px">🔒</td>';
-    return '<tr class="trow" onmouseenter="prefetchFund(\''+t+'\')">'+
-      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+t+'\','+lp+')">'+t+portBadge+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+    return '<tr class="trow" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
+      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')">'+esc(t)+portBadge+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td>'+badge(s.sig)+'</td>'+
       '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
       '<td class="col-sec">'+sbar(s.sc)+'</td>'+
@@ -5747,7 +5747,7 @@ function renderWatch(){
       '<td>'+chgCell(lq)+'</td>'+
       '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
       deCell+
-      '<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+t+'\')" aria-label="Quitar '+t+' de la watchlist"><span aria-hidden="true">✕</span></button></td>'+
+      '<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist"><span aria-hidden="true">✕</span></button></td>'+
       '</tr>';
   }).join("");
 
@@ -6351,8 +6351,8 @@ function renderInd(){
     var rsiE   = ind===undefined ? '…' : (ind.rsi!=null   ? ind.rsi.toFixed(1) : '—');
     var sma20E = ind===undefined ? '…' : (ind.sma20!=null ? '$'+fmtD(ind.sma20) : '—');
     var rsiCol = (ind&&ind.rsi!=null) ? (ind.rsi>=70?'var(--red)':ind.rsi<=30?'var(--grn)':'var(--text)') : 'var(--text3)';
-    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+h.t+'\','+lp+')">'+
-      '<td style="font-weight:600;color:var(--bright)">'+h.t+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(h.t)+'\','+lp+')">'+
+      '<td style="font-weight:600;color:var(--bright)">'+esc(h.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td style="color:'+rsiCol+';font-family:\'IBM Plex Mono\',monospace;font-weight:'+((ind&&ind.rsi!=null&&(ind.rsi>=70||ind.rsi<=30))?'700':'400')+'">'+rsiE+'</td>'+
       '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
       '<td style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+sma20E+'</td>'+
@@ -6364,8 +6364,8 @@ function renderInd(){
     var s=ALL_SIG.find(function(x){return x.t===t;})||{sig:"HOLD",sc:60,p:100};
     var lp=getLivePrice(t);
     var col=s.sig==="BUY"?"var(--grn)":s.sig==="SELL"?"var(--red)":"var(--amber)";
-    return '<div role="button" tabindex="0" onclick="openDrawer(\''+t+'\','+lp+')" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;transition:.15s;text-align:center;min-width:76px;box-shadow:var(--shadow)" onmouseover="this.style.borderColor=\'var(--grn-lt)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
-      '<div style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\'">'+t+'</div>'+
+    return '<div role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;transition:.15s;text-align:center;min-width:76px;box-shadow:var(--shadow)" onmouseover="this.style.borderColor=\'var(--grn-lt)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
+      '<div style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\'">'+esc(t)+'</div>'+
       '<div style="font-size:11px;color:'+col+';font-family:\'IBM Plex Mono\';margin-top:1px">'+sigLabel(s.sig)+'</div>'+
       '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\'">$'+fmtD(lp)+'</div></div>';
   }).join("");
@@ -6425,8 +6425,8 @@ function renderRiskBody(){
   var rows=riskCalc.rows;
 
   var tableRows=rows.slice(0,8).map(function(r){
-    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+r.t+'\','+r.cur+')">'+
-      '<td style="font-weight:600;color:var(--bright)">'+r.t+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.t)+'\','+r.cur+')">'+
+      '<td style="font-weight:600;color:var(--bright)">'+esc(r.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td class="col-sec" style="font-weight:600">$'+fmtD(r.cur)+'</td>'+
       '<td class="col-sec" style="color:var(--red)">$'+fmtD(r.stop)+'</td>'+
       '<td style="color:var(--amber)">$'+fmt(rA)+'</td>'+
@@ -6446,7 +6446,7 @@ function renderRiskBody(){
 
   var rrRows=rows.slice(0,6).map(function(r){
     return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-      '<div style="width:44px;font-size:11px;font-family:\'IBM Plex Mono\';font-weight:600;color:var(--bright)">'+r.t+'</div>'+
+      '<div style="width:44px;font-size:11px;font-family:\'IBM Plex Mono\';font-weight:600;color:var(--bright)">'+esc(r.t)+'</div>'+
       '<div style="flex:1;height:4px;background:var(--card3);border-radius:2px"><div style="height:100%;width:'+Math.min(r.rr/4*100,100)+'%;background:'+(r.rr>=2?"var(--grn)":r.rr>=1.5?"var(--amber)":"var(--red)")+';border-radius:2px"></div></div>'+
       '<div style="width:32px;font-size:11px;font-family:\'IBM Plex Mono\';font-weight:600;color:'+(r.rr>=2?"var(--grn)":"var(--amber)")+'">'+fmtD(r.rr)+'x</div></div>';
   }).join("");
@@ -7098,7 +7098,7 @@ function mPos(mr){
     '<p class="msub">'+(ed?"Modifica los valores":"Agrega un activo al portfolio")+'</p>'+
     '<div id="perr" class="err"></div>'+
     '<label class="fl">Ticker</label>'+
-    '<input id="pt" class="inp ifu" placeholder="AAPL" value="'+pos.t+'" style="text-transform:uppercase" '+(ed?"readonly":"")+' onchange="posAutofillPrice()"/>'+
+    '<input id="pt" class="inp ifu" placeholder="AAPL" value="'+esc(pos.t)+'" style="text-transform:uppercase" '+(ed?"readonly":"")+' onchange="posAutofillPrice()"/>'+
     '<label class="fl">Tipo</label>'+
     // value explicito: .value ya devolvia el textContent, asi que el valor que se
     // persiste es identico. Se hace explicito para que renombrar la etiqueta
@@ -7147,7 +7147,7 @@ function mDel(mr){
   var pos=S.editPos;
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:310px;text-align:center" onclick="event.stopPropagation()">'+
     '<div style="font-size:30px;margin-bottom:10px">🗑️</div>'+
-    '<h2>Eliminar '+pos.t+'</h2>'+
+    '<h2>Eliminar '+esc(pos.t)+'</h2>'+
     '<p class="msub">'+pos.sh+' acciones · Entrada $'+fmtD(pos.cost)+' · Actual $'+fmtD(pos.cur)+'</p>'+
     '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
@@ -7189,7 +7189,7 @@ function mTrade(mr){
     '<div id="tr_ticker_row">'+
     '<label class="fl">Ticker</label>'+
     '<input id="tr_ticker" class="inp ifu" placeholder="AAPL" style="text-transform:uppercase" list="tr_tklist" value="'+(S.editPos&&S.editPos.t?esc(S.editPos.t):'')+'"/>'+
-    '<datalist id="tr_tklist">'+tickers.map(function(t){return '<option value="'+t+'"/>';}).join("")+'</datalist>'+
+    '<datalist id="tr_tklist">'+tickers.map(function(t){return '<option value="'+esc(t)+'"/>';}).join("")+'</datalist>'+
     '</div>'+
 
     '<div id="tr_price_row">'+
@@ -7481,7 +7481,7 @@ function renderCorrelationMatrix(port){
   var cellW=Math.max(52,Math.floor(260/n));
 
   var header='<tr><td style="width:'+cellW+'px"></td>'+tickers.map(function(t){
-    return '<th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px;text-align:center;width:'+cellW+'px">'+t+'</th>';
+    return '<th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px;text-align:center;width:'+cellW+'px">'+esc(t)+'</th>';
   }).join('')+'</tr>';
 
   var bodyRows=tickers.map(function(ta,i){
@@ -7493,7 +7493,7 @@ function renderCorrelationMatrix(port){
       var tc=r===null?'var(--text3)':Math.abs(r)>0.5?'var(--bright)':'var(--text)';
       return '<td style="background:'+bg+';border:1px solid var(--border);text-align:center;font-size:11px;color:'+tc+';font-family:\'IBM Plex Mono\',monospace;padding:6px">'+txt+'</td>';
     }).join('');
-    return '<tr><th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px 8px 3px 0;text-align:right">'+ta+'</th>'+cells+'</tr>';
+    return '<tr><th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px 8px 3px 0;text-align:right">'+esc(ta)+'</th>'+cells+'</tr>';
   }).join('');
 
   return '<div class="cb">'+
@@ -7606,7 +7606,7 @@ function renderDrawerHead(ticker,price){
   document.getElementById("drwh").innerHTML=
     '<div style="flex:1">'+
     '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">'+
-    '<div style="font-size:19px;font-weight:700;color:var(--bright)">'+ticker+'</div>'+
+    '<div style="font-size:19px;font-weight:700;color:var(--bright)">'+esc(ticker)+'</div>'+
     '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\'">'+(lq?lq.exchange:"NASDAQ")+'</span>'+
     '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:'+(isLN?"var(--gbg)":"var(--ambg)")+';border:1px solid '+(isLN?"var(--gborder)":"var(--amborder)")+';color:'+(isLN?"var(--grn)":"var(--amber)")+';font-family:\'IBM Plex Mono\'">'+(isLN?"LIVE":"Estimado")+'</span>'+
     marketStatusBadge()+
@@ -7911,12 +7911,12 @@ function renderDrawerBody(){
     // enlaza a los siguientes pasos llevando el ticker actual, para no cerrar y
     // re-tipearlo en Riesgo / Comparador / Bitacora / Alertas.
     '<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+
-    '<button class="btn" onclick="addWatch(\''+ticker+'\');closeDrawer()">+ Watchlist</button>'+
+    '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">+ Watchlist</button>'+
     '<button class="btn" onclick="openModal(\'addpos\');closeDrawer()">+ Portfolio</button>'+
-    '<button class="btn" onclick="PB.ticker=\''+ticker+'\';setPage(\'pb\');pbFetchPrice()">Calcular tamaño</button>'+
-    '<button class="btn" onclick="compSet(\''+ticker+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
-    '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+ticker+'\'})">Registrar</button>'+
-    '<button class="btn" onclick="openModal(\'addalert\',{t:\''+ticker+'\'})">Alerta</button>'+
+    '<button class="btn" onclick="PB.ticker=\''+esc(ticker)+'\';setPage(\'pb\');pbFetchPrice()">Calcular tamaño</button>'+
+    '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
+    '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+esc(ticker)+'\'})">Registrar</button>'+
+    '<button class="btn" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Alerta</button>'+
     '<button class="btn" style="border-color:var(--border);color:var(--text3)" onclick="closeDrawer()">Cerrar</button>'+
     '</div>';
 
@@ -8052,7 +8052,7 @@ function renderAIMessages(){
     return '<div style="display:flex;gap:8px;justify-content:'+(isUser?'flex-end':'flex-start')+'">'+
       (!isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px">🤖</div>':'')+
       '<div style="max-width:85%;padding:9px 12px;border-radius:'+(isUser?'12px 12px 4px 12px':'12px 12px 12px 4px')+';background:'+(isUser?'var(--amber)':'var(--card)')+';color:'+(isUser?'#fff':'var(--text)')+';font-size:12px;line-height:1.6;border:1px solid '+(isUser?'transparent':'var(--border)')+';font-family:\'IBM Plex Sans\',sans-serif;white-space:pre-wrap">'+
-      m.content+
+      esc(m.content)+
       '</div>'+
       (isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;color:var(--text2)">👤</div>':'')+
       '</div>';
@@ -8159,8 +8159,8 @@ function renderPBBody(){
   if(!PB.capital||PB.capital<=0) PB.capital=S.capital;
   var cap=PB.capital;
   var portPills=S.portfolio.slice(0,8).map(function(h){
-    var onclick="pbFill('"+h.t+"',"+h.cur+")";
-    return '<button onclick="'+onclick+'" style="padding:3px 10px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card2);color:var(--text2);font-size:11px;cursor:pointer;margin:2px;transition:.15s" onmouseover="this.style.color=\'var(--amber)\'" onmouseout="this.style.color=\'var(--text2)\'">'+h.t+'</button>';
+    var onclick="pbFill('"+esc(h.t)+"',"+h.cur+")";
+    return '<button onclick="'+onclick+'" style="padding:3px 10px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card2);color:var(--text2);font-size:11px;cursor:pointer;margin:2px;transition:.15s" onmouseover="this.style.color=\'var(--amber)\'" onmouseout="this.style.color=\'var(--text2)\'">'+esc(h.t)+'</button>';
   }).join('');
 
   var scenHtml='';
@@ -8180,7 +8180,7 @@ function renderPBBody(){
     var conc=(c.posSize/cap);
     scenHtml=
       '<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Simulación de escenarios — '+c.ticker+'</div>'+
+      '<div class="st"><div class="stbar"></div>Simulación de escenarios — '+esc(c.ticker)+'</div>'+
       '<div class="tw"><table><thead><tr><th>Movimiento</th><th>Precio</th><th>P&L</th><th>Retorno</th></tr></thead><tbody>'+scRows+'</tbody></table></div>'+
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px">'+
       [['Precio Entrada','$'+fmtD(c.price),'var(--bright)'],
@@ -8206,7 +8206,7 @@ function renderPBBody(){
   }
 
   var resultPanel=PB.computed?
-    '<div class="cb"><div class="st"><div class="stbar"></div>Resultado — '+PB.computed.ticker+'</div>'+
+    '<div class="cb"><div class="st"><div class="stbar"></div>Resultado — '+esc(PB.computed.ticker)+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
     [['Riesgo $',D(PB.computed.riskAmt),'var(--red)'],
      ['Posición',D(PB.computed.posSize),'var(--bright)'],
@@ -8234,7 +8234,7 @@ function renderPBBody(){
     '<div style="display:flex;flex-wrap:wrap">'+portPills+'</div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'+
     '<div><label style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Ticker</label>'+
-    '<input id="pb-ticker" class="inp" style="width:100%;text-transform:uppercase" placeholder="AAPL" maxlength="8" value="'+PB.ticker+'" onchange="PB.ticker=this.value.toUpperCase();pbFetchPrice()"/></div>'+
+    '<input id="pb-ticker" class="inp" style="width:100%;text-transform:uppercase" placeholder="AAPL" maxlength="8" value="'+esc(PB.ticker)+'" onchange="PB.ticker=this.value.toUpperCase();pbFetchPrice()"/></div>'+
     '<div><label style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Precio ($)</label>'+
     '<input id="pb-price" class="inp" style="width:100%" type="number" placeholder="196.50" value="'+(PB.price||'')+'" oninput="PB.price=parseFloat(this.value)||0;pbCalc()"/></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'+
@@ -8964,7 +8964,7 @@ function renderRadarShared(payload){
     '<div style="max-width:800px;margin:0 auto">'+
     '<div style="background:var(--orange-bg);border:1px solid var(--orange-bd);border-radius:var(--r-md);padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;gap:10px">'+
     '<span style="font-size:13px">📡</span>'+
-    '<span style="font-size:12px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">Reporte compartido por <strong>'+payload.user+'</strong> · '+payload.date+'</span>'+
+    '<span style="font-size:12px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">Reporte compartido por <strong>'+esc(payload.user)+'</strong> · '+esc(payload.date)+'</span>'+
     '<button class="btn-big" onclick="openModal(\'login\')" style="margin-left:auto;padding:5px 14px;font-size:11px">Crear cuenta gratis →</button>'+
     '</div>'+
     radarReportHTML(payload,true)+
@@ -9071,20 +9071,24 @@ function radarReportHTML(r,shared){
     '</div></div>';
 
   // Summary
+  // esc() aca: r.summary/sec.content/sec.title pueden venir de un link
+  // compartido (#radar=... en renderRadarShared), es decir de un payload
+  // controlado por quien arma la URL, no solo del propio reporte local —
+  // sin esto era XSS reflejado via URL, no solo self-XSS.
   var summaryHTML=r.summary?
-    '<div class="radar-summary" style="font-size:14px;color:var(--bright);font-style:italic;margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--amber);background:var(--orange-bg);border-radius:0 var(--r-sm) var(--r-sm) 0">'+r.summary+'</div>':'';
+    '<div class="radar-summary" style="font-size:14px;color:var(--bright);font-style:italic;margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--amber);background:var(--orange-bg);border-radius:0 var(--r-sm) var(--r-sm) 0">'+esc(r.summary)+'</div>':'';
 
   // Sections
   var sectHTML=r.sections.map(function(sec){
     var icon=sectionIcons[sec.id]||'📌';
     var color=sectionColors[sec.id]||'var(--text)';
-    // Format action plan with numbered items
-    var content=sec.content||'';
+    // Format action plan with numbered items (escapar ANTES de insertar los <br>)
+    var content=esc(sec.content||'');
     content=content.replace(/\n(\d+)\.\s/g,'<br><span style="color:var(--amber);font-weight:700">$1.</span> ');
     content=content.replace(/\n/g,'<br>');
     return '<div class="radar-section" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px">'+
       '<div class="radar-section-title" style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:'+color+';font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:14px">'+icon+'</span>'+sec.title+
+      '<span style="font-size:14px">'+icon+'</span>'+esc(sec.title)+
       '</div>'+
       '<div class="radar-section-content" style="font-size:12px;color:var(--text);line-height:1.75;font-family:\'IBM Plex Sans\',sans-serif">'+content+'</div>'+
       '</div>';
@@ -9215,8 +9219,8 @@ function renderRadar(){
     // PDF header (only visible on print)
     '<div class="radar-pdf-header" style="display:none">'+
     '<div class="radar-pdf-logo">📡 MOY IQ Invest</div>'+
-    '<div class="radar-pdf-meta">Radar Financiero Semanal<br>'+(RADAR.report?RADAR.report.dateLabel:'')+'<br>'+
-    (S.user?S.user.name||S.user.email:'')+'</div>'+
+    '<div class="radar-pdf-meta">Radar Financiero Semanal<br>'+esc(RADAR.report?RADAR.report.dateLabel:'')+'<br>'+
+    esc(S.user?S.user.name||S.user.email:'')+'</div>'+
     '</div>'+
 
     '<div class="cb">'+
@@ -9621,7 +9625,7 @@ function renderComp(){
     var pos=chg!==null&&parseFloat(chg)>=0;
     return '<div style="display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid '+colors[i]+'33;border-radius:var(--r-md);padding:9px 12px;margin-bottom:8px">'+
       '<div style="width:8px;height:8px;border-radius:50%;background:'+colors[i]+';flex-shrink:0"></div>'+
-      '<input class="inp" style="flex:1;font-size:12px;font-weight:700;text-transform:uppercase" value="'+t+'" maxlength="8" onchange="compChangeTicker('+i+',this.value)" onblur="COMP.data={};renderComp()"/>'+
+      '<input class="inp" style="flex:1;font-size:12px;font-weight:700;text-transform:uppercase" value="'+esc(t)+'" maxlength="8" onchange="compChangeTicker('+i+',this.value)" onblur="COMP.data={};renderComp()"/>'+
       '<div style="text-align:right">'+
       '<div style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">$'+fmtD(lp)+'</div>'+
       (chg!==null?'<div style="font-size:11px;color:'+(pos?'var(--pos)':'var(--neg)')+'">'+( pos?'+':'')+chg+'%</div>':'<div style="font-size:11px;color:var(--text3)">—</div>')+
@@ -9722,7 +9726,7 @@ function renderComp(){
         var lx=xS(last.x,nPts);var ly=yS(last.y);
         return "<polyline points='"+pts_str+"' fill='none' stroke='"+s.color+"' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>"+
           "<circle cx='"+lx.toFixed(1)+"' cy='"+ly.toFixed(1)+"' r='3' fill='"+s.color+"'/>"+
-          "<text x='"+(lx+5).toFixed(1)+"' y='"+(ly+3).toFixed(1)+"' fill='"+s.color+"' font-size='9' font-weight='700' font-family='IBM Plex Mono,monospace'>"+s.t+" "+(last.y>=0?'+':'')+last.y.toFixed(1)+"%</text>";
+          "<text x='"+(lx+5).toFixed(1)+"' y='"+(ly+3).toFixed(1)+"' fill='"+s.color+"' font-size='9' font-weight='700' font-family='IBM Plex Mono,monospace'>"+esc(s.t)+" "+(last.y>=0?'+':'')+last.y.toFixed(1)+"%</text>";
       }).join('');
 
       chartContent='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:'+H+'px">'+grid+spySvg+lines_svg+'</svg>';
@@ -9771,7 +9775,7 @@ function renderComp(){
         {k:'corr',   label:'Correlación',      fmt:function(v){return v!==null&&v!==undefined?v.toFixed(2):'—';}, higher:null},
       ];
 
-      var headerRow='<tr><th>Métrica</th>'+tickerStats.map(function(s){return'<th style="color:'+s.color+'">'+s.t+'</th>';}).join('')+'<th>Mejor</th></tr>';
+      var headerRow='<tr><th>Métrica</th>'+tickerStats.map(function(s){return'<th style="color:'+s.color+'">'+esc(s.t)+'</th>';}).join('')+'<th>Mejor</th></tr>';
       var dataRows=METRICS.map(function(m){
         var best=null;
         if(m.higher!==null&&tickerStats.length>1){
@@ -9784,7 +9788,7 @@ function renderComp(){
           if(m.k==='sharpe') col=typeof v==='number'?(v>=1?'var(--grn)':v>=0.5?'var(--amber)':'var(--red)'):'var(--text)';
           return '<td style="color:'+col+';font-weight:'+(isBest?'700':'400')+'">'+fmt+'</td>';
         }).join('');
-        var bestCell=best?'<td><span style="font-size:11px;padding:2px 7px;border-radius:3px;background:var(--grn-bg);color:var(--grn);font-family:\'IBM Plex Mono\',monospace">'+best+' 🏆</span></td>':'<td style="color:var(--text3)">—</td>';
+        var bestCell=best?'<td><span style="font-size:11px;padding:2px 7px;border-radius:3px;background:var(--grn-bg);color:var(--grn);font-family:\'IBM Plex Mono\',monospace">'+esc(best)+' 🏆</span></td>':'<td style="color:var(--text3)">—</td>';
         return '<tr class="trow"><td style="font-size:11px;color:var(--text2)">'+m.label+'</td>'+cells+bestCell+'</tr>';
       }).join('');
 
@@ -9796,7 +9800,7 @@ function renderComp(){
           var c=s.corr;
           var advice=c>0.8?'⚠️ Poca diversificación':c<0.2?'✅ Excelente par para diversificar':'📊 Correlación '+(c>0.5?'moderada':'baja');
           return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">'+
-            '<span style="font-size:11px;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+tickerStats[0].t+' vs '+s.t+'</span>'+
+            '<span style="font-size:11px;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(tickerStats[0].t)+' vs '+esc(s.t)+'</span>'+
             '<span style="font-size:11px;color:var(--text2)">'+advice+'</span>'+
             '<span style="font-size:11px;font-weight:700;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">'+c.toFixed(2)+'</span></div>';
         }).join('');
@@ -9809,7 +9813,7 @@ function renderComp(){
   var legend=COMP.tickers.map(function(t,i){
     return '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px">'+
       '<span style="width:16px;height:2px;background:'+colors[i]+';display:inline-block;border-radius:1px;flex-shrink:0"></span>'+
-      '<span style="font-size:11px;font-weight:600;color:'+colors[i]+';font-family:\'IBM Plex Mono\',monospace">'+t+'</span></span>';
+      '<span style="font-size:11px;font-weight:600;color:'+colors[i]+';font-family:\'IBM Plex Mono\',monospace">'+esc(t)+'</span></span>';
   }).join('')+
   (COMP.tickers.indexOf('SPY')<0?
     '<span role="button" tabindex="0" style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;cursor:pointer;opacity:'+(COMP.showSPY?1:.4)+'" onclick="COMP.showSPY=!COMP.showSPY;renderComp()">'+
@@ -9944,7 +9948,7 @@ function renderDivs(){
   }).join('');
 
   var tableRows=divRows.map(function(r){
-    return '<tr class="trow"><td style="font-weight:600;color:var(--bright)">'+r.t+'</td>'+
+    return '<tr class="trow"><td style="font-weight:600;color:var(--bright)">'+esc(r.t)+'</td>'+
       '<td>'+r.sh+'</td>'+
       '<td style="font-weight:600;color:var(--bright)">$'+fmtD(r.annualRate)+'/acción</td>'+
       '<td style="font-weight:700;color:var(--grn)">$'+fmtD(r.annualIncome)+'/año</td>'+
@@ -10136,11 +10140,11 @@ function renderCapital(){
   // ── Editor de tickers ──
   var tickerChips=tickers.map(function(tk){
     return '<div style="display:inline-flex;align-items:center;gap:4px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);padding:5px 8px;margin:3px">'+
-      '<span style="font-weight:700;color:var(--bright);font-size:12px;font-family:\'IBM Plex Mono\',monospace;min-width:36px">'+tk.t+'</span>'+
-      '<input type="number" value="'+tk.pct+'" min="0" max="100" step="1" onchange="capUpdatePct(\''+tk.t+'\',this.value)" '+
+      '<span style="font-weight:700;color:var(--bright);font-size:12px;font-family:\'IBM Plex Mono\',monospace;min-width:36px">'+esc(tk.t)+'</span>'+
+      '<input type="number" value="'+tk.pct+'" min="0" max="100" step="1" onchange="capUpdatePct(\''+esc(tk.t)+'\',this.value)" '+
         'style="width:42px;background:transparent;border:none;border-left:1px solid var(--border);color:var(--text2);font-family:\'IBM Plex Mono\',monospace;font-size:11px;padding:0 4px;outline:none;text-align:right">'+
       '<span style="font-size:11px;color:var(--text3)">%</span>'+
-      '<button onclick="capRemoveTicker(\''+tk.t+'\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;margin-left:2px" aria-label="Cerrar"><span aria-hidden="true">×</span></button>'+
+      '<button onclick="capRemoveTicker(\''+esc(tk.t)+'\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;margin-left:2px" aria-label="Cerrar"><span aria-hidden="true">×</span></button>'+
       '</div>';
   }).join('');
 
@@ -10164,8 +10168,8 @@ function renderCapital(){
     var row=r.row;
     var etfMonthly=monthly*(row.pct/100);
     if(r.error){
-      return '<tr><td style="font-weight:600;color:var(--bright)">'+row.t+'</td>'+
-        '<td style="color:var(--text3);font-size:11px">'+row.name+'</td>'+
+      return '<tr><td style="font-weight:600;color:var(--bright)">'+esc(row.t)+'</td>'+
+        '<td style="color:var(--text3);font-size:11px">'+esc(row.name)+'</td>'+
         '<td style="font-family:\'IBM Plex Mono\',monospace">'+row.pct+'%</td>'+
         '<td style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(etfMonthly)+'</td>'+
         '<td colspan="6" style="color:var(--text3);font-size:11px">Sin datos disponibles</td></tr>';
@@ -10184,8 +10188,8 @@ function renderCapital(){
     }).join('');
     var suggested=rsiOk?reached:0;
     return '<tr class="trow">'+
-      '<td style="font-weight:700;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+row.t+'\','+r.price+')">'+row.t+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td style="color:var(--text3);font-size:11px">'+row.name+'</td>'+
+      '<td style="font-weight:700;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(row.t)+'\','+r.price+')">'+esc(row.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+      '<td style="color:var(--text3);font-size:11px">'+esc(row.name)+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace">'+row.pct+'%</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(etfMonthly)+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+rsiColor+'" title="'+(rsiOk?'En zona favorable 30-45':'Fuera de zona 30-45')+'">'+(rsi!=null?rsi.toFixed(0):'—')+'</td>'+
@@ -10400,10 +10404,10 @@ function renderRebal(){
     var tgt=REBAL.targets[h.t]||0;
     var diff=tgt-curW;
     return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:52px">'+h.t+'</span>'+
+      '<span style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:52px">'+esc(h.t)+'</span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;width:36px">'+curW.toFixed(1)+'%</span>'+
-      '<input type="range" min="0" max="60" step="1" value="'+tgt+'" style="flex:1;accent-color:var(--amber)" oninput="REBAL.targets[\''+h.t+'\']=parseInt(this.value);rebalUpdate();rebalSaveTargets()"/>'+
-      '<span id="rebal-tgt-'+h.t+'" style="font-size:11px;font-weight:600;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;width:32px;text-align:right">'+tgt+'%</span>'+
+      '<input type="range" min="0" max="60" step="1" value="'+tgt+'" style="flex:1;accent-color:var(--amber)" oninput="REBAL.targets[\''+esc(h.t)+'\']=parseInt(this.value);rebalUpdate();rebalSaveTargets()"/>'+
+      '<span id="rebal-tgt-'+esc(h.t)+'" style="font-size:11px;font-weight:600;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;width:32px;text-align:right">'+tgt+'%</span>'+
       '<span style="font-size:11px;font-weight:600;width:60px;text-align:right;color:'+(Math.abs(diff)<0.5?'var(--text3)':diff>0?'var(--pos)':'var(--neg)')+';font-family:\'IBM Plex Mono\',monospace">'+
       (Math.abs(diff)<0.5?'—':(diff>0?'+':'')+diff.toFixed(1)+'%')+'</span></div>';
   }).join('');
