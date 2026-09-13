@@ -115,6 +115,36 @@ desactualizado respecto a lo que hay en producción.
   proxies CORS y PostHog — si se agrega un proveedor de datos nuevo, hay que sumarlo ahí
   o rompe en silencio (bloqueado por CSP, no por error de red visible en Network tab).
 
+## Migraciones SQL versionadas (reorganizado 13-sep-2026)
+
+Los 3 `.sql` sueltos que estaban en la raíz (hallazgo técnico #8 de la auditoría del
+13-sep) se movieron y renombraron a `supabase/migrations/`, siguiendo el mismo patrón de
+nomenclatura (`YYYYMMDDHHMMSS_descripcion.sql`) que usa `financeos-app/supabase/migrations/`.
+**Solo se reordenó/renombró — el SQL de cada archivo quedó exactamente igual, no se
+reescribió ningún `CREATE`/`ALTER`, no se creó ningún cambio de esquema nuevo, y ninguna
+migración se re-ejecutó contra producción en esta tarea.**
+
+Orden histórico (inferido de la fecha de creación de cada archivo — el `git log` de este
+repo está reescrito/squasheado y no sirve para esto):
+
+1. `20260615141400_stripe_schema_licenses_and_profiles.sql` — ex `supabase-stripe-schema.sql`.
+   **Desactualizado respecto a producción**: define `licenses` con PK `key` en claro,
+   pero la tabla real en el proyecto Supabase compartido usa el esquema de financeos-app
+   (`key_hash`). No volver a correr este archivo — ver el hallazgo de colisión de
+   `validate_license` más arriba en este mismo documento.
+2. `20260719193300_trial_emails_and_webhook_events.sql` — ex `supabase-trial-emails.sql`.
+   `trial_emails` + `webhook_events`, RLS ON sin policies.
+3. `20260911204000_trial_used_anti_reuse_fix.sql` — ex `supabase-trial-fix.sql`. Columna
+   `trial_used`, backfill, `REVOKE` de columnas de dinero, trigger anti-reabuso.
+
+No se portó ningún runner de aplicación de migraciones — `financeos-app` tampoco tiene
+uno propio, usa el Supabase CLI estándar (`supabase migration new` / `supabase db push
+--linked`) solo para migraciones *nuevas*, dejando sus `.sql` viejos como registro
+histórico. Invest sigue el mismo patrón: la carpeta ordenada es documentación/versionado;
+cualquier migración nueva (si Walter la pide — recordar que Invest está en pausa de
+producto) usa ese mismo flujo del CLI, verificando primero contra producción real. Detalle
+completo en `supabase/migrations/README.md`.
+
 ## Fuente de verdad
 
 Este archivo es nuevo (creado 13-sep-2026, no existía antes). Memoria relevante:
