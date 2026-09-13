@@ -1705,6 +1705,7 @@ body:not(.no-auth) #mainnav {
 }
 .nb-icon .ico { margin:0 auto; }
 .ico-lg { width: 22px; height: 22px; }
+.ico-xl { width: 40px; height: 40px; }
 /* Para icon() insertado en medio de texto corrido (listas de señales unidas por
    " · ", badges de una sola línea): sin esto, el display:block de .ico fuerza
    un salto de línea dentro del flujo inline y rompe el badge. */
@@ -2133,6 +2134,8 @@ div:has(>.dtab), div:has(>.rtab) {
 <g id="i-face-neutral"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8.5 15.5h7"/></g>
 <g id="i-face-greed"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8.5 14.5a4 4 0 0 0 7 0"/></g>
 <g id="i-face-euphoria"><circle cx="12" cy="12" r="9"/><path d="M8.5 9.5a2 2 0 0 1 3 0M12.5 9.5a2 2 0 0 1 3 0"/><path d="M7.5 14a4.5 4.5 0 0 0 9 0z"/></g>
+<g id="i-target"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></g>
+<g id="i-calc"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8"/><circle cx="8" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="16" cy="12" r="1"/><circle cx="8" cy="16" r="1"/><circle cx="12" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></g>
 </defs></svg>
 
 <!-- Suite nav — franja de vuelta a la suite.
@@ -4109,7 +4112,7 @@ function renderDecisionEngineBody(){
   main.innerHTML=_ph('Analizar · Motor de Análisis','Motor de Análisis','// Régimen SPY · Volatilidad VIX · Scoring técnico 0–100 por activo','<button class="btn" style="font-size:11px;border-color:var(--border);color:var(--text3)" onclick="openModal(\'score-info\')">¿Cómo se calcula? →</button>')+
     analisisTabs()+
     explicaUniverso+
-    (isFreeUser&&teaserUsed?'<div style="margin:0 20px 16px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--r-md);font-size:12px;color:var(--amber);display:flex;align-items:center;gap:10px">⚡ Vista previa utilizada hoy — <button onclick="openModal(\'upgrade\')" style="background:var(--amber);color:#000;border:none;border-radius:var(--r-sm);padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">Activar Pro →</button></div>':'')+
+    (isFreeUser&&teaserUsed?'<div style="margin:0 20px 16px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--r-md);font-size:12px;color:var(--amber);display:flex;align-items:center;gap:10px">'+icon('bolt')+' Vista previa utilizada hoy — <button onclick="openModal(\'upgrade\')" style="background:var(--amber);color:#000;border:none;border-radius:var(--r-sm);padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">Activar Pro →</button></div>':'')+
     '<div id="de-body" style="padding:0 20px 40px">'+
     // Skeleton screens — show structure immediately, data fills in
     '<div class="de-skeleton">'+
@@ -4226,7 +4229,7 @@ function renderDecisionEngineBody(){
           '</div>';
       }).join('');
       earningsCard='<div style="margin-bottom:16px">'+
-        '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📅 Earnings — próximos resultados</div>'+
+        '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">'+icon('calendar')+' Earnings — próximos resultados</div>'+
         '<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">'+eItems+'</div>'+
         '</div>';
     }
@@ -4244,7 +4247,7 @@ function renderDecisionEngineBody(){
       '</div>';
     if(usingDefaults){
       scoresHtml+='<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);margin-bottom:12px;padding:8px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md)">'+
-        '⚡ Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Agrega tu Watchlist →</span></div>';
+        icon('bolt')+' Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Agrega tu Watchlist →</span></div>';
     }
     if(!scores.length){
       scoresHtml+='<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;color:var(--text3);font-size:12px">Sin datos disponibles. Verifica tu conexión.</div>';
@@ -4331,8 +4334,8 @@ function renderDecisionEngineBody(){
     // ── RENDER TABS ──
     var tabNav=
       '<div style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:3px;margin-bottom:16px;width:fit-content">'+
-      '<button id="de-tab-global" onclick="deSetTab(\'global\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:var(--grn);color:#0a1208;transition:.15s">🌐 Mercado Global</button>'+
-      '<button id="de-tab-assets" onclick="deSetTab(\'assets\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.15s">📊 Por Activo ('+scores.length+')</button>'+
+      '<button id="de-tab-global" onclick="deSetTab(\'global\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:var(--grn);color:#0a1208;transition:.15s">'+icon('globe')+' Mercado Global</button>'+
+      '<button id="de-tab-assets" onclick="deSetTab(\'assets\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.15s">'+icon('volume')+' Por Activo ('+scores.length+')</button>'+
       '</div>';
     var globalPane='<div id="de-pane-global">'+regimeCard+vixCard+earningsCard+'</div>';
     // Free teaser: show assets pane but blur rows after the first one + upgrade overlay
@@ -4483,8 +4486,8 @@ function renderScreenerBody(){
     '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:.8px">Presets:</span>'+
     [
       ['🇺🇸 Tech','AAPL MSFT NVDA GOOGL META AMZN TSLA AMD INTC ORCL'],
-      ['📈 ETFs','SPY QQQ IWM GLD TLT XLK XLF XLV XLE XLI'],
-      ['🌎 LATAM ADR','BABA MELI PBR VALE CX BBD ITUB BRFS ERJ LTM AMXL WALMEX'],
+      ['<span style=\"display:inline-flex;align-items:center;gap:4px\">'+icon('ind')+' ETFs</span>','SPY QQQ IWM GLD TLT XLK XLF XLV XLE XLI'],
+      ['<span style=\"display:inline-flex;align-items:center;gap:4px\">'+icon('globe')+' LATAM ADR</span>','BABA MELI PBR VALE CX BBD ITUB BRFS ERJ LTM AMXL WALMEX'],
       ['🇧🇷 Brasil','ITUB BBDC4.SA VALE3.SA PETR4.SA ABEV3.SA B3SA3.SA WEGE3.SA'],
       ['🇲🇽 México','AMXL.MX WALMEX.MX FEMSA.MX GFINBURO.MX CEMEX.MX BIMBOA.MX'],
       ['🇨🇱 Chile','SQM BCI.CL FALABELLA.CL COPEC.CL ENELCHILE.CL CCU.CL CMPC.CL'],
@@ -4833,7 +4836,7 @@ function renderWelcome(){
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('risk')+'</span><div><div class="wv3-feat-title">Gestión de Riesgo Referencial</div><div class="wv3-feat-desc">Niveles ATR(14) calculados por volatilidad histórica.</div></div></div>'+
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portfolio y Screener</div><div class="wv3-feat-desc">Seguimiento P&amp;L, watchlist y filtro técnico sobre 50+ activos.</div></div></div>'+
     '</div>'+
-    '<div class="wv3-disc">🛡 Análisis técnico educativo · No asesoría financiera · No somos bróker · No ejecutamos órdenes</div>'+
+    '<div class="wv3-disc">'+icon('shield')+' Análisis técnico educativo · No asesoría financiera · No somos bróker · No ejecutamos órdenes</div>'+
     '</div>'+ // end wv3-left
     // ── COLUMNA DERECHA ──
     '<div class="wv3-right">'+
@@ -5196,7 +5199,7 @@ function renderDash(){
       '<div class="dash-wrap">'+
       '<div id="de-regime-banner" class="dash-ctx-card" style="margin-bottom:20px"><div class="dash-ctx-loading">// Cargando contexto de mercado…</div></div>'+
       '<div style="text-align:center;padding:40px 20px;max-width:460px;margin:0 auto">'+
-      '<div style="font-size:40px;margin-bottom:14px">📈</div>'+
+      '<div style="margin-bottom:14px;color:var(--text3)">'+icon('ind','ico-xl')+'</div>'+
       '<h2 style="font-size:18px;font-weight:700;color:var(--bright);margin-bottom:8px">Bienvenido a MOY IQ Invest</h2>'+
       '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:20px">Agrega tu primera posición para ver tu dashboard completo con P&L, allocation y señales técnicas.</p>'+
       '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">'+
@@ -5697,7 +5700,7 @@ function renderBitacora(){
         }).join('');
         divsHtml='<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px">'+
           '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'+
-            '<h3 style="font-size:13px;margin:0;color:var(--text2)">💰 Dividendos recibidos</h3>'+
+            '<h3 style="font-size:13px;margin:0;color:var(--text2)">'+icon('cash')+' Dividendos recibidos</h3>'+
             '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:14px;font-weight:700;color:var(--grn)">+$'+fmt(totalDivs)+'</span>'+
           '</div>'+
           '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'+tickerChips+'</div>'+
@@ -5725,7 +5728,7 @@ function renderBitacora(){
         }).join("");
         if(costChips){
           costHtml='<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px">'+
-            '<h3 style="font-size:13px;margin:0 0 12px;color:var(--text2)">📊 Costo promedio ponderado por posición</h3>'+
+            '<h3 style="font-size:13px;margin:0 0 12px;color:var(--text2)">'+icon('volume')+' Costo promedio ponderado por posición</h3>'+
             '<div style="display:flex;gap:8px;flex-wrap:wrap">'+costChips+'</div>'+
           '</div>';
         }
@@ -5807,8 +5810,8 @@ function renderWatch(){
   var emptyMsg=wl.length===0?'<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px;font-family:\'IBM Plex Mono\'">Lista vacía — agrega tickers arriba</td></tr>':'';
 
   var deHeader=isPro
-    ?'<th onclick="setPage(\'decision\')" style="cursor:pointer;color:var(--blue)" title="Ver Motor de Análisis completo">🎯 DE Score</th>'
-    :'<th style="color:var(--text3)">🎯 DE</th>';
+    ?'<th onclick="setPage(\'decision\')" style="cursor:pointer;color:var(--blue)" title="Ver Motor de Análisis completo">'+icon('target')+' DE Score</th>'
+    :'<th style="color:var(--text3)">'+icon('target')+' DE</th>';
 
   document.getElementById("main").innerHTML=
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h1 class="fos-module-title">Watchlist</h1><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+(isPro?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('decision')+' Motor →</button>':'')+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
@@ -6148,7 +6151,7 @@ function mercadoHoyBody(){
       '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block"></span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(featItem.hoursAgo)+'</span>'+
       '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;background:'+impBg[featItem.impact]+';color:'+impCol[featItem.impact]+'">'+impLabel[featItem.impact]+'</span>'+
-      '<div style="margin-left:auto;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">💡 '+featItem.key.substring(0,52)+'...</div>'+
+      '<div style="margin-left:auto;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">'+icon('idea')+' '+featItem.key.substring(0,52)+'...</div>'+
       '</div></div></div>';
   }
 
@@ -6409,7 +6412,7 @@ function renderInd(){
       '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
       '<td style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+sma20E+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+((ind&&ind.sma20!=null&&lp)?(lp>=ind.sma20?'var(--pos)':'var(--neg)'):'var(--text3)')+'">'+((ind&&ind.sma20!=null&&lp)?((lp>=ind.sma20?'▲ ':'▼ ')+(((lp-ind.sma20)/ind.sma20)*100).toFixed(1)+'%'):'—')+'</td>'+
-      '<td><button class="btn" style="padding:2px 8px;font-size:11px">📊 Ver</button></td></tr>';
+      '<td><button class="btn" style="padding:2px 8px;font-size:11px">'+icon('volume')+' Ver</button></td></tr>';
   }).join("");
 
   var tickerCards=allT.slice(0,18).map(function(t){
@@ -6426,12 +6429,12 @@ function renderInd(){
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Analizar · Indicadores</div><h1 class="fos-module-title">Indicadores Técnicos</h1><div class="fos-module-sub">Click en cualquier ticker para análisis completo en el gráfico</div></div></div>'+
     '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">'+
     '<input class="inp" id="ind-in" placeholder="Buscar ticker..." style="width:150px;text-transform:uppercase" maxlength="6" onkeydown="if(event.key===\'Enter\'){var t=this.value.toUpperCase().trim();if(t){var s=ALL_SIG.find(function(x){return x.t===t;});openDrawer(t,s&&s.p?s.p:100);}}"/>'+
-    '<button class="btn" onclick="var t=document.getElementById(\'ind-in\').value.toUpperCase().trim();if(t){var s=ALL_SIG.find(function(x){return x.t===t;});openDrawer(t,s&&s.p?s.p:100);}">📊 Analizar</button>'+
+    '<button class="btn" onclick="var t=document.getElementById(\'ind-in\').value.toUpperCase().trim();if(t){var s=ALL_SIG.find(function(x){return x.t===t;});openDrawer(t,s&&s.p?s.p:100);}">'+icon('volume')+' Analizar</button>'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Portfolio — Click para análisis completo</div>'+
     '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>RSI (14)</th><th>Precio</th><th>SMA 20</th><th>vs SMA20</th><th>Ver</th></tr></thead><tbody>'+portRows+'</tbody></table></div>'+
     '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:8px 0">'+
-    '💡 Indicadores reales disponibles en el gráfico — click en cualquier ticker para abrir el análisis completo.'+
+    icon('idea')+' Indicadores reales disponibles en el gráfico — click en cualquier ticker para abrir el análisis completo.'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Todos los tickers — Click para abrir análisis</div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tickerCards+'</div>';
@@ -6535,10 +6538,10 @@ function renderRiskBody(){
       '<div class="st"><div class="stbar"></div>Asignación Sugerida — Perfil '+al.label+'</div>'+
       barsHtml+
       '<div style="padding:8px 12px;background:var(--card3);border-radius:var(--r-sm);margin-top:8px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text2)">'+
-      '💡 '+al.tilt+
+      icon('idea')+' '+al.tilt+
       (goalAdj?' <br><span style="color:var(--amber)">'+goalAdj+'</span>':'')+
       '</div>'+
-      '<button onclick="showRiskProfile(function(){renderRisk();})" style="margin-top:10px;background:transparent;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace;padding:4px 10px;cursor:pointer">✎ Cambiar perfil</button>'+
+      '<button onclick="showRiskProfile(function(){renderRisk();})" style="margin-top:10px;background:transparent;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace;padding:4px 10px;cursor:pointer">'+icon('edit')+' Cambiar perfil</button>'+
       '</div>';
   } else {
     allocHtml='<div class="cb">'+
@@ -6596,7 +6599,7 @@ function renderBack(){
   };
   var tabs='<div style="display:flex;gap:8px;margin-bottom:18px">'+
     '<button style="'+tabStyle('journal')+'" onclick="BT.tab=\'journal\';renderBack()">'+icon('clipboard')+' Analizador de Bitácora</button>'+
-    '<button style="'+tabStyle('sim')+'" onclick="BT.tab=\'sim\';renderBack()">⚡ Simulación Histórica</button>'+
+    '<button style="'+tabStyle('sim')+'" onclick="BT.tab=\'sim\';renderBack()">'+icon('bolt')+' Simulación Histórica</button>'+
     '</div>';
 
   var html=_ph('Decidir · Simulador','Probar una estrategia','// Qué habría pasado aplicando un cruce de medias en el pasado')+tabs+
@@ -7520,7 +7523,7 @@ function renderCorrelationMatrix(port){
     return '<div class="cb">'+
       '<div class="st"><div class="stbar"></div>Correlación de portafolio</div>'+
       '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin:0 0 10px">Calcula las correlaciones Pearson entre activos (2 meses de historia)</p>'+
-      '<button class="btn" onclick="loadCorrData()">📊 Calcular matriz de correlación</button>'+
+      '<button class="btn" onclick="loadCorrData()">'+icon('volume')+' Calcular matriz de correlación</button>'+
       '</div>';
   }
 
@@ -7672,7 +7675,7 @@ function renderDrawerHead(ticker,price){
       if(lq&&lq.marketCap) parts.push('Cap: '+fmtM(lq.marketCap));
       if(lq&&lq.volume) parts.push('Vol: '+fmtV(lq.volume));
       var earn=dEarnCache[ticker];
-      if(earn&&earn.nextDate) parts.push('<span style="color:var(--amber)">📅 Earnings: '+earn.nextDate+(earn.nextEpsEst!=null?' · EPS est. $'+fmtD(earn.nextEpsEst):'')+'</span>');
+      if(earn&&earn.nextDate) parts.push('<span style="color:var(--amber)">'+icon('calendar')+' Earnings: '+earn.nextDate+(earn.nextEpsEst!=null?' · EPS est. $'+fmtD(earn.nextEpsEst):'')+'</span>');
       return parts.length?'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\';margin-top:3px">'+parts.join(' · ')+'</div>':'';
     })()+
     '</div>'+
@@ -7864,8 +7867,8 @@ function renderDrawerBody(){
         '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+
         (f.sector?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:\'IBM Plex Mono\',monospace">'+esc(f.sector)+'</span>':'')+
         (f.industry?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+esc(f.industry)+'</span>':'')+
-        (f.country?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">🌍 '+esc(f.country)+'</span>':'')+
-        (f.employees?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">👥 '+fmt(f.employees)+'</span>':'')+
+        (f.country?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+icon('globe')+' '+esc(f.country)+'</span>':'')+
+        (f.employees?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+icon('users')+' '+fmt(f.employees)+'</span>':'')+
         '</div>'+
         (f.description?'<p style="font-size:11px;color:var(--text3);line-height:1.6;font-family:\'IBM Plex Mono\',monospace;margin:0 0 12px">'+esc(f.description)+'</p>':'');
     }
@@ -7942,7 +7945,7 @@ function renderDrawerBody(){
       }).join("")+
       '</div>'+
       '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
-      '📊 Datos del último trimestre reportado · Fuente: Finnhub / FMP'+
+      icon('volume')+' Datos del último trimestre reportado · Fuente: Finnhub / FMP'+
       (f&&f.fetchedAt?' · Actualizado: '+timeAgo(f.fetchedAt):'')+
       '<br>Pueden diferir del dato oficial. No constituyen asesoría financiera ni recomendación de inversión.'+
       '</div>';
@@ -8075,7 +8078,7 @@ function renderAIPanel(){
       '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:16px">Analizo tu portfolio con los datos que has registrado.<br>Pregúntame lo que quieras sobre tus inversiones.</div>'+
       '<div style="display:flex;flex-direction:column;gap:6px">'+
       suggested.map(function(q){
-        return '<button onclick="document.getElementById(\'ai-input\').value=\''+q+'\';sendFromInput()" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:8px 12px;font-size:11px;color:var(--text);cursor:pointer;text-align:left;transition:.15s;font-family:\'IBM Plex Mono\',monospace" onmouseover="this.style.borderColor=\'var(--orange-bd)\';this.style.color=\'var(--amber)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text)\'">'+'💬 '+q+'</button>';
+        return '<button onclick="document.getElementById(\'ai-input\').value=\''+q+'\';sendFromInput()" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:8px 12px;font-size:11px;color:var(--text);cursor:pointer;text-align:left;transition:.15s;font-family:\'IBM Plex Mono\',monospace" onmouseover="this.style.borderColor=\'var(--orange-bd)\';this.style.color=\'var(--amber)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text)\'">'+icon('chat')+' '+q+'</button>';
       }).join('')+
       '</div></div>'
     :'')+
@@ -8106,7 +8109,7 @@ function renderAIMessages(){
       '<div style="max-width:85%;padding:9px 12px;border-radius:'+(isUser?'12px 12px 4px 12px':'12px 12px 12px 4px')+';background:'+(isUser?'var(--amber)':'var(--card)')+';color:'+(isUser?'#fff':'var(--text)')+';font-size:12px;line-height:1.6;border:1px solid '+(isUser?'transparent':'var(--border)')+';font-family:\'IBM Plex Sans\',sans-serif;white-space:pre-wrap">'+
       esc(m.content)+
       '</div>'+
-      (isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;color:var(--text2)">👤</div>':'')+
+      (isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;color:var(--text2)">'+icon('user')+'</div>':'')+
       '</div>';
   }).join('');
 
@@ -8272,7 +8275,7 @@ function renderPBBody(){
     '</div></div>'
   :
     '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);text-align:center">'+
-    '<div style="font-size:44px;margin-bottom:12px">📐</div>'+
+    '<div style="margin-bottom:12px;color:var(--text3)">'+icon('calc','ico-xl')+'</div>'+
     '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px">Ingresa los datos y calcula</div>'+
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">Ticker · Precio · Capital · % Riesgo · Ref. Baja</div></div>';
 
@@ -8942,7 +8945,7 @@ async function generateRadarReport(){
       summary:'Diagnóstico local del portfolio — Análisis IA disponible próximamente.',
       sections:[
         {id:'health',title:'Score de Salud',content:'Tu portfolio tiene un score de '+health.total+'/100. Diversificación: '+health.subs.div+' · Momentum: '+health.subs.mom+' · Riesgo: '+health.subs.risk+' · Correlación: '+health.subs.corr+' · Valoración: '+health.subs.val+'.'},
-        {id:'macro',title:'Análisis Técnico Avanzado',content:'📊 Los sub-scores del Health Score son calculados localmente con datos en tiempo real. El análisis narrativo completo estará disponible muy pronto.'},
+        {id:'macro',title:'Análisis Técnico Avanzado',content:icon('volume')+' Los sub-scores del Health Score son calculados localmente con datos en tiempo real. El análisis narrativo completo estará disponible muy pronto.'},
         {id:'action',title:'Mientras tanto',content:'1. Revisa tus posiciones en Portfolio. 2. Consulta Análisis Comparativo para ver indicadores históricos (Alto/Medio/Bajo). 3. Usa el Position Builder para calcular niveles de referencia.'},
       ],
     };
@@ -8984,7 +8987,7 @@ function radarShare(){
     // Copy to clipboard
     if(navigator.clipboard){
       navigator.clipboard.writeText(url).then(function(){
-        radarToast('🔗 Link copiado al portapapeles — válido 7 días');
+        radarToast(icon('link')+' Link copiado al portapapeles — válido 7 días');
       });
     } else {
       // Fallback: show the URL
@@ -8994,7 +8997,7 @@ function radarShare(){
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      radarToast('🔗 Link copiado al portapapeles');
+      radarToast(icon('link')+' Link copiado al portapapeles');
     }
   }catch(e){
     radarToast('Error al generar el link');
@@ -9219,7 +9222,7 @@ function renderRadar(){
     '<div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-xl);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text2)">'+
     (['','Muy cons.','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'')+' · '+
     ({short:'Corto',mid:'Mediano',long:'Largo'}[RADAR.profile.horizon]||'')+' plazo'+
-    '<button onclick="RADAR.profile=null;radarSaveProfile(null);renderRadar()" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;margin-left:4px" title="Cambiar perfil" aria-label="Editar"><span aria-hidden="true">✎</span></button>'+
+    '<button onclick="RADAR.profile=null;radarSaveProfile(null);renderRadar()" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;margin-left:4px" title="Cambiar perfil" aria-label="Editar"><span aria-hidden="true">'+icon('edit')+'</span></button>'+
     '</div>':'';
 
   document.getElementById('main').innerHTML=
@@ -9257,7 +9260,7 @@ function renderRadar(){
       '<div>Horizonte: '+({short:'Corto plazo',mid:'Mediano plazo',long:'Largo plazo'}[RADAR.profile.horizon]||'')+'</div>'+
       '<div>Objetivo: '+({growth:'Crecimiento',income:'Ingresos',preservation:'Preservación'}[RADAR.profile.goal]||'')+'</div>'+
       '</div>'+
-      '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;margin-top:10px;font-size:11px">✎ Cambiar perfil</button>'+
+      '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;margin-top:10px;font-size:11px">'+icon('edit')+' Cambiar perfil</button>'+
       '</div>':'<div class="cb"><div class="st"><div class="stbar"></div>Perfil pendiente</div>'+
       '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6;margin-bottom:10px">El Radar se personaliza según tu perfil de riesgo, horizonte y objetivo.</div>'+
       '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;font-size:11px">Crear perfil →</button>'+
@@ -9362,7 +9365,7 @@ function showOnboarding(){
     '<div style="display:flex;gap:10px;justify-content:center">'+
     (ONBOARD.step>0?'<button class="btn" onclick="onboardPrev()">← Anterior</button>':'')+
     (isLast?
-      '<button class="btn-big" onclick="onboardFinish()">Empezar a invertir 🚀</button>':
+      '<button class="btn-big" onclick="onboardFinish()">Empezar a invertir '+icon('rocket')+'</button>':
       '<button class="btn-big" onclick="onboardNext()">'+step.action+' →</button>')+
     '</div>'+
     // Skip
@@ -9496,8 +9499,8 @@ function renderHelp(){
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>¿Necesitas más ayuda?</div>'+
     '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
-    '<a href="mailto:invest@moyiq.app" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);text-decoration:none;font-size:12px;font-family:\'IBM Plex Mono\',monospace;transition:.15s" onmouseover="this.style.borderColor=\'var(--orange-bd)\'" onmouseout="this.style.borderColor=\'var(--border)\'">📧 invest@moyiq.app</a>'+
-    '<button onclick="showOnboarding()" class="btn">🎓 Re-iniciar tour</button>'+
+    '<a href="mailto:invest@moyiq.app" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);text-decoration:none;font-size:12px;font-family:\'IBM Plex Mono\',monospace;transition:.15s" onmouseover="this.style.borderColor=\'var(--orange-bd)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+icon('mail')+' invest@moyiq.app</a>'+
+    '<button onclick="showOnboarding()" class="btn">'+icon('graduation')+' Re-iniciar tour</button>'+
     '<button onclick="showShortcuts()" class="btn">⌨️ Ver atajos</button>'+
     '</div></div>';
 }
@@ -9599,7 +9602,7 @@ function startTrial(){
     document.getElementById('mroot').innerHTML=
       '<div class="overlay" onclick="document.getElementById(\'mroot\').innerHTML=\'\'">'+
       '<div class="modal" style="max-width:340px;text-align:center" onclick="event.stopPropagation()">'+
-      '<div style="font-size:48px;margin-bottom:14px">🎉</div>'+
+      '<div style="margin-bottom:14px;color:var(--amber)">'+icon('confetti','ico-xl')+'</div>'+
       '<h2 style="margin-bottom:8px">¡Trial activado!</h2>'+
       '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">Tienes acceso completo a MOY IQ Invest Pro. Explora el Análisis IA, los Indicadores Pro, el Comparador y todas las herramientas.</p>'+
       '<button class="btn-big" onclick="document.getElementById(\'mroot\').innerHTML=\'\';renderMain()" style="width:100%">Explorar MOY IQ Invest Pro →</button>'+
@@ -9719,7 +9722,7 @@ function renderComp(){
     chartContent='<div class="dload"><div class="spin"></div>Cargando histórico...</div>';
   } else if(!hasData){
     chartContent='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;text-align:center;color:var(--text3)">'+
-      '<div style="font-size:40px;margin-bottom:10px">⚖️</div>'+
+      '<div style="margin-bottom:10px;color:var(--text3)">'+icon('scale','ico-xl')+'</div>'+
       '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:5px">Comparador head-to-head</div>'+
       '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace">Presiona "Comparar" para cargar datos reales</div></div>';
   } else {
@@ -9840,7 +9843,7 @@ function renderComp(){
           if(m.k==='sharpe') col=typeof v==='number'?(v>=1?'var(--grn)':v>=0.5?'var(--amber)':'var(--red)'):'var(--text)';
           return '<td style="color:'+col+';font-weight:'+(isBest?'700':'400')+'">'+fmt+'</td>';
         }).join('');
-        var bestCell=best?'<td><span style="font-size:11px;padding:2px 7px;border-radius:3px;background:var(--grn-bg);color:var(--grn);font-family:\'IBM Plex Mono\',monospace">'+esc(best)+' 🏆</span></td>':'<td style="color:var(--text3)">—</td>';
+        var bestCell=best?'<td><span style="font-size:11px;padding:2px 7px;border-radius:3px;background:var(--grn-bg);color:var(--grn);font-family:\'IBM Plex Mono\',monospace">'+esc(best)+' '+icon('trophy')+'</span></td>':'<td style="color:var(--text3)">—</td>';
         return '<tr class="trow"><td style="font-size:11px;color:var(--text2)">'+m.label+'</td>'+cells+bestCell+'</tr>';
       }).join('');
 
@@ -9850,7 +9853,7 @@ function renderComp(){
         var corrInsight=tickerStats.slice(1).map(function(s){
           if(s.corr===null||s.corr===undefined) return '';
           var c=s.corr;
-          var advice=c>0.8?'⚠️ Poca diversificación':c<0.2?'✅ Excelente par para diversificar':'📊 Correlación '+(c>0.5?'moderada':'baja');
+          var advice=c>0.8?'⚠️ Poca diversificación':c<0.2?'✅ Excelente par para diversificar':icon('volume')+' Correlación '+(c>0.5?'moderada':'baja');
           return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">'+
             '<span style="font-size:11px;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(tickerStats[0].t)+' vs '+esc(s.t)+'</span>'+
             '<span style="font-size:11px;color:var(--text2)">'+advice+'</span>'+
@@ -9883,7 +9886,7 @@ function renderComp(){
     (COMP.tickers.length<4?'<button onclick="compAddTicker()" class="btn" style="width:100%;margin-top:4px">+ Agregar ticker</button>':'')+
     '<div style="margin-top:12px"><div class="st" style="margin-bottom:7px"><div class="stbar"></div>Período</div><div>'+rangeBtns+'</div></div>'+
     '<button onclick="compLoad()" class="btn-big" style="width:100%;margin-top:14px">'+
-    (COMP.loading?'<span style="display:inline-flex;align-items:center;gap:7px"><span class="spin-sm"></span>Cargando...</span>':'⚖️ Comparar →')+'</button>'+
+    (COMP.loading?'<span style="display:inline-flex;align-items:center;gap:7px"><span class="spin-sm"></span>Cargando...</span>':icon('scale')+' Comparar →')+'</button>'+
     '</div>'+
     '<div class="cb"><div class="st"><div class="stbar"></div>Pares rápidos</div>'+sugRows+'</div>'+
     '</div>'+
@@ -10012,7 +10015,7 @@ function renderDivs(){
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Seguir · Dividendos</div><h1 class="fos-module-title">Dividendos</h1>'+
     '<div class="fos-module-sub">Proyección de ingresos · 12 meses</div></div>'+
     '<button onclick="loadDivData()" class="btn-big" style="padding:8px 18px;font-size:12px;flex-shrink:0">'+
-    (DIVS.loading?'<span style="display:inline-flex;align-items:center;gap:7px"><span class="spin-sm"></span>Cargando...</span>':'💰 Cargar dividendos')+'</button></div>'+
+    (DIVS.loading?'<span style="display:inline-flex;align-items:center;gap:7px"><span class="spin-sm"></span>Cargando...</span>':icon('cash')+' Cargar dividendos')+'</button></div>'+
     '<div class="krow">'+
     kpi('Ingreso anual'+(USER_CURRENCY!=='USD'?' USD':''),'$'+fmtD(totalAnnual),'Proyectado','g')+
     kpi('Ingreso mensual'+(USER_CURRENCY!=='USD'?' USD':''),'$'+fmtD(totalAnnual/12),'Promedio','b')+
@@ -10025,7 +10028,7 @@ function renderDivs(){
       '<div class="cb"><div class="st"><div class="stbar"></div>Proyección mensual — próximos 12 meses</div>'+
       '<div style="display:flex;align-items:flex-end;height:100px;gap:4px;padding:0 4px">'+calBars+'</div></div>'+
       '<div class="tw"><table><thead><tr><th>Ticker</th><th>Unidades</th><th>Dividendo</th><th>Ingreso anual</th><th>Yield</th><th>Frecuencia</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
-    :'<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:36px;margin-bottom:10px">💰</div>'+
+    :'<div style="text-align:center;padding:40px;color:var(--text3)"><div style="margin-bottom:10px;color:var(--text3)">'+icon('cash','ico-xl')+'</div>'+
       '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px">Sin datos de dividendos</div>'+
       '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace">Presiona "Cargar dividendos" para obtener datos reales</div></div>');
 }
@@ -10331,7 +10334,7 @@ function renderCapital(){
     // igual sobre el numero que haya en el campo.
     (capDisponible>0?'<div style="margin-top:6px"><button onclick="capUsarDisponible('+capDisponible+')" style="background:none;border:none;padding:0;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--grn);cursor:pointer;text-decoration:underline">Usar capital disponible ($'+fmt(Math.round(capDisponible))+')</button></div>':'')+
     '</div>'+
-    '<button onclick="loadCapitalData()" class="btn-big" style="padding:9px 20px;font-size:13px'+(loading?';opacity:.6;pointer-events:none':'')+'">'+(loading?'<span class="spin-sm"></span> Calculando...':'📊 Calcular distribución')+'</button>'+
+    '<button onclick="loadCapitalData()" class="btn-big" style="padding:9px 20px;font-size:13px'+(loading?';opacity:.6;pointer-events:none':'')+'">'+(loading?'<span class="spin-sm"></span> Calculando...':icon('volume')+' Calcular distribución')+'</button>'+
     '<div><div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:5px">Cadencia</div>'+
     '<div style="display:inline-flex;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);padding:2px">'+
     ['mensual','quincenal','semanal'].map(function(c){var a=cadencia===c;return '<button onclick="S.capitalPlan.cadencia=\''+c+'\';renderCapital()" style="padding:6px 12px;border:none;border-radius:var(--r-sm);font-family:\'IBM Plex Mono\',monospace;font-size:11px;cursor:pointer;text-transform:capitalize;background:'+(a?'var(--grn-bg)':'transparent')+';color:'+(a?'var(--grn)':'var(--text3)')+';font-weight:'+(a?'700':'400')+'">'+c+'</button>';}).join('')+'</div></div>'+
@@ -11248,7 +11251,7 @@ renderDisclaimer();
     var qp=new URLSearchParams(window.location.search);
     if(qp.get('upgraded')==='1'){
       track('upgrade_success');
-      if(typeof showToast==='function') showToast('¡Bienvenido a Pro! 🎉 Tu suscripción está activa.','success');
+      if(typeof showToast==='function') showToast('¡Bienvenido a Pro! '+icon('confetti')+' Tu suscripción está activa.','success');
       // El webhook actualiza el plan en Supabase; recargar datos por si hubo demora
       try{ var s2=await sb.auth.getSession(); if(s2.data.session&&s2.data.session.user){ await sbLoadUserData(s2.data.session.user); render(); } }catch(e){}
       history.replaceState({}, '', '/app'); // limpia el query param
