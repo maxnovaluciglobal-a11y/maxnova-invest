@@ -47,19 +47,26 @@ hay realmente en producción — verificar contra el dashboard de Supabase antes
   (de cualquiera de los dos productos, si comparten `auth.users`) podría llamar la REST
   API de Supabase directo sin ese `.eq()` y leer filas ajenas.
 
-### Resultado de la auditoría RLS
+### Resultado de la auditoría RLS — ✅ CONFIRMADO en producción (13-sep-2026)
 
-**No pude confirmar aislamiento porque las políticas RLS reales de `profiles`,
-`portfolio_holdings`, `watchlist`, `consents`, `trial_emails` NO están en ningún `.sql`
-de ninguno de los dos repos.** Los únicos `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` que
-encontré para tablas de Invest (`supabase-trial-emails.sql`) son **RLS ON sin policies**
-— eso bloquea todo acceso `anon`/`authenticated` (solo `service_role` entra), lo cual es
-seguro pero significa que si el cliente alguna vez necesitó leer `trial_emails` directo
-(no parece ser el caso), no podría. `profiles`, `portfolio_holdings`, `watchlist`,
-`consents` no tienen su `CREATE TABLE` ni sus policies en ningún archivo del repo — deben
-haberse creado a mano en el SQL Editor de Supabase y nunca se versionaron. **Antes de
-confiar en que el aislamiento por `auth.uid()` existe, verificar directamente en el
-dashboard de Supabase → Authentication/Database → Policies.**
+Verificado directamente contra el proyecto real (`nelwgbcddwiaimzbcuas`, SQL Editor del
+dashboard, sesión logueada como MaxnovaLuci) — ya no es solo análisis de `.sql` locales:
+
+- Las 7 tablas (`profiles`, `portfolio_holdings`, `watchlist`, `consents`,
+  `trial_emails`, `webhook_events`, `licenses`) tienen **RLS habilitado** (`pg_class.
+  relrowsecurity = true`).
+- `profiles`, `portfolio_holdings`, `watchlist`, `consents` tienen policies reales (11
+  en total) que filtran correctamente por `auth.uid() = user_id` (o `= id` en
+  `profiles`) en cada operación SELECT/INSERT/UPDATE/DELETE — aislamiento por usuario
+  confirmado, no solo asumido.
+- `trial_emails`, `webhook_events`, `licenses` tienen RLS ON **sin policies propias** —
+  con RLS activo y cero policies permisivas, el default es denegar todo a `anon`/
+  `authenticated`; solo `service_role` accede (coincide con cómo las toca `api/`).
+
+**Conclusión: sin fuga de datos entre productos ni entre usuarios de Invest.** El
+`CREATE TABLE IF NOT EXISTS` local que decía tener el esquema viejo de `licenses` (PK
+`key` en claro) no importa — la tabla real en producción usa el esquema de MOY IQ
+(`key_hash`), confirmado también contra `pg_proc` (ver hallazgo de abajo).
 
 No encontré nombres de tabla que **colisionen** entre productos por sí solos: `profiles`,
 `portfolio_holdings`, `watchlist`, `consents`, `trial_emails`, `webhook_events` no
@@ -91,11 +98,15 @@ dejaría la función de Invest activa buscando una columna `key` que no existe e
 real (`key_hash`), rompiendo la validación de licencias de MOY IQ con un error de
 "columna no existe" la próxima vez que se llame.
 
-**No lo arreglé — decisión de Walter.** Opciones sin migrar infraestructura: renombrar la
-función/tabla de Invest a algo con namespace propio (`invest_licenses`,
-`validate_invest_license`) para no volver a pisar la de MOY IQ, o simplemente no volver a
-correr `supabase-stripe-schema.sql` tal cual está y dejar constancia de que está
-desactualizado respecto a lo que hay en producción.
+**✅ RESUELTO (13-sep-2026, tarde).** Verificado en vivo contra `pg_proc` que la función
+actualmente activa en producción es la de MOY IQ (`key_hash`) — la validación de
+licencias de MOY IQ **no estaba rota**. Para que la colisión no pueda volver a ocurrir:
+la función y su `grant` en `supabase/migrations/20260615141400_...sql` se renombraron de
+`validate_license` a `validate_license_invest_unused` (confirmado por grep que nunca se
+llama desde `app/` ni `api/` de este repo — el modelo real de Invest es suscripción +
+login, no "pegar una clave"). Si alguna vez se re-ejecuta ese archivo, ya no puede pisar
+la función real de MOY IQ. No se tocó nada en producción — solo el archivo de migración
+local (que de por sí nunca se re-ejecutó, ver sección de migraciones más abajo).
 
 ## Gotchas de deploy (`RUNBOOK.md` / `vercel.json` / `package.json`)
 

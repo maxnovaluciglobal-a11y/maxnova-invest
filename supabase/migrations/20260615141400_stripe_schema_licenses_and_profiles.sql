@@ -1,5 +1,17 @@
 -- FinanceOS Stripe integration schema
 -- Run in Supabase SQL editor: https://supabase.com/dashboard/project/nelwgbcddwiaimzbcuas/sql
+--
+-- *** DO NOT RE-RUN AS-IS ***
+-- Historical record only. This file is DEAD CODE from Invest's perspective: grep across
+-- app/ and api/ confirms validate_license() is never called anywhere in this repo's
+-- running code. Verified live in production (13-sep-2026, SQL editor query against
+-- pg_proc) that the function currently active in this SHARED Supabase project
+-- (nelwgbcddwiaimzbcuas) is MOY IQ's version (financeos-app/supabase-licenses.sql,
+-- key_hash/SHA-256 schema) - NOT this one. The two products define a same-name,
+-- same-signature validate_license(text) function; CREATE OR REPLACE silently clobbers
+-- whichever one ran last. Renamed below to validate_license_invest_unused so it can
+-- never again collide with MOY IQ's real, actively-used function - do not rename it
+-- back to validate_license. See invest-web/CLAUDE.md for full context.
 
 -- 1. Licenses table (FinanceOS App one-time purchases)
 create table if not exists licenses (
@@ -28,9 +40,13 @@ alter table profiles
 
 create index if not exists idx_profiles_stripe_customer on profiles (stripe_customer_id);
 
--- 3. Function to validate a license key (called by licenseValidator)
+-- 3. Function to validate a license key
+-- NEVER CALLED from app/ or api/ in this repo (confirmed by grep, 13-sep-2026) - Invest's
+-- actual licensing model is subscription + login via Stripe Checkout, not paste-a-key.
+-- Renamed from validate_license to validate_license_invest_unused so it cannot collide
+-- with MOY IQ's function of the same original name in this shared Supabase project.
 -- Returns: { valid, plan, activations } or null
-create or replace function validate_license(p_key text)
+create or replace function validate_license_invest_unused(p_key text)
 returns jsonb
 language plpgsql security definer
 as $$
@@ -49,4 +65,4 @@ end;
 $$;
 
 -- Grant execute to anon (called from frontend via Edge Function)
-grant execute on function validate_license(text) to anon;
+grant execute on function validate_license_invest_unused(text) to anon;
