@@ -35,6 +35,133 @@
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
+
+<!-- ══════════════════════════════════════════════
+     STRUCTURED DATA — Schema.org (JSON-LD)
+     13-sep-2026: primer JSON-LD de este repo. SoftwareApplication +
+     FAQPage. author/publisher reusan el mismo @id de Organization/Person
+     que ya usa moyiq.app (financeos-landing/index.html) — así Invest y
+     MOY IQ quedan vinculados en el grafo de conocimiento como productos
+     de la misma empresa/fundador, no como entidades separadas sin
+     relación. Las 5 preguntas del FAQPage son las mismas y en el mismo
+     orden que la sección #faq de este HTML — no se inventó ninguna.
+     ══════════════════════════════════════════════ -->
+
+<!-- 1. SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": "https://invest.moyiq.app/#software",
+  "name": "MOY IQ Invest",
+  "applicationCategory": "FinanceApplication",
+  "applicationSubCategory": "Investment Analysis",
+  "operatingSystem": "Web, PWA",
+  "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
+  "url": "https://invest.moyiq.app/",
+  "screenshot": "https://invest.moyiq.app/og-invest.png",
+  "description": "Plataforma de análisis técnico para inversores de LATAM. Motor de Análisis con régimen de mercado SPY, scoring por activo, gestión de riesgo y screener. Plan Free gratis para siempre; Pro desde US$9.99/mes. Datos referenciales con posible retraso — no es asesoría financiera, no ejecuta órdenes.",
+  "featureList": [
+    "Análisis Comparativo con indicadores históricos (tendencia, volumen, RSI, MACD)",
+    "Precios en tiempo real vía Yahoo Finance con fallback",
+    "Position Builder — Regla del 2% de gestión de riesgo",
+    "Chile/LATAM: tipo de cambio USD/CLP e IPSA",
+    "Comparador head-to-head de activos",
+    "Market Sentiment Gauge propio",
+    "Dividend Calendar",
+    "Rebalancing Tool",
+    "Noticias con análisis de impacto bursátil"
+  ],
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "MOY IQ Invest Free",
+      "description": "5 posiciones en portfolio, precios en tiempo real, 5 indicadores activos, Position Builder, 3 alertas de precio",
+      "price": "0.00",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "category": "Free"
+    },
+    {
+      "@type": "Offer",
+      "name": "MOY IQ Invest Pro",
+      "description": "Indicadores Pro, comparador head-to-head, Market Sentiment Gauge, Dividend Calendar, Rebalancing Tool, Chile/LATAM, Risk Management Pro, Backtesting Engine, export CSV",
+      "price": "9.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "category": "Subscription",
+      "priceSpecification": [
+        { "@type": "UnitPriceSpecification", "price": "9.99", "priceCurrency": "USD", "billingDuration": "P1M" }
+      ]
+    }
+  ],
+  "author": {
+    "@type": "Person",
+    "@id": "https://moyiq.app/#walter"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://moyiq.app/#org"
+  },
+  "inLanguage": ["es", "es-MX", "es-CO", "es-CL", "es-AR", "es-VE"],
+  "isRelatedTo": {
+    "@type": "SoftwareApplication",
+    "@id": "https://moyiq.app/#software"
+  },
+  "dateModified": "2026-09-13"
+}
+</script>
+
+<!-- 2. FAQPage — mismas 5 preguntas de la sección #faq de este HTML -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Los precios son realmente en tiempo real?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. MOY IQ Invest conecta con Yahoo Finance API para obtener precios de mercado en tiempo real. Verás un badge verde \"LIVE · HH:MM\" cuando los datos están actualizados. Si el proxy falla temporalmente, muestra datos cacheados (máx 2h) con badge naranja."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Necesito tarjeta de crédito para el trial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. El trial de 14 días es completamente gratuito, sin tarjeta de crédito. Al finalizar, puedes continuar con el plan Free (5 activos) o activar Pro con tu tarjeta."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo funcionan los indicadores de Análisis Comparativo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Combinan tendencia, volumen, RSI y MACD de cada activo en un score histórico (Alto/Medio/Bajo). Es contexto educativo sobre el comportamiento pasado del activo — no una señal de compra o venta ni una predicción."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿MOY IQ Invest conecta con mi broker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Actualmente el portfolio se ingresa manualmente (ticker, shares, precio de entrada). La integración con brokers (IBKR, Fidelity, Charles Schwab) está en desarrollo para Q3 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Puedo cancelar en cualquier momento?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. Cancela en 1 click desde tu perfil. Si cancelas, mantienes acceso Pro hasta el fin del período pagado y luego pasas automáticamente al plan Free sin perder tus datos."
+      }
+    }
+  ]
+}
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
