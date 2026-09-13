@@ -5802,6 +5802,37 @@ function exportScreenerCSV(){
 }
 
 // ── WATCHLIST ──────────────────────────────────────────────────
+// ── FILA DE TABLA DE SEÑALES (compartida) ───────────────────────
+// Watchlist (tbl-watch) y Analizar·Señales (tbl-sig) reconstruian la MISMA
+// fila (Ticker/Señal/Score/Fuerza/Precio/Δ Hoy/vs mín 52s) con dos copias de
+// HTML mantenidas por separado — Watchlist ademas se habia quedado sin los
+// atributos data-sc/data-price/data-chg que sortTh() necesita para ordenar,
+// porque esa copia nunca los tuvo. Se unifica en una sola funcion: opts.
+// tickerExtra agrega un badge junto al ticker (ej. "PORT" en Watchlist) y
+// opts.trailing agrega la(s) celda(s) final(es) especifica(s) de cada vista
+// (Watch/Quitar vs DE Score). Top Señales del Dashboard NO usa esta funcion:
+// su fila es mas angosta (sin Señal/Fuerza/52s), es un resumen a proposito,
+// no una copia incompleta. Distribución de señales (Sentimiento) tampoco: ese
+// widget cruza con el gauge Fear&Greed y muestra una barra de progreso en vez
+// de estas columnas — unificarlo forzaria una tabla que no es lo que necesita
+// esa pantalla.
+function sigTableRow(s, opts){
+  opts = opts || {};
+  var t = s.t;
+  var lp = getLivePrice(t);
+  var lq = LIVE[t];
+  return '<tr class="trow" data-sc="'+s.sc+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
+    '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')">'+esc(t)+(opts.tickerExtra||'')+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+    '<td>'+badge(s.sig)+'</td>'+
+    '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
+    '<td class="col-sec">'+sbar(s.sc)+'</td>'+
+    '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
+    '<td>'+chgCell(lq)+'</td>'+
+    '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
+    (opts.trailing||'')+
+    '</tr>';
+}
+
 function renderWatch(){
   var wl=S.watchlist;
   var avail=["AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","SPY","QQQ","VTI","IVV","DIA","XLK","XLV","XLE","JPM","V","UNH","WMT","JNJ","AMD","NKE","PG","HD","MA","DIS"].filter(function(t){return wl.indexOf(t)<0;});
@@ -5813,25 +5844,14 @@ function renderWatch(){
   var isPro=S.user&&planOf().locked.indexOf('decision')<0;
 
   var wRows=wl.map(function(t){
-    var s=ALL_SIG.find(function(x){return x.t===t;})||{sig:"HOLD",sc:60,p:100};
-    var lp=getLivePrice(t);
-    var lq=LIVE[t];
+    var s=ALL_SIG.find(function(x){return x.t===t;})||{t:t,sig:"HOLD",sc:60,p:100};
     var inPort=S.portfolio.some(function(h){return h.t===t;});
     var portBadge=inPort?'<span style="font-size:11px;padding:1px 5px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:3px;color:var(--blue);margin-left:4px">PORT</span>':'';
     var deCell=isPro
       ?'<td class="col-sec" id="des-'+t+'" style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">…</td>'
       :'<td class="col-sec" style="color:var(--text3)">'+icon('lock')+'</td>';
-    return '<tr class="trow" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
-      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')">'+esc(t)+portBadge+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td>'+badge(s.sig)+'</td>'+
-      '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
-      '<td class="col-sec">'+sbar(s.sc)+'</td>'+
-      '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
-      '<td>'+chgCell(lq)+'</td>'+
-      '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
-      deCell+
-      '<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist">'+icon('close')+'</button></td>'+
-      '</tr>';
+    var rmCell='<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist">'+icon('close')+'</button></td>';
+    return sigTableRow(s,{tickerExtra:portBadge, trailing:deCell+rmCell});
   }).join("");
 
   var emptyMsg=wl.length===0?'<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px;font-family:\'IBM Plex Mono\'">Lista vacía — agrega tickers arriba</td></tr>':'';
@@ -5922,19 +5942,9 @@ function renderSig(){
   }).join("");
 
   var rows=list.map(function(s){
-    var lp=getLivePrice(s.t);
-    var lq=LIVE[s.t];
     var inW=S.watchlist.indexOf(s.t)>=0;
     var wbtn='<button class="btn" style="padding:2px 7px;font-size:11px;'+(inW?"border-color:var(--amber);color:var(--amber)":"border-color:var(--text3);color:var(--text3)")+'" onclick="event.stopPropagation();'+(inW?"rmWatch('"+s.t+"')":"addWatch('"+s.t+"')")+'">'+(inW?"✓":"+")+' Watch</button>';
-    return '<tr class="trow" data-sc="'+s.sc+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onmouseenter="prefetchFund(\''+s.t+'\')">'+
-      '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+s.t+'\','+lp+')">'+s.t+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td>'+badge(s.sig)+'</td>'+
-      '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
-      '<td class="col-sec">'+sbar(s.sc)+'</td>'+
-      '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
-      '<td>'+chgCell(lq)+'</td>'+
-      '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
-      '<td>'+wbtn+'</td></tr>';
+    return sigTableRow(s,{trailing:'<td>'+wbtn+'</td>'});
   }).join("");
 
   document.getElementById("main").innerHTML=
@@ -5949,7 +5959,10 @@ function renderSig(){
     kpi("Indicador Medio",sigs.filter(function(s){return s.sig==="HOLD";}).length,"de "+sigs.length,"a")+
     kpi("Indicador Bajo",sigs.filter(function(s){return s.sig==="SELL";}).length,"de "+sigs.length,"r")+
     '</div>'+
-    '<div class="tw"><table id="tbl-sig"><thead><tr><th>Ticker</th><th>Indicador</th>'+sortTh("sig","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
+    // Header decia "Indicador" mientras que la misma columna (Alcista/Neutro/
+    // Bajista) en Watchlist/Panorama se llama "Señal" — mismo concepto, dos
+    // nombres. Unificado a "Señal" el 13-sep-2026 (prioridad 6 de la auditoria).
+    '<div class="tw"><table id="tbl-sig"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("sig","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
     '⚠ Los sesgos mostrados resultan de modelos técnicos automatizados (Trend×30% · Vol×20% · RSI×25% · MACD×25%). '+
@@ -7703,7 +7716,12 @@ function renderDrawerHead(ticker,price){
     '<div style="flex:1">'+
     '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">'+
     '<div style="font-size:19px;font-weight:700;color:var(--bright)">'+esc(ticker)+'</div>'+
-    '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\'">'+(lq?lq.exchange:"NASDAQ")+'</span>'+
+    // Bug: mostraba "undefined" para tickers cuya cotizacion en vivo (lq) SI
+    // llega pero sin campo exchange (ej. SPY vía el proxy de Yahoo) — el
+    // fallback a "NASDAQ" solo cubria el caso "no hay lq todavia", no
+    // "hay lq pero exchange vino vacio". Confirmado navegando: drawer de SPY
+    // mostraba "SPY undefined".
+    '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\'">'+((lq&&lq.exchange)?lq.exchange:"NASDAQ")+'</span>'+
     '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:'+(isLN?"var(--gbg)":"var(--ambg)")+';border:1px solid '+(isLN?"var(--gborder)":"var(--amborder)")+';color:'+(isLN?"var(--grn)":"var(--amber)")+';font-family:\'IBM Plex Mono\'">'+(isLN?"LIVE":"Estimado")+'</span>'+
     marketStatusBadge()+
     '</div>'+
@@ -9270,7 +9288,14 @@ function renderRadar(){
     _ph('Planificación · Radar','Radar Financiero','// Diagnóstico local de salud del portafolio · análisis narrativo con IA próximamente',profileBadge+
     (hasReport?'<button onclick="radarExportPDF()" class="btn">'+icon('download')+'PDF</button>':'')+
     (hasReport?'<button onclick="radarShare()" class="btn">'+icon('link')+'Compartir</button>':'')+
-    '<button onclick="generateRadarReport()" class="btn-big" style="padding:8px 18px;font-size:12px"'+(RADAR.loading?' disabled':'')+'>'+(RADAR.loading?'<span style="display:inline-flex;align-items:center;gap:6px"><span class="spin-sm"></span>Calculando...</span>':(hasReport?'Recalcular diagnóstico':'Ver diagnóstico'))+'</button>')+
+    // Antes este boton del header siempre se mostraba, con texto "Ver
+    // diagnóstico" cuando todavia no habia reporte — el mismo momento en que
+    // el empty state de abajo mostraba su propio CTA "Ver diagnóstico de
+    // salud" para la MISMA accion (generateRadarReport()). Dos botones, un
+    // solo click posible. Se deja solo el del empty state (mas descriptivo)
+    // y el del header aparece unicamente para recalcular un reporte ya
+    // generado, que es la unica funcion que no duplica nada.
+    (hasReport?'<button onclick="generateRadarReport()" class="btn-big" style="padding:8px 18px;font-size:12px"'+(RADAR.loading?' disabled':'')+'>'+(RADAR.loading?'<span style="display:inline-flex;align-items:center;gap:6px"><span class="spin-sm"></span>Calculando...</span>':'Recalcular diagnóstico')+'</button>':''))+
 
     // KPIs
     '<div class="krow">'+
@@ -10063,7 +10088,10 @@ function renderDivs(){
     (USER_CURRENCY!=='USD'
       ? kpi('Ingreso anual '+(FX_LABELS[USER_CURRENCY]||''),fxConvert(totalAnnual),'A tipo de cambio','a')
       : kpi('Rendimiento medio',(totalPortValue>0?fmtD(totalAnnual/totalPortValue*100)+'%':'—'),'Yield de cartera','a'))+
-    kpi('Con dividendos',divRows.length+' de '+port.length+'','n')+
+    // Bug: faltaba el argumento "subtitulo" de kpi(l,v,s,c,extra) — el 'n'
+    // (color neutro) caia en el parametro s (subtitulo) y se renderizaba tal
+    // cual como texto "n" debajo del valor, mostrando "0 de 22" + "n" suelto.
+    kpi('Con dividendos',divRows.length+' de '+port.length,'','n')+
     '</div>'+
     (divRows.length>0||DIVS.loading?
       '<div class="cb"><div class="st"><div class="stbar"></div>Proyección mensual — próximos 12 meses</div>'+
