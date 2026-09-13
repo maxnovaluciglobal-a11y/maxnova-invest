@@ -2134,6 +2134,7 @@ div:has(>.dtab), div:has(>.rtab) {
 <script src="/vendor-supabase.js"></script>
 <script src="/app/lib/async-guards.js"></script>
 <script src="/app/lib/rebalance.js"></script>
+<script src="/app/lib/risk.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -6415,16 +6416,13 @@ function riskTabs(){
 function renderRiskBody(){
   var plan=planOf();
   var cap=S.capital;
-  var rA=cap*.02;
+  // Calculo extraido a app/lib/risk.js (computeRiskRows) el 13-sep-2026 —
+  // mismo patron que app/lib/rebalance.js. -8%/+15% son una referencia
+  // estandar fija, no un dato historico real por ticker (ver comentario ahi).
+  var riskCalc=computeRiskRows(S.portfolio, cap, .02);
+  var rA=riskCalc.rA;
   var ev=SCENARIOS.reduce(function(s,sc){return s+sc.prob*sc.ret*cap;},0);
-  var rows=S.portfolio.map(function(h){
-    // El stop debe quedar SIEMPRE por debajo del precio: si no, (cur-stop) es
-    // negativo y el R:R se mostraba en negativo en activos volatiles.
-    var stop=Math.min(h.stop||h.cur*.92, h.cur*0.995);
-    var _r=Math.max(h.cur-stop, h.cur*0.005);
-    var ps=rA/_r*h.cur;var rr=(h.cur*.15)/_r;
-    return {t:h.t,cur:h.cur,stop:stop,ps:ps,rr:rr};
-  });
+  var rows=riskCalc.rows;
 
   var tableRows=rows.slice(0,8).map(function(r){
     return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+r.t+'\','+r.cur+')">'+
@@ -6505,8 +6503,8 @@ function renderRiskBody(){
     '<div class="krow">'+
     kpi("Capital",D(cap),"","g")+
     kpi("Riesgo/Op",D(rA),"2% del capital","r")+
-    kpi("Ref. Baja","8%","Histórico","n")+
-    kpi("Ref. Alta","15%","Histórico","g")+
+    kpi("Ref. Baja","8%","Referencia estándar","n")+
+    kpi("Ref. Alta","15%","Referencia estándar","g")+
     kpi("Valor Esp.",D(ev),ev>=0?"+Positivo":"Negativo",ev>=0?"g":"r")+
     '</div>'+
     '<div class="resp2" style="display:grid;grid-template-columns:1fr 268px;gap:16px;align-items:start">'+
@@ -6515,7 +6513,7 @@ function renderRiskBody(){
     (rows.length>8?'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:6px">Mostrando 8 de '+rows.length+' posiciones</div>':'')+
     // En movil quedan Activo/Risk $/Tamaño/R:R — la salida real de la calculadora
     // de riesgo; Precio, Ref-8% y Unidades son contexto derivable.
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th class="col-sec" title="Referencia de baja histórica –8%">Ref. –8%</th><th>Risk $</th><th>Tamaño</th><th class="col-sec">Unidades</th><th>R/R</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th class="col-sec" title="Referencia estándar de baja –8% (no es un dato histórico por ticker)">Ref. –8%</th><th>Risk $</th><th>Tamaño</th><th class="col-sec">Unidades</th><th>R/R</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+
     '</div>'+
     '<div>'+
     allocHtml+
@@ -8295,20 +8293,14 @@ function pbCalc(){
   if(!price||price<=0){showToast('Ingresa o carga un precio válido para continuar.','warn');return;}
   if(!capital||capital<=0){showToast('Define tu capital disponible.','warn');return;}
 
-  if(!stop||stop<=0) stop=price*0.92; // default -8%
-  if(stop>=price){showToast('El stop loss debe ser menor al precio de entrada.','warn');return;}
+  // Calculo extraido a app/lib/risk.js (computePositionSize) el 13-sep-2026 —
+  // misma ecuacion que renderRiskBody, ver comentario ahi.
+  var calc=computePositionSize({price:price,capital:capital,riskPct:risk,stop:stop,rrTarget:rr});
+  if(calc.error==='stop-not-below-price'){showToast('El stop loss debe ser menor al precio de entrada.','warn');return;}
+  if(calc.error==='invalid-risk-pct'){showToast('Diferencia entre precio y stop inválida.','warn');return;}
 
-  var riskPct=(price-stop)/price;
-  if(riskPct<=0){showToast('Diferencia entre precio y stop inválida.','warn');return;}
-
-  var riskAmt=capital*(risk/100);
-  var posSize=riskAmt/riskPct;
-  var units=posSize/price;
-  var target=price+rr*(price-stop); // configurable R/R
-  var rrActual=(target-price)/(price-stop);
-
-  PB.ticker=ticker;PB.price=price;PB.capital=capital;PB.risk=risk;PB.stop=stop;PB.rr=rr;
-  PB.computed={ticker:ticker,price:price,stop:stop,target:target,riskAmt:riskAmt,posSize:posSize,units:units,rr:rrActual};
+  PB.ticker=ticker;PB.price=price;PB.capital=capital;PB.risk=risk;PB.stop=calc.stop;PB.rr=rr;
+  PB.computed={ticker:ticker,price:price,stop:calc.stop,target:calc.target,riskAmt:calc.riskAmt,posSize:calc.posSize,units:calc.units,rr:calc.rr};
   renderPBBody();
 }
 
