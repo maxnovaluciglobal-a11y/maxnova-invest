@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Novedades — MOY IQ Invest</title>
+<style>
+  :root{
+    --grn:#CC9A52;--laton:#CC9A52;--on-accent:#14213D;
+    --verde:#74C2A3;
+    --bg:#12161F;--card:#181D29;--card2:#1E2433;
+    --text:#C7C2B2;--text2:#9C9686;--text3:#7D7869;--bright:#FAF8F2;
+    --border:rgba(228,223,209,0.10);--border2:rgba(228,223,209,0.20);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:740px;margin:0 auto;padding:48px 24px 80px}
+  .lockup{font-family:'Instrument Sans',Georgia,serif;font-weight:600;font-size:16px;text-transform:uppercase;letter-spacing:.08em;color:var(--bright);text-decoration:none;display:inline-flex;align-items:center;gap:.32em;margin-bottom:32px}
+  .lockup .dial{width:1em;height:1em;flex-shrink:0}
+  .lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.1em .3em;line-height:1;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.6em;letter-spacing:0;text-transform:uppercase}
+  .lockup .suffix{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:.62em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.1em}
+  .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--grn);margin-bottom:10px}
+  h1{font-family:'Instrument Sans',Georgia,serif;font-weight:700;font-size:clamp(26px,4vw,36px);letter-spacing:-.01em;color:var(--bright);margin-bottom:8px}
+  .meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);margin-bottom:40px}
+  h2{font-family:'Instrument Sans',Georgia,serif;font-weight:700;font-size:18px;color:var(--bright);margin:32px 0 10px;letter-spacing:-.005em}
+  p{color:var(--text2);margin-bottom:14px}
+  a{color:var(--grn);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .entry{border-bottom:.5px solid var(--border);padding-bottom:28px;margin-bottom:28px}
+  .entry:last-of-type{border-bottom:none}
+  .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(204,154,82,.12);color:var(--grn);margin-right:6px;letter-spacing:.02em}
+  .notice{background:var(--card);border:.5px solid var(--border);border-radius:10px;padding:14px 18px;margin:24px 0;font-size:13px;color:var(--text3)}
+  .back{display:inline-block;margin-top:40px;padding:10px 20px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);text-decoration:none}
+  .back:hover{color:var(--grn);text-decoration:none;border-color:var(--border2)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="dial" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+  <path d="M 28.79 71.21 A 30 30 0 1 1 71.21 71.21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#CC9A52"/>
+  <circle cx="50" cy="50" r="3.5" fill="#CC9A52"/>
+</symbol>
+</defs>
+</svg>
+<div class="wrap">
+  <a class="lockup" href="/"><svg class="dial" viewBox="0 0 100 100"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+
+  <div class="label">Novedades</div>
+  <h1>Qué cambió en MOY IQ Invest</h1>
+  <p class="meta">Registro de cambios reales, a partir del historial de commits del repo · actualizado septiembre 2026</p>
+
+  <div class="entry">
+    <span class="badge">rebrand</span>
+    <h2>Invest pasa a la familia MOY</h2>
+    <p>La landing y la app se realinearon al sistema visual real de MOY IQ: paleta oscura (los mismos tokens que corren en <code>/app</code>, no una imitación), tipografía Instrument Sans + IBM Plex, y el mismo lockup de logo (dial + "MOY" + placa "IQ") con el sufijo "Invest" para distinguir el producto. El dominio principal pasó a <code>invest.moyiq.app</code>.</p>
+  </div>
+
+  <div class="entry">
+    <span class="badge">privacidad</span>
+    <h2>Borrado de cuenta automatizado</h2>
+    <p>Eliminar la cuenta ahora borra los datos y el usuario de autenticación de forma automática, en vez de depender de una promesa manual de soporte. El flujo corre contra Supabase con la misma clave de servicio que usan el resto de los endpoints protegidos.</p>
+  </div>
+
+  <div class="entry">
+    <span class="badge">seguridad</span>
+    <h2>Endurecimiento contra XSS</h2>
+    <p>Se revisaron y escaparon los puntos donde datos controlados por el usuario (tickers, valores de rebalanceo) se insertaban en el HTML de la página, para cerrar vectores de inyección antes de mostrarlos.</p>
+  </div>
+
+  <div class="entry">
+    <span class="badge">copy</span>
+    <h2>Etiquetas más honestas en los planes</h2>
+    <p>Se corrigieron textos que sobreprometían: la referencia de stop/target de Risk Management Pro pasó a describirse como lo que es, el CTA del plan Pro aclara que es una prueba de 14 días (no el plan gratuito), y se quitaron testimonios de clientes que no existían.</p>
+  </div>
+
+  <div class="entry">
+    <span class="badge">datos</span>
+    <h2>Snapshot gratuito del mercado</h2>
+    <p>Se agregó una página de estado del mercado (<a href="/estado-mercado.html">estado-mercado.html</a>) como lead magnet: un vistazo rápido y gratuito a indicadores clave, sin necesidad de crear cuenta.</p>
+  </div>
+
+  <div class="notice">MOY IQ Invest es una herramienta de análisis educativo. Esta página no constituye asesoría financiera ni un registro exhaustivo de cada cambio — reúne los hitos más relevantes del historial de desarrollo.</div>
+
+  <a href="/" class="back">← Volver a MOY IQ Invest</a>
+</div>
+</body>
+</html>
