@@ -5904,13 +5904,15 @@ function investigarWatchPostRender(){
 
 // ── INVESTIGAR (combinado) ────────────────────────────────────────────────
 // Watchlist, Screener y Comparador vivian como 3 paginas separadas que se
-// pisaban entre si en #main — Walter pidio verlas las 3 sin click extra, en
-// columnas lado a lado (probamos apiladas primero; esto es lo que realmente
-// queria). Screener (tabla de 10 columnas) y Comparador (grid interno
-// 220px+520px de grafico) no entran completos en ~1/3 del ancho, asi que
-// cada columna lleva su propio overflow-x:auto — scrollean de costado en vez
-// de romper el layout o empujar a las otras columnas. Reusa .resp2 (mismo
-// patron que Panorama): en mobile (<768px) cae a 1 columna apilada sola.
+// pisaban entre si en #main — Walter pidio verlas las 3 sin click extra.
+// Probamos apiladas (3 filas) y las 3 en columnas (3 lado a lado) antes de
+// esta: Walter termino pidiendo el hibrido — Watchlist y Comparador arriba,
+// lado a lado (2 columnas verticales), Screener abajo ocupando todo el ancho
+// (1 fila horizontal). Screener es la mas ancha de las 3 (tabla de 10
+// columnas + textarea de tickers), asi que es la que mejor entra full-width
+// en vez de compartir columna. Comparador (grid interno 220px+520px de
+// grafico) sigue con su propio overflow-x:auto por si a un ancho de columna
+// angosto igual no entra completo.
 // S.page sigue siendo 'watch'/'screener'/'comp' (nav, deep links, locks de
 // plan por seccion) — solo cambia CUAL de las 3 se autoscrollea al entrar.
 var _invLastFocus=null;
@@ -5923,16 +5925,16 @@ function renderInvestigar(focus){
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar</div><h1 class="fos-module-title">Investigar</h1><div class="fos-module-sub">Watchlist, Screener y Comparador en una sola pantalla</div></div><div class="ph-right">'+
       jumpBtn('watch','Watchlist')+' '+jumpBtn('screener','Screener')+' '+jumpBtn('comp','Comparador')+
     '</div></div>'+
-    // align-items:start (no el stretch por default de grid): estas 3
-    // secciones tienen alturas muy distintas entre si (la Watchlist crece con
-    // la cantidad de tickers, el Comparador tiene una altura casi fija) —
-    // stretch dejaria un hueco de fondo de pagina debajo de las mas cortas,
-    // como paso en Panorama antes de agregarles flex:1 a proposito alli.
-    '<div class="resp2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start">'+
-      '<div id="inv-watch" style="overflow-x:auto">'+renderWatchSection()+'</div>'+
-      '<div id="inv-screener" style="overflow-x:auto">'+renderScreenerSection()+'</div>'+
+    // align-items:start (no el stretch por default de grid): Watchlist y
+    // Comparador tienen alturas muy distintas entre si (la Watchlist crece
+    // con la cantidad de tickers, el Comparador tiene una altura casi fija)
+    // — stretch dejaria un hueco de fondo de pagina debajo del mas corto,
+    // como paso en Panorama antes de agregarle flex:1 a proposito alli.
+    '<div class="resp2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-bottom:16px">'+
+      '<div id="inv-watch">'+renderWatchSection()+'</div>'+
       '<div id="inv-comp" style="overflow-x:auto">'+renderCompSection()+'</div>'+
-    '</div>';
+    '</div>'+
+    '<div id="inv-screener">'+renderScreenerSection()+'</div>';
 
   investigarWatchPostRender();
 
@@ -5940,8 +5942,6 @@ function renderInvestigar(focus){
   // ella) — sin este chequeo, cada re-render interno disparado por el propio
   // Screener/Comparador (tipear un ticker, aplicar filtros, compLoad) volvia
   // a saltar el scroll y le tironeaba la pantalla al usuario a mitad de uso.
-  // Con las 3 columnas lado a lado esto solo se nota en el fallback movil
-  // (<768px, .resp2 cae a 1 columna) — en desktop las 3 ya estan a la vista.
   if(focus!=='watch' && focus!==_invLastFocus){
     var el=document.getElementById('inv-'+focus);
     if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start',inline:'nearest'}); },30);
