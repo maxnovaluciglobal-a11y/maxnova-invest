@@ -31,9 +31,10 @@
 <meta name="twitter:title"       content="MOY IQ Invest — Análisis Técnico para LATAM"/>
 <meta name="twitter:description" content="Motor de Análisis con régimen de mercado SPY, scoring técnico y gestión de riesgo para inversores de LATAM. Datos referenciales con posible retraso."/>
 <meta name="twitter:image"       content="https://invest.moyiq.app/og-invest.png"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<!-- Fuentes autohospedadas (mismo patrón que financeos-landing: preload + stylesheet + noscript, sin fonts.googleapis.com) -->
+<link rel="preload" as="style" href="/fonts.css"/>
+<link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
