@@ -5024,7 +5024,11 @@ function indicesCard(){
   // los datos ella misma si hace falta (fetchMarketBar ya es idempotente:
   // cache localStorage + createLoadGate evitan pedidos duplicados).
   if(!MARKET_BAR.length && !barIsLoading()){
-    fetchMarketBar().then(function(){renderMain();}).catch(function(){});
+    // Solo re-renderiza si fetchMarketBar trajo datos nuevos de verdad — si
+    // no, un cooldown activo o _USE_EDGE=false resuelven "false" en cada
+    // llamada y renderMain() se disparaba en loop apretado (bug real,
+    // reproducido corriendo la app: ver historial de este archivo).
+    fetchMarketBar().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
   }
   var IDX_MAP={
     '^GSPC':  {n:'S&P 500',    v:null,c:null,up:null},
@@ -5988,16 +5992,30 @@ var MARKET_BAR=[];
 var _barGate=createLoadGate(20000);
 function barIsLoading(){ return _barGate.isLoading(); }
 
+// Devuelve true solo si MARKET_BAR quedo con datos nuevos (cache valida o
+// fetch exitoso) — false en cualquier otro caso (cooldown, _USE_EDGE=false,
+// fallo de red). Antes esta funcion siempre "resolvia" (nunca rechazaba al
+// caller, tragaba sus propios errores) y mercadoHoyBody() llamaba
+// renderMain() en el .then() incondicionalmente — eso recreaba el mismo
+// "render -> pedir datos -> settle casi instantaneo -> renderMain -> render
+// de nuevo" en bucle apretado cada vez que la respuesta no tenia datos
+// (cooldown activo o _USE_EDGE=false), sin importar que el gate ya evitara
+// llamadas de red repetidas. El valor de retorno le permite al caller no
+// volver a renderizar cuando no hubo nada nuevo que mostrar.
 async function fetchMarketBar(){
-  if(!_USE_EDGE) return;
   try{
     var cached=JSON.parse(localStorage.getItem('mv_market_bar')||'null');
     if(cached&&(Date.now()-cached.ts)<3*60*1000&&cached.items&&cached.items.length){
-      MARKET_BAR=cached.items;return;
+      MARKET_BAR=cached.items;return true;
     }
   }catch(e){/* silent */}
   try{
     await _barGate.run(async function(){
+      // _USE_EDGE=false (dominio sin funciones edge, ej. localhost o un
+      // preview fuera de la lista) tiene que pasar por el gate igual que un
+      // fallo de red real — si no, _barGate.isLoading() nunca refleja nada
+      // y el caller reintenta en cada render (ver nota de retorno arriba).
+      if(!_USE_EDGE) throw new Error('edge_unavailable');
       var res=await fetchWithTimeout('/api/marketbar',7000);
       if(!res.ok) throw new Error('marketbar '+res.status);
       var data=await res.json();
@@ -6007,7 +6025,11 @@ async function fetchMarketBar(){
       }
       return data;
     });
-  }catch(e){ if(e&&e.message!=='cooldown') trackError('marketbar',e); }
+    return MARKET_BAR.length>0;
+  }catch(e){
+    if(e&&e.message!=='cooldown'&&e.message!=='edge_unavailable') trackError('marketbar',e);
+    return false;
+  }
 }
 
 // _newsFetched: mismo fix que _barGate arriba — antes era una bandera que se
@@ -6017,17 +6039,20 @@ async function fetchMarketBar(){
 var _newsGate=createLoadGate(20000);
 function newsIsLoading(){ return _newsGate.isLoading(); }
 
+// Mismo contrato de retorno que fetchMarketBar (ver su comentario): true
+// solo si LIVE_NEWS quedo con datos nuevos, false en cooldown/fallo/
+// _USE_EDGE=false — para que el caller no re-renderice sin necesidad.
 async function fetchLiveNews(){
-  if(!_USE_EDGE) return;
   // Check localStorage cache first (15 min TTL)
   try{
     var cached=JSON.parse(localStorage.getItem('mv_live_news')||'null');
     if(cached&&(Date.now()-cached.ts)<15*60*1000&&cached.items.length){
-      LIVE_NEWS=cached.items;return;
+      LIVE_NEWS=cached.items;return true;
     }
   }catch(e){/* silent */}
   try{
     await _newsGate.run(async function(){
+      if(!_USE_EDGE) throw new Error('edge_unavailable');
       var tickers=['SPY','QQQ','NVDA','AAPL','AMZN','META','MSFT','GLD','BTC-USD'];
       S.portfolio.slice(0,5).forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.unshift(h.t);});
       var res=await fetchWithTimeout('/api/news?tickers='+tickers.slice(0,12).join(','),8000);
@@ -6039,7 +6064,11 @@ async function fetchLiveNews(){
       }
       return data;
     });
-  }catch(e){ if(e&&e.message!=='cooldown') trackError('news',e); }
+    return LIVE_NEWS.length>0;
+  }catch(e){
+    if(e&&e.message!=='cooldown'&&e.message!=='edge_unavailable') trackError('news',e);
+    return false;
+  }
 }
 
 function getNewsData(){
@@ -6081,11 +6110,15 @@ function loadNewsCache(){
 // (cache localStorage + gate con cooldown) asi que es seguro pedirselos en
 // cada render mientras no haya dato.
 function mercadoHoyBody(){
+  // Mismo criterio que indicesCard(): solo renderMain() si el fetch trajo
+  // datos nuevos — de lo contrario (cooldown, _USE_EDGE=false, fallo real)
+  // renderMain() se disparaba en loop apretado en cada settle, sin ninguna
+  // pausa real entre intentos (bug real, reproducido corriendo la app).
   if(!LIVE_NEWS.length && !newsIsLoading()){
-    fetchLiveNews().then(function(){renderMain();}).catch(function(){});
+    fetchLiveNews().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
   }
   if(!MARKET_BAR.length && !barIsLoading()){
-    fetchMarketBar().then(function(){renderMain();}).catch(function(){});
+    fetchMarketBar().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
   }
   _newsFetched=true; // solo controla el copy "Cargando…" vs "Reintentando…" abajo
   var activeNews=getNewsData();
@@ -6409,22 +6442,37 @@ function setNewsF(f){S.newsFilter=f;renderMain();}
 // loadCapitalData: cache por ticker, una pasada asincrona y re-render.
 var IND_CACHE={};
 var _indLoading=false;
+// Cooldown de 20s tras un intento que no resolvio NINGUN ticker — mismo
+// numero que _barGate/_newsGate/_allSigGate. Sin esto: renderInd() llama a
+// loadIndData() al final de cada render; si fetchHistory falla para todo
+// (red caida, rate limit), loadIndData() no cachea nada a proposito (para
+// poder reintentar despues) y llamaba a renderInd() de nuevo al terminar —
+// que volvia a llamar loadIndData() de nuevo, sin ninguna pausa entre
+// intentos: un loop apretado de renderInd<->loadIndData sin fin, reproducido
+// corriendo la app real (no hacia falta ni un fallo de red: local sin las
+// funciones edge de Vercel ya lo disparaba). El cooldown no evita reintentar
+// — solo evita que el reintento sea instantaneo.
+var _indLastFailAt=0;
+var IND_COOLDOWN_MS=20000;
 async function loadIndData(){
   if(_indLoading) return;
+  if(_indLastFailAt && (Date.now()-_indLastFailAt)<IND_COOLDOWN_MS) return;
   var tickers=S.portfolio.map(function(h){return h.t;});
   var pendientes=tickers.filter(function(t){return IND_CACHE[t]===undefined;});
   if(!pendientes.length) return;
   _indLoading=true;
+  var algunoResuelto=false;
   for(var i=0;i<pendientes.length;i++){
     var t=pendientes[i];
     try{
       var hist=await fetchHistory(t,'6mo');
       var closes=(hist||[]).map(function(d){return d.close;}).filter(function(c){return c>0;});
-      if(closes.length<21){ IND_CACHE[t]={rsi:null,sma20:null}; continue; }
+      if(closes.length<21){ IND_CACHE[t]={rsi:null,sma20:null}; algunoResuelto=true; continue; }
       var rsiArr=TI.rsi(closes,14);
       var ultimoRsi=null;
       for(var k=rsiArr.length-1;k>=0;k--){ if(rsiArr[k]!=null){ ultimoRsi=rsiArr[k]; break; } }
       IND_CACHE[t]={rsi:ultimoRsi, sma20:_smaLast(closes,20)};
+      algunoResuelto=true;
     }catch(e){
       // Antes esto tambien escribia IND_CACHE[t]={rsi:null,sma20:null} en el
       // catch, indistinguible del caso "no hay suficiente historia". Un
@@ -6432,11 +6480,19 @@ async function loadIndData(){
       // para siempre como "sin dato" (columna quedaba en '—' o '…' sin
       // reintentar jamas al volver a la pantalla). No cachear nada en el
       // fallo: "pendientes" lo vuelve a intentar la proxima vez que se llame
-      // loadIndData() (siguiente visita a Indicadores).
+      // loadIndData() (siguiente visita a Indicadores, o tras el cooldown).
     }
   }
   _indLoading=false;
-  if(S.page==='ind') renderInd();
+  if(algunoResuelto){
+    _indLastFailAt=0;
+    if(S.page==='ind') renderInd();
+  }else{
+    // Nada resolvio: entra en cooldown y NO se re-renderiza a si misma — sin
+    // esto, S.page==='ind' seguiria siendo true y renderInd() volveria a
+    // llamar loadIndData() de inmediato, defeando el proposito del cooldown.
+    _indLastFailAt=Date.now();
+  }
 }
 
 function renderInd(){
