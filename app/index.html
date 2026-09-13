@@ -1763,23 +1763,11 @@ body:not(.no-auth) #mainnav {
 .dash-page-breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom:var(--sp-3); }
 .dash-page-title { font-family: 'Instrument Sans', Georgia, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0; line-height: 1.12; letter-spacing: -.01em; }
 .dash-page-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); background: var(--card); border: 1px solid var(--border); border-radius:var(--r-md); padding:6px 14px; flex-shrink:0; }
-/* Accesos rapidos a la altura del titulo. Antes ocupaban una tarjeta entera en
-   la columna derecha para cuatro enlaces; aqui van en linea y sin expandirse. */
+/* .dash-quick/.dash-quick-b (4 accesos rapidos Motor/Indicadores/Riesgo/
+   Screener a la altura del titulo) se eliminaron el 13-sep-2026 junto con su
+   HTML — duplicaban la pestaña "Analizar" del nav y las pantallas de
+   Decidir/Investigar. .dash-head-right queda (sigue envolviendo la fecha). */
 .dash-head-right { display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; justify-content:flex-end; }
-.dash-quick { display:flex; gap:var(--sp-2); flex-wrap:wrap; }
-.dash-quick-b {
-  display:inline-flex; align-items:center; gap:var(--sp-3);
-  background:var(--card); border:1px solid var(--border); border-radius:var(--r-md);
-  padding:6px 12px; cursor:pointer; font-family:inherit; font-size:11px; color:var(--text2);
-  white-space:nowrap; transition:border-color .15s, color .15s;
-}
-.dash-quick-b:hover { border-color:var(--grn-lt); color:var(--bright); }
-.dash-quick-b svg { width:14px; height:14px; color:var(--grn); flex-shrink:0; }
-@media (max-width: 760px){
-  /* En pantallas estrechas el icono basta: cuatro etiquetas romperian la fila. */
-  .dash-quick-b span { display:none; }
-  .dash-quick-b { padding:6px 9px; }
-}
 .fos-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .fos-table th { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); padding:8px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
 .fos-table td { padding:12px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
@@ -3839,7 +3827,16 @@ function drawSPYMiniChart(regime){
 // Coste acotado: fetchHistory ya cachea en localStorage y deScoreTicker tiene
 // DE_CACHE con 30 min de TTL, asi que 20 tickers no son 20 llamadas por carga.
 var ALL_SIG_REAL=false;              // true cuando los scores vienen del motor
-var _allSigLoading=false;
+// _allSigLoading era un booleano simple: loadAllSigScores() solo se llamaba
+// una vez (setTimeout de bootLiveData). Si esa unica pasada fallaba para
+// TODOS los tickers (guardar quedaba vacio — ej. una interrupcion de red al
+// cargar), ALL_SIG_REAL nunca pasaba a true y "Foco de hoy"/Senales/
+// Indicadores quedaban en "Calculando señales técnicas…" el resto de la
+// sesion, sin reintentar. createLoadGate reintenta solo tras un cooldown, y
+// dashFocoCard/renderSig/renderInd ahora piden la carga ellos mismos si hace
+// falta (ver allSigIsLoading()) en vez de depender de un solo disparo en boot.
+var _allSigGate=createLoadGate(20000);
+function allSigIsLoading(){ return _allSigGate.isLoading(); }
 var ALL_SIG_TTL=30*60*1000;
 
 function _allSigKey(){ return 'sig_scores_'+(S.user&&S.user.id||'demo'); }
@@ -3864,28 +3861,34 @@ function _allSigFromCache(){
 function _sigDesdeScore(sc){ return sc>=70?'BUY':sc>=45?'HOLD':'SELL'; }
 
 async function loadAllSigScores(force){
-  if(_allSigLoading) return;
   if(!force && _allSigFromCache()){ return; }
-  _allSigLoading=true;
-  var guardar={};
-  for(var i=0;i<ALL_SIG.length;i++){
-    var x=ALL_SIG[i];
-    try{
-      var r=await deScoreTicker(x.t);
-      if(r&&isFinite(r.score)){
-        x.sc=Math.round(r.score);
-        x.sig=_sigDesdeScore(x.sc);
-        guardar[x.t]={sc:x.sc,sig:x.sig};
+  try{
+    await _allSigGate.run(async function(){
+      var guardar={};
+      for(var i=0;i<ALL_SIG.length;i++){
+        var x=ALL_SIG[i];
+        try{
+          var r=await deScoreTicker(x.t);
+          if(r&&isFinite(r.score)){
+            x.sc=Math.round(r.score);
+            x.sig=_sigDesdeScore(x.sc);
+            guardar[x.t]={sc:x.sc,sig:x.sig};
+          }
+        }catch(e){/* un ticker que falla no detiene al resto */}
       }
-    }catch(e){/* un ticker que falla no detiene al resto */}
-  }
-  _allSigLoading=false;
-  if(Object.keys(guardar).length){
-    ALL_SIG_REAL=true;
-    try{ localStorage.setItem(_allSigKey(),JSON.stringify({ts:Date.now(),d:guardar})); }catch(e){}
-    // Repintar solo las pantallas que leen ALL_SIG
-    if(['sig','dash','sentiment','radar','ind'].indexOf(S.page)>=0){ try{ renderMain(); }catch(e){} }
-  }
+      if(!Object.keys(guardar).length){
+        // Ningun ticker resolvio (ej. corte de red): que el gate lo trate
+        // como fallo y reintente solo mas adelante, en vez de quedar
+        // ALL_SIG_REAL en false para siempre.
+        throw new Error('sin scores reales — reintentar');
+      }
+      ALL_SIG_REAL=true;
+      try{ localStorage.setItem(_allSigKey(),JSON.stringify({ts:Date.now(),d:guardar})); }catch(e){}
+      // Repintar solo las pantallas que leen ALL_SIG
+      if(['sig','dash','sentiment','radar','ind'].indexOf(S.page)>=0){ try{ renderMain(); }catch(e){} }
+      return guardar;
+    });
+  }catch(e){/* cooldown o fallo real: el proximo render que necesite ALL_SIG_REAL reintenta */}
 }
 
 async function deScoreTicker(ticker){
@@ -5014,6 +5017,15 @@ function renderPaywall(){
 // estaticos. Un dato viejo presentado como actual es peor que un hueco: ahora
 // el valor arranca vacio y solo se rellena si llega de la API.
 function indicesCard(){
+  // Antes esta tarjeta dependia por completo de que mercadoHoyBody() se
+  // renderizara despues en el mismo pase (mismo array MARKET_BAR) para
+  // disparar el fetch — si algun dia se renderiza indicesCard() sola, se
+  // quedaba en "sin dato" para siempre sin que nada la rellenara. Ahora pide
+  // los datos ella misma si hace falta (fetchMarketBar ya es idempotente:
+  // cache localStorage + createLoadGate evitan pedidos duplicados).
+  if(!MARKET_BAR.length && !barIsLoading()){
+    fetchMarketBar().then(function(){renderMain();}).catch(function(){});
+  }
   var IDX_MAP={
     '^GSPC':  {n:'S&P 500',    v:null,c:null,up:null},
     '^IXIC':  {n:'NASDAQ',     v:null,c:null,up:null},
@@ -5031,11 +5043,16 @@ function indicesCard(){
     });
   }
   var IDXS=[IDX_MAP['^GSPC'],IDX_MAP['^IXIC'],IDX_MAP['^DJI'],IDX_MAP['^VIX'],IDX_MAP['BTC-USD']];
+  // "sin dato" antes era el unico estado posible cuando v es null, sin
+  // distinguir "todavia no llego la respuesta" de "se intento y fallo". Ahora
+  // que fetchMarketBar() reintenta solo (createLoadGate), vale la pena que la
+  // UI lo refleje: "cargando…" mientras el fetch esta en vuelo.
+  var idxPlaceholder=barIsLoading()?'cargando…':'sin dato';
   var idxRows=IDXS.map(function(x){
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">'+
       '<span style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+x.n+'</span>'+
       '<div style="display:flex;gap:8px;align-items:baseline">'+
-      '<span style="font-size:11px;color:'+(x.v?'var(--bright)':'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+(x.v||'sin dato')+'</span>'+
+      '<span style="font-size:11px;color:'+(x.v?'var(--bright)':'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+(x.v||idxPlaceholder)+'</span>'+
       (x.c?'<span style="font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+(x.up?'var(--pos)':'var(--neg)')+'">'+x.c+'</span>':'')+
       '</div></div>';
   }).join('');
@@ -5087,6 +5104,14 @@ function moversCard(){
 // (ALL_SIG_REAL); si no, muestra un estado de carga. Encuadre educativo: son
 // señales técnicas "para revisar", no recomendaciones de compra/venta.
 function dashFocoCard(port){
+  // Antes ALL_SIG_REAL solo podia pasar a true por el unico disparo de
+  // loadAllSigScores() en bootLiveData (setTimeout 1200ms). Si ese intento
+  // fallaba (ver loadAllSigScores), esta tarjeta quedaba en "Calculando
+  // señales técnicas…" para siempre. Ahora se autopide los datos si hace
+  // falta — loadAllSigScores/createLoadGate ya evitan pedidos duplicados.
+  if(!ALL_SIG_REAL && !allSigIsLoading()){
+    loadAllSigScores().catch(function(){});
+  }
   var inPort={}; (port||[]).forEach(function(h){inPort[h.t]=true;});
   var wl=S.watchlist||[];
   var buyC=[], sellC=[];
@@ -5121,9 +5146,11 @@ function dashFocoCard(port){
     }
   }
   return '<div class="fos-card" style="padding:var(--sp-8);margin-bottom:16px">'+
+    // El boton "Motor completo →" se quito el 13-sep-2026: era uno de los 5
+    // caminos redundantes a Analizar -> Motor de Analisis (ver auditoria UX);
+    // la pestaña "Analizar" del nav principal ya cubre esto.
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'+
       '<div class="fos-section-label" style="margin:0;display:flex;align-items:center;gap:8px">'+icon('decision')+' Foco de hoy</div>'+
-      '<button class="btn" style="font-size:11px" onclick="setPage(\'decision\')">'+icon('decision')+' Motor completo →</button>'+
     '</div>'+
     rows+
     '<div style="margin-top:12px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Señales técnicas educativas para revisar — no son recomendaciones de compra o venta.</div>'+
@@ -5304,15 +5331,16 @@ function renderDash(){
     '<div class="dash-page-breadcrumb">Panorama · Dashboard</div>'+
     '<h1 class="dash-page-title">Dashboard</h1>'+
     '</div>'+
-    // Acciones rapidas en la cabecera, a la altura del titulo: ocupaban una
-    // tarjeta entera en la columna derecha para cuatro enlaces.
+    // Los 4 accesos rapidos (Motor/Indicadores/Riesgo/Screener) se quitaron
+    // el 13-sep-2026 por duplicar exactamente la pestaña "Analizar" del nav
+    // principal y las pantallas naturales de Decidir/Investigar — la
+    // auditoria UX conto 5 caminos distintos al mismo Motor de Analisis y 3
+    // duplicados mas de Indicadores/Riesgo/Screener entre este toolbar y su
+    // pantalla de destino real. dash-head-right/dash-quick(-b) quedaron sin
+    // uso en ningun otro lado (grep confirmado) — se dejan las clases CSS
+    // por si se quiere reusar el patron, pero el HTML que las llenaba se
+    // elimino.
     '<div class="dash-head-right">'+
-    '<div class="dash-quick">'+
-      '<button class="dash-quick-b" onclick="setPage(\'decision\')" title="Motor de Análisis">'+icon('decision')+'<span>Motor</span></button>'+
-      '<button class="dash-quick-b" onclick="setPage(\'ind\')" title="Indicadores">'+icon('ind')+'<span>Indicadores</span></button>'+
-      '<button class="dash-quick-b" onclick="setPage(\'risk\')" title="Riesgo y Sizing">'+icon('risk')+'<span>Riesgo</span></button>'+
-      '<button class="dash-quick-b" onclick="setPage(\'screener\')" title="Screener">'+icon('screener')+'<span>Screener</span></button>'+
-    '</div>'+
     '<div class="dash-page-date">'+now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'</div>'+
     '</div>'+
     '</div>';
@@ -5368,15 +5396,16 @@ function dashLoadContext(){
     var r=res[0],v=res[1];
     var el=document.getElementById('de-regime-banner');
     if(!el)return;
-    var isFree=S.user&&S.user.plan==='free';
     var rClass=r?(r.regime==='risk_on'?'fos-pill--grn':r.regime==='risk_off'?'fos-pill--red':'fos-pill--amb'):'';
     var rLabel=r?r.label.toUpperCase():'—';
     // Version compacta: antes vivia junto a un feed de noticias largo, donde su
     // altura (SPY/SMA200 en $, barra VIX + escala, chips de "Señales activas")
     // se absorbia sin problema. Ahora esta tarjeta vive en el rail junto a
     // Top Señales/Portafolio (fila "de un vistazo") y esos extras solo
-    // duplicaban el % vs SMA200 / la pildora de régimen ya visibles arriba —
-    // el detalle completo sigue a un click en "Abrir Motor de Análisis".
+    // duplicaban el % vs SMA200 / la pildora de régimen ya visibles arriba.
+    // El boton "→ Abrir Motor de Análisis" que cerraba esta tarjeta se quito
+    // el 13-sep-2026: era el 4to de 5 caminos redundantes al mismo lugar
+    // (Analizar -> Motor de Analisis), ya cubierto por la pestaña del nav.
     var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="fos-section-label">Régimen de Mercado</div>'+(r&&r.spy&&r.sma200?'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">SMA50 '+(r.spy>r.sma200?'>':'<')+' SMA200</span>':'')+'</div>';
     if(r){
       html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:11px;color:var(--text3)">SPY · Tendencia</span><div class="dash-regime-pill '+rClass+'" style="margin:0"><span class="fos-dot"></span>'+rLabel+'</div></div>';
@@ -5388,8 +5417,6 @@ function dashLoadContext(){
       var vixC=vixN<20?'var(--grn)':vixN<30?'var(--amber)':'var(--red)';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-top:1px solid var(--border)"><span style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">VIX (volatilidad)</span><span style="display:flex;align-items:center;gap:5px;font-family:\'IBM Plex Mono\',monospace;color:'+vixC+'"><span style="width:6px;height:6px;border-radius:50%;background:'+vixC+';flex-shrink:0"></span>'+vixN.toFixed(1)+' · '+v.label+'</span></div>';
     }
-    html+='<button onclick="setPage(\''+(isFree?'upgrade':'decision')+'\')" '+(isFree?'onclick="openModal(\'upgrade\')"':'')+
-      ' style="width:100%;margin-top:10px;background:var(--grn);border:none;border-radius:var(--r-md);padding:7px 12px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:\'IBM Plex Sans\',sans-serif">→ Abrir Motor de Análisis</button>';
     el.innerHTML=html;
     // Also refresh topbar pills now that data is loaded
     renderTopbar();
@@ -5814,7 +5841,10 @@ function renderWatch(){
     :'<th style="color:var(--text3)">'+icon('target')+' DE</th>';
 
   document.getElementById("main").innerHTML=
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h1 class="fos-module-title">Watchlist</h1><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+(isPro?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('decision')+' Motor →</button>':'')+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
+    // El boton "Motor →" de esta cabecera se quito el 13-sep-2026: era el
+    // 5to de 5 caminos redundantes a Analizar -> Motor de Analisis (la
+    // pestaña del nav principal ya cubre esto).
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h1 class="fos-module-title">Watchlist</h1><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Agregar ticker</div>'+
     '<div class="wtag-grid">'+quickTags+'</div>'+
@@ -5875,6 +5905,12 @@ function resetWatch(){S.watchlist=[...DEF_WATCH];persist();renderWatch();}
 
 // ── SIGNALS ────────────────────────────────────────────────────
 function renderSig(){
+  // Mismo autoheal que dashFocoCard: si ALL_SIG_REAL sigue en false y no hay
+  // una carga en curso, pedirla — evita que el badge "CALCULANDO" (ver
+  // _ph(...) mas abajo) quede pegado si el unico intento de boot fallo.
+  if(!ALL_SIG_REAL && !allSigIsLoading()){
+    loadAllSigScores().catch(function(){});
+  }
   var plan=planOf();
   var sigs=ALL_SIG.slice(0,plan.maxS);
   var f=S.sigFilter;
@@ -5928,28 +5964,45 @@ var LIVE_NEWS=[];
 var _newsFetched=false;
 
 // ── MARKET BAR ─────────────────────────────────────────────────
+// _barFetched pasó de booleano "ya lo intenté" a createLoadGate() el
+// 13-sep-2026: la version vieja marcaba _barFetched=true tambien dentro del
+// catch(e) de fallo, asi que un solo timeout de /api/marketbar dejaba los
+// indices (S&P/Dow/Nasdaq/VIX/Bitcoin) en "sin dato" para el resto de la
+// sesion, sin reintentar nunca — bug confirmado navegando: a veces cargaban,
+// a veces se quedaban pegados. El gate reintenta solo despues de 20s si el
+// intento anterior fallo, en vez de rendirse para siempre.
 var MARKET_BAR=[];
-var _barFetched=false;
+var _barGate=createLoadGate(20000);
+function barIsLoading(){ return _barGate.isLoading(); }
 
 async function fetchMarketBar(){
   if(!_USE_EDGE) return;
   try{
     var cached=JSON.parse(localStorage.getItem('mv_market_bar')||'null');
     if(cached&&(Date.now()-cached.ts)<3*60*1000&&cached.items&&cached.items.length){
-      MARKET_BAR=cached.items;_barFetched=true;return;
+      MARKET_BAR=cached.items;return;
     }
   }catch(e){/* silent */}
   try{
-    var res=await fetchWithTimeout('/api/marketbar',7000);
-    if(!res.ok) throw new Error('marketbar '+res.status);
-    var data=await res.json();
-    if(data.items&&data.items.length){
-      MARKET_BAR=data.items;
-      localStorage.setItem('mv_market_bar',JSON.stringify({ts:Date.now(),items:MARKET_BAR}));
-    }
-  }catch(e){trackError('marketbar',e);}
-  _barFetched=true;
+    await _barGate.run(async function(){
+      var res=await fetchWithTimeout('/api/marketbar',7000);
+      if(!res.ok) throw new Error('marketbar '+res.status);
+      var data=await res.json();
+      if(data.items&&data.items.length){
+        MARKET_BAR=data.items;
+        localStorage.setItem('mv_market_bar',JSON.stringify({ts:Date.now(),items:MARKET_BAR}));
+      }
+      return data;
+    });
+  }catch(e){ if(e&&e.message!=='cooldown') trackError('marketbar',e); }
 }
+
+// _newsFetched: mismo fix que _barGate arriba — antes era una bandera que se
+// marcaba true tambien en el catch(e) de fallo, dejando el feed de noticias
+// (y por eso tambien MARKET_BAR, ver mercadoHoyBody) sin reintentar nunca
+// mas tras un solo error de red.
+var _newsGate=createLoadGate(20000);
+function newsIsLoading(){ return _newsGate.isLoading(); }
 
 async function fetchLiveNews(){
   if(!_USE_EDGE) return;
@@ -5957,21 +6010,23 @@ async function fetchLiveNews(){
   try{
     var cached=JSON.parse(localStorage.getItem('mv_live_news')||'null');
     if(cached&&(Date.now()-cached.ts)<15*60*1000&&cached.items.length){
-      LIVE_NEWS=cached.items;_newsFetched=true;return;
+      LIVE_NEWS=cached.items;return;
     }
   }catch(e){/* silent */}
   try{
-    var tickers=['SPY','QQQ','NVDA','AAPL','AMZN','META','MSFT','GLD','BTC-USD'];
-    S.portfolio.slice(0,5).forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.unshift(h.t);});
-    var res=await fetchWithTimeout('/api/news?tickers='+tickers.slice(0,12).join(','),8000);
-    if(!res.ok) throw new Error('news api '+res.status);
-    var data=await res.json();
-    if(data.items&&data.items.length){
-      LIVE_NEWS=data.items;
-      localStorage.setItem('mv_live_news',JSON.stringify({ts:Date.now(),items:LIVE_NEWS}));
-    }
-  }catch(e){trackError('news',e);}
-  _newsFetched=true;
+    await _newsGate.run(async function(){
+      var tickers=['SPY','QQQ','NVDA','AAPL','AMZN','META','MSFT','GLD','BTC-USD'];
+      S.portfolio.slice(0,5).forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.unshift(h.t);});
+      var res=await fetchWithTimeout('/api/news?tickers='+tickers.slice(0,12).join(','),8000);
+      if(!res.ok) throw new Error('news api '+res.status);
+      var data=await res.json();
+      if(data.items&&data.items.length){
+        LIVE_NEWS=data.items;
+        localStorage.setItem('mv_live_news',JSON.stringify({ts:Date.now(),items:LIVE_NEWS}));
+      }
+      return data;
+    });
+  }catch(e){ if(e&&e.message!=='cooldown') trackError('news',e); }
 }
 
 function getNewsData(){
@@ -6005,17 +6060,21 @@ function loadNewsCache(){
 // Antes era renderNews() (pagina Contexto propia). Ahora Contexto vive DENTRO
 // del Dashboard como banda "Mercado hoy": esta funcion devuelve solo el cuerpo
 // (filtros + feed + indices), sin el header de pagina, para que renderDash lo
-// incruste. Sigue disparando la carga de noticias en la primera visita.
+// incruste. Sigue disparando la carga de noticias/indices en cada visita en
+// la que no hay datos y no hay un intento en curso — antes solo se disparaba
+// "en la primera visita" (banderas _newsFetched/_barFetched que quedaban en
+// true para siempre tras un fallo, ver createLoadGate arriba). Ahora
+// fetchLiveNews()/fetchMarketBar() son responsables de no repetir trabajo
+// (cache localStorage + gate con cooldown) asi que es seguro pedirselos en
+// cada render mientras no haya dato.
 function mercadoHoyBody(){
-  // Fetch live news + market bar on first visit, re-render when done
-  if(!_newsFetched){
-    Promise.all([
-      fetchLiveNews(),
-      fetchMarketBar()
-    ]).then(function(){renderMain();}).catch(function(){});
-  } else if(!_barFetched){
+  if(!LIVE_NEWS.length && !newsIsLoading()){
+    fetchLiveNews().then(function(){renderMain();}).catch(function(){});
+  }
+  if(!MARKET_BAR.length && !barIsLoading()){
     fetchMarketBar().then(function(){renderMain();}).catch(function(){});
   }
+  _newsFetched=true; // solo controla el copy "Cargando…" vs "Reintentando…" abajo
   var activeNews=getNewsData();
   var usingStaticNews=!LIVE_NEWS.length;
   var f=S.newsFilter;
@@ -6187,37 +6246,11 @@ function mercadoHoyBody(){
 
   // Market Movers se movio al Dashboard (funcion moversCard): Contexto se
   // consolida alli y no tiene sentido mantener dos copias del mismo widget.
-  // ── Indices widget ────────────────────────────────────────────
-  // Los valores de partida eran cifras reales de 2024 hardcodeadas (VIX 16.8,
-  // Bitcoin $97.400...). Como marketbar no devolvia VIX ni BTC, esos dos se
-  // mostraban con datos de hace mas de un ano SIN ninguna marca de que eran
-  // estaticos. Un dato viejo presentado como actual es peor que un hueco: ahora
-  // el valor arranca vacio y solo se rellena si llega de la API.
-  var IDX_MAP={
-    '^GSPC':  {n:'S&P 500',    v:null,c:null,up:null},
-    '^IXIC':  {n:'NASDAQ',     v:null,c:null,up:null},
-    '^DJI':   {n:'Dow 30',     v:null,c:null,up:null},
-    '^VIX':   {n:'VIX',        v:null,c:null,up:null},
-    'BTC-USD':{n:'Bitcoin USD',v:null,c:null,up:null}
-  };
-  if(MARKET_BAR.length){
-    MARKET_BAR.forEach(function(b){
-      if(!IDX_MAP[b.sym]||!isFinite(b.price)) return;
-      var isUp=(b.changePct||0)>=0;
-      var pct=(isUp?'+':'')+(b.changePct||0).toFixed(2)+'%';
-      var val=b.sym==='BTC-USD'?'$'+(b.price/1000).toFixed(1)+'K':b.sym==='^VIX'?b.price.toFixed(2):b.price>=10000?b.price.toLocaleString('en-US',{maximumFractionDigits:0}):b.price.toFixed(2);
-      IDX_MAP[b.sym]={n:IDX_MAP[b.sym].n,v:val,c:pct,up:isUp};
-    });
-  }
-  var IDXS=[IDX_MAP['^GSPC'],IDX_MAP['^IXIC'],IDX_MAP['^DJI'],IDX_MAP['^VIX'],IDX_MAP['BTC-USD']];
-  var idxRows=IDXS.map(function(x){
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+x.n+'</span>'+
-      '<div style="display:flex;gap:8px;align-items:baseline">'+
-      '<span style="font-size:11px;color:'+(x.v?'var(--bright)':'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+(x.v||'sin dato')+'</span>'+
-      (x.c?'<span style="font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+(x.up?'var(--pos)':'var(--neg)')+'">'+x.c+'</span>':'')+
-      '</div></div>';
-  }).join('');
+  // El widget de Indices (IDX_MAP/idxRows) tambien vivia aca duplicado con
+  // indicesCard() pero ya no se usaba en el HTML devuelto por esta funcion
+  // (dead code de un refactor anterior, el comentario de mas abajo ya decia
+  // "Indices/Regimen/Movers ya no comparten esta franja") — eliminado el
+  // 13-sep-2026 al ordenar la carga de datos de esta pantalla.
 
   // ── Economic Calendar ─────────────────────────────────────────
   var calItems=CAL_DATA.map(function(c){
@@ -6379,7 +6412,15 @@ async function loadIndData(){
       var ultimoRsi=null;
       for(var k=rsiArr.length-1;k>=0;k--){ if(rsiArr[k]!=null){ ultimoRsi=rsiArr[k]; break; } }
       IND_CACHE[t]={rsi:ultimoRsi, sma20:_smaLast(closes,20)};
-    }catch(e){ IND_CACHE[t]={rsi:null,sma20:null}; }
+    }catch(e){
+      // Antes esto tambien escribia IND_CACHE[t]={rsi:null,sma20:null} en el
+      // catch, indistinguible del caso "no hay suficiente historia". Un
+      // fallo transitorio de red (fetchHistory) quedaba entonces cacheado
+      // para siempre como "sin dato" (columna quedaba en '—' o '…' sin
+      // reintentar jamas al volver a la pantalla). No cachear nada en el
+      // fallo: "pendientes" lo vuelve a intentar la proxima vez que se llame
+      // loadIndData() (siguiente visita a Indicadores).
+    }
   }
   _indLoading=false;
   if(S.page==='ind') renderInd();

@@ -7,7 +7,7 @@
 //    timeout dejaban boot()/sbLoadUserData girando para siempre -> pantalla
 //    en blanco.
 import { describe, it, expect, vi } from "vitest";
-import { withTimeout, createDedupeCache } from "../app/lib/async-guards.js";
+import { withTimeout, createDedupeCache, createLoadGate } from "../app/lib/async-guards.js";
 
 describe("createDedupeCache (guard de sbLoadUserData)", () => {
   it("no ejecuta la factory dos veces para llamadas concurrentes con la misma key", () => {
@@ -113,5 +113,60 @@ describe("withTimeout (guardia de getSession/queries/fetch)", () => {
     const start = Date.now();
     await expect(withTimeout(fakeFetch(), 15)).rejects.toThrow("timeout");
     expect(Date.now() - start).toBeLessThan(500); // no espero al infinito
+  });
+});
+
+describe("createLoadGate (guard de indices/Foco de hoy/RSI-SMA20 no determinista)", () => {
+  // Regresion directa del bug de dashboard reportado en la auditoria UX del
+  // 13-sep: fetchMarketBar/loadAllSigScores/loadIndData marcaban una bandera
+  // "_fetched=true" tanto en exito como en el catch(e) de fallo. Un solo
+  // timeout de red dejaba esa bandera en true para siempre en la sesion, y la
+  // UI quedaba pegada en "sin dato"/"Calculando..." sin reintentar jamas.
+
+  it("dos llamadas concurrentes a run() mientras el fetch esta en vuelo devuelven la MISMA promesa (no dispara fetch duplicado)", () => {
+    const gate = createLoadGate(1000);
+    let calls = 0;
+    const factory = () => new Promise(() => {}); // nunca resuelve, simula in-flight
+
+    const p1 = gate.run(factory);
+    const p2 = gate.run(factory);
+    calls++; // factory ya se llamo una vez dentro de run() para p1
+
+    expect(gate.isLoading()).toBe(true);
+    expect(p1).toBe(p2);
+  });
+
+  it("tras un fallo, reintenta solo(!) despues del cooldown en vez de quedar roto para siempre", async () => {
+    const gate = createLoadGate(20); // cooldown corto para el test
+    let attempts = 0;
+    const factory = () => {
+      attempts++;
+      return attempts === 1 ? Promise.reject(new Error("timeout de red")) : Promise.resolve("ok");
+    };
+
+    await expect(gate.run(factory)).rejects.toThrow("timeout de red");
+    expect(attempts).toBe(1);
+
+    // Inmediatamente despues del fallo, dentro del cooldown: no reintenta.
+    await expect(gate.run(factory)).rejects.toThrow("cooldown");
+    expect(attempts).toBe(1);
+
+    // Pasado el cooldown, el proximo render/llamada reintenta solo.
+    await new Promise((r) => setTimeout(r, 25));
+    await expect(gate.run(factory)).resolves.toBe("ok");
+    expect(attempts).toBe(2);
+  });
+
+  it("tras un exito, no queda marcado como en curso y una llamada siguiente vuelve a ejecutar la factory", async () => {
+    const gate = createLoadGate(0);
+    let attempts = 0;
+    const factory = () => {
+      attempts++;
+      return Promise.resolve("v" + attempts);
+    };
+
+    await expect(gate.run(factory)).resolves.toBe("v1");
+    expect(gate.isLoading()).toBe(false);
+    await expect(gate.run(factory)).resolves.toBe("v2");
   });
 });

@@ -61,7 +61,67 @@
     };
   }
 
-  var api = { withTimeout: withTimeout, createDedupeCache: createDedupeCache };
+  // Fabrica un gate de carga con reintento tras fallo — extraido el 13-sep-2026
+  // al arreglar el bug de dashboard no-determinista (indices/Foco de hoy que
+  // a veces quedaban en "sin dato"/"Calculando..." para siempre tras un
+  // recargar).
+  //
+  // El patron roto que reemplaza (fetchMarketBar/loadAllSigScores/loadIndData
+  // en index.html) era: una bandera booleana "_fetched=true" que se marcaba
+  // dentro del catch(e) tanto en exito como en fallo. Una vez que un fetch
+  // fallaba una sola vez (timeout de red, API caida), la bandera quedaba en
+  // true PARA SIEMPRE en esa sesion — ningun render posterior volvia a
+  // intentarlo, y la UI quedaba pegada en su estado vacio/de carga inicial
+  // sin ningun mensaje de error. Ademas, si renderMain() se llamaba varias
+  // veces antes de que el primer fetch resolviera (navegacion + otro evento
+  // disparando otro render), se lanzaban fetches concurrentes duplicados.
+  //
+  // run(factory) devuelve la promesa en curso si ya hay una in-flight (dedup),
+  // y si el ultimo intento fallo, deja pasar un intento nuevo recien despues
+  // de cooldownMs — asi el proximo render de esa pantalla reintenta solo, sin
+  // reload completo ni fetches en loop.
+  function createLoadGate(cooldownMs) {
+    var inFlight = null;
+    var lastFailAt = 0;
+    var cooldown = cooldownMs || 0;
+    return {
+      run: function (factory) {
+        if (inFlight) return inFlight;
+        if (lastFailAt && Date.now() - lastFailAt < cooldown) {
+          return Promise.reject(new Error("cooldown"));
+        }
+        var p;
+        try {
+          p = Promise.resolve(factory());
+        } catch (e) {
+          lastFailAt = Date.now();
+          return Promise.reject(e);
+        }
+        inFlight = p.then(
+          function (v) {
+            inFlight = null;
+            lastFailAt = 0;
+            return v;
+          },
+          function (e) {
+            inFlight = null;
+            lastFailAt = Date.now();
+            throw e;
+          }
+        );
+        return inFlight;
+      },
+      isLoading: function () {
+        return !!inFlight;
+      },
+    };
+  }
+
+  var api = {
+    withTimeout: withTimeout,
+    createDedupeCache: createDedupeCache,
+    createLoadGate: createLoadGate,
+  };
 
   if (typeof module !== "undefined" && module.exports) {
     module.exports = api;
@@ -69,5 +129,6 @@
   if (typeof root !== "undefined") {
     root.withTimeout = withTimeout;
     root.createDedupeCache = createDedupeCache;
+    root.createLoadGate = createLoadGate;
   }
 })(typeof window !== "undefined" ? window : globalThis);
