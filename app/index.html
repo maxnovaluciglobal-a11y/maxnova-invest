@@ -2084,6 +2084,22 @@ div:has(>.dtab), div:has(>.rtab) {
 <g id="i-bolt"><path d="M13 3L5 13h6l-1 8 8-11h-6z"/></g>
 <g id="i-edit"><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></g>
 <g id="i-trash"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></g>
+<g id="i-close"><path d="M6 6l12 12M18 6L6 18"/></g>
+<!-- Extendidos para conceptos de Invest sin equivalente en el set de MOY IQ (mismo
+     estilo feather/outline que el resto de este archivo, no el arco+tick+pivote de
+     financeos-app — mezclar dos vocabularios geometricos seria peor que mantener
+     emoji). Trading tecnico: RSI, MACD, volumen, robot IA, macro global, banco/Fed,
+     bull/bear market, evento extremo (black swan), racha/outperform. -->
+<g id="i-rsi"><path d="M3 12h4l2-7 4 14 2-7h6"/><circle cx="9" cy="5" r="1.4"/><circle cx="15" cy="19" r="1.4"/></g>
+<g id="i-macd"><path d="M3 15c3 0 3-8 6-8s3 8 6 8 3-6 6-6"/><path d="M3 19h18" stroke-dasharray="1.5 2.5"/></g>
+<g id="i-volume"><rect x="4" y="14" width="3" height="6"/><rect x="10.5" y="9" width="3" height="11"/><rect x="17" y="4" width="3" height="16"/></g>
+<g id="i-robot"><rect x="5" y="9" width="14" height="10" rx="2"/><path d="M12 9V5"/><circle cx="12" cy="4" r="1.2"/><circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/><path d="M2 13v3M22 13v3"/></g>
+<g id="i-macro"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 0 1 0 18 13 13 0 0 1 0-18z"/></g>
+<g id="i-bank"><path d="M4 21h16"/><path d="M5 21V10M9.5 21V10M14.5 21V10M19 21V10"/><path d="M3 10l9-6 9 6z"/></g>
+<g id="i-bull"><path d="M4 16c0-4 2-6 4-6s2 2 4 2 2-4 4-4 4 3 4 8"/><path d="M4 9l2 2M6 9l-2 2"/></g>
+<g id="i-bear"><path d="M4 8c0 4 2 6 4 6s2-2 4-2 2 4 4 4 4-3 4-8"/><path d="M4 15l2-2M6 15l-2-2"/></g>
+<g id="i-storm"><path d="M6 13a4 4 0 0 1 .3-8 5 5 0 0 1 9.6 1.2A4 4 0 0 1 18 14H7"/><path d="M11 16l-2 4M15 16l-2 4"/></g>
+<g id="i-fire"><path d="M12 3c2 3-1 4-1 7a3 3 0 0 0 6 0c1.5 1.5 2 3.5 2 5a7 7 0 1 1-14 0c0-3 2-4 3-7 .3 1.5 1 2 1 2s-.5-4 3-7z"/></g>
 </defs></svg>
 
 <!-- Suite nav — franja de vuelta a la suite.
@@ -2240,33 +2256,37 @@ const ALL_SIG=[
   {t:"JNJ",sig:"HOLD",sc:61},{t:"XLV",sig:"HOLD",sc:71}
 ];
 const SCENARIOS=[
-  {name:"Bull Case 🐂",prob:.35,ret:.25},
-  {name:"Base Case 📊",prob:.45,ret:.10},
-  {name:"Bear Case 🐻",prob:.15,ret:-.10},
-  {name:"Black Swan ⛈️",prob:.05,ret:-.35}
+  {name:"Bull Case",icon:"bull",prob:.35,ret:.25},
+  {name:"Base Case",icon:"macd",prob:.45,ret:.10},
+  {name:"Bear Case",icon:"bear",prob:.15,ret:-.10},
+  {name:"Black Swan",icon:"storm",prob:.05,ret:-.35}
 ];
+// El campo `icon` no es un emoji: es el sufijo de su <g id="i-*"> en <defs>
+// (ver icon()/pageIcon() mas arriba). Antes tenia el emoji literal aunque el
+// campo no se renderiza en ningun lado (fila2 de renderMainNav llama icon(id)
+// directo, no p.icon) — se deja consistente para que un uso futuro no reintroduzca emoji.
 const PAGES=[
-  {id:"news",     icon:"📰",label:"Contexto"},
-  {id:"dash",     icon:"◈", label:"Dashboard"},
-  {id:"port",     icon:"💼",label:"Portfolio"},
-  {id:"watch",    icon:"👁",label:"Watchlist"},
-  {id:"sig",      icon:"⚡",label:"Señales"},
-  {id:"pb",       icon:"📐",label:"Position Builder",pro:true},
-  {id:"comp",     icon:"⚖️",label:"Comparador"},
-  {id:"sentiment",icon:"🌡",label:"Sentimiento"},
-  {id:"radar",    icon:"📡",label:"Radar Financiero"},
-  {id:"decision", icon:"🎯",label:"Motor de Análisis",pro:true},
-  {id:"ind",      icon:"📈",label:"Indicadores",pro:true},
-  {id:"risk",     icon:"🛡️",label:"Riesgo",pro:true},
-  {id:"back",     icon:"📉",label:"Probar estrategia",pro:true},
-  {id:"screener", icon:"🔍",label:"Screener",pro:true},   // decia "Buscador" y la pagina se titula "Screener"
-  {id:"capital",  icon:"💰",label:"Plan de Capital",pro:true},
-  {id:"divs",     icon:"💰",label:"Dividendos"},
-  {id:"rebal",    icon:"🔀",label:"Rebalanceo"},
-  {id:"alert",    icon:"🔔",label:"Alertas"},
-  {id:"bitacora", icon:"📋",label:"Bitácora"},
-  {id:"settings", icon:"⚙️",label:"Configuración"},
-  {id:"help",     icon:"❓",label:"Ayuda"}
+  {id:"news",     icon:"news",label:"Contexto"},
+  {id:"dash",     icon:"dash", label:"Dashboard"},
+  {id:"port",     icon:"port",label:"Portfolio"},
+  {id:"watch",    icon:"watch",label:"Watchlist"},
+  {id:"sig",      icon:"sig",label:"Señales"},
+  {id:"pb",       icon:"pb",label:"Position Builder",pro:true},
+  {id:"comp",     icon:"comp",label:"Comparador"},
+  {id:"sentiment",icon:"sentiment",label:"Sentimiento"},
+  {id:"radar",    icon:"radar",label:"Radar Financiero"},
+  {id:"decision", icon:"decision",label:"Motor de Análisis",pro:true},
+  {id:"ind",      icon:"ind",label:"Indicadores",pro:true},
+  {id:"risk",     icon:"risk",label:"Riesgo",pro:true},
+  {id:"back",     icon:"back",label:"Probar estrategia",pro:true},
+  {id:"screener", icon:"screener",label:"Screener",pro:true},   // decia "Buscador" y la pagina se titula "Screener"
+  {id:"capital",  icon:"capital",label:"Plan de Capital",pro:true},
+  {id:"divs",     icon:"divs",label:"Dividendos"},
+  {id:"rebal",    icon:"rebal",label:"Rebalanceo"},
+  {id:"alert",    icon:"alert",label:"Alertas"},
+  {id:"bitacora", icon:"bitacora",label:"Bitácora"},
+  {id:"settings", icon:"settings",label:"Configuración"},
+  {id:"help",     icon:"help",label:"Ayuda"}
 ];
 // Antes aqui habia titulares hardcodeados (Fed/Warsh/Iran/NVDA...) que se
 // mostraban como actuales y se mezclaban con el feed vivo. Se retiran: la app
@@ -4922,7 +4942,7 @@ function openTCModal(tab){
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:80vh;max-height:80dvh;display:flex;flex-direction:column">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0">'+
     '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);letter-spacing:1px">MOY IQ INVEST</div>'+
-    '<button onclick="document.getElementById(\'tc-modal-overlay\').remove()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 0 2px" aria-label="Cerrar"><span aria-hidden="true">×</span></button>'+
+    '<button onclick="document.getElementById(\'tc-modal-overlay\').remove()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 0 2px" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<div style="padding:16px 20px 0">'+tabs+'</div>'+
     '<div style="padding:0 20px 20px;overflow-y:auto;flex:1">'+content+'</div>'+
@@ -5747,7 +5767,7 @@ function renderWatch(){
       '<td>'+chgCell(lq)+'</td>'+
       '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
       deCell+
-      '<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist"><span aria-hidden="true">✕</span></button></td>'+
+      '<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist">'+icon('close')+'</button></td>'+
       '</tr>';
   }).join("");
 
@@ -5992,7 +6012,7 @@ function mercadoHoyBody(){
     var d=newsDomain(link);
     return d?'https://www.google.com/s2/favicons?domain='+d+'&sz='+(sz||32):'';
   }
-  var catEmoji={Fed:'🏦',Earnings:'📊',Geopolítica:'🌍',Macro:'📈','IA & Tech':'🤖'};
+  var catEmoji={Fed:'bank',Earnings:'sig',Geopolítica:'macro',Macro:'ind','IA & Tech':'robot'};
   var catGrad={
     Fed:'linear-gradient(160deg,#1a0a2e,#2d1060)',
     Earnings:'linear-gradient(160deg,#0a2218,#0f3320)',
@@ -6010,7 +6030,7 @@ function mercadoHoyBody(){
     'IA & Tech':'background:rgba(247,147,26,.12);color:var(--amber)'
   };
   var impCol={bullish:'var(--grn)',bearish:'var(--red)',neutral:'var(--amber)',critical:'#a78bfa'};
-  var impLabel={bullish:'🐂 Bullish',bearish:'🐻 Bearish',neutral:'📊 Análisis',critical:'🚨 Crítico'};
+  var impLabel={bullish:icon('bull')+' Bullish',bearish:icon('bear')+' Bearish',neutral:icon('sig')+' Análisis',critical:icon('alert')+' Crítico'};
   var impBg={bullish:'rgba(38,166,91,.1)',bearish:'rgba(232,65,66,.1)',neutral:'rgba(247,147,26,.1)',critical:'rgba(139,92,246,.1)'};
   var sparkPts={bullish:'0,35 16,28 32,20 48,12 64,6',bearish:'0,8 16,14 32,22 48,30 64,38',neutral:'0,22 16,18 32,28 48,20 64,15',critical:'0,30 16,20 32,25 48,10 64,5'};
 
@@ -6052,7 +6072,7 @@ function mercadoHoyBody(){
       // Thumbnail: imagen real si existe, sino gradiente+emoji+favicon
       (function(){
         var grad=catGrad[featItem.cat]||'linear-gradient(160deg,#091428,#0e2244)';
-        var emoji=catEmoji[featItem.cat]||'📰';
+        var emoji=icon(catEmoji[featItem.cat]||'news','ico-lg');
         var fav=newsFavicon(featItem.link||'',32);
         var realImg=featItem.image||null;
         if(realImg){
@@ -6072,7 +6092,7 @@ function mercadoHoyBody(){
         }
         // Fallback: category gradient + emoji + favicon
         return '<div style="width:195px;flex-shrink:0;background:'+grad+';position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
-          '<div style="font-size:52px;line-height:1;opacity:.85;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))">'+emoji+'</div>'+
+          '<div style="width:52px;height:52px;opacity:.85;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));color:#fff">'+emoji.replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
           (fav?'<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:var(--r-sm);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;overflow:hidden">'+
             '<img src="'+fav+'" style="width:18px;height:18px;object-fit:contain" onerror="this.parentElement.style.display=\'none\'">'+
           '</div>':'')+
@@ -6094,7 +6114,7 @@ function mercadoHoyBody(){
       '<span style="font-size:11px;font-weight:600;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">'+esc(featItem.source)+'</span>'+
       '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block"></span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(featItem.hoursAgo)+'</span>'+
-      '<span style="padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;background:'+impBg[featItem.impact]+';color:'+impCol[featItem.impact]+'">'+impLabel[featItem.impact]+'</span>'+
+      '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;background:'+impBg[featItem.impact]+';color:'+impCol[featItem.impact]+'">'+impLabel[featItem.impact]+'</span>'+
       '<div style="margin-left:auto;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">💡 '+featItem.key.substring(0,52)+'...</div>'+
       '</div></div></div>';
   }
@@ -6112,7 +6132,7 @@ function mercadoHoyBody(){
         (n.breaking?'<div style="position:absolute;top:3px;left:3px;background:var(--red);color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.5px;font-family:\'IBM Plex Mono\',monospace">LIVE</div>':'')+
       '</div>':
       '<div style="width:72px;height:52px;border-radius:var(--r-sm);flex-shrink:0;background:'+(catGrad[n.cat]||'var(--card2)')+';overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">'+
-        '<div style="font-size:28px;opacity:.8">'+( catEmoji[n.cat]||'📰')+'</div>'+
+        '<div style="width:28px;height:28px;opacity:.8">'+icon(catEmoji[n.cat]||'news','ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
         (n.breaking?'<div style="position:absolute;top:3px;left:3px;background:var(--red);color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.5px;font-family:\'IBM Plex Mono\',monospace">LIVE</div>':'')+
       '</div>';
     return '<div role="button" tabindex="0" style="background:var(--card);border:1px solid var(--border);border-bottom:'+(isLast?'1px solid var(--border)':'none')+';padding:11px 14px;cursor:pointer;transition:.15s;display:flex;gap:12px;align-items:flex-start;border-radius:'+radius+'" '+(n.link?'onclick="window.open(\''+esc(safeLink(n.link))+'\',\'_blank\',\'noopener\')"':'')+' onmouseover="this.style.background=\'rgba(247,147,26,.04)\';this.style.borderColor=\'rgba(247,147,26,.2)\'" onmouseout="this.style.background=\'var(--card)\';this.style.borderColor=\'var(--border)\'">'+
@@ -6125,7 +6145,7 @@ function mercadoHoyBody(){
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+esc(n.source)+'</span>'+
       '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block"></span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(n.hoursAgo)+'</span>'+
-      '<span style="margin-left:auto;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+impCol[n.impact]+'">'+impLabel[n.impact]+'</span>'+
+      '<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+impCol[n.impact]+'">'+impLabel[n.impact]+'</span>'+
       '</div></div></div>';
   }).join('');
 
@@ -6438,7 +6458,7 @@ function renderRiskBody(){
   var scRows=SCENARIOS.map(function(sc){
     var pnl=sc.prob*sc.ret*cap;
     return '<div class="scrow">'+
-      '<div style="width:110px;font-size:12px;font-weight:600;color:var(--bright)">'+sc.name+'</div>'+
+      '<div style="width:110px;font-size:12px;font-weight:600;color:var(--bright);display:flex;align-items:center;gap:6px">'+icon(sc.icon)+sc.name+'</div>'+
       '<div style="width:30px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\'">'+(sc.prob*100).toFixed(0)+'%</div>'+
       '<div style="flex:1;height:5px;background:var(--card3);border-radius:2px"><div style="height:100%;width:'+Math.min(Math.abs(sc.ret)*200,100)+'%;background:'+(sc.ret>=0?"var(--pos)":"var(--neg)")+';border-radius:2px"></div></div>'+
       '<div style="width:70px;text-align:right;font-size:11px;font-weight:600;font-family:\'IBM Plex Mono\';color:'+(pnl>=0?"var(--pos)":"var(--neg)")+'">'+(pnl>=0?"+":"")+D(pnl)+'</div></div>';
@@ -6859,7 +6879,7 @@ function renderModal(){
 function mDelAccount(mr){
   var email=(S.user&&S.user.email)?esc(S.user.email):'';
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:440px" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="da-tit">'+
-    '<button class="mx" onclick="closeModal()" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 id="da-tit" style="color:var(--red)">Eliminar cuenta</h2>'+
     '<p class="msub">'+(email?'Cuenta: <b style="color:var(--bright)">'+email+'</b><br>':'')+
     'Esta acción es <b style="color:var(--bright)">irreversible</b>. Se borra de inmediato, para siempre:</p>'+
@@ -6922,7 +6942,7 @@ function mAlert(mr){
 
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:400px" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="al-tit">'+
     '<div class="mh"><div id="al-tit" class="mt">Nueva alerta de precio</div>'+
-    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">✕</button></div>'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button></div>'+
     '<div class="mb">'+
       '<label class="lb" for="al-tk">Activo</label>'+
       '<input id="al-tk" class="inp" placeholder="Ej: AAPL" maxlength="15" autocomplete="off" spellcheck="false" autocapitalize="characters" enterkeyhint="next" style="text-transform:uppercase" value="'+(S.editPos&&S.editPos.t?esc(S.editPos.t):'')+'"/>'+
@@ -7093,7 +7113,7 @@ function mPos(mr){
   var ed=S.modal==="editpos";
   var pos=ed&&S.editPos?S.editPos:{t:"",type:"Stock",sh:"",cost:"",cur:""};
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:360px" onclick="event.stopPropagation()">'+
-    '<button class="mx" onclick="closeModal()" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2>'+(ed?"Editar posición":"Nueva posición")+'</h2>'+
     '<p class="msub">'+(ed?"Modifica los valores":"Agrega un activo al portfolio")+'</p>'+
     '<div id="perr" class="err"></div>'+
@@ -7172,7 +7192,7 @@ function mTrade(mr){
   tickers=Array.from(new Set(tickers)).sort();
   var today=new Date().toISOString().slice(0,10);
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:400px" onclick="event.stopPropagation()">'+
-    '<button class="mx" onclick="closeModal()" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2>📋 Registrar operación</h2>'+
     '<p class="msub">Se guarda en tu Bitácora y actualiza el costo promedio</p>'+
     '<div id="trerr" class="err" style="display:none"></div>'+
@@ -7227,7 +7247,7 @@ function mComoCalcula(mr){
     '<div class="modal" onclick="event.stopPropagation()" style="max-width:540px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
     '<h2 style="margin:0;font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:19px">'+cfg.titulo+'</h2>'+
-    '<button onclick="closeModal()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar"><span aria-hidden="true">\u2715</span></button>'+
+    '<button onclick="closeModal()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px">'+cfg.intro+'</p>'+
     '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">'+
@@ -7285,7 +7305,7 @@ function mScoreInfo(mr){
     '<div class="modal" onclick="event.stopPropagation()" style="max-width:540px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
     '<h2 style="margin:0;font-size:16px">¿Cómo se calcula el Score?</h2>'+
-    '<button onclick="closeModal()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button onclick="closeModal()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px">El score es un indicador técnico compuesto (0–100). Combina 4 factores de análisis técnico educativo. No constituye asesoría financiera ni señal de compra o venta.</p>'+
     '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">'+
@@ -7624,7 +7644,7 @@ function renderDrawerHead(ticker,price){
       return parts.length?'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\';margin-top:3px">'+parts.join(' · ')+'</div>':'';
     })()+
     '</div>'+
-    '<button style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--r-sm);line-height:1" onclick="closeDrawer()" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>';
+    '<button style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--r-sm);line-height:1" onclick="closeDrawer()" aria-label="Cerrar">'+icon('close')+'</button>';
 }
 
 async function loadDrawerHistory(ticker,price){
@@ -8006,19 +8026,19 @@ function renderAIPanel(){
     // Header
     '<div style="padding:16px 18px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">'+
     '<div style="display:flex;align-items:center;gap:10px">'+
-    '<div style="width:32px;height:32px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;font-size:14px">🤖</div>'+
+    '<div style="width:32px;height:32px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff">'+icon('robot')+'</div>'+
     '<div>'+
     '<div style="font-size:13px;font-weight:700;color:var(--bright)">MOY IQ Analista</div>'+
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Motor de Análisis Técnico · Contexto de tu portfolio</div>'+
     '</div></div>'+
-    '<button onclick="toggleAI()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--r-sm);line-height:1" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button onclick="toggleAI()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--r-sm);line-height:1" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
 
     // Messages area
     '<div id="ai-msgs" style="flex:1;overflow-y:auto;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:10px">'+
     (AI.messages.length===0?
       '<div style="text-align:center;padding:24px 0">'+
-      '<div style="font-size:28px;margin-bottom:10px">🤖</div>'+
+      '<div style="width:28px;height:28px;margin:0 auto 10px;color:var(--amber)">'+icon('robot','ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
       '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px">Hola, soy tu MOY IQ Analista</div>'+
       '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:16px">Analizo tu portfolio con los datos que has registrado.<br>Pregúntame lo que quieras sobre tus inversiones.</div>'+
       '<div style="display:flex;flex-direction:column;gap:6px">'+
@@ -8050,7 +8070,7 @@ function renderAIMessages(){
   var html=AI.messages.map(function(m){
     var isUser=m.role==="user";
     return '<div style="display:flex;gap:8px;justify-content:'+(isUser?'flex-end':'flex-start')+'">'+
-      (!isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px">🤖</div>':'')+
+      (!isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;margin-top:2px">'+icon('robot')+'</div>':'')+
       '<div style="max-width:85%;padding:9px 12px;border-radius:'+(isUser?'12px 12px 4px 12px':'12px 12px 12px 4px')+';background:'+(isUser?'var(--amber)':'var(--card)')+';color:'+(isUser?'#fff':'var(--text)')+';font-size:12px;line-height:1.6;border:1px solid '+(isUser?'transparent':'var(--border)')+';font-family:\'IBM Plex Sans\',sans-serif;white-space:pre-wrap">'+
       esc(m.content)+
       '</div>'+
@@ -8060,7 +8080,7 @@ function renderAIMessages(){
 
   if(AI.loading){
     html+='<div style="display:flex;gap:8px">'+
-      '<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">🤖</div>'+
+      '<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0">'+icon('robot')+'</div>'+
       '<div style="padding:9px 14px;border-radius:var(--r-lg) 12px 12px 4px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;gap:5px">'+
       '<div style="width:6px;height:6px;border-radius:50%;background:var(--amber);animation:blink .8s infinite"></div>'+
       '<div style="width:6px;height:6px;border-radius:50%;background:var(--amber);animation:blink .8s .2s infinite"></div>'+
@@ -9032,8 +9052,8 @@ function radarReportHTML(r,shared){
   if(!r||!r.sections||!r.sections.length) return '';
 
   var sectionIcons={
-    health:'🏥',macro:'🌍',portfolio:'💼',
-    entries:'🟢',exits:'🔴',practice:'📚',action:'⚡',error:'⚠️'
+    health:'risk',macro:'macro',portfolio:'port',
+    entries:'bull',exits:'bear',practice:'bitacora',action:'sig',error:'alert'
   };
   var sectionColors={
     health:'var(--blue)',macro:'var(--text)',portfolio:'var(--text)',
@@ -9080,7 +9100,7 @@ function radarReportHTML(r,shared){
 
   // Sections
   var sectHTML=r.sections.map(function(sec){
-    var icon=sectionIcons[sec.id]||'📌';
+    var secIco=sectionIcons[sec.id]||'help';
     var color=sectionColors[sec.id]||'var(--text)';
     // Format action plan with numbered items (escapar ANTES de insertar los <br>)
     var content=esc(sec.content||'');
@@ -9088,7 +9108,7 @@ function radarReportHTML(r,shared){
     content=content.replace(/\n/g,'<br>');
     return '<div class="radar-section" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px">'+
       '<div class="radar-section-title" style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:'+color+';font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:14px">'+icon+'</span>'+esc(sec.title)+
+      '<span style="width:14px;height:14px;flex-shrink:0">'+icon(secIco).replace('class="ico"','class="ico" style="width:100%;height:100%"')+'</span>'+esc(sec.title)+
       '</div>'+
       '<div class="radar-section-content" style="font-size:12px;color:var(--text);line-height:1.75;font-family:\'IBM Plex Sans\',sans-serif">'+content+'</div>'+
       '</div>';
@@ -9276,13 +9296,13 @@ function showOnboarding(){
     return;
   }
   var steps=[
-    {icon:'💼',title:'Tu portfolio, siempre actualizado',
+    {icon:'port',title:'Tu portfolio, siempre actualizado',
      desc:'Agrega tus posiciones y MOY IQ Invest las conecta con precios de Yahoo Finance. Ve tu P&L con datos de mercado actualizados.',
      action:'Ver Portfolio',page:'port'},
-    {icon:'⚡',title:'Señales inteligentes',
+    {icon:'sig',title:'Señales inteligentes',
      desc:'20 activos analizados con 4 indicadores técnicos. Score compuesto 0-100. Indicadores alto, medio y bajo actualizados con el mercado.',
      action:'Ver Señales',page:'sig'},
-    {icon:'📐',title:'Position Builder',
+    {icon:'pb',title:'Position Builder',
      desc:'Calcula el tamaño óptimo de cada operación basado en tu capital y tolerancia al riesgo. Nunca más sobredimensiones una posición.',
      action:'Calcular entrada',page:'pb'},
   ];
@@ -9301,7 +9321,7 @@ function showOnboarding(){
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px">'+
     'Paso '+(ONBOARD.step+1)+' de '+steps.length+'</div>'+
     // Icon
-    '<div style="font-size:48px;margin-bottom:14px">'+step.icon+'</div>'+
+    '<div style="width:48px;height:48px;margin:0 auto 14px;color:var(--amber)">'+icon(step.icon,'ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
     // Title
     '<h2 style="margin-bottom:10px;font-size:18px">'+step.title+'</h2>'+
     // Description
@@ -9392,7 +9412,7 @@ function showShortcuts(){
   document.getElementById('mroot').innerHTML=
     '<div class="overlay" onclick="document.getElementById(\'mroot\').innerHTML=\'\'">'+
     '<div class="modal" style="max-width:380px" onclick="event.stopPropagation()">'+
-    '<button class="mx" onclick="document.getElementById(\'mroot\').innerHTML=\'\'" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button class="mx" onclick="document.getElementById(\'mroot\').innerHTML=\'\'" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 style="margin-bottom:3px">⌨️ Atajos de teclado</h2>'+
     '<p class="msub">Navega MOY IQ Invest sin el mouse</p>'+
     '<div style="display:flex;flex-direction:column;gap:2px">'+
@@ -9407,22 +9427,22 @@ function showShortcuts(){
 // ── HELP CENTER ────────────────────────────────────────────────
 function renderHelp(){
   var topics=[
-    {icon:'📖',q:'¿Qué significan RSI, MACD, ATR, Régimen y Score?',
+    {icon:'ind',q:'¿Qué significan RSI, MACD, ATR, Régimen y Score?',
      a:'RSI (Fuerza Relativa): 0–100, mide si un activo está sobrecomprado (&gt;70) o sobrevendido (&lt;30). MACD: compara dos promedios de precio para detectar cambios de tendencia. ATR: cuánto se mueve el precio en un día típico — se usa para calcular niveles de stop. Régimen: si el mercado en general está en tendencia alcista (Risk On) o bajista (Risk Off), medido con el S&amp;P 500. Score (0–100): combina estos indicadores en un solo número — arriba de 70 es una señal técnica fuerte, abajo de 40 es débil. Ninguno es una recomendación de compra o venta, solo datos técnicos.'},
-    {icon:'📡',q:'¿Por qué los precios dicen "Caché"?',
+    {icon:'radar',q:'¿Por qué los precios dicen "Caché"?',
      a:'Yahoo Finance limita las requests. Si ves el badge naranja "Caché", los precios son de la última actualización exitosa (máx 2h). Presiona ↻ para intentar actualizar.'},
-    {icon:'📐',q:'¿Cómo funciona el Position Builder?',
+    {icon:'pb',q:'¿Cómo funciona el Position Builder?',
      a:'Ingresa ticker, precio de entrada, capital disponible y stop loss. Calcula automáticamente el tamaño de posición usando la Regla del 2% — nunca arriesgues más del 2% de tu capital en una sola operación.'},
     
-    {icon:'🤖',q:'¿Cómo funciona el Análisis IA?',
+    {icon:'robot',q:'¿Cómo funciona el Análisis IA?',
      a:'El asistente conoce tu portfolio real (posiciones, P&L, señales activas, noticias). Hazle preguntas sobre el contexto de tus activos. Es análisis educativo, no asesoría personalizada.'},
-    {icon:'💰',q:'¿Cuándo se actualizan los dividendos?',
+    {icon:'divs',q:'¿Cuándo se actualizan los dividendos?',
      a:'Presiona "Cargar dividendos" en el módulo Dividendos. Se obtienen de Yahoo Finance y se proyectan para los próximos 12 meses según la frecuencia histórica de cada posición.'},
-    {icon:'⚖️',q:'¿Qué significa la correlación en el Comparador?',
+    {icon:'comp',q:'¿Qué significa la correlación en el Comparador?',
      a:'1.0 = activos se mueven igual (no diversifican). 0 = independientes. -1.0 = se mueven opuesto. Para diversificar bien, busca pares con correlación < 0.5.'},
-    {icon:'🔀',q:'¿Cómo uso el Rebalanceo?',
+    {icon:'rebal',q:'¿Cómo uso el Rebalanceo?',
      a:'Define los pesos objetivo moviendo los sliders. La herramienta calcula los ajustes técnicos referenciales para llegar a esa distribución con tu capital actual. La decisión de actuar es exclusiva del usuario.'},
-    {icon:'💳',q:'¿Cómo actualizo mi plan?',
+    {icon:'capital',q:'¿Cómo actualizo mi plan?',
      a:'Haz click en "Upgrade Pro" en cualquier módulo o en el sidebar. Desde ahí puedes activar el plan Pro y acceder a todas las herramientas.'},
   ];
 
@@ -9433,7 +9453,7 @@ function renderHelp(){
     topics.map(function(t){
       return '<div class="cb" style="cursor:default">'+
         '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">'+
-        '<span style="font-size:20px;flex-shrink:0">'+t.icon+'</span>'+
+        '<span style="width:20px;height:20px;flex-shrink:0;color:var(--amber)">'+icon(t.icon,'ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</span>'+
         '<div style="font-size:13px;font-weight:600;color:var(--bright);line-height:1.3">'+t.q+'</div>'+
         '</div>'+
         '<div style="font-size:11px;color:var(--text2);line-height:1.65;font-family:\'IBM Plex Mono\',monospace">'+t.a+'</div>'+
@@ -9460,14 +9480,14 @@ function mUpgrade(mr){
   // entradas de IA que hoy devuelven un aviso de mantenimiento. Anunciar como
   // Pro algo gratuito o inexistente es motivo de disputa de cobro.
   var proFeatures=[
-    ['🎯','Motor de Análisis','Régimen SPY + scoring técnico por activo'],
-    ['📈','Indicadores Pro','RSI, MACD y Bandas Bollinger sobre datos reales'],
-    ['📉','Simulación Histórica','Prueba estrategias sobre datos históricos'],
-    ['🔎','Screener sin límite','Filtra 50+ activos por criterio técnico'],
-    ['🏦','Plan de Capital','Proyección de aportes y objetivos'],
-    ['📁','Activos ilimitados','En Free el portfolio admite 5 posiciones'],
-    ['📊','Indicadores ilimitados','En Free se muestran 5 de 20'],
-    ['⬇️','Export CSV','Datos para tu contador'],
+    ['decision','Motor de Análisis','Régimen SPY + scoring técnico por activo'],
+    ['ind','Indicadores Pro','RSI, MACD y Bandas Bollinger sobre datos reales'],
+    ['back','Simulación Histórica','Prueba estrategias sobre datos históricos'],
+    ['screener','Screener sin límite','Filtra 50+ activos por criterio técnico'],
+    ['bank','Plan de Capital','Proyección de aportes y objetivos'],
+    ['port','Activos ilimitados','En Free el portfolio admite 5 posiciones'],
+    ['sig','Indicadores ilimitados','En Free se muestran 5 de 20'],
+    ['download','Export CSV','Datos para tu contador'],
   ];
 
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:560px;padding:0;overflow:hidden" onclick="event.stopPropagation()">'+
@@ -9475,7 +9495,7 @@ function mUpgrade(mr){
     // Header gradient
     '<div style="background:linear-gradient(135deg,#1a0a00,#2d1500);padding:28px 28px 24px;position:relative;overflow:hidden">'+
     '<div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:var(--amber);border-radius:50%;opacity:.08"></div>'+
-    '<button class="mx" onclick="closeModal()" style="color:rgba(255,255,255,.5)" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button class="mx" onclick="closeModal()" style="color:rgba(255,255,255,.5)" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px">MOY IQ INVEST PRO</div>'+
     '<h2 style="font-size:22px;color:#fff;margin-bottom:8px">Invierte como un profesional</h2>'+
     '<p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6">Motor de Análisis · Precios de mercado · Gestión de riesgo y backtesting</p>'+
@@ -9512,7 +9532,7 @@ function mUpgrade(mr){
     '<div id="pro-price-display" style="font-size:24px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">$99.99<span style="font-size:13px;color:var(--text3)">/año</span></div>'+
     '<div id="pro-price-sub" style="font-size:11px;color:var(--text3);margin-bottom:12px">$8.33/mes efectivo · ~17% ahorro vs mensual</div>'+
     proFeatures.slice(0,8).map(function(f){
-      return '<div style="font-size:11px;color:var(--bright);padding:3px 0;border-bottom:1px solid var(--orange-bd);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">✓</span>'+f[0]+' '+f[1]+'</div>';
+      return '<div style="font-size:11px;color:var(--bright);padding:3px 0;border-bottom:1px solid var(--orange-bd);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">'+icon('check')+'</span><span style="width:14px;height:14px;flex-shrink:0;color:var(--amber)">'+icon(f[0]).replace('class="ico"','class="ico" style="width:100%;height:100%"')+'</span>'+f[1]+'</div>';
     }).join('')+
     '</div>'+
     '</div></div>'+
@@ -9582,7 +9602,7 @@ function installPWA(){
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:420px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
     '<h2 style="margin:0;font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:18px">Instalar la app</h2>'+
-    '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>'+
+    '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0">'+pasos+'</p>'+
     '</div></div>';
@@ -9630,7 +9650,7 @@ function renderComp(){
       '<div style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">$'+fmtD(lp)+'</div>'+
       (chg!==null?'<div style="font-size:11px;color:'+(pos?'var(--pos)':'var(--neg)')+'">'+( pos?'+':'')+chg+'%</div>':'<div style="font-size:11px;color:var(--text3)">—</div>')+
       '</div>'+
-      (COMP.tickers.length>2?'<button onclick="compRemove('+i+')" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:13px;line-height:1;padding:2px" aria-label="Cerrar"><span aria-hidden="true">✕</span></button>':'')+
+      (COMP.tickers.length>2?'<button onclick="compRemove('+i+')" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:13px;line-height:1;padding:2px" aria-label="Cerrar">'+icon('close')+'</button>':'')+
       '</div>';
   }).join('');
 
@@ -10144,7 +10164,7 @@ function renderCapital(){
       '<input type="number" value="'+tk.pct+'" min="0" max="100" step="1" onchange="capUpdatePct(\''+esc(tk.t)+'\',this.value)" '+
         'style="width:42px;background:transparent;border:none;border-left:1px solid var(--border);color:var(--text2);font-family:\'IBM Plex Mono\',monospace;font-size:11px;padding:0 4px;outline:none;text-align:right">'+
       '<span style="font-size:11px;color:var(--text3)">%</span>'+
-      '<button onclick="capRemoveTicker(\''+esc(tk.t)+'\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;margin-left:2px" aria-label="Cerrar"><span aria-hidden="true">×</span></button>'+
+      '<button onclick="capRemoveTicker(\''+esc(tk.t)+'\')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;margin-left:2px" aria-label="Cerrar">'+icon('close')+'</button>'+
       '</div>';
   }).join('');
 
@@ -10643,7 +10663,7 @@ function toggleDisclaimer(){
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:520px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
     '<h2 style="margin:0;font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:18px">Aviso importante</h2>'+
-    '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar"><span aria-hidden="true">\u2715</span></button>'+
+    '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
     '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance (~15 min de retraso) \u00b7 Fundamentos: Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
