@@ -2448,7 +2448,7 @@ function checkAlerts(){
 function notifyAlert(a,cur){
   var dir=a.type==='Max'?'subió a':'bajó a';
   var msg=a.asset+' '+dir+' $'+cur.toFixed(2)+' · objetivo '+a.type+' $'+a.trigger;
-  try{ if(typeof showToast==='function') showToast('🔔 '+msg); }catch(e){}
+  try{ if(typeof showToast==='function') showToast(icon('alert')+' '+msg); }catch(e){}
   try{
     if('Notification' in window && Notification.permission==='granted'){
       new Notification('Alerta · '+a.asset, {body:msg, tag:'alert-'+a.id, icon:'/icon-192.png'});
@@ -7553,7 +7553,7 @@ function renderCorrelationMatrix(port){
 
   return '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Correlación de portafolio <span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">(Pearson · 2 meses)</span></div>'+
-    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin:0 0 10px">🔴 Alta correlación (>0.7) · 🟡 Media (0.4–0.7) · 🟢 Baja/negativa (diversificación)</p>'+
+    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin:0 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+statusDot('🔴',10)+' Alta correlación (>0.7) · '+statusDot('🟡',10)+' Media (0.4–0.7) · '+statusDot('🟢',10)+' Baja/negativa (diversificación)</p>'+
     '<div style="overflow-x:auto"><table style="border-collapse:collapse">'+header+bodyRows+'</table></div>'+
     '</div>';
 }
