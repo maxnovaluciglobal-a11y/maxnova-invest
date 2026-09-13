@@ -5281,7 +5281,7 @@ function renderDash(){
 
   // ── Top Señales card ──
   var sigCard=
-    '<div class="fos-card" style="margin-bottom:16px">'+
+    '<div class="fos-card">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">'+
     '<div class="fos-card-title">Top Señales <span style="font-size:11px;background:var(--amber);color:#000;padding:1px 5px;border-radius:3px;font-weight:700;vertical-align:middle">REF</span></div>'+
     '<button onclick="setPage(\'sig\')" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:\'IBM Plex Mono\',monospace">Ver todas →</button>'+
@@ -5367,7 +5367,10 @@ function renderDash(){
     // columnas. Con stretch, las 3 tarjetas igualan altura y el espacio extra
     // queda DENTRO del fondo/borde de cada card, no como vacio suelto.
     '<div class="resp2" style="display:grid;grid-template-columns:1fr 1fr 268px;gap:16px;margin-bottom:30px">'+
-      sigCard+portCard+
+      '<div style="display:flex;flex-direction:column;gap:16px">'+
+        sigCard+portCard+
+      '</div>'+
+      miniNews+
       '<div style="display:flex;flex-direction:column;gap:14px">'+
         indicesCard()+
         '<div id="de-regime-banner" class="fos-card" style="padding:12px 14px"><div class="dash-ctx-loading" style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">// Cargando contexto…</div></div>'+
