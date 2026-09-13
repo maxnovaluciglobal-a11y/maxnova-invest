@@ -6,7 +6,7 @@
 
 MOY IQ Invest Pro is a technical analysis platform built for Spanish-speaking investors in Latin America who trade US markets (NYSE, NASDAQ). It provides a systematic, rules-based analytical process powered by real-time market data from Yahoo Finance.
 
-**Price**: $29.99 USD/month
+**Price**: Free tier available. Pro $9.99 USD/month. Teams $99 USD/month.
 **URL**: https://invest.moyiq.app
 **Language**: Spanish (designed for LATAM investors)
 
