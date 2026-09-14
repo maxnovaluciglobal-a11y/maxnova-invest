@@ -494,10 +494,12 @@ body.no-auth #mobile-header { display: none !important; }
   color: var(--text3);
   margin-bottom:6px;
 }
-.ph h1 {
+.ph h1, .ph h2 {
   /* Mismo titulo de pagina que .fos-module-title (Instrument Sans serif): antes eran
      3 estilos distintos (Inter 24, Inter 26, Instrument Sans 27) y el H1 cambiaba de
-     familia/tamano al moverse entre modulos. */
+     familia/tamano al moverse entre modulos. El h2 es para _ph() llamado con
+     tag:'h2' — secciones que viven dentro de una pagina mas grande con su
+     propio h1 (ej. Screener/Comparador dentro de Investigar), mismo look. */
   font-family: 'Instrument Sans', Georgia, sans-serif;
   font-size: 27px;
   font-weight: 600;
@@ -1392,6 +1394,19 @@ tr:last-child td { border-bottom: none; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* Sin esto, CSS Grid usa min-width:auto por default en los items de .resp2 —
+   una tabla ancha adentro de una columna (ej. Watchlist de Investigar, 9
+   columnas) empuja su track al ancho de su contenido y le roba espacio a la
+   columna vecina, en vez de dejarse achicar y scrollear por dentro. La regla
+   de mas abajo que hacia esto YA existia pero solo dentro de
+   @media(max-width:768px) — a 1024px/1440px (donde .resp2 sigue siendo 2-3
+   columnas de verdad, no 1 columna movil) no aplicaba y la grilla se rompia.
+   Bug real, confirmado midiendo con getBoundingClientRect: a 1024px el
+   Comparador de Investigar quedaba aplastado a ~200px de ancho necesitando
+   463px. Unconditional a proposito: no tiene sentido moverse una vez que ya
+   cae a 1 columna en movil (max-width:768px, mas abajo). */
+.resp2 > div { min-width: 0; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -3222,11 +3237,12 @@ function typeTag(t){
   return '<span style="font-size:11px;padding:2px 5px;border-radius:3px;background:'+bg+';color:'+col+'">'+t+'</span>';
 }
 // ── Page header helper — breadcrumb + big title + optional right slot ──
-function _ph(crumb,title,sub,right){
+function _ph(crumb,title,sub,right,tag){
+  tag=tag||'h1';
   return '<div class="ph">'+
     '<div>'+
     '<div class="ph-crumb">'+crumb+'</div>'+
-    '<h1>'+title+'</h1>'+
+    '<'+tag+'>'+title+'</'+tag+'>'+
     (sub?'<p class="sub-txt">'+sub+'</p>':'')+
     '</div>'+
     (right?'<div class="ph-right">'+right+'</div>':'')+
@@ -4373,7 +4389,7 @@ function renderScreenerBody(){ renderInvestigar('screener'); }
 function renderScreenerSection(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('screener')>=0){
-    return _ph('Investigar · Screener','Screener','// Filtro técnico · Score Motor · Export CSV')+
+    return _ph('Investigar · Screener','Screener','// Filtro técnico · Score Motor · Export CSV',null,'h2')+
       lockedBanner('Screener','Filtra más de 50 activos simultáneamente por score técnico, señal y sector. Exporta resultados a CSV.');
   }
   var f=S.screenerFilters;
@@ -4448,11 +4464,11 @@ function renderScreenerSection(){
         '<th>Ticker</th><th>Precio</th><th>Score DE</th><th>Acción</th>'+
         '<th class="col-sec" title="Fuerza Relativa (0-100): arriba de 70 se considera sobrecomprado, abajo de 30 sobrevendido">RSI</th><th class="col-sec">PQ</th><th class="col-sec">Entrada</th><th class="col-sec" title="Basado en ATR(14): cuanto se mueve el precio en un dia tipico">Stop</th><th class="col-sec">R:R</th><th class="col-sec">Sector RS</th>'+
       '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
-      (errors.length?'<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">No disponibles: '+errors.map(function(e){return e.ticker;}).join(', ')+'</div>':'')+
+      (errors.length?'<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">No disponibles: '+errors.map(function(e){return e.ticker+' ('+(e.reason||'sin datos')+')';}).join(', ')+'</div>':'')+
       '</div>';
   }
 
-  return _ph('Investigar · Screener','Screener','// Filtra el universo de activos por Score DE, RSI, acción y sector')+
+  return _ph('Investigar · Screener','Screener','// Filtra el universo de activos por Score DE, RSI, acción y sector',null,'h2')+
 
     '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px">'+
     '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">'+
@@ -4552,14 +4568,21 @@ function screenerRun(){
 
   function tickerTimeout(ms){return new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},ms);});}
 
+  // reason distingue 2 causas reales (antes ambas caian en el mismo "no
+  // disponible" generico, sin decir por que): deScoreTicker resuelve
+  // falsy cuando el ticker no existe o no tiene historia suficiente; el
+  // catch dispara por timeout (10s, carrera contra tickerTimeout) o por un
+  // error real del fetch — un usuario no puede actuar distinto sobre "esta
+  // mal tipeado" vs "la red esta lenta" si el mensaje es el mismo.
   var promises=list.map(function(ticker){
     return Promise.race([deScoreTicker(ticker),tickerTimeout(10000)]).then(function(r){
       if(r) S.screenerResults.push(r);
-      else S.screenerResults.push({ticker:ticker,error:true});
+      else S.screenerResults.push({ticker:ticker,error:true,reason:'no encontrado o sin historia suficiente'});
       renderScreenerBody();
       return r;
-    }).catch(function(){
-      S.screenerResults.push({ticker:ticker,error:true});
+    }).catch(function(err){
+      var reason=(err&&err.message==='timeout')?'tardó demasiado (>10s)':'error al obtener datos';
+      S.screenerResults.push({ticker:ticker,error:true,reason:reason});
       renderScreenerBody();
     });
   });
@@ -5869,7 +5892,11 @@ function renderWatchSection(){
     // El boton "Motor →" de esta cabecera se quito el 13-sep-2026: era el
     // 5to de 5 caminos redundantes a Analizar -> Motor de Analisis (la
     // pestaña del nav principal ya cubre esto).
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h1 class="fos-module-title">Watchlist</h1><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
+    // h2 (no h1): esta seccion vive dentro de la pagina combinada Investigar,
+    // que ya tiene su propio h1 ("Investigar") — 4 h1 hermanos sin jerarquia
+    // era invisible visualmente (misma clase .fos-module-title) pero rompia
+    // la navegacion por headings de un lector de pantalla.
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h2 class="fos-module-title">Watchlist</h2><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Agregar ticker</div>'+
     '<div class="wtag-grid">'+quickTags+'</div>'+
@@ -5881,7 +5908,13 @@ function renderWatchSection(){
     // son detalle) y quedan las que responden "que es, como esta, que hago" —
     // sin esto la tabla no tenia NINGUNA columna oculta en movil y quedaban
     // 410px de scroll horizontal, mas ancho que la pantalla misma.
-    '<div class="tw"><table id="tbl-watch" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("watch","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("watch","price","Precio")+sortTh("watch","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th>'+deHeader.replace('<th ','<th class="col-sec" ')+'<th>Quitar</th></tr></thead>'+
+    // max-height+overflow-y: en Investigar esta tabla comparte fila con el
+    // Comparador (mucho mas bajo, altura casi fija) — sin tope, un watchlist
+    // largo (15+ tickers) deja al Comparador terminando 600-700px antes,
+    // como una franja de fondo vacio antes del Screener (bug confirmado por
+    // critique dual-agent del 14-sep-2026). 480px ~= 9-10 filas visibles,
+    // scrollea el resto en vez de estirar la columna sin limite.
+    '<div class="tw" style="max-height:480px;overflow-y:auto"><table id="tbl-watch" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("watch","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("watch","price","Precio")+sortTh("watch","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th>'+deHeader.replace('<th ','<th class="col-sec" ')+'<th>Quitar</th></tr></thead>'+
     '<tbody>'+emptyMsg+wRows+'</tbody></table></div>'
   );
 }
@@ -10069,7 +10102,7 @@ function renderCompSection(){
     '<span style="font-size:11px;color:rgba(156,163,175,.8);font-family:\'IBM Plex Mono\',monospace">SPY Benchmark</span></span>':'')+
   '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-left:8px">Retorno acumulado base-100</span>';
 
-  return _ph('Investigar · Comparador','Comparador de Activos','// Performance normalizado · Correlación · Sharpe ratio',liveBadge())+
+  return _ph('Investigar · Comparador','Comparador de Activos','// Performance normalizado · Correlación · Sharpe ratio',liveBadge(),'h2')+
     '<div class="resp2" style="display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start">'+
     '<div>'+
     '<div class="cb">'+
