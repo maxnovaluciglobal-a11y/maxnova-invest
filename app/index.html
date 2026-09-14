@@ -5477,7 +5477,11 @@ function portRebalHint(port,totM){
   drifts.sort(function(a,b){return Math.abs(b.diff)-Math.abs(a.diff);});
   var top=drifts[0];
   var dir=top.diff>0?'sobreponderado':'subponderado';
-  return '<div class="fos-card" style="padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-left:3px solid var(--amber)">'+
+  // Antes tenia un border-left:3px solid amber (el "side-tab accent" mas
+  // reconocible de una UI generica/IA, marcado por el detector de impeccable
+  // el 14-sep-2026). Mismo tratamiento que el banner "portfolio de ejemplo"
+  // arriba en esta misma pantalla: fondo tenue completo, sin barra lateral.
+  return '<div class="fos-card" style="padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--orange-bg)">'+
     statusDot('🟡',12)+
     '<div style="flex:1;min-width:200px;font-size:12px;color:var(--text);line-height:1.5">'+
       '<b>Rebalanceo sugerido:</b> '+drifts.length+' posición'+(drifts.length!==1?'es se desviaron':' se desvió')+' de tus objetivos'+
