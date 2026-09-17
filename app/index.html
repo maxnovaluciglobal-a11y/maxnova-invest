@@ -2421,9 +2421,20 @@ function addAlert(ticker,tipo,trigger){
   return true;
 }
 function delAlert(id){
+  // Mismo patron de undo que rmWatch() en watchlist: guardar la alerta y su
+  // posicion antes de filtrar, para poder reinsertarla si el usuario deshace.
+  var idx=S.alerts.findIndex(function(a){return a.id===id;});
+  var removed=idx>=0?S.alerts[idx]:null;
   S.alerts=S.alerts.filter(function(a){return a.id!==id;});
   persistAlerts();
-  showToast('Alerta eliminada','warning');
+  showToast('Alerta eliminada','warning',function(){
+    if(removed&&S.alerts.indexOf(removed)<0){
+      S.alerts.splice(Math.min(idx,S.alerts.length),0,removed);
+      persistAlerts();
+      showToast('Alerta restaurada');
+      renderAlert();
+    }
+  });
   renderAlert();
 }
 
@@ -5718,7 +5729,7 @@ function renderBitacora(){
     // Table
     // En movil se esconden Precio/Qty/RSI/Nota (detalle): quedan Fecha, Ticker,
     // Tipo, Monto, P&L y la accion — lo que responde "que paso y como me fue".
-    '<div class="tw"><table><thead><tr>'+
+    '<div class="tw"><table class="fos-table"><thead><tr>'+
     '<th>Fecha</th><th>Ticker</th><th>Tipo</th><th class="col-sec">Precio</th><th class="col-sec">Qty</th><th>Monto</th><th class="col-sec">RSI</th><th>P&L</th><th class="col-sec">Nota</th><th></th>'+
     '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
 
@@ -5800,9 +5811,17 @@ function renderBitacora(){
 }
 
 function deleteTrade(id){
-  if(!confirm("¿Eliminar esta operación?")) return;
+  // Antes usaba confirm() nativo del navegador. Mismo patron que mDel()/delPos()
+  // para borrar una posicion del portfolio: modal propio en vez de confirm().
+  S.delTradeId=id;
+  openModal('deltrade');
+}
+function doDeleteTrade(id){
   S.trades=S.trades.filter(function(t){return t.id!==id;});
-  persistTrades();renderBitacora();
+  persistTrades();
+  S.modal=null;S.delTradeId=null;
+  document.getElementById("mroot").innerHTML="";
+  renderBitacora();
 }
 
 function exportTradesCSV(){
@@ -7070,9 +7089,9 @@ function renderAlert(){
     return '<tr style="'+(r.triggered?"background:var(--rbg)":"")+'">'+
       '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.asset)+'\','+(r.cur||0)+')">'+esc(r.asset)+' <span style="font-size:11px">↗</span></td>'+
       '<td style="color:'+(r.type==="Max"?"var(--pos)":"var(--neg)")+'">'+(r.type==="Max"?"⬆ Máx":"⬇ Mín")+'</td>'+
-      '<td style="font-weight:600">$'+fmtD(r.trigger)+'</td>'+
+      '<td class="col-sec" style="font-weight:600">$'+fmtD(r.trigger)+'</td>'+
       '<td style="font-weight:600;color:var(--bright)">'+(r.tieneprecio?'$'+fmtD(r.cur):'<span style="color:var(--text3)">sin precio</span>')+'</td>'+
-      '<td style="color:'+(r.triggered?"var(--red)":(r.dist!==null&&r.dist<.03)?"var(--amber)":"var(--text3)")+'">'+(r.dist!==null?(r.dist*100).toFixed(1)+'%':'—')+'</td>'+
+      '<td class="col-sec" style="color:'+(r.triggered?"var(--red)":(r.dist!==null&&r.dist<.03)?"var(--amber)":"var(--text3)")+'">'+(r.dist!==null?(r.dist*100).toFixed(1)+'%':'—')+'</td>'+
       '<td><span style="font-size:11px;font-weight:700;color:'+(r.triggered?"var(--neg)":"var(--pos)")+'">'+(r.triggered?"ALCANZADA":"En seguimiento")+'</span></td>'+
       '<td><button class="btn btn-r" style="padding:2px 8px;font-size:11px" onclick="delAlert('+r.id+')" aria-label="Eliminar alerta de '+esc(r.asset)+'">Eliminar</button></td></tr>';
   }).join("");
@@ -7115,7 +7134,7 @@ function renderAlert(){
         ? '<button class="btn" onclick="openModal(\'addalert\')">+ Nueva alerta</button>'
         : '<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\'">Límite Free ('+plan.maxA+') · elimina una o mejora a Pro</span>')+
       '</div>'+
-      '<div class="tw"><table><thead><tr><th>Activo</th><th>Tipo</th><th>Objetivo</th><th>Precio actual</th><th>Distancia</th><th>Estado</th><th>Acción</th></tr></thead>'+
+      '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th>Tipo</th><th class="col-sec">Objetivo</th><th>Precio actual</th><th class="col-sec">Distancia</th><th>Estado</th><th>Acción</th></tr></thead>'+
       '<tbody>'+tableRows+'</tbody></table></div>'
     );
 }
@@ -7133,6 +7152,7 @@ function renderModal(){
   else if(S.modal==="addalert") mAlert(mr);
   else if(S.modal==="delacct") mDelAccount(mr);
   else if(S.modal==="resetport") mResetPort(mr);
+  else if(S.modal==="deltrade") mDelTrade(mr);
   _setupModalFocus();
 }
 
@@ -7446,6 +7466,17 @@ function mResetPort(mr){
     '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
     '<button class="btn btn-r" onclick="doResetPort()">Restaurar</button>'+
+    '</div></div></div>';
+}
+function mDelTrade(mr){
+  var id=S.delTradeId;
+  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:310px;text-align:center" onclick="event.stopPropagation()">'+
+    '<div style="width:30px;height:30px;margin:0 auto 10px;color:var(--red)">'+icon('trash','ico-lg')+'</div>'+
+    '<h2>Eliminar operación</h2>'+
+    '<p class="msub">¿Eliminar esta operación? Esta acción no se puede deshacer.</p>'+
+    '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
+    '<button class="btn" onclick="closeModal()">Cancelar</button>'+
+    '<button class="btn btn-r" onclick="doDeleteTrade('+id+')">Sí, eliminar</button>'+
     '</div></div></div>';
 }
 function delPos(id){
@@ -10722,7 +10753,7 @@ function renderRebal(){
     return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'+
       '<span style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:52px">'+esc(h.t)+'</span>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;width:36px">'+curW.toFixed(1)+'%</span>'+
-      '<input type="range" min="0" max="60" step="1" value="'+tgt+'" style="flex:1;accent-color:var(--amber)" oninput="REBAL.targets[\''+esc(h.t)+'\']=parseInt(this.value);rebalUpdate();rebalSaveTargets()"/>'+
+      '<input type="range" min="0" max="60" step="1" value="'+tgt+'" aria-label="Peso objetivo de '+esc(h.t)+'" style="flex:1;accent-color:var(--amber)" oninput="REBAL.targets[\''+esc(h.t)+'\']=parseInt(this.value);rebalUpdate();rebalSaveTargets()"/>'+
       '<span id="rebal-tgt-'+esc(h.t)+'" style="font-size:11px;font-weight:600;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;width:32px;text-align:right">'+tgt+'%</span>'+
       '<span style="font-size:11px;font-weight:600;width:60px;text-align:right;color:'+(Math.abs(diff)<0.5?'var(--text3)':diff>0?'var(--pos)':'var(--neg)')+';font-family:\'IBM Plex Mono\',monospace">'+
       (Math.abs(diff)<0.5?'—':(diff>0?'+':'')+diff.toFixed(1)+'%')+'</span></div>';
@@ -10771,7 +10802,7 @@ function renderRebal(){
     '<span style="font-size:12px;color:var(--text2)">Suma total:</span>'+
     '<span id="rebal-sum" style="font-size:15px;font-weight:700;color:'+(balanced?'var(--pos)':'var(--neg)')+';font-family:\'IBM Plex Mono\',monospace">'+sumTargets+'%</span>'+
     '</div>'+
-    (!balanced?'<div style="font-size:11px;color:var(--red);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">⚠ Los pesos deben sumar 100%</div>':'')+
+    (!balanced?'<div style="font-size:11px;color:var(--red);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">⚠ Los pesos deben sumar 100%</div>':'<div style="font-size:11px;color:var(--pos);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">✓ Balanceado</div>')+
     '<button onclick="rebalReset()" class="btn" style="margin-top:10px;width:100%">↺ Restaurar pesos actuales</button>'+
     '</div>'+
     '<div>'+
@@ -10782,7 +10813,7 @@ function renderRebal(){
     '</div>'+
     (trades.length>0?
       '<div class="cb"><div class="st"><div class="stbar"></div>Ajustes de referencia para rebalancear</div>'+
-      '<div class="tw"><table><thead><tr><th>Ticker</th><th class="col-sec">Ajuste</th>'+
+      '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th class="col-sec">Ajuste</th>'+
       '<th title="Acciones a comprar o vender = monto ÷ precio actual">Cantidad</th>'+
       '<th title="Diferencia entre el valor objetivo y el valor actual de la posición">Monto USD</th>'+
       '</tr></thead><tbody>'+tradeRows+'</tbody></table></div>'+
