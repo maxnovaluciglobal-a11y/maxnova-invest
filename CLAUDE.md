@@ -156,6 +156,15 @@ cualquier migración nueva (si Walter la pide — recordar que Invest está en p
 producto) usa ese mismo flujo del CLI, verificando primero contra producción real. Detalle
 completo en `supabase/migrations/README.md`.
 
+## Lead magnet + auth compartida con MOY IQ (14-sep-2026, pedido explícito de Walter)
+
+- **`perfil-inversor.html`**: quiz de perfil de riesgo (6 preguntas, cálculo client-side), alimenta `invest_leads` → `crm_contacts` (`producto_origen='invest'`) en el Supabase compartido — visible en el panel `?admin=crm` de financeos-app. CTA en 3 lugares (nav, hero, cierre de `index.html`) — no dejarlo solo en el footer, Walter no lo encontraba ahí.
+- **Bug de CSS real, ya corregido**: `.wrap` en `perfil-inversor.html`/`faq.html`/`estado-mercado.html`/`index.html` tenía un padding (`max(24px,calc(50% - Npx))`) copiado de `nav` sin darse cuenta de que `nav` no tiene `max-width` propio y `.wrap` sí — la combinación dejaba 0px de contenido útil a partir de cierto ancho de viewport (rompía en desktop normal, ≥1280px en el peor caso). Si una página nueva copia este mismo patrón de `.wrap`+padding-porcentual, va a tener el mismo bug — usar padding fijo (`0 24px`) en vez.
+- **`signUp()` ahora pasa `options.emailRedirectTo: window.location.origin`** (antes no lo pasaba) — necesario para que el Auth Hook compartido (vive en `financeos-app/supabase/functions/auth-email-hook/`) detecte que el correo de confirmación es de Invest y no de MOY IQ. Si se toca el flujo de signup, no borrar ese parámetro.
+- **RPC `notify_invest_signup`** (vive en el Supabase compartido, no en este repo): se llama desde el cliente justo después de un `signUp()` exitoso para notificar el alta a `maxnovaluciglobal@gmail.com`. No expone ningún secret — valida server-side que el email tenga un `auth.users` creado en los últimos 10 minutos antes de disparar.
+
+Detalle completo: memoria `financeos_moy_iq_invest_crm_20260914`, `financeos_moy_iq_auth_email_hook_20260914`, `financeos_moy_iq_admin_notify_20260914`.
+
 ## Fuente de verdad
 
 Este archivo es nuevo (creado 13-sep-2026, no existía antes). Memoria relevante:
