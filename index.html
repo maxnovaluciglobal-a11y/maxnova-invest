@@ -178,7 +178,7 @@
   --red:#C96856;--amber:#E0975A;--amber-bg:rgba(224,151,90,.14);
   --blue:#89A6C2;--blue-bg:rgba(137,166,194,.14);
   --bg:#12161F;--card:#181D29;--card2:#1E2433;--card3:#242B3B;
-  --text:#C7C2B2;--text2:#9C9686;--text3:#7D7869;--bright:#FAF8F2;--white:#FAF8F2;
+  --text:#C7C2B2;--text2:#9C9686;--text3:#948E7D;--bright:#FAF8F2;--white:#FAF8F2;
   --border:rgba(228,223,209,0.10);--border2:rgba(228,223,209,0.20);
   --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:12px;
   --shadow-sm:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
@@ -195,7 +195,12 @@
 .lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.1em .3em;line-height:1;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.6em;letter-spacing:0;text-transform:uppercase}
 .lockup .suffix{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:.62em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.1em}
 body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
-.wrap{max-width:1200px;margin:0 auto;padding:0 max(24px,calc(50% - 600px))}
+/* Mismo bug de perfil-inversor.html/faq.html/estado-mercado.html: esta
+   fórmula de padding es correcta solo sin max-width en el mismo elemento
+   (nav la usa así) — sumada al max-width:1200px de .wrap, angosta el
+   contenido a medida que crece el viewport hasta 0px útiles a partir de
+   2400px. Padding fijo. */
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
 
 /* ── TEXTURA DE PÁGINA — grano sutil fijo, mismo recurso que moyiq.app.
    Opacidad muy baja: aporta profundidad táctil sin volverse ruido ni competir
@@ -276,6 +281,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
 .hero-glow{display:none}
 
 .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--grn-bg);border:0.5px solid var(--grn-lt);border-radius:8px;font-size:11px;font-weight:600;color:var(--grn);font-family:'IBM Plex Mono',monospace;letter-spacing:.4px;margin-bottom:28px}
+/* CTA del lead magnet — visible siempre (a diferencia de .nav-links, que se
+   esconde bajo 860px), para que no quede enterrado solo en el footer. */
+.hero-lead-magnet{display:block;margin:-16px 0 20px;font-size:13px;font-weight:600;color:var(--grn);text-decoration:none}
+.hero-lead-magnet:hover{color:var(--grn-d)}
 
 .hero h1{font-size:48px;font-weight:700;font-family:'Instrument Sans',Georgia,serif;color:var(--bright);letter-spacing:-0.5px;line-height:1.12;margin-bottom:20px}
 .hero h1 span{color:var(--grn);font-style:italic}
@@ -469,6 +478,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     <a href="#features">Funcionalidades</a>
     <a href="#pricing">Precios</a>
     <a href="#faq">FAQ</a>
+    <a href="/perfil-inversor.html">Perfil de Inversor</a>
     <a href="/app" class="nav-cta">Abrir app →</a>
   </div>
 </nav>
@@ -480,6 +490,8 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="hero-badge">· Motor de Análisis · Portfolio tracking · LATAM</div>
+
+      <a href="/perfil-inversor.html" class="hero-lead-magnet">🎯 Descubrí tu Perfil de Inversor gratis en 2 min →</a>
 
       <h1>Analiza el mercado con <span>criterio técnico</span>.</h1>
 
@@ -792,6 +804,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     <p class="cta-copy">Crea tu cuenta gratis y empieza a analizar el mercado con contexto SPY, scoring por activo y gestión de riesgo. Plan Free disponible desde el primer día.</p>
     <a href="/app" class="btn-hero btn-primary" style="font-size:15px;padding:16px 36px">Empezar gratis →</a>
     <p class="cta-fine">Análisis técnico educativo · No asesoría financiera · No ejecutamos órdenes</p>
+    <p style="margin-top:20px"><a href="/perfil-inversor.html" class="hero-lead-magnet" style="margin:0">¿No sabés por dónde empezar? Descubrí tu Perfil de Inversor gratis →</a></p>
   </div>
 </section>
 
