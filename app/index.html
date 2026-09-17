@@ -4662,7 +4662,7 @@ function renderSettings(){
     '<div style="font-size:13px;font-weight:500;color:var(--bright)">Modo oscuro</div>'+
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:2px">Tema de la interfaz</div>'+
     '</div>'+
-    '<button onclick="toggleTheme()" style="position:relative;width:48px;height:26px;border-radius:var(--r-lg);border:none;cursor:pointer;background:'+(isDark?'var(--grn)':'var(--card3)')+';transition:.2s">'+
+    '<button onclick="toggleTheme()" role="switch" aria-checked="'+(isDark?'true':'false')+'" aria-label="Modo oscuro" style="position:relative;width:48px;height:26px;border-radius:var(--r-lg);border:none;cursor:pointer;background:'+(isDark?'var(--grn)':'var(--card3)')+';transition:.2s">'+
     '<span style="position:absolute;top:3px;left:'+(isDark?'24px':'3px')+';width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;display:block"></span>'+
     '</button>'+
     '</div>'+
@@ -4684,6 +4684,7 @@ function renderSettings(){
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Capital de referencia</div>'+
     '<p style="font-size:12px;color:var(--text2);margin-bottom:10px">Usado en Position Builder y cálculos de riesgo. No se conecta a ningún broker.</p>'+
+    '<label class="lb" for="set-capital">Capital ($)</label>'+
     '<div style="display:flex;align-items:center;gap:10px">'+
     '<span style="font-size:13px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">$</span>'+
     '<input id="set-capital" class="inp" type="number" value="'+S.capital+'" min="100" step="100" style="width:180px"/>'+
@@ -6840,13 +6841,10 @@ function renderBack(){
     return;
   }
   var sells=S.trades.filter(function(t){return t.type==='sell'&&t.pnl!=null;});
-  var tabStyle=function(id){
-    var active=BT.tab===id;
-    return 'padding:8px 18px;border-radius:var(--r-sm);font-size:12px;font-family:\'IBM Plex Mono\',monospace;cursor:pointer;border:1px solid '+(active?'var(--orange-bd)':'var(--border)')+';background:'+(active?'var(--orange-bg)':'var(--card2)')+';color:'+(active?'var(--amber)':'var(--text2)')+';font-weight:'+(active?'700':'400');
-  };
-  var tabs='<div style="display:flex;gap:8px;margin-bottom:18px">'+
-    '<button style="'+tabStyle('journal')+'" onclick="BT.tab=\'journal\';renderBack()">'+icon('clipboard')+' Analizador de Bitácora</button>'+
-    '<button style="'+tabStyle('sim')+'" onclick="BT.tab=\'sim\';renderBack()">'+icon('bolt')+' Simulación Histórica</button>'+
+  var tabCls=function(id){return 'tab-btn'+(BT.tab===id?' act':'');};
+  var tabs='<div class="tabs">'+
+    '<button class="'+tabCls('journal')+'" onclick="BT.tab=\'journal\';renderBack()">'+icon('clipboard')+' Analizador de Bitácora</button>'+
+    '<button class="'+tabCls('sim')+'" onclick="BT.tab=\'sim\';renderBack()">'+icon('bolt')+' Simulación Histórica</button>'+
     '</div>';
 
   var html=_ph('Decidir · Simulador','Probar una estrategia','// Qué habría pasado aplicando un cruce de medias en el pasado')+tabs+
@@ -6934,7 +6932,7 @@ function btRenderJournal(sells){
     '</div>'+
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Rendimiento por Activo</div>'+
-    '<div class="tw"><table><thead><tr><th>Activo</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>P&L</th></tr></thead>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>P&L</th></tr></thead>'+
     '<tbody>'+tkRows+'</tbody></table></div></div>'+
     '<div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px">Análisis basado en '+sells.length+' operaciones cerradas con P&L registrado en tu Bitácora.</div>';
 }
@@ -6960,7 +6958,7 @@ function btRenderSim(){
     '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Media larga — marca la tendencia de fondo</label>'+
     '<input id="bt-slow" class="inp" style="width:100%" type="number" value="'+BT.slow+'" min="20" max="200" oninput="BT.slow=parseInt(this.value)||50"/></div>'+
     '</div>'+
-    '<button class="btn-big" style="width:100%;margin-top:14px" onclick="btRunSim()" '+(BT.running?'disabled':'')+'>'+(BT.running?'⟳ Ejecutando...':'▶ Ver qué habría pasadotar Simulación Histórica')+'</button>'+
+    '<button class="btn-big" style="width:100%;margin-top:14px" onclick="btRunSim()" '+(BT.running?'disabled':'')+'>'+(BT.running?'⟳ Ejecutando...':'▶ Ejecutar Simulación Histórica')+'</button>'+
     '</div>';
 
   if(!res) return formHtml+'<div style="text-align:center;padding:30px;color:var(--text3);font-size:12px">Configura los parámetros y ejecuta la simulación para ver resultados.</div>';
@@ -6998,7 +6996,7 @@ function btRenderSim(){
     '<div class="st"><div class="stbar"></div>Equity Curve — '+BT.ticker+' · SMA'+BT.fast+'/'+BT.slow+'</div>'+
     '<div style="display:flex;gap:1px;height:80px;align-items:flex-end;padding:4px">'+eqBars+'</div>'+
     '</div>'+
-    '<div class="tw" style="max-height:280px;overflow-y:auto"><table>'+
+    '<div class="tw" style="max-height:280px;overflow-y:auto"><table class="fos-table">'+
     '<thead><tr><th>Fecha</th><th>Tipo</th><th>Precio</th><th>P&L</th><th>Capital</th></tr></thead>'+
     '<tbody>'+tableRows+'</tbody></table></div>';
 }
@@ -7175,7 +7173,7 @@ function mDelAccount(mr){
     '</ul>'+
     '<div id="da-err" class="err" style="display:none;color:var(--red);font-size:12px;margin-bottom:10px"></div>'+
     '<label class="lb" for="da-confirm">Escribí <b style="color:var(--bright)">ELIMINAR</b> para confirmar</label>'+
-    '<input id="da-confirm" class="inp ifu" autocomplete="off" spellcheck="false" oninput="daSync()" placeholder="ELIMINAR" style="margin-top:6px"/>'+
+    '<input id="da-confirm" class="inp ifu" autocomplete="off" spellcheck="false" oninput="daSync()" onkeydown="if(event.key===\'Enter\'){var b=document.getElementById(\'da-btn\');if(b&&!b.disabled)confirmDeleteAccount();}" placeholder="ELIMINAR" style="margin-top:6px"/>'+
     '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
     '<button id="da-btn" class="btn btn-r" disabled onclick="confirmDeleteAccount()">Eliminar cuenta definitivamente</button>'+
@@ -9409,8 +9407,10 @@ function radarReportHTML(r,shared){
   // compartido (#radar=... en renderRadarShared), es decir de un payload
   // controlado por quien arma la URL, no solo del propio reporte local —
   // sin esto era XSS reflejado via URL, no solo self-XSS.
+  // Sin border-left: mismo criterio que el banner de rebalanceo (ver comentario
+  // cerca de linea 5493) - fondo tenue completo, sin barra lateral tipo "side-tab accent".
   var summaryHTML=r.summary?
-    '<div class="radar-summary" style="font-size:14px;color:var(--bright);font-style:italic;margin-bottom:16px;padding:12px 16px;border-left:3px solid var(--amber);background:var(--orange-bg);border-radius:0 var(--r-sm) var(--r-sm) 0">'+esc(r.summary)+'</div>':'';
+    '<div class="radar-summary" style="font-size:14px;color:var(--bright);font-style:italic;margin-bottom:16px;padding:12px 16px;background:var(--orange-bg);border-radius:var(--r-sm)">'+esc(r.summary)+'</div>':'';
 
   // Sections
   var sectHTML=r.sections.map(function(sec){
@@ -9700,6 +9700,18 @@ document.addEventListener('keydown',function(e){
 
 document.addEventListener('keydown',function(e){
   if(!S.user) return;
+  // Escape debe cerrar modal aunque el foco este en un input (ej. da-confirm
+  // en el modal de borrado de cuenta) — por eso va ANTES del early-return de
+  // INPUT/TEXTAREA que corta los atajos de letra. Usa closeModal() cuando hay
+  // un modal abierto para que limpie S.modal y restaure el foco previo.
+  if(e.key==='Escape'){
+    if(S.modal){closeModal();return;}
+    document.getElementById('mroot').innerHTML='';
+    closeDrawer();
+    if(document.getElementById('ai-panel'))
+      document.getElementById('ai-panel').style.transform='translateX(100%)';
+    return;
+  }
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   var map={
     'n':'news','d':'dash','p':'port','w':'watch','s':'sig',
@@ -9707,13 +9719,6 @@ document.addEventListener('keydown',function(e){
     'i':'ind','r':'risk','k':'back','t':'alert'
   };
   if(e.key==='?' ){showShortcuts();return;}
-  if(e.key==='Escape'){
-    document.getElementById('mroot').innerHTML='';
-    closeDrawer();
-    if(document.getElementById('ai-panel'))
-      document.getElementById('ai-panel').style.transform='translateX(100%)';
-    return;
-  }
   if(e.altKey&&map[e.key.toLowerCase()]){
     e.preventDefault();
     setPage(map[e.key.toLowerCase()]);
