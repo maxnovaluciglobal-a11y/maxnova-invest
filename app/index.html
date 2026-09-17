@@ -4486,7 +4486,7 @@ function renderScreenerSection(){
     '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px">'+
     '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">'+
     '<div>'+
-      '<label style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:5px">Tickers (separados por espacio o coma)</label>'+
+      '<label for="scr-tickers" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:5px">Tickers (separados por espacio o coma)</label>'+
       '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">'+
       [['ETFs amplios','etf'],['Tecnología','tech'],['Dividendos','dividend'],['Sectores SPDR','sectors'],['Renta fija / oro','safe']].map(function(c){return '<button onclick="scrPreset(\''+c[1]+'\')" style="padding:4px 11px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--card2);color:var(--text2);font-size:11px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--grn)\';this.style.color=\'var(--grn)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text2)\'">'+c[0]+'</button>';}).join('')+'</div>'+
       '<textarea id="scr-tickers" rows="2" style="width:100%;box-sizing:border-box;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:8px 10px;resize:vertical;outline:none">'+S.screenerTickers+'</textarea>'+
@@ -4496,19 +4496,19 @@ function renderScreenerSection(){
 
     '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:flex-end">'+
     '<div>'+
-      '<label style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Score mínimo</label>'+
+      '<label for="scr-scoreMin" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Score mínimo</label>'+
       '<input type="number" id="scr-scoreMin" min="0" max="100" value="'+f.scoreMin+'" style="width:70px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
     '</div>'+
     '<div>'+
-      '<label title="Fuerza Relativa (0-100): mide si un activo esta sobrecomprado o sobrevendido" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">RSI mín</label>'+
+      '<label for="scr-rsiMin" title="Fuerza Relativa (0-100): mide si un activo esta sobrecomprado o sobrevendido" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">RSI mín</label>'+
       '<input type="number" id="scr-rsiMin" min="0" max="100" value="'+f.rsiMin+'" style="width:60px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
     '</div>'+
     '<div>'+
-      '<label title="Fuerza Relativa (0-100): mide si un activo esta sobrecomprado o sobrevendido" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">RSI máx</label>'+
+      '<label for="scr-rsiMax" title="Fuerza Relativa (0-100): mide si un activo esta sobrecomprado o sobrevendido" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">RSI máx</label>'+
       '<input type="number" id="scr-rsiMax" min="0" max="100" value="'+f.rsiMax+'" style="width:60px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
     '</div>'+
     '<div>'+
-      '<label style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Acción</label>'+
+      '<label for="scr-action" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Acción</label>'+
       '<select id="scr-action" style="background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+actionOpts+'</select>'+
     '</div>'+
     '<button onclick="screenerApplyFilters()" class="btn" style="padding:6px 14px;font-size:11px">Aplicar filtros</button>'+
@@ -4904,8 +4904,8 @@ function renderWelcome(){
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--text3)">o con email</span><div style="flex:1;height:1px;background:var(--border)"></div></div>'+
     // Panel login
     '<div id="wv3-panel-login" class="wv3-panel show">'+
-    '<div><label class="wv3-field-label" for="le">EMAIL</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
-    '<div><label class="wv3-field-label" for="lp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">ver</button></div><div class="wv3-forgot"><a href="#" onclick="wv3ForgotPwd();return false;">¿Olvidaste tu contraseña?</a></div></div>'+
+    '<div><label class="wv3-field-label" for="le">EMAIL</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" required onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
+    '<div><label class="wv3-field-label" for="lp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" required minlength="6" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">ver</button></div><div class="wv3-forgot"><button type="button" class="linklike" style="background:none;border:none;color:var(--grn);text-decoration:underline;cursor:pointer;font:inherit;padding:0" onclick="wv3ForgotPwd()">¿Olvidaste tu contraseña?</button></div></div>'+
     '<div id="lerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="lbtn" class="wv3-submit" onclick="doLogin()">Entrar →</button>'+
     '<div class="wv3-legal">Al acceder aceptas nuestros <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>.</div>'+
@@ -4913,9 +4913,9 @@ function renderWelcome(){
     // Panel register
     '<div id="wv3-panel-reg" class="wv3-panel">'+
     '<div><label class="wv3-field-label" for="rn">NOMBRE</label><div class="wv3-field-wrap"><input id="rn" type="text" enterkeyhint="next" autocapitalize="words" placeholder="Tu nombre" autocomplete="name"/></div></div>'+
-    '<div><label class="wv3-field-label" for="re">EMAIL</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email"/></div></div>'+
-    '<div><label class="wv3-field-label" for="rp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
-    '<label class="wv3-check-row"><input id="rdisc" type="checkbox"/><span class="wv3-check-txt">He leído y acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y la <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>. Entiendo que los análisis son educativos y no constituyen asesoría financiera.</span></label>'+
+    '<div><label class="wv3-field-label" for="re">EMAIL</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" required/></div></div>'+
+    '<div><label class="wv3-field-label" for="rp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
+    '<label class="wv3-check-row"><input id="rdisc" type="checkbox" required/><span class="wv3-check-txt">He leído y acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y la <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>. Entiendo que los análisis son educativos y no constituyen asesoría financiera.</span></label>'+
     '<div id="rerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis →</button>'+
     '</div>'+
@@ -6943,19 +6943,19 @@ function btRenderSim(){
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Parámetros de Simulación Histórica</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px">'+
-    '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Ticker</label>'+
+    '<div><label for="bt-ticker" style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Ticker</label>'+
     '<input id="bt-ticker" class="inp" style="width:100%" value="'+BT.ticker+'" placeholder="SPY" oninput="BT.ticker=this.value.toUpperCase().trim()"/></div>'+
-    '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Período</label>'+
+    '<div><label for="bt-range" style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Período</label>'+
     '<select id="bt-range" class="inp" style="width:100%" onchange="BT.range=this.value">'+
     ['6mo','1y','2y'].map(function(r){return '<option value="'+r+'"'+(BT.range===r?' selected':'')+'>'+r+'</option>';}).join('')+
     '</select></div>'+
-    '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Capital ($)</label>'+
+    '<div><label for="bt-capital" style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Capital ($)</label>'+
     '<input id="bt-capital" class="inp" style="width:100%" type="number" value="'+BT.capital+'" oninput="BT.capital=parseFloat(this.value)||10000"/></div>'+
     '</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">'+
-    '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Media corta — reacciona rápido</label>'+
+    '<div><label for="bt-fast" style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Media corta — reacciona rápido</label>'+
     '<input id="bt-fast" class="inp" style="width:100%" type="number" value="'+BT.fast+'" min="5" max="50" oninput="BT.fast=parseInt(this.value)||20"/></div>'+
-    '<div><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Media larga — marca la tendencia de fondo</label>'+
+    '<div><label for="bt-slow" style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">Media larga — marca la tendencia de fondo</label>'+
     '<input id="bt-slow" class="inp" style="width:100%" type="number" value="'+BT.slow+'" min="20" max="200" oninput="BT.slow=parseInt(this.value)||50"/></div>'+
     '</div>'+
     '<button class="btn-big" style="width:100%;margin-top:14px" onclick="btRunSim()" '+(BT.running?'disabled':'')+'>'+(BT.running?'⟳ Ejecutando...':'▶ Ejecutar Simulación Histórica')+'</button>'+
@@ -7399,18 +7399,18 @@ function mPos(mr){
     '<h2>'+(ed?"Editar posición":"Nueva posición")+'</h2>'+
     '<p class="msub">'+(ed?"Modifica los valores":"Agrega un activo al portfolio")+'</p>'+
     '<div id="perr" class="err"></div>'+
-    '<label class="fl">Ticker</label>'+
+    '<label class="fl" for="pt">Ticker</label>'+
     '<input id="pt" class="inp ifu" placeholder="AAPL" value="'+esc(pos.t)+'" style="text-transform:uppercase" '+(ed?"readonly":"")+' onchange="posAutofillPrice()"/>'+
-    '<label class="fl">Tipo</label>'+
+    '<label class="fl" for="pty">Tipo</label>'+
     // value explicito: .value ya devolvia el textContent, asi que el valor que se
     // persiste es identico. Se hace explicito para que renombrar la etiqueta
     // visible no altere en silencio lo que se guarda.
     '<select id="pty" class="inp ifu" style="cursor:pointer" onchange="posAutofillPrice()"><option value="Stock" '+(pos.type==="Stock"?"selected":"")+'>Stock</option><option value="ETF" '+(pos.type==="ETF"?"selected":"")+'>ETF</option><option value="Crypto" '+(pos.type==="Crypto"?"selected":"")+'>Crypto</option></select>'+
-    '<label class="fl">Unidades</label>'+
+    '<label class="fl" for="ps">Unidades</label>'+
     '<input id="ps" class="inp ifu" type="number" placeholder="10" value="'+(pos.sh||"")+'" min="0.001" step="0.001"/>'+
-    '<label class="fl">Precio de entrada</label>'+
+    '<label class="fl" for="pc">Precio de entrada</label>'+
     '<input id="pc" class="inp ifu" type="number" placeholder="185.00" value="'+(pos.cost||"")+'" min="0.01" step="0.01"/>'+
-    '<label class="fl">Precio actual</label>'+
+    '<label class="fl" for="pcur">Precio actual</label>'+
     '<input id="pcur" class="inp ifu" type="number" placeholder="196.50" value="'+(pos.cur||"")+'" min="0.01" step="0.01"/>'+
     '<button class="btn-big" style="width:100%;margin-top:12px" onclick="savePos('+(ed&&S.editPos?S.editPos.id:-1)+')">'+(ed?"Guardar cambios":"Agregar")+'</button>'+
     '</div></div>';
@@ -7500,7 +7500,7 @@ function mTrade(mr){
     '<p class="msub">Se guarda en tu Bitácora y actualiza el costo promedio</p>'+
     '<div id="trerr" class="err" style="display:none"></div>'+
 
-    '<label class="fl">Tipo de operación</label>'+
+    '<label class="fl" for="tr_type">Tipo de operación</label>'+
     '<select id="tr_type" class="inp ifu" onchange="mTradeTypeChange()" style="cursor:pointer">'+
     '<option value="buy">🟢 Compra</option>'+
     '<option value="sell">🔴 Venta</option>'+
@@ -7510,33 +7510,33 @@ function mTrade(mr){
     '</select>'+
 
     '<div id="tr_ticker_row">'+
-    '<label class="fl">Ticker</label>'+
+    '<label class="fl" for="tr_ticker">Ticker</label>'+
     '<input id="tr_ticker" class="inp ifu" placeholder="AAPL" style="text-transform:uppercase" list="tr_tklist" value="'+(S.editPos&&S.editPos.t?esc(S.editPos.t):'')+'"/>'+
     '<datalist id="tr_tklist">'+tickers.map(function(t){return '<option value="'+esc(t)+'"/>';}).join("")+'</datalist>'+
     '</div>'+
 
     '<div id="tr_price_row">'+
-    '<label class="fl">Precio por acción</label>'+
+    '<label class="fl" for="tr_price">Precio por acción</label>'+
     '<input id="tr_price" class="inp ifu" type="number" placeholder="185.00" step="0.01" min="0.001" oninput="mTradeCalc()"/>'+
     '</div>'+
 
     '<div id="tr_qty_row">'+
-    '<label class="fl">Cantidad (shares)</label>'+
+    '<label class="fl" for="tr_qty">Cantidad (shares)</label>'+
     '<input id="tr_qty" class="inp ifu" type="number" placeholder="10" step="0.001" min="0.001" oninput="mTradeCalc()"/>'+
     '</div>'+
 
-    '<label class="fl">Monto total <span style="font-size:11px;color:var(--text3)">(auto-calculado)</span></label>'+
+    '<label class="fl" for="tr_amount">Monto total <span style="font-size:11px;color:var(--text3)">(auto-calculado)</span></label>'+
     '<input id="tr_amount" class="inp ifu" type="number" placeholder="1850.00" step="0.01" min="0" oninput="mTradeAmtChange()"/>'+
 
-    '<label class="fl">Fecha</label>'+
+    '<label class="fl" for="tr_date">Fecha</label>'+
     '<input id="tr_date" class="inp ifu" type="date" value="'+today+'"/>'+
 
     '<div id="tr_rsi_row">'+
-    '<label class="fl">RSI al momento <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
+    '<label class="fl" for="tr_rsi">RSI al momento <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
     '<input id="tr_rsi" class="inp ifu" type="number" placeholder="52" min="0" max="100" step="0.1"/>'+
     '</div>'+
 
-    '<label class="fl">Nota <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
+    '<label class="fl" for="tr_note">Nota <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
     '<input id="tr_note" class="inp ifu" placeholder="Ej: Entrada en soporte SMA50"/>'+
 
     '<button class="btn-big" style="width:100%;margin-top:14px" onclick="saveTrade()">✅ Registrar operación</button>'+
