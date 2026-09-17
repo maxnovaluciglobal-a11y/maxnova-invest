@@ -8,6 +8,8 @@
 <meta name="robots" content="index, follow"/>
 <link rel="canonical" href="https://invest.moyiq.app/faq.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#12161F"/>
 <!-- Open Graph -->
 <meta property="og:type"         content="website"/>
 <meta property="og:url"          content="https://invest.moyiq.app/faq.html"/>
@@ -75,7 +77,8 @@
 }
 </script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overscroll-behavior:none}
 :root{
   --grn:#CC9A52;--grn-d:#E3B36B;--laton:#CC9A52;--on-accent:#14213D;
   --bg:#12161F;--card:#181D29;--card2:#1E2433;
@@ -85,7 +88,12 @@
   --shadow-sm:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
 }
 body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;line-height:1.6}
-.wrap{max-width:800px;margin:0 auto;padding:0 max(24px,calc(50% - 400px))}
+/* Mismo bug de perfil-inversor.html: esta fórmula de padding es correcta
+   solo en un elemento SIN max-width (nav, que la copia sin problema porque
+   no tiene su propio max-width) — acá, sumada al max-width:800px del mismo
+   .wrap, deja el contenido cada vez más angosto a medida que crece el
+   viewport, hasta 0px de ancho útil a partir de 1600px. Padding fijo. */
+.wrap{max-width:800px;margin:0 auto;padding:0 24px}
 
 .lockup{font-family:'Instrument Sans',Georgia,serif;font-weight:600;font-size:18px;text-transform:uppercase;letter-spacing:.08em;color:var(--bright);text-decoration:none;display:inline-flex;align-items:center;gap:.32em;min-height:44px}
 .lockup .dial{width:1em;height:1em;flex-shrink:0}
@@ -125,6 +133,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0}
 .footer-links a{color:var(--text2);text-decoration:none;font-size:13px}
 .footer-links a:hover{color:var(--grn)}
 .footer-copy{color:var(--text3);font-size:12px}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
 </style>
 </head>
 <body>

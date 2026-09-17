@@ -8,6 +8,8 @@
 <meta name="robots" content="index, follow"/>
 <link rel="canonical" href="https://invest.moyiq.app/perfil-inversor.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#12161F"/>
 <meta property="og:type"         content="website"/>
 <meta property="og:url"          content="https://invest.moyiq.app/perfil-inversor.html"/>
 <meta property="og:title"        content="Perfil de Inversor gratis en 2 minutos — MOY IQ Invest"/>
@@ -25,7 +27,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overscroll-behavior:none}
 :root{
   --grn:#CC9A52;--grn-d:#E3B36B;--laton:#CC9A52;--on-accent:#14213D;
   --bg:#12161F;--card:#181D29;--card2:#1E2433;
@@ -36,7 +39,16 @@
   --ok:#7AB893;--warn:#D9A15A;--risk:#D97A6C;
 }
 body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;line-height:1.6}
-.wrap{max-width:640px;margin:0 auto;padding:0 max(24px,calc(50% - 320px))}
+/* BUG real (no solo de este archivo, ver faq.html/estado-mercado.html):
+   esta fórmula de padding está pensada para un elemento SIN max-width (como
+   nav más abajo, que usa la misma fórmula para centrar sin necesitarlo) —
+   el % de padding-left/right se resuelve contra el ancho del contenedor
+   PADRE (body/main), no contra el propio .wrap. A partir de viewport
+   >=1280px, calc(50% - 320px) da 320px de padding a cada lado, que sumados
+   (640px) igualan exactamente el max-width:640px del propio .wrap — deja
+   CERO px de ancho de contenido, cada palabra cae en su propia línea. Se
+   reemplaza por un padding fijo simple; centrado sigue via margin:0 auto. */
+.wrap{max-width:640px;margin:0 auto;padding:0 24px}
 
 .lockup{font-family:'Instrument Sans',Georgia,serif;font-weight:600;font-size:18px;text-transform:uppercase;letter-spacing:.08em;color:var(--bright);text-decoration:none;display:inline-flex;align-items:center;gap:.32em;min-height:44px}
 .lockup .dial{width:1em;height:1em;flex-shrink:0}
@@ -59,7 +71,7 @@ h1{font-family:'Instrument Sans',Georgia,serif;font-size:clamp(28px,4vw,38px);fo
 /* Progress */
 .progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:22px}
 .progress-track{flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;background:var(--grn);border-radius:2px;transition:width .3s cubic-bezier(.23,1,.32,1);width:0%}
+.progress-fill{height:100%;width:100%;background:var(--grn);border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.23,1,.32,1)}
 .progress-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);white-space:nowrap}
 
 .q-title{font-size:16px;font-weight:600;color:var(--bright);margin-bottom:18px;line-height:1.4}
@@ -88,8 +100,9 @@ h1{font-family:'Instrument Sans',Georgia,serif;font-size:clamp(28px,4vw,38px);fo
 .gate-form{margin-top:20px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;font-weight:500;color:var(--bright);margin-bottom:6px}
-.field input[type=email]{width:100%;font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--bright);background:var(--card);border:.5px solid var(--border2);border-radius:8px;padding:11px 14px;transition:border-color .14s}
-.field input:focus{outline:none;border-color:var(--grn)}
+.field input[type=email]{width:100%;font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--bright);background:var(--card);border:.5px solid var(--border2);border-radius:8px;padding:11px 14px;transition:border-color .14s}
+.field input:focus{border-color:var(--grn)}
+.field input:focus-visible{outline:2px solid var(--grn);outline-offset:2px}
 .err{font-size:12px;color:var(--risk);margin-top:8px;display:none}
 .consent-check{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text3);margin:4px 0 14px;cursor:pointer;text-align:left}
 .consent-check input{margin-top:3px;flex:none}
@@ -118,6 +131,7 @@ footer{border-top:0.5px solid var(--border);padding:40px 0}
 .footer-links a{color:var(--text2);text-decoration:none;font-size:13px}
 .footer-links a:hover{color:var(--grn)}
 .footer-copy{color:var(--text3);font-size:12px}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.001ms!important;animation-duration:.001ms!important}}
 </style>
 </head>
 <body>
@@ -331,6 +345,20 @@ function registerInvestLead(email, perfil, score, consentMarketing) {
     },
     body: JSON.stringify({ p_email: email, p_perfil: perfil, p_score: score, p_fuente: detectFuente() }),
   }).then(function (res) { return res.json ? res.json() : null; })
+    .then(function (data) {
+      // Dispara el email de bienvenida de la secuencia de nurture — mismo
+      // patrón que diagnostico.html/registerStarterLead: fire-and-forget,
+      // nunca bloquea ni rompe el flujo si falla (sin .then/.catch que
+      // afecten el resultado ya mostrado en pantalla).
+      if (data && data.ok && data.id) {
+        fetch('https://nelwgbcddwiaimzbcuas.supabase.co/functions/v1/send-nurture-invest-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: 'welcome', leadId: data.id }),
+        }).catch(function () { /* best-effort, no bloquea el resultado del quiz */ });
+      }
+      return data;
+    })
     .catch(function () { /* si falla el guardado del lead, igual mostramos el resultado ya calculado */ });
 }
 
@@ -356,7 +384,7 @@ function renderQuestion() {
     });
   });
 
-  document.getElementById('progress-fill').style.width = (((current + 1) / QUESTIONS.length) * 100) + '%';
+  document.getElementById('progress-fill').style.transform = 'scaleX(' + ((current + 1) / QUESTIONS.length) + ')';
   document.getElementById('progress-label').textContent = (current + 1) + ' / ' + QUESTIONS.length;
   document.getElementById('btn-back').disabled = current === 0;
   document.getElementById('btn-next').disabled = answers[current] === null;
