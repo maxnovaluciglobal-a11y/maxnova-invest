@@ -5532,10 +5532,10 @@ function renderPort(){
     '<div><div class="fos-module-crumb">Seguir · Portfolio</div><h1 class="fos-module-title">Portfolio Manager</h1><div class="fos-module-sub">Editable · <span id="saved">✓ Guardado</span></div></div>'+
     '<div class="ph-right">'+liveBadge()+(isProPort?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('decision')+' Motor →</button>':'')+
     // Currency selector
-    '<div style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px">'+
+    '<div role="group" aria-label="Moneda" style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px">'+
     ['USD','CLP','MXN','COP','ARS','PEN'].map(function(c){
       var active=USER_CURRENCY===c;
-      return '<button onclick="setUserCurrency(\''+c+'\')" style="padding:3px 7px;border:none;border-radius:4px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;cursor:pointer;background:'+(active?'var(--orange-bg)':'transparent')+';color:'+(active?'var(--amber)':'var(--text3)')+';font-weight:'+(active?'700':'400')+'">'+c+'</button>';
+      return '<button aria-pressed="'+(active?'true':'false')+'" onclick="setUserCurrency(\''+c+'\')" style="padding:3px 7px;border:none;border-radius:4px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;cursor:pointer;background:'+(active?'var(--orange-bg)':'transparent')+';color:'+(active?'var(--amber)':'var(--text3)')+';font-weight:'+(active?'700':'400')+'">'+c+'</button>';
     }).join('')+
     '</div>'+
     (plan.maxT>=999||S.portfolio.length<plan.maxT?'<button class="btn" onclick="openModal(\'addpos\')">+ Agregar</button>':'<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\'">Límite Free ('+plan.maxT+')</span>')+
@@ -5593,10 +5593,14 @@ function updateCap(v){
   persist(); // no re-render needed — input keeps its value
 }
 function resetPort(){
-  if(confirm("¿Restaurar portfolio demo?")){
-    S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
-    S.nextId=10;persist();renderMain();
-  }
+  openModal('resetport');
+}
+function doResetPort(){
+  S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
+  S.nextId=10;persist();
+  S.modal=null;S.editPos=null;
+  document.getElementById("mroot").innerHTML="";
+  renderMain();
 }
 
 // ── BITÁCORA (Transaction Log) ─────────────────────────────────
@@ -7128,6 +7132,7 @@ function renderModal(){
   else if(S.modal==="como-calcula") mComoCalcula(mr);
   else if(S.modal==="addalert") mAlert(mr);
   else if(S.modal==="delacct") mDelAccount(mr);
+  else if(S.modal==="resetport") mResetPort(mr);
   _setupModalFocus();
 }
 
@@ -7431,6 +7436,16 @@ function mDel(mr){
     '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
     '<button class="btn btn-r" onclick="delPos('+pos.id+')">Sí, eliminar</button>'+
+    '</div></div></div>';
+}
+function mResetPort(mr){
+  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:310px;text-align:center" onclick="event.stopPropagation()">'+
+    '<div style="width:30px;height:30px;margin:0 auto 10px;color:var(--amber)">'+icon('rebal','ico-lg')+'</div>'+
+    '<h2>Restaurar portfolio demo</h2>'+
+    '<p class="msub">Se reemplaza tu portfolio actual por el portfolio demo de ejemplo. Esta acción no se puede deshacer.</p>'+
+    '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
+    '<button class="btn" onclick="closeModal()">Cancelar</button>'+
+    '<button class="btn btn-r" onclick="doResetPort()">Restaurar</button>'+
     '</div></div></div>';
 }
 function delPos(id){
@@ -8717,14 +8732,14 @@ function renderSentimentWidget(){
   var hBars=histData.map(function(entry,i){
     var isLast=i===histData.length-1;
     if(!entry) return '<div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:2px">'+
-      '<div style="width:100%;height:3px;background:var(--card3);border-radius:2px"></div>'+
-      '<div style="font-size:7px;color:var(--border2)">·</div></div>';
+      '<div role="img" aria-label="Sin dato" style="width:100%;height:3px;background:var(--card3);border-radius:2px"></div>'+
+      '<div style="font-size:9px;color:var(--border2)">·</div></div>';
     var v=entry.v;
-    var c2=v<=20?'#e84142':v<=40?'#f59e0b':v<=60?'#6b80a0':v<=80?'#f7931a':'#26a65b';
+    var c2=v<=20?'var(--neg)':v<=40?'var(--amber)':v<=60?'var(--blue)':v<=80?'var(--amber)':'var(--pos)';
     var dayLabel=isLast?'HOY':entry.d.slice(5); // MM-DD
     return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" title="'+entry.d+': '+v+'">'+
-      '<div style="width:100%;height:'+Math.max(4,v*0.65)+'px;background:'+c2+';border-radius:2px 2px 0 0;opacity:'+(isLast?'1':'.5')+'"></div>'+
-      '<div style="font-size:7px;color:'+(isLast?c2:'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+dayLabel+'</div>'+
+      '<div role="img" aria-label="'+entry.d+': '+v+'" style="width:100%;height:'+Math.max(4,v*0.65)+'px;background:'+c2+';border-radius:2px 2px 0 0;opacity:'+(isLast?'1':'.5')+'"></div>'+
+      '<div style="font-size:9px;color:'+(isLast?c2:'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+dayLabel+'</div>'+
       '</div>';
   }).join('');
   var compRows=d.components.map(function(c){
@@ -8742,7 +8757,7 @@ function renderSentimentWidget(){
     '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">VIX no cargado</span>';
 
   document.getElementById("main").innerHTML=
-    _ph('Analizar · Sentiment','Market Sentiment','// Fear & Greed · 5 componentes ponderados · VIX real',vixStatus+'<button id="sent-refresh" onclick="refreshSentiment()" class="btn" style="padding:5px 12px;font-size:11px">⟳ Actualizar VIX</button>')+
+    _ph('Analizar · Sentiment','Market Sentiment','// Fear & Greed · 5 componentes ponderados · VIX real',vixStatus+'<button id="sent-refresh" onclick="refreshSentiment()" class="btn" style="padding:10px 16px;font-size:11px">⟳ Actualizar VIX</button>')+
     '<div class="resp2" style="display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start">'+
     '<div>'+
     '<div class="cb" style="text-align:center">'+
@@ -8751,17 +8766,17 @@ function renderSentimentWidget(){
     '<div style="font-size:18px;font-weight:700;color:'+d.color+';margin-top:4px">'+d.label+'</div>'+
     '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-top:8px;font-family:\'IBM Plex Mono\',monospace">'+d.desc+'</div>'+
     '</div>'+
-    '<div class="cb"><div class="st"><div class="stbar"></div>Últimos 14 días</div>'+
+    '<div class="cb"><h3 class="st"><div class="stbar"></div>Últimos 14 días</h3>'+
     '<div style="display:flex;align-items:flex-end;height:60px;gap:2px">'+hBars+'</div></div>'+
     '</div>'+
     '<div>'+
-    '<div class="cb"><div class="st"><div class="stbar"></div>Componentes del índice</div>'+compRows+
+    '<div class="cb"><h3 class="st"><div class="stbar"></div>Componentes del índice</h3>'+compRows+
     '<div style="font-size:11px;color:var(--text3);margin-top:8px;font-family:\'IBM Plex Mono\',monospace">BUY×30% + Score×15% + RSI×25% + VIX×15% + Momentum×15%</div></div>'+
-    '<div class="cb"><div class="st"><div class="stbar"></div>Distribución de señales</div>'+
+    '<div class="cb"><h3 class="st"><div class="stbar"></div>Distribución de señales</h3>'+
     '<div style="display:flex;height:36px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:10px">'+
-    '<div style="flex:'+(buy/t*100)+';background:var(--grn);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">BUY '+buy+'</div>'+
-    '<div style="flex:'+(hold/t*100)+';background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">HOLD '+hold+'</div>'+
-    '<div style="flex:'+(sell/t*100)+';background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">SELL '+sell+'</div>'+
+    '<div style="flex:'+(buy/t*100)+';background:var(--grn);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">BUY '+buy+'</div>'+
+    '<div style="flex:'+(hold/t*100)+';background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">HOLD '+hold+'</div>'+
+    '<div style="flex:'+(sell/t*100)+';background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">SELL '+sell+'</div>'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:2px">'+
     ALL_SIG.slice(0,6).map(function(s){
@@ -10247,11 +10262,11 @@ function renderDivs(){
 
   var tableRows=divRows.map(function(r){
     return '<tr class="trow"><td style="font-weight:600;color:var(--bright)">'+esc(r.t)+'</td>'+
-      '<td>'+r.sh+'</td>'+
+      '<td class="col-sec">'+r.sh+'</td>'+
       '<td style="font-weight:600;color:var(--bright)">$'+fmtD(r.annualRate)+'/acción</td>'+
       '<td style="font-weight:700;color:var(--grn)">$'+fmtD(r.annualIncome)+'/año</td>'+
-      '<td style="color:var(--amber)">'+(r.yld*100).toFixed(2)+'%</td>'+
-      '<td style="color:var(--text2)">'+r.freqLabel+'</td></tr>';
+      '<td>'+(r.yld*100).toFixed(2)+'%</td>'+
+      '<td class="col-sec" style="color:var(--text2)">'+r.freqLabel+'</td></tr>';
   }).join('');
 
   document.getElementById('main').innerHTML=
@@ -10273,7 +10288,7 @@ function renderDivs(){
     (divRows.length>0||DIVS.loading?
       '<div class="cb"><div class="st"><div class="stbar"></div>Proyección mensual — próximos 12 meses</div>'+
       '<div style="display:flex;align-items:flex-end;height:100px;gap:4px;padding:0 4px">'+calBars+'</div></div>'+
-      '<div class="tw"><table><thead><tr><th>Ticker</th><th>Unidades</th><th>Dividendo</th><th>Ingreso anual</th><th>Yield</th><th>Frecuencia</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
+      '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th class="col-sec">Unidades</th><th>Dividendo</th><th>Ingreso anual</th><th>Yield</th><th class="col-sec">Frecuencia</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'
     :'<div style="text-align:center;padding:40px;color:var(--text3)"><div style="margin-bottom:10px;color:var(--text3)">'+icon('cash','ico-xl')+'</div>'+
       '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px">Sin datos de dividendos</div>'+
       '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace">Presiona "Cargar dividendos" para obtener datos reales</div></div>');
