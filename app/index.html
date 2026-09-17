@@ -3397,7 +3397,7 @@ function tblSortBy(tbl,col){
   });
 }
 function sortTh(tbl,col,label,tip){
-  return '<th data-sort="'+col+'" onclick="tblSortBy(\''+tbl+'\',\''+col+'\')" style="cursor:pointer;white-space:nowrap"'+(tip?' title="'+tip+'"':'')+'>'+label+' <span class="sarrow"></span></th>';
+  return '<th data-sort="'+col+'" role="button" tabindex="0" onclick="tblSortBy(\''+tbl+'\',\''+col+'\')" style="cursor:pointer;white-space:nowrap"'+(tip?' title="'+tip+'"':'')+'>'+label+' <span class="sarrow"></span></th>';
 }
 function showToast(msg,type,undoFn){
   var c=document.getElementById('toast-container');
@@ -5848,8 +5848,8 @@ function sigTableRow(s, opts){
   var t = s.t;
   var lp = getLivePrice(t);
   var lq = LIVE[t];
-  return '<tr class="trow" data-sc="'+s.sc+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
-    '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')">'+esc(t)+(opts.tickerExtra||'')+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
+  return '<tr class="trow" role="button" tabindex="0" data-sc="'+s.sc+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onclick="openDrawer(\''+esc(t)+'\','+lp+')" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
+    '<td style="font-weight:600;color:var(--bright)">'+esc(t)+(opts.tickerExtra||'')+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
     '<td>'+badge(s.sig)+'</td>'+
     '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
     '<td class="col-sec">'+sbar(s.sc)+'</td>'+
@@ -6037,7 +6037,7 @@ function renderSig(){
   var list=f==="ALL"?sigs:sigs.filter(function(s){return s.sig===f;});
 
   var filterBtns=["ALL","BUY","HOLD","SELL"].map(function(ff){
-    var lbl=ff==="ALL"?"Todos":ff==="BUY"?"Alto":ff==="SELL"?"Bajo":"Medio";
+    var lbl=ff==="ALL"?"Todos":ff==="BUY"?"Alcista":ff==="SELL"?"Bajista":"Neutro";
     return '<button class="tab'+(f===ff?" act":"")+'" onclick="setSigF(\''+ff+'\')">'+lbl+'</button>';
   }).join("");
 
@@ -6055,14 +6055,14 @@ function renderSig(){
     // "Total" era la suma exacta de los otros tres: dato redundante, fuera.
     // Aqui el color SI es semantico (alto/medio/bajo es un estado), se conserva.
     '<div class="krow">'+
-    kpi("Indicador Alto",sigs.filter(function(s){return s.sig==="BUY";}).length,"de "+sigs.length,"g")+
-    kpi("Indicador Medio",sigs.filter(function(s){return s.sig==="HOLD";}).length,"de "+sigs.length,"a")+
-    kpi("Indicador Bajo",sigs.filter(function(s){return s.sig==="SELL";}).length,"de "+sigs.length,"r")+
+    kpi("Indicador Alcista",sigs.filter(function(s){return s.sig==="BUY";}).length,"de "+sigs.length,"g")+
+    kpi("Indicador Neutro",sigs.filter(function(s){return s.sig==="HOLD";}).length,"de "+sigs.length,"a")+
+    kpi("Indicador Bajista",sigs.filter(function(s){return s.sig==="SELL";}).length,"de "+sigs.length,"r")+
     '</div>'+
     // Header decia "Indicador" mientras que la misma columna (Alcista/Neutro/
     // Bajista) en Watchlist/Panorama se llama "Señal" — mismo concepto, dos
     // nombres. Unificado a "Señal" el 13-sep-2026 (prioridad 6 de la auditoria).
-    '<div class="tw"><table id="tbl-sig"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("sig","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
+    '<div class="tw"><table id="tbl-sig" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("sig","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
     '⚠ Los sesgos mostrados resultan de modelos técnicos automatizados (Trend×30% · Vol×20% · RSI×25% · MACD×25%). '+
@@ -6625,12 +6625,12 @@ function renderInd(){
       '<td style="font-weight:600;color:var(--bright)">'+esc(h.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td style="color:'+rsiCol+';font-family:\'IBM Plex Mono\',monospace;font-weight:'+((ind&&ind.rsi!=null&&(ind.rsi>=70||ind.rsi<=30))?'700':'400')+'">'+rsiE+'</td>'+
       '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
-      '<td style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+sma20E+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+((ind&&ind.sma20!=null&&lp)?(lp>=ind.sma20?'var(--pos)':'var(--neg)'):'var(--text3)')+'">'+((ind&&ind.sma20!=null&&lp)?((lp>=ind.sma20?'▲ ':'▼ ')+(((lp-ind.sma20)/ind.sma20)*100).toFixed(1)+'%'):'—')+'</td>'+
-      '<td><button class="btn" style="padding:2px 8px;font-size:11px">'+icon('volume')+' Ver</button></td></tr>';
+      '<td class="col-sec" style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+sma20E+'</td>'+
+      '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:'+((ind&&ind.sma20!=null&&lp)?(lp>=ind.sma20?'var(--pos)':'var(--neg)'):'var(--text3)')+'">'+((ind&&ind.sma20!=null&&lp)?((lp>=ind.sma20?'▲ ':'▼ ')+(((lp-ind.sma20)/ind.sma20)*100).toFixed(1)+'%'):'—')+'</td>'+
+      '<td><button class="btn" style="padding:2px 8px;font-size:11px" onclick="event.stopPropagation();openDrawer(\''+esc(h.t)+'\','+lp+')">'+icon('volume')+' Ver</button></td></tr>';
   }).join("");
 
-  var tickerCards=allT.slice(0,18).map(function(t){
+  var tickerCards=allT.map(function(t){
     var s=ALL_SIG.find(function(x){return x.t===t;})||{sig:"HOLD",sc:60,p:100};
     var lp=getLivePrice(t);
     var col=s.sig==="BUY"?"var(--grn)":s.sig==="SELL"?"var(--red)":"var(--amber)";
@@ -6647,12 +6647,17 @@ function renderInd(){
     '<button class="btn" onclick="var t=document.getElementById(\'ind-in\').value.toUpperCase().trim();if(t){var s=ALL_SIG.find(function(x){return x.t===t;});openDrawer(t,s&&s.p?s.p:100);}">'+icon('volume')+' Analizar</button>'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Portfolio — Click para análisis completo</div>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>RSI (14)</th><th>Precio</th><th>SMA 20</th><th>vs SMA20</th><th>Ver</th></tr></thead><tbody>'+portRows+'</tbody></table></div>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th title="Arriba de 70 es señal fuerte de sobrecompra, abajo de 30 de sobreventa">RSI (14)</th><th>Precio</th><th class="col-sec" title="Promedio móvil simple de los últimos 20 días">SMA 20</th><th class="col-sec" title="Distancia porcentual del precio actual respecto a la SMA20">vs SMA20</th><th>Ver</th></tr></thead><tbody>'+portRows+'</tbody></table></div>'+
     '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:8px 0">'+
     icon('idea')+' Indicadores reales disponibles en el gráfico — click en cualquier ticker para abrir el análisis completo.'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Todos los tickers — Click para abrir análisis</div>'+
-    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tickerCards+'</div>';
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tickerCards+'</div>'+
+    '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+    '⚠ Los sesgos mostrados resultan de modelos técnicos automatizados (Trend×30% · Vol×20% · RSI×25% · MACD×25%). '+
+    'No son recomendaciones personalizadas de inversión. Datos de mercado · posible retraso ≤15 min'+(liveUpdated?' · actualizado '+timeAgo(liveUpdated):'')+' · Fuente: Yahoo Finance. '+
+    'Toda inversión implica riesgo de pérdida parcial o total del capital.'+
+    '</div>';
 
   loadIndData();   // carga RSI/SMA reales y re-renderiza al terminar
 }
