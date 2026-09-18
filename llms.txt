@@ -43,6 +43,11 @@ MOY IQ Invest Pro is a technical analysis platform built for Spanish-speaking in
 - Next earnings date per ticker with expected move
 - Earnings momentum (recent beats/misses)
 
+## Free resources (no account needed)
+
+- **Perfil de Inversor** (https://invest.moyiq.app/perfil-inversor.html) — free 6-question quiz that calculates the user's investor risk profile in ~2 minutes, no account or portfolio connection required.
+- **Estado del Mercado** (https://invest.moyiq.app/estado-mercado.html) — live market regime snapshot (SPY vs SMA200/50, VIX regime, breadth), updated continuously, no account required.
+
 ## Who is this for?
 
 Latin American investors who:
