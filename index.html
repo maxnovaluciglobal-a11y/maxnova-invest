@@ -228,7 +228,7 @@ body>*:not(#globo-bg):not(.grain):not(#site-nav){position:relative;z-index:1}
 
 /* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% - 600px));height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(18,22,31,.82);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
-.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links-inner{display:flex;align-items:center;gap:28px}
 .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s cubic-bezier(.23,1,.32,1)}
 .nav-links a:hover{color:var(--grn)}
 .nav-cta{background:var(--grn);color:var(--on-accent);border:none;padding:9px 20px;border-radius:var(--r-md);font-size:13px;font-weight:600;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;transition:background-color .15s cubic-bezier(.23,1,.32,1);text-decoration:none}
@@ -247,12 +247,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 max(24px,calc(50% 
   .nav-toggle{display:block}
   .nav-links{
     position:fixed;top:64px;left:0;right:0;z-index:99;
-    flex-direction:column;align-items:stretch;gap:0;
-    background:rgba(18,22,31,.98);backdrop-filter:blur(12px);
-    border-bottom:0.5px solid var(--border);
-    max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.23,1,.32,1);
+    display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s cubic-bezier(.23,1,.32,1);
+    background:var(--bg);
   }
-  nav.nav-open .nav-links{max-height:340px}
+  nav.nav-open .nav-links{grid-template-rows:1fr}
+  .nav-links-inner{overflow:hidden;min-height:0;flex-direction:column;align-items:stretch;border-bottom:0.5px solid var(--border)}
   .nav-links a:not(.nav-cta){display:block;padding:16px max(24px,calc(50% - 600px));border-bottom:0.5px solid var(--border)}
   .nav-links a.nav-cta{margin:16px max(24px,calc(50% - 600px));text-align:center}
 }
@@ -503,11 +502,13 @@ footer{border-top:0.5px solid var(--border);padding:40px 0;text-align:center}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <div class="nav-links" id="nav-links">
+   <div class="nav-links-inner">
     <a href="#features">Funcionalidades</a>
     <a href="#pricing">Precios</a>
     <a href="#faq">FAQ</a>
     <a href="/perfil-inversor.html">Perfil de Inversor</a>
     <a href="/app" class="nav-cta">Abrir app →</a>
+   </div>
   </div>
 </nav>
 
