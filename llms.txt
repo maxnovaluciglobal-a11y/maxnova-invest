@@ -27,7 +27,7 @@ Stock and ETF prices come from Yahoo Finance, crypto from CoinGecko and the Chil
 
 ## Data and accounts
 
-The Invest portfolio is stored in the user's account (Supabase) to sync it. Login is shared with MOY IQ (same email and password); each app keeps its data separately. Account deletion is self-service and immediate (Settings → Delete account).
+The Invest portfolio is stored in the user's account (Supabase) to sync it. Login is shared with MOY IQ (same email and password); each app keeps its data separately. Deleting Invest data is self-service and immediate (Settings → Delete my Invest data); the shared login is kept and can be deleted through MOY IQ (support@moyiq.app).
 
 ## Disclaimer
 

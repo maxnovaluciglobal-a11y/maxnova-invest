@@ -1,5 +1,7 @@
 // api/delete-account.js — Vercel Edge Function
-// Deletes a user's account and ALL associated data, permanently and immediately.
+// Deletes ALL of a user's Invest data, permanently and immediately. It does NOT
+// delete the login (auth.users): that account is shared with MOY IQ since
+// 14-sep-2026 (same Supabase project). See the note above the final return.
 // Replaces the manual process privacy.html described before this commit (see
 // git log "Fix Pro pricing and soften deletion promise in legal pages", 12-sep-2026).
 //
@@ -17,10 +19,10 @@
 //      a manual cancel is a smaller problem than a stuck deletion.
 //   2. portfolio_holdings, watchlist, consents, trial_emails — every row with
 //      user_id = this user.
-//   3. The profiles row itself (id = this user).
-//   4. The auth.users row, via the GoTrue admin API — this is what makes the
-//      account gone, not just emptied: the user can no longer log in and
-//      Supabase Auth no longer holds their email/identity.
+//   3. The profiles row itself (id = this user). `profiles` is Invest-only;
+//      MOY IQ does not use it.
+//   (4. Removed in relaunch v2: deleting the auth.users row. It is shared with
+//       MOY IQ; account deletion goes through MOY IQ / support@moyiq.app.)
 //
 // `licenses` is NOT touched: it's keyed by Stripe session id / customer email
 // for one-time FinanceOS-app purchases, not by this app's user id — it isn't
@@ -28,9 +30,7 @@
 // not user data. Neither belongs to "a user of Invest" in the sense this
 // endpoint cares about.
 //
-// Steps 2-4 run in strict order and each one gates the next: if a data-table
-// delete fails, the auth user is NOT deleted — that would orphan rows with no
-// owner left to ever retry the request. Every step is logged (console.error)
+// Steps 2-3 run in strict order and each one gates the next. Every step is logged (console.error)
 // and returned in `steps` with ok/fail + row counts (via
 // `Prefer: return=representation`), so nothing fails silently. Calling this
 // endpoint again after a partial failure is safe: already-deleted rows are
@@ -151,7 +151,7 @@ export default async function handler(req) {
     if (!result.ok) {
       console.error(`[delete-account] FAILED at ${table} for user ${userId}:`, result.error);
       return json(
-        { ok: false, error: `No se pudo borrar ${table}. La cuenta NO fue eliminada — intentá de nuevo.`, steps },
+        { ok: false, error: `No se pudo borrar ${table}. Tus datos de Invest no se borraron por completo. Intenta de nuevo.`, steps },
         500,
         req
       );
@@ -163,50 +163,17 @@ export default async function handler(req) {
   if (!profileResult.ok) {
     console.error(`[delete-account] FAILED at profiles for user ${userId}:`, profileResult.error);
     return json(
-      { ok: false, error: 'No se pudo borrar el perfil. La cuenta NO fue eliminada — intentá de nuevo.', steps },
+      { ok: false, error: 'No se pudo borrar el perfil. Tus datos de Invest no se borraron por completo. Intenta de nuevo.', steps },
       500,
       req
     );
   }
 
-  // Last step: the auth.users row itself, via the GoTrue admin API.
-  try {
-    const authDelRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
-      method: 'DELETE',
-      headers: {
-        apikey: SUPABASE_SERVICE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
-      },
-    });
-    if (!authDelRes.ok) {
-      const detail = await authDelRes.text().catch(() => '');
-      console.error(`[delete-account] FAILED to delete auth user ${userId}:`, authDelRes.status, detail);
-      steps.push({ step: 'delete_auth_user', ok: false, error: `HTTP ${authDelRes.status}: ${detail.slice(0, 300)}` });
-      return json(
-        {
-          ok: false,
-          error: 'Tus datos fueron borrados pero la cuenta de acceso no pudo eliminarse. Escribinos a invest@moyiq.app.',
-          steps,
-        },
-        500,
-        req
-      );
-    }
-    steps.push({ step: 'delete_auth_user', ok: true });
-  } catch (err) {
-    console.error(`[delete-account] network error deleting auth user ${userId}:`, err);
-    steps.push({ step: 'delete_auth_user', ok: false, error: err.message || 'network_error' });
-    return json(
-      {
-        ok: false,
-        error: 'Tus datos fueron borrados pero la cuenta de acceso no pudo eliminarse. Escribinos a invest@moyiq.app.',
-        steps,
-      },
-      500,
-      req
-    );
-  }
-
-  console.log(`[delete-account] account ${userId} fully deleted (data + auth user).`);
-  return json({ ok: true, steps }, 200, req);
+  // Relaunch v2 (oct-2026): the auth.users row is NOT deleted anymore. Since
+  // 14-sep-2026 Invest and MOY IQ share the same Supabase project and auth, so
+  // deleting it here would also lock the person out of MOY IQ. This endpoint
+  // removes only Invest's own data; deleting the shared account is handled
+  // through MOY IQ (support@moyiq.app).
+  console.log(`[delete-account] Invest data of ${userId} deleted (shared auth user kept).`);
+  return json({ ok: true, scope: 'invest_data', authUserDeleted: false, steps }, 200, req);
 }
