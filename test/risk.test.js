@@ -84,3 +84,52 @@ describe("computePositionSize", () => {
     expect(r.error).toBe("stop-not-below-price");
   });
 });
+
+// ── Relanzamiento v2 (T18): riesgo al stop y límite de concentración ──
+import { computeRiskAtStop, concentrationAlternative, DEFAULT_CONCENTRATION_LIMIT } from "../app/lib/risk.js";
+
+describe("computeRiskAtStop", () => {
+  it("calcula la pérdida si el precio toca el stop, por posición y total", () => {
+    const port = [
+      { t: "AAPL", sh: 16, cur: 234.12, stop: 222 },
+      { t: "SPY", sh: 10, cur: 500 }, // sin stop propio → -8 % de referencia
+    ];
+    const r = computeRiskAtStop(port, 10000);
+    expect(r.rows[0].riskAtStop).toBeCloseTo(16 * 12.12);
+    expect(r.rows[0].stopIsDefault).toBe(false);
+    expect(r.rows[1].stopIsDefault).toBe(true);
+    expect(r.rows[1].riskAtStop).toBeCloseTo(10 * 500 * 0.08);
+    expect(r.totalRisk).toBeCloseTo(16 * 12.12 + 400);
+    expect(r.totalRiskPct).toBeCloseTo(r.totalRisk / 10000);
+  });
+
+  it("marca las posiciones que superan el límite de concentración (25 % por defecto)", () => {
+    const port = [
+      { t: "A", sh: 1, cur: 700 },
+      { t: "B", sh: 1, cur: 300 },
+    ];
+    const r = computeRiskAtStop(port, 0);
+    expect(DEFAULT_CONCENTRATION_LIMIT).toBe(0.25);
+    expect(r.rows[0].overLimit).toBe(true);
+    expect(r.rows[1].overLimit).toBe(true);
+    expect(computeRiskAtStop(port, 0, 0.8).rows[0].overLimit).toBe(false);
+  });
+
+  it("ignora un stop por encima del precio y usa la referencia", () => {
+    const r = computeRiskAtStop([{ t: "X", sh: 1, cur: 100, stop: 120 }], 1000);
+    expect(r.rows[0].stopIsDefault).toBe(true);
+    expect(r.rows[0].riskAtStop).toBeCloseTo(8);
+  });
+});
+
+describe("concentrationAlternative", () => {
+  it("propone las unidades que caben dentro del límite (caso del mockup M12)", () => {
+    const alt = concentrationAlternative(234.12, 16, 10000);
+    expect(alt.weight).toBeCloseTo(0.3746, 3);
+    expect(alt.maxUnits).toBe(10);
+    expect(alt.weightAtMax).toBeCloseTo(0.234, 3);
+  });
+  it("null si no supera el límite", () => {
+    expect(concentrationAlternative(100, 10, 10000)).toBeNull();
+  });
+});

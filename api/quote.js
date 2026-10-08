@@ -100,5 +100,14 @@ async function fetchYahooQuote(ticker) {
     marketCap:  0, // provided by /api/fundamentals when drawer opens
     currency:   meta.currency            || 'USD',
     fetchedAt:  Date.now(),
+    // Frescura honesta (relaunch v2 / T18): hora del último precio según la
+    // fuente y la sesión regular del día. El cliente calcula "Al día",
+    // "Retraso N min" o "Mercado cerrado" con esto, no con fetchedAt (que
+    // ignora el retraso propio de la fuente y la caché de 60 s + SWR del CDN).
+    marketTime:   meta.regularMarketTime ? meta.regularMarketTime * 1000 : null,
+    tradingStart: meta.currentTradingPeriod?.regular?.start ? meta.currentTradingPeriod.regular.start * 1000 : null,
+    tradingEnd:   meta.currentTradingPeriod?.regular?.end ? meta.currentTradingPeriod.regular.end * 1000 : null,
+    delayedBy:    typeof meta.exchangeDataDelayedBy === 'number' ? meta.exchangeDataDelayedBy : null,
+    timezone:     meta.exchangeTimezoneName || null,
   };
 }
