@@ -28,3 +28,14 @@ describe("T18 · afirmaciones retiradas", () => {
     expect(html).not.toMatch(/tiempo real|sin retraso|78\/100|Q3 2026|AI Advisor/i);
   });
 });
+
+describe("I12 · sin capital ficticio por defecto", () => {
+  it("el estado inicial no trae 100.000 de capital", () => {
+    expect(html).not.toMatch(/capital:\s*100000/);
+    expect(html).not.toMatch(/DEFAULT_CAPITAL\s*=\s*100000/);
+    expect(html).not.toMatch(/:\s*100000;/);
+  });
+  it("no queda la etiqueta 'Position Builder' visible", () => {
+    expect(html).not.toMatch(/'Position Builder'/);
+  });
+});

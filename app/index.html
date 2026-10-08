@@ -1997,6 +1997,16 @@ div:has(>.dtab), div:has(>.rtab) {
 .onb-acts .btn, .onb-acts .btn-big { min-height:44px; }
 .onb-skip { display:block; margin:14px auto 0; min-height:44px; padding:0 12px; background:none; border:none; color:var(--text2); font-size:13px; cursor:pointer; text-decoration:underline; }
 .onb-overlay { z-index:500; }
+.set-p { font-size:13px; color:var(--text2); line-height:1.55; margin:0 0 14px; max-width:68ch; }
+.set-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:6px; }
+@media (max-width:767px){ .set-grid { grid-template-columns:minmax(0,1fr); } }
+.cap-ask { display:flex; flex-wrap:wrap; gap:12px 18px; align-items:center; justify-content:space-between; padding:14px 16px; margin:0 0 16px; border:1px solid var(--laton); border-radius:var(--r-md); background:var(--card); }
+.cap-ask b { display:block; font-size:14px; color:var(--bright); margin-bottom:2px; }
+.cap-ask span { font-size:13px; color:var(--text2); }
+.cap-ask-f { display:flex; gap:8px; flex-wrap:wrap; }
+.cap-ask-f .inp { width:160px; min-height:44px; }
+.cap-ask-f .btn-big { min-height:44px; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 </style>
 </head>
 <body>
@@ -2290,6 +2300,19 @@ const fmtD=n=>n!=null?(+n).toLocaleString("es-CL",{minimumFractionDigits:2,maxim
 const pct=n=>(((n||0)*100).toFixed(1))+"%";
 const D=n=>"$"+fmt(Math.round(n||0));
 const fmtM=n=>!n?"—":n>=1e12?"$"+(n/1e12).toFixed(2)+"T":n>=1e9?"$"+(n/1e9).toFixed(2)+"B":"$"+fmt(n);
+// ── TU REGLA (I12) ── % de riesgo por operación y límite de concentración.
+// Se guardan en este navegador (no hay columnas en profiles para esto).
+function _ruleKey(){ return 'inv_rule_'+(S.user&&S.user.id||'demo'); }
+function _ruleGet(){ try{ return JSON.parse(localStorage.getItem(_ruleKey())||'{}')||{}; }catch(e){ return {}; } }
+function riskRulePct(){ var v=Number(_ruleGet().risk); return v>0&&v<=10?v:2; }
+function riskConcentrationLimit(){ var v=Number(_ruleGet().limit); return v>=5&&v<=100?v/100:RISK_CONCENTRATION_LIMIT; }
+function saveRiskRule(risk,limitPct){
+  var r=_ruleGet();
+  if(risk>0&&risk<=10) r.risk=+risk;
+  if(limitPct>=5&&limitPct<=100) r.limit=+limitPct;
+  try{ localStorage.setItem(_ruleKey(),JSON.stringify(r)); }catch(e){}
+  if(typeof PB==='object'){ PB.risk=r.risk||PB.risk; }
+}
 // Cifras con signo tipográfico (−$773) y unidades sin ceros sobrantes.
 function fmtUSD(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?2:dec; var v=Math.abs(+n).toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d}); return (n<0?'\u2212':'')+'$'+v; }
 function fmtPctN(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?(Math.abs(n)%1?1:0):dec; return (n<0?'\u2212':'')+Math.abs(+n).toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d})+'\u00a0%'; }
@@ -2300,7 +2323,8 @@ const fmtV=n=>!n?"—":n>=1e9?(n/1e9).toFixed(1)+"B":n>=1e6?(n/1e6).toFixed(1)+"
 const S={
   user:null,
   page:"dash",
-  capital:100000,
+  // I12: sin capital ficticio. 0 = la persona todavía no lo definió.
+  capital:0,
   portfolio:[],
   watchlist:[],
   // Modo ejemplo (I01): portafolio de muestra en memoria, de solo lectura.
@@ -2466,7 +2490,7 @@ var LIVE_CACHE_TTL=2*60*60*1000;
 var FX_CACHE_TTL=24*60*60*1000;
 var LIVE_REFRESH_MS=5*60*1000;
 var STOP_LOSS_DEFAULT=0.08;
-var DEFAULT_CAPITAL=100000;
+// I12: se retiró el capital por defecto de 100 mil; la persona lo define.
 
 // Multi-currency FX support
 var FX_RATES={USD:1,CLP:960,MXN:17.3,COP:4200,ARS:1060,PEN:3.75}; // fallback Jul 2026
@@ -4572,6 +4596,18 @@ function renderSettings(){
     ((!INVEST_BETA&&u&&(u.plan==='pro'||u.plan==='teams'))?'<div style="margin-top:12px"><button class="btn" id="btn-portal" onclick="abrirPortalPago()">Gestionar o cancelar suscripción</button><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:6px">Cambiar tarjeta, ver facturas o cancelar. Se abre el portal seguro de Stripe.</div></div>':'')+
     '</div>'+
 
+    // I12 · Tu regla de riesgo (antes solo existía dentro de la calculadora)
+    '<div class="cb" id="set-rule">'+
+    '<div class="st"><div class="stbar"></div>Tu regla de riesgo</div>'+
+    '<p class="set-p">Se usan en Riesgo y en la Calculadora. Son tus números: Invest no los propone ni se conecta a ningún bróker.</p>'+
+    '<div class="set-grid">'+
+    '<div class="calc-field"><label for="set-capital">Capital de referencia (USD)</label><input id="set-capital" class="inp" type="number" inputmode="decimal" min="0" step="100" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'"/><div class="calc-hint">Se guarda en tu cuenta.</div></div>'+
+    '<div class="calc-field"><label for="set-risk">Riesgo por operación (% del capital)</label><input id="set-risk" class="inp" type="number" inputmode="decimal" min="0.1" max="10" step="0.25" value="'+riskRulePct()+'"/><div class="calc-hint">Cuánto aceptas perder si una posición toca su stop.</div></div>'+
+    '<div class="calc-field"><label for="set-limit">Límite de concentración (%)</label><input id="set-limit" class="inp" type="number" inputmode="decimal" min="5" max="100" step="1" value="'+Math.round(riskConcentrationLimit()*100)+'"/><div class="calc-hint">Peso máximo de una posición. Se guarda en este dispositivo.</div></div>'+
+    '</div>'+
+    '<button class="btn-big" onclick="saveRuleSettings(this)">Guardar</button>'+
+    '</div>'+
+
     // Appearance section
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Apariencia</div>'+
@@ -4595,18 +4631,6 @@ function renderSettings(){
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:2px">Acceso directo en tu pantalla de inicio · funciona offline</div>'+
     '</div>'+
     '<button class="btn" onclick="installPWA()" style="flex-shrink:0">'+icon('download')+'Instalar</button>'+
-    '</div>'+
-    '</div>'+
-
-    // Capital section
-    '<div class="cb">'+
-    '<div class="st"><div class="stbar"></div>Capital de referencia</div>'+
-    '<p style="font-size:12px;color:var(--text2);margin-bottom:10px">Usado en Position Builder y cálculos de riesgo. No se conecta a ningún broker.</p>'+
-    '<label class="lb" for="set-capital">Capital ($)</label>'+
-    '<div style="display:flex;align-items:center;gap:10px">'+
-    '<span style="font-size:13px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">$</span>'+
-    '<input id="set-capital" class="inp" type="number" value="'+S.capital+'" min="100" step="100" style="width:180px"/>'+
-    '<button class="btn" onclick="var v=document.getElementById(\'set-capital\').value;if(parseFloat(v)>0){updateCap(v);var b=this;b.textContent=\'✓ Guardado\';setTimeout(function(){b.textContent=\'Guardar\';},1500);}">Guardar</button>'+
     '</div>'+
     '</div>'+
 
@@ -5469,7 +5493,9 @@ function renderPort(){
       '<div class="krow-hero">'+
       kpi("P&L Total",(totP>=0?"▲ +":"▼ ")+D(totP),(totP>=0?"+":"")+pct(totP/(totC||1)),totP>=0?"g":"r","hero")+
       kpi("Valor Mercado",D(totM),(USER_CURRENCY!=='USD'?fxConvert(totM):''),"n")+
-      kpi("Disponible",D(S.capital-totC),((S.capital-totC)<0?"sobregirado":(USER_CURRENCY!=='USD'?fxConvert(S.capital-totC):'tras compromisos')),((S.capital-totC)<0?"r":"n"))+
+      (S.capital>0
+        ?kpi("Disponible",D(S.capital-totC),((S.capital-totC)<0?"sobregirado":(USER_CURRENCY!=='USD'?fxConvert(S.capital-totC):'tras compromisos')),((S.capital-totC)<0?"r":"n"))
+        :kpi("Disponible","—",'<a href="#" onclick="setPage(\'settings\');return false">Define tu capital</a>',"n"))+
       kpi("Posiciones",port.length+(plan.maxT<999?"/"+plan.maxT:""),"","n")+
       '</div>'
     :
@@ -5484,7 +5510,7 @@ function renderPort(){
     portRebalHint(port,totM)+
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
     '<span style="font-size:12px;color:var(--text3)">Capital:</span>'+
-    '<input class="inp" type="number" value="'+S.capital+'" onchange="updateCap(this.value)" style="width:130px"/>'+
+    '<input class="inp" type="number" inputmode="decimal" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'" onchange="updateCap(this.value);renderMain()" style="width:160px" aria-label="Capital de referencia"/>'+
     '</div>'+
     '<div class="tw"><table id="tbl-port" class="fos-table"><thead><tr>'+
     '<th>Activo</th><th class="col-sec">Tipo</th><th class="col-sec">Unidades</th><th class="col-sec">Entrada</th>'+sortTh("port","price","Precio")+sortTh("port","chg","Δ Hoy")+'<th class="col-sec">Valor</th>'+sortTh("port","pnl","P&L")+'<th class="col-sec">Retorno</th><th class="col-sec">Peso</th><th>Acc.</th>'+
@@ -5511,6 +5537,24 @@ function renderPort(){
 function updateCap(v){
   S.capital=Math.max(0,parseFloat(v)||0);
   persist(); // no re-render needed — input keeps its value
+}
+function saveRuleSettings(btn){
+  var cap=parseFloat((document.getElementById('set-capital')||{}).value);
+  var risk=parseFloat((document.getElementById('set-risk')||{}).value);
+  var lim=parseFloat((document.getElementById('set-limit')||{}).value);
+  if(!(risk>0&&risk<=10)){ showToast('El riesgo por operación va de 0,1 % a 10 %.','error'); return; }
+  if(!(lim>=5&&lim<=100)){ showToast('El límite de concentración va de 5 % a 100 %.','error'); return; }
+  if(cap>0) updateCap(cap);
+  saveRiskRule(risk,lim);
+  PB.capital=0; // la calculadora vuelve a tomar el capital guardado
+  if(btn){ btn.textContent='Guardado'; setTimeout(function(){ btn.textContent='Guardar'; },1500); }
+  showToast('Tu regla quedó guardada');
+}
+// Bloque que piden Riesgo y Portafolio cuando falta el capital.
+function capitalAsk(where){
+  return '<div class="cap-ask"><div><b>Define tu capital de referencia</b><span>Sin él, '+where+' se calcula sobre el valor de tu portafolio.</span></div>'+
+    '<div class="cap-ask-f"><label class="sr-only" for="cap-ask-'+where.length+'">Capital en USD</label><input id="cap-ask-'+where.length+'" class="inp" type="number" inputmode="decimal" min="0" step="100" placeholder="Capital (USD)"/>'+
+    '<button class="btn-big" onclick="var v=document.getElementById(\'cap-ask-'+where.length+'\').value;if(parseFloat(v)>0){updateCap(v);renderMain();}">Guardar</button></div></div>';
 }
 // ── BITÁCORA (Transaction Log) ─────────────────────────────────
 function renderBitacora(){
@@ -6573,7 +6617,7 @@ function renderInd(){
 }
 
 // ── RISK (Pro) ─────────────────────────────────────────────────
-// Riesgo y Position Builder resolvian LA MISMA ecuacion de sizing:
+// Riesgo y la calculadora (ex Position Builder) resolvian LA MISMA ecuacion de sizing:
 //   renderRisk:  ps = rA/_r*h.cur           con rA = capital*0.02
 //   pbCompute:   posSize = riskAmt/riskPct  con riskPct = (price-stop)/price
 // que es identica: riskAmt*price/(price-stop). Ambas usaban stop por defecto
@@ -6599,9 +6643,9 @@ function renderRiskBody(){
   // y el limite de concentracion. Se retiraron los escenarios con
   // probabilidades inventadas (Bull 35 %...), el "valor esperado" y la
   // "asignacion sugerida" con tickers por perfil: eran recomendaciones.
-  var cap=S.capital;
-  var regla=(typeof PB!=='undefined'&&PB.risk)?PB.risk:2;
-  var limite=RISK_CONCENTRATION_LIMIT;
+  var cap=S.capital>0?S.capital:0;
+  var regla=riskRulePct();
+  var limite=riskConcentrationLimit();
   var port=S.portfolio.map(function(h){return {t:h.t,sh:h.sh,cur:getLivePrice(h.t)||h.cur||h.cost,stop:h.stop};});
   var rs=computeRiskAtStop(port,cap,limite);
   var sizing=computeRiskRows(port,cap,regla/100);
@@ -6627,17 +6671,18 @@ function renderRiskBody(){
       sobre.length
         ?'<div class="conc-warn" role="note"><b>! '+sobre.length+(sobre.length===1?' posición supera':' posiciones superan')+' tu límite:</b> '+sobre.map(function(r){return esc(r.t)+' ('+(r.weight*100).toFixed(0)+' %)';}).join(', ')+'.</div>'
         :'<div style="font-size:12px;color:var(--text2)">Ninguna posición supera el límite. La mayor es '+esc(mayor.t)+' con '+(mayor.weight*100).toFixed(0)+' %.</div>')+
-    '<div style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5">El 25 % es una referencia por defecto, no una recomendación.</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.5">'+(Math.round(limite*100)===25?'El 25 % es una referencia por defecto, no una recomendación. ':'')+'<a href="#" onclick="setPage(\'settings\');return false">Cambiar tu límite</a></div>'+
     '</div>';
 
   document.getElementById("main").innerHTML=
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Decidir · Riesgo</div><h1 class="fos-module-title">Riesgo de tu portafolio</h1><div class="fos-module-sub">Cuánto perderías si cada precio toca su stop · '+S.portfolio.length+' posiciones</div></div>'+
     '<div class="ph-right">'+riskTabs()+'</div>'+
     '</div>'+
+    (cap>0?'':capitalAsk('el riesgo'))+
     '<div class="krow">'+
-    kpi("Capital",D(cap),"","n")+
-    kpi("Tu regla",regla+" %",D(cap*regla/100)+" por operación","n")+
-    kpi("Riesgo al stop",rs.rows.length?'−'+D(rs.totalRisk):'—',rs.rows.length?(rs.totalRiskPct*100).toFixed(1)+' % si todos los stops se activan':'',"r")+
+    kpi("Capital",cap>0?D(cap):'Sin definir',cap>0?'':'<a href="#" onclick="setPage(\'settings\');return false">Definir</a>',"n")+
+    kpi("Tu regla",fmtPctN(regla),cap>0?D(cap*regla/100)+" por operación":"del capital, por operación","n")+
+    kpi("Riesgo al stop",rs.rows.length?'−'+D(rs.totalRisk):'—',rs.rows.length?(rs.totalRiskPct*100).toFixed(1)+(cap>0?' % del capital':' % del portafolio')+' si todos los stops se activan':'',"r")+
     kpi("Mayor peso",mayor?esc(mayor.t):'—',mayor?(mayor.weight*100).toFixed(0)+' % del portafolio':'',mayor&&mayor.overLimit?"a":"n")+
     '</div>'+
     '<div class="resp2" style="display:grid;grid-template-columns:1fr 268px;gap:16px;align-items:start">'+
@@ -8087,7 +8132,7 @@ function buildPortfolioContext(){
   var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
   var pnl=totM-totC;
   var lines=["PORTFOLIO DEL USUARIO:"];
-  lines.push("Capital total: $"+fmt(S.capital));
+  lines.push("Capital total: "+(S.capital>0?"$"+fmt(S.capital):"sin definir"));
   lines.push("Valor de mercado: $"+fmt(totM));
   lines.push("P&L total: "+(pnl>=0?"+":"")+D(pnl)+" ("+(pnl>=0?"+":"")+pct(pnl/(totC||1))+")");
   lines.push("\nPOSICIONES:");
@@ -9053,7 +9098,7 @@ async function generateRadarReport(){
       sections:[
         {id:'health',title:'Score de Salud',content:'Tu portfolio tiene un score de '+health.total+'/100. Diversificación: '+health.subs.div+' · Momentum: '+health.subs.mom+' · Riesgo: '+health.subs.risk+' · Correlación: '+health.subs.corr+' · Valoración: '+health.subs.val+'.'},
         {id:'macro',title:'Análisis Técnico Avanzado',content:icon('volume')+' Los sub-scores del Health Score se calculan localmente con tus datos. El análisis narrativo completo estará disponible muy pronto.'},
-        {id:'action',title:'Mientras tanto',content:'1. Revisa tus posiciones en Portfolio. 2. Consulta Análisis Comparativo para ver indicadores históricos (Alto/Medio/Bajo). 3. Usa el Position Builder para calcular niveles de referencia.'},
+        {id:'action',title:'Mientras tanto',content:'1. Revisa tus posiciones en Portfolio. 2. Consulta Análisis Comparativo para ver indicadores históricos (Alto/Medio/Bajo). 3. Usa la Calculadora para dimensionar con tu regla de riesgo.'},
       ],
     };
     RADAR.report=reportObj;
@@ -9536,7 +9581,7 @@ document.addEventListener('keydown',function(e){
 function showShortcuts(){
   var rows=[
     ['Alt+N','Noticias'],['Alt+D','Dashboard'],['Alt+P','Portfolio'],
-    ['Alt+W','Watchlist'],['Alt+S','Signals'],['Alt+B','Position Builder'],
+    ['Alt+W','Watchlist'],['Alt+S','Signals'],['Alt+B','Calculadora'],
     ['Alt+C','Comparador'],['Alt+M','Sentiment'],['Alt+A','AI Coach'],
     ['Alt+L','Chile/LATAM'],['Alt+I','Indicadores'],['Alt+R','Risk'],
     ['Ctrl+R','Refresh precios'],['?','Ver atajos'],['Esc','Cerrar paneles'],
@@ -10979,7 +11024,7 @@ async function _sbLoadUserDataImpl(authUser){
       trialUsed:S._trialUsedFromServer||false
     };
     delete S._trialUsedFromServer;
-    S.capital=(prof&&prof.capital)?Number(prof.capital):100000;
+    S.capital=(prof&&Number(prof.capital)>0)?Number(prof.capital):0;
 
     // I01: una cuenta nueva empieza vacía. Ya no se siembra DEF_PORT/DEF_WATCH
     // en Supabase; las cuentas que lo recibieron antes ven el aviso de D1.
@@ -11244,6 +11289,7 @@ function persist(){
   var el=document.getElementById("saved");
   if(el){el.classList.add("show");setTimeout(function(){el.classList.remove("show");},1400);}
   if(!S.user||!S.user.id||S.demoMode) return;
+  if(!(S.capital>0)) return; // sin capital definido no se escribe nada
   if(_persistTimer) clearTimeout(_persistTimer);
   _persistTimer=setTimeout(function(){
     sb.from("profiles").update({capital:S.capital}).eq("id",S.user.id).then(function(){},function(e){console.error("persist capital failed",e);});
