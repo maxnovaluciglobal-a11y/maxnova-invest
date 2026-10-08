@@ -194,7 +194,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
         <p class="err" id="gate-err" role="alert">Escribe un correo válido, por ejemplo nombre@correo.com.</p>
         <label class="consent-check">
           <input type="checkbox" id="gate-consent"/>
-          <span>Quiero recibir por correo mi perfil completo y contenido de MOY IQ Invest relacionado. Puedes darte de baja cuando quieras. Ver la <a href="/privacy.html" target="_blank" rel="noopener">política de privacidad</a>.</span>
+          <span>Además del correo con mi resultado, quiero recibir dos correos con contenido de MOY IQ Invest. Opcional: puedes darte de baja cuando quieras. Ver la <a href="/privacy.html" target="_blank" rel="noopener">política de privacidad</a>.</span>
         </label>
         <button type="submit" class="btn btn-cta btn-full" id="gate-submit">Ver mi perfil completo</button>
         <p class="gate-fineprint">Tu resultado aparece aquí mismo, en pantalla.</p>
@@ -348,7 +348,9 @@ function registerInvestLead(email, perfil, puntaje, consentMarketing) {
       apikey: SUPABASE_KEY,
       Authorization: 'Bearer ' + SUPABASE_KEY,
     },
-    body: JSON.stringify({ p_email: email, p_perfil: perfil, p_score: puntaje, p_fuente: detectFuente() }),
+    // p_consent_marketing requiere la migracion 20261009000100 de financeos-app
+    // (aplicarla ANTES de desplegar esta pagina; ver el plan de relanzamiento).
+    body: JSON.stringify({ p_email: email, p_perfil: perfil, p_score: puntaje, p_fuente: detectFuente(), p_consent_marketing: !!consentMarketing }),
   }).then(function (res) { return res.json ? res.json() : null; })
     .then(function (data) {
       // Dispara el email de bienvenida de la secuencia de nurture — mismo
