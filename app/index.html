@@ -6,13 +6,11 @@
 <title>MOY IQ Invest · App</title>
 <meta name="description" content="App de MOY IQ Invest: portafolio, indicadores técnicos explicados y calculadora con tu regla de riesgo. Beta pública gratuita. Herramienta educativa, no asesoría financiera."/>
 <!-- Preconnect for critical origins -->
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
 <link rel="preconnect" href="https://nelwgbcddwiaimzbcuas.supabase.co"/>
-<!-- Non-blocking font load -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'"/>
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"/></noscript>
+<!-- Fuentes self-hosted (/fonts.css, las mismas de la landing). Nunca Google Fonts. -->
+<link rel="preload" href="/fonts/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYbSB4Zh.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/fonts.css"/>
 <!-- SEO & GEO -->
 <!-- Relanzamiento v2: la app no se indexa (la landing publica es /). -->
 <meta name="robots" content="noindex, follow"/>
@@ -138,8 +136,8 @@ input, select, textarea { font-size: 16px; }
   /* Radios */
   --r-sm:  8px;
   --r-md:  12px;
-  --r-lg:  18px;
-  --r-xl:  24px;
+  --r-lg:  12px; /* brand book: radios de 12px como maximo */
+  --r-xl:  12px;
 
   /* Escala de espaciado — base 2px.
      Se eligio 2 y no 4 a partir de medir el CSS existente: el 85% de las
@@ -375,9 +373,9 @@ body.no-auth #mobile-header { display: none !important; }
   margin:0 0 4px;
 }
 .sub-txt {
-  font-size: 11px;
-  color: var(--text3);
-  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--text2);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
   margin:0;
   line-height: 1.5;
 }
@@ -1630,7 +1628,7 @@ body:not(.no-auth) #mainnav {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   padding:4px 10px;
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--text);
@@ -1681,7 +1679,7 @@ body:not(.no-auth) #mainnav {
 .fos-module-title { font-family: 'Instrument Sans', Georgia, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0 0 var(--sp-3); line-height: 1.12; letter-spacing: -.01em; }
 .fos-module-title em { font-style: italic; }
 .fos-module-crumb { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom:var(--sp-3); }
-.fos-module-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin:0; line-height: 1.5; }
+.fos-module-sub { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: var(--text2); margin:0; line-height: 1.5; }
 /* ── DASHBOARD v2 ── */
 .dash-wrap { padding:20px 24px; }
 .dash-kpi { display: grid; grid-template-columns: repeat(5,1fr); gap:12px; margin-bottom:20px; }
@@ -1695,7 +1693,7 @@ body:not(.no-auth) #mainnav {
 .dash-kpi-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
 .dash-ctx-card { background: var(--card); border: 1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; }
 .dash-ctx-loading { font-size: 11px; color: var(--text3); font-family: 'IBM Plex Mono', monospace; padding:12px 0; }
-.dash-regime-pill { display: inline-flex; align-items: center; gap:6px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding:4px 12px; border-radius: 999px; margin:8px 0 6px; }
+.dash-regime-pill { display: inline-flex; align-items: center; gap:6px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding:4px 12px; border-radius: var(--r-sm); margin:8px 0 6px; }
 .dash-actions { display: grid; grid-template-columns: 1fr 1fr; gap:8px; }
 .dash-action-btn { background: var(--card2); border: 1px solid var(--border); border-radius:var(--r-md); padding:12px; cursor: pointer; text-align: left; transition: border-color .15s; }
 .dash-action-btn:hover { border-color: var(--grn-lt); }
@@ -2010,6 +2008,9 @@ div:has(>.dtab), div:has(>.rtab) {
 .risk-stop .inp { width:110px; min-height:44px; padding:6px 8px; }
 .local-note { font-size:13px; color:var(--text2); line-height:1.55; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
 .local-note b { color:var(--bright); font-weight:600; }
+#main a:not([class]) { color:var(--blue); text-underline-offset:2px; }
+.toast-ico { display:inline-flex; width:16px; height:16px; margin-right:6px; vertical-align:-3px; }
+.toast-ico .ico { width:100%; height:100%; }
 </style>
 </head>
 <body>
@@ -2262,9 +2263,9 @@ const SCENARIOS=[
 // directo, no p.icon) — se deja consistente para que un uso futuro no reintroduzca emoji.
 const PAGES=[
   {id:"news",     icon:"news",label:"Contexto"},
-  {id:"dash",     icon:"dash", label:"Dashboard"},
-  {id:"port",     icon:"port",label:"Portfolio"},
-  {id:"watch",    icon:"watch",label:"Watchlist"},
+  {id:"dash",     icon:"dash", label:"Panorama"},
+  {id:"port",     icon:"port",label:"Portafolio"},
+  {id:"watch",    icon:"watch",label:"Lista de seguimiento"},
   {id:"sig",      icon:"sig",label:"Tendencia"},
   {id:"pb",       icon:"pb",label:"Calculadora",pro:true},
   {id:"comp",     icon:"comp",label:"Comparador"},
@@ -2274,7 +2275,7 @@ const PAGES=[
   {id:"ind",      icon:"ind",label:"Indicadores",pro:true},
   {id:"risk",     icon:"risk",label:"Riesgo",pro:true},
   {id:"back",     icon:"back",label:"Probar estrategia",pro:true},
-  {id:"screener", icon:"screener",label:"Screener",pro:true},   // decia "Buscador" y la pagina se titula "Screener"
+  {id:"screener", icon:"screener",label:"Buscador",pro:true},
   {id:"capital",  icon:"capital",label:"Plan de Capital",pro:true},
   {id:"divs",     icon:"divs",label:"Dividendos"},
   {id:"rebal",    icon:"rebal",label:"Rebalanceo"},
@@ -2298,10 +2299,17 @@ const CAL_DATA=[
 ];
 
 // ── FORMATTERS ─────────────────────────────────────────────────
-const fmt=n=>(n||0).toLocaleString("es-CL",{minimumFractionDigits:0,maximumFractionDigits:0});
-const fmtD=n=>n!=null?(+n).toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2}):"—";
-const pct=n=>(((n||0)*100).toFixed(1))+"%";
-const D=n=>"$"+fmt(Math.round(n||0));
+// I10: un solo locale para todas las cifras. Se toma el idioma del navegador
+// si es español (es-CL, es-MX, es-AR…); si no, es-CL. Los montos están en USD.
+const LOC=(function(){
+  try{ var l=(navigator.languages&&navigator.languages[0])||navigator.language||'';
+    if(/^es(-|$)/i.test(l)){ (0).toLocaleString(l); return l; } }catch(e){}
+  return 'es-CL';
+})();
+const fmt=n=>(n||0).toLocaleString(LOC,{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtD=n=>n!=null?(+n).toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2}):"—";
+const pct=n=>{var v=(n||0)*100;return (v<0?"\u2212":"")+Math.abs(v).toLocaleString(LOC,{minimumFractionDigits:1,maximumFractionDigits:1})+"\u00a0%";};
+const D=n=>{var v=Math.round(n||0);return (v<0?"\u2212":"")+"$"+fmt(Math.abs(v));};
 const fmtM=n=>!n?"—":n>=1e12?"$"+(n/1e12).toFixed(2)+"T":n>=1e9?"$"+(n/1e9).toFixed(2)+"B":"$"+fmt(n);
 // ── TU REGLA (I12) ── % de riesgo por operación y límite de concentración.
 // Se guardan en este navegador (no hay columnas en profiles para esto).
@@ -2317,9 +2325,9 @@ function saveRiskRule(risk,limitPct){
   if(typeof PB==='object'){ PB.risk=r.risk||PB.risk; }
 }
 // Cifras con signo tipográfico (−$773) y unidades sin ceros sobrantes.
-function fmtUSD(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?2:dec; var v=Math.abs(+n).toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d}); return (n<0?'\u2212':'')+'$'+v; }
-function fmtPctN(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?(Math.abs(n)%1?1:0):dec; return (n<0?'\u2212':'')+Math.abs(+n).toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d})+'\u00a0%'; }
-function fmtUnits(n){ if(n==null||!isFinite(n)) return '—'; return (+n).toLocaleString("es-CL",{maximumFractionDigits:Math.abs(n)<1?6:4}); }
+function fmtUSD(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?2:dec; var v=Math.abs(+n).toLocaleString(LOC,{minimumFractionDigits:d,maximumFractionDigits:d}); return (n<0?'\u2212':'')+'$'+v; }
+function fmtPctN(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?(Math.abs(n)%1?1:0):dec; return (n<0?'\u2212':'')+Math.abs(+n).toLocaleString(LOC,{minimumFractionDigits:d,maximumFractionDigits:d})+'\u00a0%'; }
+function fmtUnits(n){ if(n==null||!isFinite(n)) return '—'; return (+n).toLocaleString(LOC,{maximumFractionDigits:Math.abs(n)<1?6:4}); }
 const fmtV=n=>!n?"—":n>=1e9?(n/1e9).toFixed(1)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(0)+"K":fmt(n);
 
 // ── STATE ───────────────────────────────────────────────────────
@@ -3292,13 +3300,13 @@ function markWatched(btn){
   btn.style.borderColor='rgba(59,130,246,.4)';
 }
 // Punto de estado (regimen/VIX) como circulo con color semantico + halo, en
-// vez de emoji 🟢🔴🟡 (que ignora el tema y varia por plataforma). Se pasa el
+// vez de emoji de colores (que ignora el tema y varia por plataforma). Se pasa el
 // mismo emoji que se usaba y se traduce a color SEMANTICO (--pos/--neg/--amber)
 // para conservar el semaforo — no el color de MARCA (--grn es dorado). color-mix
 // acepta var(), asi que el halo sigue al color.
 function statusDot(emoji,size){
   size=size||14;
-  var color=({'🟢':'var(--pos)','🔴':'var(--neg)','🟡':'var(--amber)','🟠':'var(--amber)','🔵':'var(--blue)','⚪':'var(--text3)'})[emoji]||'var(--text3)';
+  var color=({pos:'var(--pos)',neg:'var(--neg)',warn:'var(--amber)',info:'var(--blue)',muted:'var(--text3)'})[emoji]||'var(--text3)';
   return '<span style="display:inline-block;width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+color+';box-shadow:0 0 0 4px color-mix(in srgb,'+color+' 18%,transparent);vertical-align:middle;flex-shrink:0"></span>';
 }
 function pageIcon(pid,cls){
@@ -3354,7 +3362,8 @@ function sbar(rsi){
 function typeTag(t){
   var bg=t==="ETF"?"rgba(14,165,201,.12)":t==="Crypto"?"rgba(90,63,181,.12)":"rgba(15,124,90,.12)";
   var col=t==="ETF"?"var(--blue)":t==="Crypto"?"#5a3fb5":"var(--grn)";
-  return '<span style="font-size:11px;padding:2px 5px;border-radius:3px;background:'+bg+';color:'+col+'">'+t+'</span>';
+  var lbl={Stock:'Acción',ETF:'ETF',Crypto:'Cripto'}[t]||t;
+  return '<span style="font-size:11px;padding:2px 5px;border-radius:3px;background:'+bg+';color:'+col+'">'+lbl+'</span>';
 }
 // ── Page header helper — breadcrumb + big title + optional right slot ──
 function _ph(crumb,title,sub,right,tag){
@@ -3370,24 +3379,24 @@ function _ph(crumb,title,sub,right,tag){
 }
 function freeBanner(txt){
   if(INVEST_BETA||!S.user||S.user.plan!=="free")return "";
-  return '<div class="ban">⚠️ '+txt+' <button class="btn btn-up" style="margin-left:auto;padding:3px 9px;font-size:11px" onclick="openModal(\'upgrade\')">Upgrade Pro</button></div>';
+  return '<div class="ban">'+txt+' <button class="btn btn-up" style="margin-left:auto;padding:3px 9px;font-size:11px" onclick="openModal(\'upgrade\')">Upgrade Pro</button></div>';
 }
 function lockedBanner(title,desc){
   var features={
     'Indicadores Pro':['RSI · MACD · Bandas Bollinger sobre datos reales','Tabla comparativa para todos tus activos','Señales técnicas unificadas por portafolio'],
     'Gestión de Riesgo':['Position sizing basado en tu capital y tolerancia al riesgo','Escenarios de mercado (bull/base/bear)','Análisis de correlación entre posiciones'],
     'Simulación Histórica':['Backtesting de estrategias sobre datos históricos reales','Análisis del rendimiento de tu Bitácora','Curva de equity de tus operaciones registradas'],
-    'Screener':['Filtro por tendencia, RSI y sector','Indicadores por activo con su lectura','Export CSV con todos los datos'],
+    'Buscador':['Filtro por tendencia, RSI y sector','Indicadores por activo con su lectura','Exportar CSV con todos los datos'],
     'Motor de Análisis':['Contexto de mercado: SPY, VIX y amplitud','Cada indicador con su rango y su lectura','Sin notas agregadas ni niveles de entrada']
   };
-  var feat=features[title]||['Herramienta de análisis técnico educativo','Datos reales de mercado','Integrado con tu Portfolio y Watchlist'];
+  var feat=features[title]||['Herramienta de análisis técnico educativo','Datos reales de mercado','Integrado con tu portafolio y tu lista de seguimiento'];
   return '<div style="margin:20px;padding:28px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);text-align:center;max-width:500px;margin-left:auto;margin-right:auto">'+
     '<div style="width:32px;height:32px;margin:0 auto 12px;color:var(--amber)">'+icon('lock','ico-lg')+'</div>'+
     '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px">PRO</div>'+
     '<h2 style="font-size:18px;margin-bottom:8px">'+title+'</h2>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:20px">'+desc+'</p>'+
     '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;text-align:left">'+
-    feat.map(function(f){return '<div style="display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace"><span style="color:var(--grn);flex-shrink:0">✓</span>'+f+'</div>';}).join('')+
+    feat.map(function(f){return '<div style="display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace"><span style="color:var(--grn);flex-shrink:0">'+icon('check')+'</span>'+f+'</div>';}).join('')+
     '</div>'+
     '<button class="btn-big" onclick="openModal(\'upgrade\')" style="width:100%">Ver planes →</button>'+
     '</div>';
@@ -3401,7 +3410,7 @@ function liveBadge(){
   if(liveLoading&&!qs.length) f={state:'loading',label:'Actualizando precios…'};
   else f=summarizeFreshness(qs,Date.now(),liveFailed||liveFromCache);
   var cls=f.state==='offline'?'live-badge error':(f.state==='live'?'live-badge':'live-badge loading');
-  var ico=f.state==='offline'?'⚠':'◷';
+  var ico=f.state==='offline'?'!':'◷';
   return '<div class="'+cls+'" role="status" aria-live="polite" title="Fuente: Yahoo Finance (acciones y ETF) y CoinGecko (cripto). La hora es la del último precio informado por la fuente." style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace">'+
     '<span aria-hidden="true">'+ico+'</span>'+esc(f.label)+'</div>';
 }
@@ -3411,7 +3420,7 @@ function freshTag(ticker){
   if(!q) return '<span class="fresh-tag" style="color:var(--text3)">◷ Precio no cargado</span>';
   var f=quoteFreshness(q,Date.now(),liveFailed||liveFromCache);
   var col=f.state==='offline'?'var(--neg)':f.state==='live'?'var(--pos)':'var(--text3)';
-  return '<span class="fresh-tag" style="color:'+col+'" title="Hora del último precio según la fuente">'+(f.state==='offline'?'⚠ ':'◷ ')+esc(f.label)+'</span>';
+  return '<span class="fresh-tag" style="color:'+col+'" title="Hora del último precio según la fuente">'+(f.state==='offline'?'! ':'◷ ')+esc(f.label)+'</span>';
 }
 function updateLiveBadge(){
   document.querySelectorAll('.live-badge-wrap').forEach(function(el){el.innerHTML=liveBadge();});
@@ -3463,8 +3472,8 @@ function chgCell(lq,size){
   // vecina ya usaba '—' para lo mismo.
   if(!lq||lq.changePct==null) return '<span style="color:var(--text3)">—</span>';
   var p=(lq.changePct||0)*100;
-  var s=size||9;
-  return '<span style="font-size:'+s+'px;color:'+(p>=0?'var(--pos)':'var(--neg)')+'"> '+(p>=0?'+':'')+p.toFixed(2)+'%</span>';
+  var s=Math.max(size||12,12);
+  return '<span class="num" style="font-size:'+s+'px;color:'+(p>=0?'var(--pos)':'var(--neg)')+'">'+(p>=0?'+':'\u2212')+fmtD(Math.abs(p))+'\u00a0%</span>';
 }
 // Distancia del precio actual sobre su minimo de 52 semanas: cuanto mas cerca
 // del minimo, mas 'barato' esta respecto a su propio rango anual. Varia por
@@ -3522,8 +3531,8 @@ function showToast(msg,type,undoFn){
   if(!c) return;
   var t=document.createElement('div');
   t.className='toast '+(type||'success');
-  var icon=type==='error'?'✕':type==='warning'?'⚠':type==='info'?'ℹ':'✓';
-  var iconEl=document.createElement('span');iconEl.textContent=icon+' ';
+  var ico=type==='error'?'close':type==='warning'?'alert':type==='info'?'help':'check';
+  var iconEl=document.createElement('span');iconEl.className='toast-ico';iconEl.innerHTML=icon(ico);
   var msgEl=document.createElement('span');msgEl.textContent=msg;
   t.appendChild(iconEl);t.appendChild(msgEl);
   function dismiss(){ t.classList.remove('show'); setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300); }
@@ -3659,16 +3668,15 @@ function renderTopbar(){
       if(!b||!isFinite(b.price)) return;
       var isUp=(b.changePct||0)>=0;
       var col=bt.vixOnly?'var(--text2)':(isUp?'var(--pos)':'var(--neg)');
-      var pctStr=bt.vixOnly?'':(isUp?'+':'')+((b.changePct||0)).toFixed(2)+'%';
+      var pctStr=bt.vixOnly?'':(isUp?'+':'\u2212')+fmtD(Math.abs(b.changePct||0))+'\u00a0%';
       // Cada instrumento tiene su formato: el bono va en %, el euro a 4 decimales
       // y bitcoin en miles. Con un formato unico se leian mal casi todos.
       var valStr;
-      if(bt.sym==='EURUSD=X')      valStr=b.price.toFixed(4);
-      else if(bt.sym==='^TNX')     valStr=b.price.toFixed(2)+'%';
-      else if(bt.sym==='BTC-USD')  valStr='$'+(b.price/1000).toFixed(1)+'K';
-      else if(b.price>=10000)      valStr=b.price.toLocaleString('en-US',{maximumFractionDigits:0});
-      else if(b.price>=1000)       valStr=b.price.toLocaleString('en-US',{maximumFractionDigits:0});
-      else                         valStr=b.price.toFixed(2);
+      if(bt.sym==='EURUSD=X')      valStr=b.price.toLocaleString(LOC,{minimumFractionDigits:4,maximumFractionDigits:4});
+      else if(bt.sym==='^TNX')     valStr=fmtD(b.price)+'\u00a0%';
+      else if(bt.sym==='BTC-USD')  valStr='$'+fmt(b.price);
+      else if(b.price>=1000)       valStr=fmt(b.price);
+      else                         valStr=fmtD(b.price);
       chips+=sep+
         '<div style="display:flex;align-items:center;gap:6px;padding:0 10px;flex-shrink:0">'+
         '<div style="display:flex;flex-direction:column;gap:1px">'+
@@ -3814,11 +3822,11 @@ async function deGetVIX(){
     var sizing={low:1.0,normal:0.75,elevated:0.50,crisis:0.25}[regime];
     var label={low:'VIX Bajo',normal:'VIX Normal',elevated:'VIX Elevado',crisis:'VIX Crisis'}[regime];
     var color={low:'var(--grn)',normal:'var(--blue)',elevated:'var(--amber)',crisis:'var(--red)'}[regime];
-    var emoji={low:'🟢',normal:'🔵',elevated:'🟠',crisis:'🔴'}[regime];
+    var emoji={low:'pos',normal:'info',elevated:'warn',crisis:'neg'}[regime];
     var tip={low:'Volatilidad baja — entorno de baja incertidumbre histórica.',normal:'Volatilidad normal — nivel dentro del rango histórico promedio.',elevated:'Volatilidad alta — entorno de mayor incertidumbre de mercado.',crisis:'Volatilidad extrema — nivel históricamente muy elevado.'}[regime];
     var result={vix:v,prev:prev,regime:regime,label:label,color:color,emoji:emoji,tip:tip,sizing:sizing};
     DE_CACHE.vix=result;return result;
-  }catch(e){return{vix:null,regime:'unknown',label:'VIX N/D',color:'var(--text3)',emoji:'⚪',tip:'No se pudo obtener VIX.',sizing:1.0};}
+  }catch(e){return{vix:null,regime:'unknown',label:'VIX N/D',color:'var(--text3)',emoji:'muted',tip:'No se pudo obtener VIX.',sizing:1.0};}
 }
 
 // Market Breadth — % S&P 500 above SMA200 via $SPXA200R
@@ -3832,7 +3840,7 @@ async function deGetBreadth(){
     var regime=v>=70?'strong':v>=50?'neutral':v>=30?'weak':'bear';
     var label={strong:'Amplitud Fuerte',neutral:'Amplitud Neutral',weak:'Amplitud Débil',bear:'Bear Market Breadth'}[regime];
     var color={strong:'var(--grn)',neutral:'var(--blue)',weak:'var(--amber)',bear:'var(--red)'}[regime];
-    var warning=v<50&&v<prev?'⚠ Divergencia: SPY puede estar en "hollow rally" — solo el índice sube.':'';
+    var warning=v<50&&v<prev?'Divergencia: SPY puede estar en "hollow rally" — solo el índice sube.':'';
     var result={pct:v,prev:prev,regime:regime,label:label,color:color,warning:warning};
     DE_CACHE.breadth=result;return result;
   }catch(e){return{pct:null,regime:'unknown',label:'Amplitud N/D',color:'var(--text3)',warning:''};}
@@ -3883,13 +3891,13 @@ async function deGetRegime(){
   var regime,label,color,emoji,desc;
   var pct200=(last-s200)/s200;
   if(last>s200&&s50>s200&&pct200>0.01){
-    regime='risk_on';label='Tendencia alcista';color='var(--grn)';emoji='🟢';
+    regime='risk_on';label='Tendencia alcista';color='var(--grn)';emoji='pos';
     desc='SPY y su media de 50 días están sobre la media de 200 días.';
   }else if(last<s200&&s50<s200){
-    regime='risk_off';label='Tendencia bajista';color='var(--red)';emoji='🔴';
+    regime='risk_off';label='Tendencia bajista';color='var(--red)';emoji='neg';
     desc='SPY y su media de 50 días están bajo la media de 200 días.';
   }else{
-    regime='neutral';label='En transición';color='var(--amber)';emoji='🟡';
+    regime='neutral';label='En transición';color='var(--amber)';emoji='warn';
     desc='SPY está entre sus medias de 50 y 200 días.';
   }
   var result={regime:regime,label:label,color:color,emoji:emoji,desc:desc,spy:last,sma200:s200,sma50:s50,pct200:pct200,hist:hist};
@@ -4153,11 +4161,11 @@ function renderDecisionEngineBody(){
   var explicaUniverso =
     '<div style="margin:0 20px 14px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:12px;color:var(--text2);line-height:1.65">'+
     (usingDefaults
-      ? '<b style="color:var(--bright)">Estás viendo 8 activos de referencia.</b> Tu Watchlist y tu Portafolio están vacíos, así que el Motor analiza SPY, QQQ, AAPL, NVDA, MSFT, AMZN, GLD y BTC-USD para que puedas ver cómo funciona. '+
+      ? '<b style="color:var(--bright)">Estás viendo 8 activos de referencia.</b> Tu lista de seguimiento y tu portafolio están vacíos, así que el Motor analiza SPY, QQQ, AAPL, NVDA, MSFT, AMZN, GLD y BTC-USD para que puedas ver cómo funciona. '+
         '<button class="btn" style="padding:2px 9px;font-size:11px;margin-left:4px" onclick="setPage(\'watch\')">Agregar mis activos →</button>'
-      : '<b style="color:var(--bright)">Analizando '+tickers.length+' activos:</b> '+nWatch+' de tu Watchlist y '+nPort+' de tu Portafolio. '+
-        '<button class="btn" style="padding:2px 9px;font-size:11px;margin-left:4px" onclick="setPage(\'watch\')">Editar Watchlist →</button>')+
-    '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+      : '<b style="color:var(--bright)">Analizando '+tickers.length+' activos:</b> '+nWatch+' de tu lista de seguimiento y '+nPort+' de tu portafolio. '+
+        '<button class="btn" style="padding:2px 9px;font-size:11px;margin-left:4px" onclick="setPage(\'watch\')">Editar lista →</button>')+
+    '<div style="margin-top:8px;font-size:12px;color:var(--text3);line-height:1.6">'+
     'Cada activo muestra sus indicadores por separado (medias de 50 y 200 días, RSI, MACD, volumen), con su rango y una frase que explica qué significa. '+
     'No hay una nota que los combine ni niveles de entrada: son lecturas de datos históricos, no recomendaciones.'+
     '</div></div>';
@@ -4221,7 +4229,7 @@ function renderDecisionEngineBody(){
               '<div style="display:flex;justify-content:space-between;font-family:\'IBM Plex Mono\',monospace;font-size:11px;margin-bottom:3px"><span style="color:var(--text3)">SMA200</span><b style="color:'+regime.color+'">$'+regime.sma200.toFixed(2)+'</b></div>'+
               '<div style="display:flex;justify-content:space-between;font-family:\'IBM Plex Mono\',monospace;font-size:11px"><span style="color:var(--text3)">Δ200</span><b style="color:'+(regime.pct200>=0?'var(--pos)':'var(--neg)')+'">'+( regime.pct200>=0?'+':'')+( regime.pct200*100).toFixed(1)+'%</b></div>'+
             '</div>':'')  +
-          '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);background:rgba(0,0,0,.15);border-radius:var(--r-md);padding:8px 12px;line-height:1.5">'+
+          '<div style="font-size:12px;color:var(--text3);background:rgba(0,0,0,.15);border-radius:var(--r-md);padding:8px 12px;line-height:1.5">'+
             '<span style="color:var(--text2)">Contexto:</span> '+(regime.regime==='risk_on'?'S&amp;P 500 sobre su media de 200 días':regime.regime==='risk_off'?'S&amp;P 500 bajo su media de 200 días':'S&amp;P 500 entre sus medias de 50 y 200 días')+'</div>'+
         '</div>'+
       '</div>'+
@@ -4253,7 +4261,7 @@ function renderDecisionEngineBody(){
           '</div>'+
           '<div style="font-size:11px;font-weight:600;color:'+breadth.color+';margin-bottom:4px">'+breadth.label+'</div>'+
           '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:4px"><div style="height:100%;width:'+(breadth.pct||0)+'%;background:'+breadth.color+';border-radius:2px"></div></div>'+
-          (breadth.warning?'<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">⚠ '+breadth.warning+'</div>':'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">% sobre SMA200</div>')+
+          (breadth.warning?'<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">'+breadth.warning+'</div>':'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">% sobre SMA200</div>')+
         '</div>'+
         // TU REGLA: antes era "Sizing sugerido" (X % del tamaño normal según
         // el VIX), una instruccion. Ahora solo recuerda la regla de la persona.
@@ -4277,7 +4285,7 @@ function renderDecisionEngineBody(){
         return '<div style="background:var(--card);border:1px solid '+(urgent?'rgba(245,158,11,.3)':'var(--border)')+';border-radius:var(--r-md);padding:10px 12px;min-width:100px">'+
           '<div style="font-size:13px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;margin-bottom:4px">'+e.ticker+'</div>'+
           '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:2px">'+e.dateStr+'</div>'+
-          '<div style="font-size:11px;font-weight:600;color:'+dColor+'">'+(urgent?'⚠ ':'')+dLabel+'</div>'+
+          '<div style="font-size:11px;font-weight:600;color:'+dColor+'">'+(urgent?'Atención: ':'')+dLabel+'</div>'+
           '</div>';
       }).join('');
       earningsCard='<div style="margin-bottom:16px">'+
@@ -4295,7 +4303,7 @@ function renderDecisionEngineBody(){
       '</div>';
     if(usingDefaults){
       scoresHtml+='<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);margin-bottom:12px;padding:8px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md)">'+
-        'Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Agrega tu Watchlist →</span></div>';
+        'Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Arma tu lista de seguimiento →</span></div>';
     }
     if(!scores.length){
       scoresHtml+='<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;color:var(--text3);font-size:12px">Sin datos disponibles. Revisa tu conexión.</div>';
@@ -4338,7 +4346,7 @@ function renderDecisionEngineBody(){
       scoresHtml+='</div>';
     }
 
-    var disclaimer='<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
+    var disclaimer='<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:12px;color:var(--text3);line-height:1.8">'+
       '<b style="color:var(--text2)">Herramienta educativa.</b> '+
       'Indicadores calculados con un año de cierres diarios de Yahoo Finance. Describen lo que pasó, no lo que va a pasar. No constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida.'+
       '</div>';
@@ -4366,8 +4374,8 @@ function renderScreenerBody(){ renderInvestigar('screener'); }
 function renderScreenerSection(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('screener')>=0){
-    return _ph('Investigar · Screener','Screener','// Filtro por indicador · Export CSV',null,'h2')+
-      lockedBanner('Screener','Filtra activos por tendencia, RSI y sector. Exporta resultados a CSV.');
+    return _ph('Investigar · Buscador','Buscador','Filtro por indicador',null,'h2')+
+      lockedBanner('Buscador','Filtra activos por tendencia, RSI y sector. Exporta resultados a CSV.');
   }
   var f=S.screenerFilters;
   var running=S.screenerRunning;
@@ -4417,7 +4425,7 @@ function renderScreenerSection(){
         filtered.length+' resultados'+' de '+results.length+' analizados'+
         (errors.length?' · <span style="color:var(--red)">'+errors.length+' error(es)</span>':'')+
       '</span>'+
-      '<button onclick="exportScreenerCSV()" class="btn" style="margin-left:auto;font-size:11px;padding:4px 10px">'+icon('download')+'Export CSV</button>'+
+      '<button onclick="exportScreenerCSV()" class="btn" style="margin-left:auto;font-size:11px;padding:4px 10px">'+icon('download')+'Exportar CSV</button>'+
       '</div>'+
       // En movil quedan Ticker/Precio/Tendencia/RSI; el resto es detalle.
       '<div class="tw"><table>'+
@@ -4429,7 +4437,7 @@ function renderScreenerSection(){
       '</div>';
   }
 
-  return _ph('Investigar · Screener','Screener','// Filtra activos por tendencia, RSI y sector',null,'h2')+
+  return _ph('Investigar · Buscador','Buscador','Filtra activos por tendencia, RSI y sector',null,'h2')+
 
     '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px">'+
     '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">'+
@@ -4439,7 +4447,7 @@ function renderScreenerSection(){
       [['ETFs amplios','etf'],['Tecnología','tech'],['Dividendos','dividend'],['Sectores SPDR','sectors'],['Renta fija / oro','safe']].map(function(c){return '<button onclick="scrPreset(\''+c[1]+'\')" style="padding:4px 11px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--card2);color:var(--text2);font-size:11px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--grn)\';this.style.color=\'var(--grn)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text2)\'">'+c[0]+'</button>';}).join('')+'</div>'+
       '<textarea id="scr-tickers" rows="2" style="width:100%;box-sizing:border-box;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:8px 10px;resize:vertical;outline:none">'+S.screenerTickers+'</textarea>'+
     '</div>'+
-    '<button onclick="screenerRun()" class="btn" style="margin-top:22px;padding:9px 20px;font-size:13px;font-weight:600;'+(running?'opacity:.6;pointer-events:none':'')+'">'+(running?'⏳ Analizando...':'▶ Analizar')+'</button>'+
+    '<button onclick="screenerRun()" class="btn" style="margin-top:22px;padding:9px 20px;font-size:13px;font-weight:600;'+(running?'opacity:.6;pointer-events:none':'')+'">'+(running?'Analizando…':'▶ Analizar')+'</button>'+
     '</div>'+
 
     '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:flex-end">'+
@@ -4577,7 +4585,7 @@ function renderSettings(){
     var started=new Date(u.trialStarted);
     var expires=new Date(started.getTime()+14*24*60*60*1000);
     var daysLeft=Math.max(0,Math.ceil((expires-Date.now())/(1000*60*60*24)));
-    trialInfo='<div style="padding:10px 14px;background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:var(--r-md);margin-bottom:14px;font-size:12px;color:var(--amber)">⏳ Trial activo — <b>'+daysLeft+' días restantes</b> (vence '+expires.toLocaleDateString('es',{day:'numeric',month:'short'})+')</div>';
+    trialInfo='<div style="padding:10px 14px;background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:var(--r-md);margin-bottom:14px;font-size:12px;color:var(--amber)">Trial activo — <b>'+daysLeft+' días restantes</b> (vence '+expires.toLocaleDateString('es',{day:'numeric',month:'short'})+')</div>';
   }
   document.getElementById('main').innerHTML=
     _ph('Cuenta · Configuración','Configuración','// Cuenta · Preferencias · Plan')+
@@ -4655,7 +4663,7 @@ function renderSettings(){
     '<div><div style="font-size:13px;font-weight:500;color:var(--bright)">Copia de seguridad completa</div>'+
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Todo en un archivo .json — restaurable</div></div>'+
     '<div style="display:flex;gap:6px"><button class="btn" onclick="exportBackup()">'+icon('download')+'Exportar</button>'+
-    '<button class="btn" onclick="document.getElementById(\'backup-file\').click()">⬆ Importar</button>'+
+    '<button class="btn" onclick="document.getElementById(\'backup-file\').click()">Importar</button>'+
     '<input type="file" id="backup-file" accept="application/json,.json" style="display:none" onchange="importBackup(this.files[0])"></div>'+
     '</div>'+
     '</div>'+
@@ -4834,7 +4842,7 @@ function renderWelcome(){
     '<div class="wv3-feats">'+
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('decision')+'</span><div><div class="wv3-feat-title">Motor de Análisis</div><div class="wv3-feat-desc">Contexto de mercado y cada indicador con su rango y su lectura.</div></div></div>'+
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('risk')+'</span><div><div class="wv3-feat-title">Con tu regla de riesgo</div><div class="wv3-feat-desc">Tamaño de posición, riesgo al stop y límite de concentración.</div></div></div>'+
-    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portfolio y Screener</div><div class="wv3-feat-desc">Seguimiento de P&amp;L, watchlist y filtro por indicador.</div></div></div>'+
+    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portafolio y buscador</div><div class="wv3-feat-desc">Resultado de tus posiciones, lista de seguimiento y filtro por indicador.</div></div></div>'+
     '</div>'+
     '<div class="wv3-disc">'+icon('shield')+' Análisis técnico educativo · No asesoría financiera · No somos bróker · No ejecutamos órdenes</div>'+
     '</div>'+ // end wv3-left
@@ -4877,7 +4885,7 @@ function renderWelcome(){
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis →</button>'+
     '</div>'+
     '</div>'+ // end wv3-auth-card
-    '<div class="wv3-pricing"><div><span class="wv3-grn">✓</span> Gratis durante la beta pública, sin tarjeta</div><div><span class="wv3-grn">✓</span> Cada precio muestra su hora y su retraso</div></div>'+
+    '<div class="wv3-pricing"><div><span class="wv3-grn">'+icon('check')+'</span> Gratis durante la beta pública, sin tarjeta</div><div><span class="wv3-grn">'+icon('check')+'</span> Cada precio muestra su hora y su retraso</div></div>'+
     '</div>'+ // end wv3-right
     '</div>'+ // end wv3-wrap
     '<div class="wv3-footer">© 2025–2026 MAXNOVA &amp; LUCI Global LLC · No somos asesores financieros · Datos referenciales</div>'+
@@ -4915,7 +4923,7 @@ function openTCModal(tab){
   var isTc=tab!=='pp';
   var tcContent=
     '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de Uso — MOY IQ Invest</h3>'+
-    '<div style="font-size:11px;color:var(--text2);line-height:1.7;font-family:\'IBM Plex Mono\',monospace">'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
     '<b style="color:var(--bright)">1. Naturaleza del servicio</b><br>'+
     'MOY IQ Invest es una plataforma de análisis técnico educativo. Los indicadores, lecturas y '+
     'cualquier output generado por la plataforma son herramientas de análisis basadas en datos históricos '+
@@ -4942,7 +4950,7 @@ function openTCModal(tab){
 
   var ppContent=
     '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Política de Privacidad — MOY IQ Invest</h3>'+
-    '<div style="font-size:11px;color:var(--text2);line-height:1.7;font-family:\'IBM Plex Mono\',monospace">'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
     '<b style="color:var(--bright)">1. Datos que recopilamos</b><br>'+
     'Recopilamos: email, nombre, portfolio ingresado manualmente, watchlist y preferencias de configuración. '+
     'No recopilamos datos bancarios, información de corretaje ni ejecutamos transacciones en tu nombre.<br><br>'+
@@ -4991,12 +4999,12 @@ function openTCModal(tab){
 
 function renderPaywall(){
   var map={
-    ind:{t:"Indicadores Técnicos",f:["RSI, MACD, BB sobre OHLCV reales","Fundamentals: P/E, EPS, ROE, Beta","Gráficos históricos hasta 6 meses"]},
+    ind:{t:"Indicadores Técnicos",f:["RSI, MACD, BB sobre OHLCV reales","Fundamentales: P/E, EPS, ROE, Beta","Gráficos históricos hasta 6 meses"]},
     risk:{t:"Gestión de Riesgo",f:["Position sizing automático (2%)","Análisis Bull/Bear/Black Swan","R/R ratio por activo"]},
     back:{t:"Simulación Histórica",f:["SMA Crossover sobre datos reales","Equity curve + Win Rate","Analizador de Bitácora"]}
   };
   var m=map[S.page]||{t:"Módulo Pro",f:[]};
-  var feats=m.f.map(function(f){return '<div style="display:flex;gap:8px;font-size:12px;font-family:\'IBM Plex Mono\';color:var(--text);padding:4px 0"><span style="color:var(--grn);font-weight:700">✓</span>'+f+'</div>';}).join("");
+  var feats=m.f.map(function(f){return '<div style="display:flex;gap:8px;font-size:12px;font-family:\'IBM Plex Mono\';color:var(--text);padding:4px 0"><span style="color:var(--grn)">'+icon('check')+'</span>'+f+'</div>';}).join("");
   document.getElementById("main").innerHTML=
     '<div class="pw"><div style="width:36px;height:36px;margin:0 auto 12px;color:var(--amber)">'+icon('lock','ico-lg')+'</div>'+
     '<h2 style="margin-bottom:6px">'+m.t+'</h2>'+
@@ -5038,8 +5046,8 @@ function indicesCard(){
     MARKET_BAR.forEach(function(b){
       if(!IDX_MAP[b.sym]||!isFinite(b.price)) return;
       var isUp=(b.changePct||0)>=0;
-      var pct=(isUp?'+':'')+(b.changePct||0).toFixed(2)+'%';
-      var val=b.sym==='BTC-USD'?'$'+(b.price/1000).toFixed(1)+'K':b.sym==='^VIX'?b.price.toFixed(2):b.price>=10000?b.price.toLocaleString('en-US',{maximumFractionDigits:0}):b.price.toFixed(2);
+      var pct=(isUp?'+':'\u2212')+fmtD(Math.abs(b.changePct||0))+'\u00a0%';
+      var val=b.sym==='BTC-USD'?'$'+fmt(b.price):b.sym==='^VIX'?fmtD(b.price):b.price>=1000?fmt(b.price):fmtD(b.price);
       IDX_MAP[b.sym]={n:IDX_MAP[b.sym].n,v:val,c:pct,up:isUp};
     });
   }
@@ -5098,7 +5106,7 @@ function moversCard(){
   // hueco de fondo de pagina debajo. Con flex:1 absorbe ese sobrante.
   return '<div class="cb" style="padding:0;overflow:hidden;flex:1">'+
     '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;justify-content:space-between;align-items:center">'+
-      '<h2 class="fos-section-label" style="margin:0">Market Movers</h2>'+
+      '<h2 class="fos-section-label" style="margin:0">Mayores movimientos</h2>'+
       '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+(conDato?upd:'sin datos en vivo')+'</span>'+
     '</div>'+filas+'</div>';
 }
@@ -5151,7 +5159,7 @@ function dashFocoCard(port){
       '<h2 class="fos-section-label" style="margin:0;display:flex;align-items:center;gap:8px">'+icon('decision')+' Para revisar hoy</h2>'+
     '</div>'+
     rows+
-    '<div style="margin-top:12px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Datos para revisar, no instrucciones de compra o venta.</div>'+
+    '<div style="margin-top:12px;font-size:12px;color:var(--text3);line-height:1.5">Datos para revisar, no instrucciones de compra o venta.</div>'+
   '</div>';
 }
 
@@ -5249,7 +5257,7 @@ function renderDash(){
   var heroV='<span style="color:'+pnlColor+'">'+(pnl>=0?'▲ +':'▼ ')+fmtMoney(pnl)+'</span>';
   var kpiCards=
     kpi('P&L Total',heroV,(pnlPct>=0?'+':'')+pnlPct.toFixed(2)+'% retorno',pnl>=0?'g':'r','hero')+
-    kpi('Portfolio Total',fmtMoney(totM),(pnl>=0?'+':'')+pnlPct.toFixed(2)+'% total','n')+
+    kpi('Valor del portafolio',fmtMoney(totM),(pnl>=0?'+':'')+pnlPct.toFixed(2)+'% total','n')+
     kpi('Posiciones',String(port.length),'<span style="color:var(--pos)">'+winners+' positivas</span> · <span style="color:var(--neg)">'+losers+' neg.</span>','n')+
     (bestPos
       ?kpi('Mejor Activo','<span style="color:'+(bestPos.pct>=0?'var(--pos)':'var(--neg)')+'">'+esc(bestPos.t)+'</span>',(bestPos.pct>=0?'+':'')+bestPos.pct.toFixed(1)+'%',bestPos.pct>=0?'g':'r')
@@ -5281,7 +5289,7 @@ function renderDash(){
     '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">'+port.length+' de '+(S.portfolio.length)+' posiciones</span>'+
     '</div>'+
     (!INVEST_BETA&&S.user.plan==='free'&&S.portfolio.length>plan.maxT?
-      '<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;padding:0 20px 10px">⚠ Mostrando '+plan.maxT+' de '+S.portfolio.length+' · <span role="button" tabindex="0" onclick="openModal(\'upgrade\')" style="cursor:pointer;text-decoration:underline">Upgrade Pro</span></div>':'')+
+      '<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;padding:0 20px 10px">Mostrando '+plan.maxT+' de '+S.portfolio.length+' · <span role="button" tabindex="0" onclick="openModal(\'upgrade\')" style="cursor:pointer;text-decoration:underline">Upgrade Pro</span></div>':'')+
     '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>Nombre</th><th>Precio</th><th>Cambio</th><th>P&amp;L</th><th>Peso%</th></tr></thead>'+
     '<tbody>'+portRows+'</tbody></table></div></div>';
 
@@ -5293,8 +5301,8 @@ function renderDash(){
   var pageHeader=
     '<div class="dash-page-header">'+
     '<div>'+
-    '<div class="dash-page-breadcrumb">Panorama · Dashboard</div>'+
-    '<h1 class="dash-page-title">Dashboard</h1>'+
+    '<div class="dash-page-breadcrumb">Panorama</div>'+
+    '<h1 class="dash-page-title">Panorama</h1>'+
     '</div>'+
     // Los 4 accesos rapidos (Motor/Indicadores/Riesgo/Screener) se quitaron
     // el 13-sep-2026 por duplicar exactamente la pestaña "Analizar" del nav
@@ -5427,7 +5435,7 @@ function portRebalHint(port,totM){
   // el 14-sep-2026). Mismo tratamiento que el banner "portfolio de ejemplo"
   // arriba en esta misma pantalla: fondo tenue completo, sin barra lateral.
   return '<div class="fos-card" style="padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--orange-bg)">'+
-    statusDot('🟡',12)+
+    statusDot('warn',12)+
     '<div style="flex:1;min-width:200px;font-size:12px;color:var(--text);line-height:1.5">'+
       '<b>Rebalanceo sugerido:</b> '+drifts.length+' posición'+(drifts.length!==1?'es se desviaron':' se desvió')+' de tus objetivos'+
       ' <span style="color:var(--text3)">(mayor: '+esc(top.t)+' '+(top.diff>0?'+':'')+top.diff.toFixed(1)+'%, '+dir+')</span>.'+
@@ -5476,7 +5484,7 @@ function renderPort(){
   var isProPort=planOf().locked.indexOf('decision')<0;
   document.getElementById("main").innerHTML=
     '<div class="fos-module-header">'+
-    '<div><div class="fos-module-crumb">Seguir · Portfolio</div><h1 class="fos-module-title">Portfolio Manager</h1><div class="fos-module-sub">Editable · <span id="saved">✓ Guardado</span></div></div>'+
+    '<div><div class="fos-module-crumb">Seguir · Portafolio</div><h1 class="fos-module-title">Portafolio</h1><div class="fos-module-sub">Tus posiciones · <span id="saved">Guardado</span></div></div>'+
     '<div class="ph-right">'+liveBadge()+(isProPort?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('decision')+' Motor →</button>':'')+
     // Currency selector
     '<div role="group" aria-label="Moneda" style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px">'+
@@ -5532,7 +5540,7 @@ function renderPort(){
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
     '<button class="btn" onclick="openModal(\'addpos\')">+ Nueva posición</button>'+
     '<button class="btn" onclick="openModal(\'addtrade\')">'+icon('clipboard')+' Registrar operación</button>'+
-    '<button class="btn" onclick="exportCSV()">'+icon('download')+'Export CSV</button>'+
+    '<button class="btn" onclick="exportCSV()">'+icon('download')+'Exportar CSV</button>'+
     '<button class="btn" onclick="openModal(\'importcsv\')">'+icon('download')+' Importar CSV</button>'+
     '</div>'+
     (port.length>=2?renderCorrelationMatrix(port):'');
@@ -5668,7 +5676,7 @@ function renderBitacora(){
       return '<option value="'+v+'"'+(S.tradeFilter.type===v?' selected':'')+'>'+l[v]+'</option>';
     }).join("")+
     '</select>'+
-    (S.tradeFilter.ticker!=='ALL'||S.tradeFilter.type!=='ALL'?'<button class="btn" style="font-size:11px;padding:3px 8px" onclick="S.tradeFilter={ticker:\'ALL\',type:\'ALL\'};renderBitacora()">✕ Limpiar</button>':'')+
+    (S.tradeFilter.ticker!=='ALL'||S.tradeFilter.type!=='ALL'?'<button class="btn" style="font-size:11px;padding:3px 8px" onclick="S.tradeFilter={ticker:\'ALL\',type:\'ALL\'};renderBitacora()">Limpiar filtros</button>':'')+
     '</div>'+
 
     // Table
@@ -5867,7 +5875,7 @@ function renderWatchSection(){
     // que ya tiene su propio h1 ("Investigar") — 4 h1 hermanos sin jerarquia
     // era invisible visualmente (misma clase .fos-module-title) pero rompia
     // la navegacion por headings de un lector de pantalla.
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h2 class="fos-module-title">Watchlist</h2><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' </div></div>'+
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Lista de seguimiento</div><h2 class="fos-module-title">Lista de seguimiento</h2><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">Guardado</span></div></div><div class="ph-right">'+liveBadge()+' </div></div>'+
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Agregar ticker</div>'+
     '<div class="wtag-grid">'+quickTags+'</div>'+
@@ -5926,8 +5934,8 @@ function renderInvestigar(focus){
     return '<button class="btn" style="font-size:11px" onclick="document.getElementById(\'inv-'+id+'\').scrollIntoView({behavior:\'smooth\',block:\'start\',inline:\'nearest\'})">'+label+'</button>';
   };
   document.getElementById('main').innerHTML=
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar</div><h1 class="fos-module-title">Investigar</h1><div class="fos-module-sub">Watchlist, Screener y Comparador en una sola pantalla</div></div><div class="ph-right">'+
-      jumpBtn('watch','Watchlist')+' '+jumpBtn('screener','Screener')+' '+jumpBtn('comp','Comparador')+
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar</div><h1 class="fos-module-title">Investigar</h1><div class="fos-module-sub">Lista de seguimiento, buscador y comparador en una sola pantalla</div></div><div class="ph-right">'+
+      jumpBtn('watch','Lista')+' '+jumpBtn('screener','Buscador')+' '+jumpBtn('comp','Comparador')+
     '</div></div>'+
     // align-items:start (no el stretch por default de grid): Watchlist y
     // Comparador tienen alturas muy distintas entre si (la Watchlist crece
@@ -6007,7 +6015,7 @@ function renderSig(){
 
   var rows=list.map(function(s){
     var inW=S.watchlist.indexOf(s.t)>=0;
-    var wbtn='<button class="btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();'+(inW?"rmWatch('"+s.t+"')":"addWatch('"+s.t+"')")+'">'+(inW?"✓":"+")+' Watch</button>';
+    var wbtn='<button class="btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();'+(inW?"rmWatch('"+s.t+"')":"addWatch('"+s.t+"')")+'">'+(inW?"En lista":"+ Seguir")+'</button>';
     return sigTableRow(s,{trailing:'<td>'+wbtn+'</td>'});
   }).join("");
 
@@ -6023,7 +6031,7 @@ function renderSig(){
     '</div>'+
     '<div class="tw"><table id="tbl-sig" class="fos-table"><thead><tr><th>Ticker</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th>'+sortTh("sig","rsi","RSI","RSI (14), escala 0–100: entre 30 y 70 es zona neutral.")+'<th class="col-sec">Escala 0–100</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
-    '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+    '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);line-height:1.6">'+
     'Lectura de datos históricos: describe cómo se movió cada activo, no qué va a hacer. No es una recomendación de compra o venta. '+
     'Fuente: Yahoo Finance; la hora y el retraso de los precios se muestran arriba. Invertir implica riesgo de pérdida.'+
     '</div>';
@@ -6348,7 +6356,7 @@ function mercadoHoyBody(){
       '</div></div></div>';
   }).join('');
 
-  // Market Movers se movio al Dashboard (funcion moversCard): Contexto se
+  // Mayores movimientos se movio al Dashboard (funcion moversCard): Contexto se
   // consolida alli y no tiene sentido mantener dos copias del mismo widget.
   // El widget de Indices (IDX_MAP/idxRows) tambien vivia aca duplicado con
   // indicesCard() pero ya no se usaba en el HTML devuelto por esta funcion
@@ -6611,7 +6619,7 @@ function renderInd(){
     '</div>'+
     '<div class="st"><div class="stbar"></div>Todos los tickers — Click para abrir análisis</div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tickerCards+'</div>'+
-    '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+    '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);line-height:1.6">'+
     'Lecturas de datos históricos, no recomendaciones de compra o venta. Fuente: Yahoo Finance'+(liveUpdated?' · consultado '+timeAgo(liveUpdated):'')+'; cada precio muestra su hora y su retraso. '+
     'Toda inversión implica riesgo de pérdida parcial o total del capital.'+
     '</div>';
@@ -6723,7 +6731,7 @@ function renderRiskBody(){
     '</div>'+
     '<div>'+concHtml+'</div>'+
     '</div>'+
-    '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
+    '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:12px;color:var(--text3);line-height:1.8">'+
     '<b style="color:var(--text2)">Herramienta educativa.</b> '+
     'Son cálculos con tus datos y tu regla, no instrucciones de compra o venta ni una recomendación de inversión. La decisión es tuya.'+
     '</div>';
@@ -6752,7 +6760,7 @@ function renderBack(){
     '<div style="margin:0 20px 14px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:12px;color:var(--text2);line-height:1.65">'+
     '<b style="color:var(--bright)">Esto responde una sola pregunta:</b> si durante el período elegido hubieras entrado cada vez que la media corta cruzó '+
     '<b>hacia arriba</b> la larga, y salido cada vez que la cruzó <b>hacia abajo</b>, ¿cómo habría terminado tu capital?'+
-    '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+    '<div style="margin-top:8px;font-size:12px;color:var(--text3);line-height:1.6">'+
     'Es el cruce de medias, el método más clásico del análisis técnico. Sirve para ver si un activo se ha comportado de forma tendencial o si habría dado muchas señales falsas. '+
     'Ejemplo: SPY · 1 año · medias 20 y 50 · $10.000. '+
     'Rendimiento sobre datos históricos: no anticipa el futuro y no descuenta comisiones ni impuestos.'+
@@ -6987,7 +6995,7 @@ function renderAlert(){
   var tableRows=rows.map(function(r){
     return '<tr style="'+(r.triggered?"background:var(--rbg)":"")+'">'+
       '<td style="font-weight:600;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.asset)+'\','+(r.cur||0)+')">'+esc(r.asset)+' <span style="font-size:11px">↗</span></td>'+
-      '<td style="color:'+(r.type==="Max"?"var(--pos)":"var(--neg)")+'">'+(r.type==="Max"?"⬆ Máx":"⬇ Mín")+'</td>'+
+      '<td style="color:'+(r.type==="Max"?"var(--pos)":"var(--neg)")+'">'+(r.type==="Max"?"Sube a":"Baja a")+'</td>'+
       '<td class="col-sec" style="font-weight:600">$'+fmtD(r.trigger)+'</td>'+
       '<td style="font-weight:600;color:var(--bright)">'+(r.tieneprecio?'$'+fmtD(r.cur):'<span style="color:var(--text3)">sin precio</span>')+'</td>'+
       '<td class="col-sec" style="color:'+(r.triggered?"var(--red)":(r.dist!==null&&r.dist<.03)?"var(--amber)":"var(--text3)")+'">'+(r.dist!==null?(r.dist*100).toFixed(1)+'%':'—')+'</td>'+
@@ -7010,7 +7018,7 @@ function renderAlert(){
       var base='Las alertas se evalúan cada 5 min mientras la app esté abierta (en cualquier sección). No funcionan con la app completamente cerrada.';
       if(perm==='granted'){
         return '<div style="background:var(--grn-bg);border:1px solid var(--grn-lt);border-radius:var(--r-md);padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start">'+
-          statusDot('🟢',12)+'<div style="font-size:11px;color:var(--text2);line-height:1.6"><b style="color:var(--grn)">Notificaciones activadas.</b> Recibirás un aviso del navegador al cruzar un nivel. '+base+'</div></div>';
+          statusDot('pos',12)+'<div style="font-size:11px;color:var(--text2);line-height:1.6"><b style="color:var(--grn)">Notificaciones activadas.</b> Recibirás un aviso del navegador al cruzar un nivel. '+base+'</div></div>';
       }
       if(perm==='default'){
         return '<div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,.25);border-radius:var(--r-md);padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">'+
@@ -7143,7 +7151,7 @@ function mAlert(mr){
 
       '<label class="lb" for="al-pr" style="margin-top:14px">Precio objetivo (USD)</label>'+
       '<input id="al-pr" class="inp" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" enterkeyhint="done" onkeydown="if(event.key===\'Enter\')alSave()"/>'+
-      '<div id="al-hint" style="font-size:11px;color:var(--text3);margin-top:7px;font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Escribe un activo para ver su precio actual.</div>'+
+      '<div id="al-hint" style="font-size:12px;color:var(--text3);margin-top:7px;line-height:1.5">Escribe un activo para ver su precio actual.</div>'+
       '<div id="al-sug" style="margin-top:9px"></div>'+
       '<div id="al-err" class="wv3-err" role="alert" aria-live="polite" style="margin-top:8px"></div>'+
       '<div class="local-note" style="margin:12px 0 0">Se guarda solo en este navegador.</div>'+
@@ -7317,7 +7325,7 @@ function mPos(mr){
     // value explicito: .value ya devolvia el textContent, asi que el valor que se
     // persiste es identico. Se hace explicito para que renombrar la etiqueta
     // visible no altere en silencio lo que se guarda.
-    '<select id="pty" class="inp ifu" style="cursor:pointer" onchange="posAutofillPrice()"><option value="Stock" '+(pos.type==="Stock"?"selected":"")+'>Stock</option><option value="ETF" '+(pos.type==="ETF"?"selected":"")+'>ETF</option><option value="Crypto" '+(pos.type==="Crypto"?"selected":"")+'>Crypto</option></select>'+
+    '<select id="pty" class="inp ifu" style="cursor:pointer" onchange="posAutofillPrice()"><option value="Stock" '+(pos.type==="Stock"?"selected":"")+'>Acción</option><option value="ETF" '+(pos.type==="ETF"?"selected":"")+'>ETF</option><option value="Crypto" '+(pos.type==="Crypto"?"selected":"")+'>Cripto</option></select>'+
     '<label class="fl" for="ps">Unidades</label>'+
     '<input id="ps" class="inp ifu" type="number" placeholder="10" value="'+(pos.sh||"")+'" min="0.001" step="0.001"/>'+
     '<label class="fl" for="pc">Precio de entrada</label>'+
@@ -7327,8 +7335,8 @@ function mPos(mr){
        '<input id="pstop" class="inp ifu" type="number" inputmode="decimal" placeholder="Precio donde saldrías" value="'+(pos.stop||"")+'" min="0.01" step="0.01"/>'+
        '<div class="calc-hint" style="margin:-4px 0 10px">Si lo dejas vacío, la posición queda “sin stop” en Riesgo. Como referencia, −8 % bajo la entrada.</div>'
       :'')+
-    '<label class="fl" for="pcur">Precio actual</label>'+
-    '<input id="pcur" class="inp ifu" type="number" placeholder="196.50" value="'+(pos.cur||"")+'" min="0.01" step="0.01"/>'+
+    // I10: el precio actual lo trae la app (posAutofillPrice); no se pide a mano.
+    '<input id="pcur" type="hidden" value="'+(pos.cur||"")+'"/>'+
     '<button class="btn-big" style="width:100%;margin-top:12px" onclick="savePos('+(ed&&S.editPos?S.editPos.id:-1)+')">'+(ed?"Guardar cambios":"Agregar")+'</button>'+
     '</div></div>';
   if(!ed)setTimeout(function(){var el=document.getElementById("pt");if(el)el.focus();},100);
@@ -7344,9 +7352,9 @@ async function savePos(id){
   stop=stop>0?stop:null;
   var err=document.getElementById("perr");
   if(!t){err.style.display="block";err.textContent="Ticker requerido";return;}
-  if(!sh||sh<=0){err.style.display="block";err.textContent="Shares inválido";return;}
+  if(!sh||sh<=0){err.style.display="block";err.textContent="Unidades no válidas";return;}
   if(!cost||cost<=0){err.style.display="block";err.textContent="Precio de entrada inválido";return;}
-  if(!cur||cur<=0){err.style.display="block";err.textContent="Precio actual inválido";return;}
+  if(!cur||cur<=0) cur=(LIVE[t]&&LIVE[t].price)||cost; // sin cotización aún: se usa la entrada hasta que llegue
   if(id===-1){
     var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur,stop:stop};
     S.portfolio.push(h);
@@ -7412,11 +7420,11 @@ function mTrade(mr){
 
     '<label class="fl" for="tr_type">Tipo de operación</label>'+
     '<select id="tr_type" class="inp ifu" onchange="mTradeTypeChange()" style="cursor:pointer">'+
-    '<option value="buy">🟢 Compra</option>'+
-    '<option value="sell">🔴 Venta</option>'+
-    '<option value="dividend">💰 Dividendo recibido</option>'+
-    '<option value="deposit">💵 Depósito de capital</option>'+
-    '<option value="withdrawal">💸 Retiro de capital</option>'+
+    '<option value="buy">Compra</option>'+
+    '<option value="sell">Venta</option>'+
+    '<option value="dividend">Dividendo recibido</option>'+
+    '<option value="deposit">Depósito de capital</option>'+
+    '<option value="withdrawal">Retiro de capital</option>'+
     '</select>'+
 
     '<div id="tr_ticker_row">'+
@@ -7449,7 +7457,7 @@ function mTrade(mr){
     '<label class="fl" for="tr_note">Nota <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
     '<input id="tr_note" class="inp ifu" placeholder="Ej: Entrada en soporte SMA50"/>'+
 
-    '<button class="btn-big" style="width:100%;margin-top:14px" onclick="saveTrade()">✅ Registrar operación</button>'+
+    '<button class="btn-big" style="width:100%;margin-top:14px" onclick="saveTrade()">Registrar operación</button>'+
     '</div></div>';
   setTimeout(function(){var el=document.getElementById("tr_ticker");if(el)el.focus();},100);
 }
@@ -7474,7 +7482,7 @@ function mComoCalcula(mr){
         '</div>';
     }).join('')+
     '</div>'+
-    '<div style="padding:10px 14px;background:var(--card2);border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.6">'+cfg.nota+'</div>'+
+    '<div style="padding:10px 14px;background:var(--card2);border-radius:var(--r-sm);font-size:12px;color:var(--text3);line-height:1.6">'+cfg.nota+'</div>'+
     '</div></div>';
 }
 var COMO_CALCULA={
@@ -7727,7 +7735,7 @@ function renderCorrelationMatrix(port){
 
   return '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Correlación de portafolio <span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">(Pearson · 2 meses)</span></div>'+
-    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin:0 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+statusDot('🔴',10)+' Alta correlación (>0.7) · '+statusDot('🟡',10)+' Media (0.4–0.7) · '+statusDot('🟢',10)+' Baja/negativa (diversificación)</p>'+
+    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin:0 0 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+statusDot('neg',10)+' Alta correlación (>0.7) · '+statusDot('warn',10)+' Media (0.4–0.7) · '+statusDot('pos',10)+' Baja/negativa (diversificación)</p>'+
     '<div style="overflow-x:auto"><table style="border-collapse:collapse">'+header+bodyRows+'</table></div>'+
     '</div>';
 }
@@ -7736,7 +7744,7 @@ async function loadCorrData(){
   var port=S.portfolio.slice(0,planOf().maxT);
   var tickers=port.map(function(h){return h.t;}).slice(0,8);
   var btn=event&&event.target;
-  if(btn){btn.textContent='⏳ Cargando...';btn.disabled=true;}
+  if(btn){btn.textContent='Cargando…';btn.disabled=true;}
   await Promise.all(tickers.map(async function(t){
     var k=t+'_60';
     if(!dHistCache[k]){
@@ -7846,8 +7854,8 @@ function renderDrawerHead(ticker,price){
     marketStatusBadge()+
     '</div>'+
     '<div style="display:flex;align-items:baseline;gap:8px;margin-top:5px;flex-wrap:wrap">'+
-    '<div style="font-size:21px;font-weight:700;font-family:\'IBM Plex Mono\';color:var(--bright)">$'+dp.toFixed(2)+'</div>'+
-    (dc!==null?'<span style="font-size:13px;font-weight:600;font-family:\'IBM Plex Mono\';color:'+(cp?"var(--pos)":"var(--neg)")+'">'+(cp?"+":"")+da.toFixed(2)+' ('+(cp?"+":"")+((dc||0)*100).toFixed(2)+'%)</span>':'<span style="font-size:11px;color:var(--text3)">cargando...</span>')+
+    '<div style="font-size:21px;font-weight:700;font-family:\'IBM Plex Mono\';color:var(--bright)">$'+fmtD(dp)+'</div>'+
+    (dc!==null?'<span style="font-size:13px;font-weight:600;font-family:\'IBM Plex Mono\';color:'+(cp?"var(--pos)":"var(--neg)")+'">'+(cp?"+":"\u2212")+fmtD(Math.abs(da))+' ('+(cp?"+":"\u2212")+fmtD(Math.abs((dc||0)*100))+'\u00a0%)</span>':'<span style="font-size:11px;color:var(--text3)">cargando...</span>')+
     '</div>'+
     (function(){
       var parts=[];
@@ -7955,7 +7963,7 @@ function renderDrawerBody(){
 
 
   var tabBtns=["chart","rsi","macd","fundamentals"].map(function(t){
-    var labels={chart:icon('capital','ico-inline')+" Precio",rsi:"RSI",macd:"MACD",fundamentals:icon('clipboard','ico-inline')+" Fundamentals"};
+    var labels={chart:icon('capital','ico-inline')+" Precio",rsi:"RSI",macd:"MACD",fundamentals:icon('clipboard','ico-inline')+" Fundamentales"};
     return '<button class="dtab'+(dTab===t?" on":"")+'" onclick="setDTab(\''+t+'\')">'+labels[t]+'</button>';
   }).join("");
 
@@ -8031,7 +8039,7 @@ function renderDrawerBody(){
       ["Beta",            f&&f.beta!=null           ? f.beta.toFixed(2)         : "—"],
       ["Deuda/Capital",   f&&f.debtToEquity!=null   ? f.debtToEquity.toFixed(1)+"x":"—"],
       ["Div. Yield",      f&&f.dividendYield!=null&&f.dividendYield>0 ? pct(f.dividendYield) : "N/A"],
-      ["Mkt Cap",         mktCap                    ? fmtM(mktCap)              : "—"]
+      ["Cap. bursátil",         mktCap                    ? fmtM(mktCap)              : "—"]
     ];
     var fundCards=fi.map(function(item){
       var noData=item[1]==="—"||item[1]==="N/A";
@@ -8048,7 +8056,7 @@ function renderDrawerBody(){
         (f.country?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+icon('globe')+' '+esc(f.country)+'</span>':'')+
         (f.employees?'<span style="font-size:11px;padding:3px 8px;border-radius:var(--r-lg);background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+icon('users')+' '+fmt(f.employees)+'</span>':'')+
         '</div>'+
-        (f.description?'<p style="font-size:11px;color:var(--text3);line-height:1.6;font-family:\'IBM Plex Mono\',monospace;margin:0 0 12px">'+esc(f.description)+'</p>':'');
+        (f.description?'<p style="font-size:12px;color:var(--text3);line-height:1.6;margin:0 0 12px">'+esc(f.description)+'</p>':'');
     }
 
     var pct52=lq&&lq.high52&&lq.low52?((cur-lq.low52)/(lq.high52-lq.low52)*100).toFixed(0):50;
@@ -8094,7 +8102,7 @@ function renderDrawerBody(){
             '<td style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+(q.date||'—')+'</td>'+
             '<td style="font-weight:600;color:var(--bright)">'+(q.eps!=null?'$'+fmtD(q.eps):'—')+'</td>'+
             '<td style="color:var(--text3)">'+(q.epsEst!=null?'$'+fmtD(q.epsEst):'—')+'</td>'+
-            '<td style="font-weight:700;color:'+(beat===true?'var(--grn)':beat===false?'var(--red)':'var(--text3)')+'">'+(beat===true?'✓ Beat':beat===false?'✗ Miss':'—')+'</td>'+
+            '<td style="font-weight:700;color:'+'var(--text)'+'">'+(beat===true?'Superó':beat===false?'No alcanzó':'—')+'</td>'+
             '<td style="color:'+(surprise!=null&&surprise>=0?'var(--pos)':'var(--neg)')+';font-size:11px">'+(surprise!=null?(surprise>=0?'+':'')+surprise.toFixed(1)+'%':'—')+'</td>'+
             '</tr>';
         }).join('');
@@ -8122,7 +8130,7 @@ function renderDrawerBody(){
         return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px;font-family:\'IBM Plex Mono\'"><span style="color:var(--text3)">'+r[0]+'</span><span style="color:'+r[2]+';font-weight:500">'+r[1]+'</span></div>';
       }).join("")+
       '</div>'+
-      '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
+      '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);line-height:1.6">'+
       icon('volume')+' Datos del último trimestre reportado · Fuente: Finnhub / FMP'+
       (f&&f.fetchedAt?' · Actualizado: '+timeAgo(f.fetchedAt):'')+
       '<br>Pueden diferir del dato oficial. No constituyen asesoría financiera ni recomendación de inversión.'+
@@ -8142,13 +8150,13 @@ function renderDrawerBody(){
     })()+
     '<div>'+tabBtns+'</div>'+
     '<div style="margin-bottom:10px">'+rangeBtns+'</div>'+
-    (isSynthetic?'<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--r-md);padding:8px 12px;margin-bottom:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--amber);display:flex;gap:8px;align-items:center"><span>⚠️</span><span>Histórico no disponible para este activo — gráfico ilustrativo referencial, no son precios reales.</span></div>':'')+
+    (isSynthetic?'<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--r-md);padding:8px 12px;margin-bottom:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--amber);display:flex;gap:8px;align-items:center"><span>Histórico no disponible para este activo — gráfico ilustrativo referencial, no son precios reales.</span></div>':'')+
     content+
     // El drawer es el hub de decision: ademas de encolar (Watchlist/Portfolio),
     // enlaza a los siguientes pasos llevando el ticker actual, para no cerrar y
     // re-tipearlo en Riesgo / Comparador / Bitacora / Alertas.
     '<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+
-    '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">+ Watchlist</button>'+
+    '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">+ Seguir</button>'+
     '<button class="btn" onclick="openModal(\'addpos\');closeDrawer()">+ Portfolio</button>'+
     '<button class="btn" onclick="openCalculator(\''+esc(ticker)+'\','+(lq&&lq.price?+lq.price:0)+')">Calcular posición</button>'+
     '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
@@ -8217,10 +8225,10 @@ async function sendAIMessage(userMsg){
 
   try{
     await new Promise(function(r){setTimeout(r,600);});
-    var reply="🔧 El Análisis IA está en mantenimiento mientras migramos a un servidor seguro. Estará disponible muy pronto con mejoras importantes. Mientras tanto usa el Radar Financiero (📡) para análisis de tu portfolio.";
+    var reply="El Análisis IA está en mantenimiento mientras migramos a un servidor seguro. Estará disponible muy pronto con mejoras importantes. Mientras tanto usa el Radar Financiero para análisis de tu portfolio.";
     AI.messages.push({role:"assistant",content:reply});
   }catch(e){
-    AI.messages.push({role:"assistant",content:"❌ Error de conexión. Verifica tu acceso a la API de Claude."});
+    AI.messages.push({role:"assistant",content:"Error de conexión. Verifica tu acceso a la API de Claude."});
   }
   AI.loading=false;
   renderAIMessages();
@@ -8714,7 +8722,7 @@ function renderSentimentWidget(){
     buildDial(d.score,d.color,210)+
     '<div style="display:flex;justify-content:center;margin-top:6px;color:'+d.color+'">'+icon(d.emoji,'ico-lg')+'</div>'+
     '<div style="font-size:18px;font-weight:700;color:'+d.color+';margin-top:4px">'+d.label+'</div>'+
-    '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-top:8px;font-family:\'IBM Plex Mono\',monospace">'+d.desc+'</div>'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:8px;">'+d.desc+'</div>'+
     '</div>'+
     '<div class="cb"><h3 class="st"><div class="stbar"></div>Últimos 14 días</h3>'+
     '<div style="display:flex;align-items:flex-end;height:60px;gap:2px">'+hBars+'</div></div>'+
@@ -8993,7 +9001,7 @@ function showRiskProfile(onDone){
       (step>0?'<button class="btn" onclick="profilePrev()">← Anterior</button>':'')+
       '<button class="btn-big" onclick="profileNext()" '+(profile[qd.key]?'':'disabled')+'>'+(step===q.length-1?'Guardar perfil →':'Siguiente →')+'</button>'+
       '</div>'+
-      (step===q.length-1?'<div style="margin-top:14px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6;border-top:1px solid var(--border);padding-top:10px">Este perfil es orientativo y sirve para ajustar los cálculos de la herramienta. No constituye asesoramiento financiero ni una evaluación de idoneidad.</div>':'')+
+      (step===q.length-1?'<div style="margin-top:14px;font-size:12px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border);padding-top:10px">Este perfil es orientativo y sirve para ajustar los cálculos de la herramienta. No constituye asesoramiento financiero ni una evaluación de idoneidad.</div>':'')+
       '</div></div>';
   }
 
@@ -9461,14 +9469,14 @@ function renderRadar(){
     (RADAR.profile?
       '<div class="cb">'+
       '<div class="st"><div class="stbar"></div>Tu perfil</div>'+
-      '<div style="font-size:11px;color:var(--text2);line-height:1.8;font-family:\'IBM Plex Mono\',monospace">'+
+      '<div style="font-size:12px;color:var(--text2);line-height:1.8;">'+
       '<div>Riesgo: '+(['','Muy conservador','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'')+'</div>'+
       '<div>Horizonte: '+({short:'Corto plazo',mid:'Mediano plazo',long:'Largo plazo'}[RADAR.profile.horizon]||'')+'</div>'+
       '<div>Objetivo: '+({growth:'Crecimiento',income:'Ingresos',preservation:'Preservación'}[RADAR.profile.goal]||'')+'</div>'+
       '</div>'+
       '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;margin-top:10px;font-size:11px">'+icon('edit')+' Cambiar perfil</button>'+
       '</div>':'<div class="cb"><div class="st"><div class="stbar"></div>Perfil pendiente</div>'+
-      '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6;margin-bottom:10px">El Radar se personaliza según tu perfil de riesgo, horizonte y objetivo.</div>'+
+      '<div style="font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:10px">El Radar se personaliza según tu perfil de riesgo, horizonte y objetivo.</div>'+
       '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;font-size:11px">Crear perfil →</button>'+
       '</div>')+
     '</div>'+
@@ -9519,7 +9527,7 @@ function trialBanner(){
           days===1?'Último día de trial — Upgrade antes de que expire':
           'Te quedan '+days+' días de trial Pro gratuito';
   return '<div style="background:'+urgency+';padding:8px 16px;display:flex;align-items:center;gap:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:#fff">'+
-    '<span>⏰ '+msg+'</span>'+
+    '<span>'+msg+'</span>'+
     '<button onclick="openModal(\'upgrade\')" style="margin-left:auto;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:var(--r-sm);padding:3px 10px;color:#fff;font-size:11px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace;font-weight:700">Activar Pro →</button>'+
     '</div>';
 }
@@ -9626,8 +9634,8 @@ document.addEventListener('keydown',function(e){
 
 function showShortcuts(){
   var rows=[
-    ['Alt+N','Noticias'],['Alt+D','Dashboard'],['Alt+P','Portfolio'],
-    ['Alt+W','Watchlist'],['Alt+S','Signals'],['Alt+B','Calculadora'],
+    ['Alt+N','Noticias'],['Alt+D','Panorama'],['Alt+P','Portafolio'],
+    ['Alt+W','Lista de seguimiento'],['Alt+S','Tendencia'],['Alt+B','Calculadora'],
     ['Alt+C','Comparador'],['Alt+M','Sentiment'],['Alt+A','AI Coach'],
     ['Alt+L','Chile/LATAM'],['Alt+I','Indicadores'],['Alt+R','Risk'],
     ['Ctrl+R','Refresh precios'],['?','Ver atajos'],['Esc','Cerrar paneles'],
@@ -9679,7 +9687,7 @@ function renderHelp(){
         '<span style="width:20px;height:20px;flex-shrink:0;color:var(--amber)">'+icon(t.icon,'ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</span>'+
         '<div style="font-size:13px;font-weight:600;color:var(--bright);line-height:1.3">'+t.q+'</div>'+
         '</div>'+
-        '<div style="font-size:11px;color:var(--text2);line-height:1.65;font-family:\'IBM Plex Mono\',monospace">'+t.a+'</div>'+
+        '<div style="font-size:12px;color:var(--text2);line-height:1.65;">'+t.a+'</div>'+
         '</div>';
     }).join('')+
     '</div>'+
@@ -9720,11 +9728,11 @@ function mUpgradeLegacy(mr){
     ['decision','Motor de Análisis','Régimen SPY + scoring técnico por activo'],
     ['ind','Indicadores Pro','RSI, MACD y Bandas Bollinger sobre datos reales'],
     ['back','Simulación Histórica','Prueba estrategias sobre datos históricos'],
-    ['screener','Screener sin límite','Filtra 50+ activos por criterio técnico'],
+    ['screener','Buscador sin límite','Filtra 50+ activos por criterio técnico'],
     ['bank','Plan de Capital','Proyección de aportes y objetivos'],
     ['port','Activos ilimitados','En Free el portfolio admite 5 posiciones'],
     ['sig','Indicadores ilimitados','En Free se muestran 5 de 20'],
-    ['download','Export CSV','Datos para tu contador'],
+    ['download','Exportar CSV','Datos para tu contador'],
   ];
 
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:560px;padding:0;overflow:hidden" onclick="event.stopPropagation()">'+
@@ -9755,10 +9763,10 @@ function mUpgradeLegacy(mr){
     '<div style="font-size:24px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">$0</div>'+
     '<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Para siempre</div>'+
     ['5 posiciones en portfolio','3 alertas de precio','5 señales activas','Dashboard básico','Noticias del mercado'].map(function(f){
-      return '<div style="font-size:11px;color:var(--text2);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">✓</span>'+f+'</div>';
+      return '<div style="font-size:11px;color:var(--text2);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center"><span style="color:var(--grn)">'+icon('check')+'</span>'+f+'</div>';
     }).join('')+
     ['Indicadores Pro','Gestión de Riesgo','Simulación Histórica','Análisis IA','Comparador','Chile/LATAM'].map(function(f){
-      return '<div style="font-size:11px;color:var(--text3);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center;text-decoration:line-through"><span>✗</span>'+f+'</div>';
+      return '<div style="font-size:11px;color:var(--text3);padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center;text-decoration:line-through"><span>'+icon('close')+'</span>'+f+'</div>';
     }).join('')+
     '</div>'+
 
@@ -9779,7 +9787,7 @@ function mUpgradeLegacy(mr){
     '<button onclick="doUpgrade()" class="btn-big" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px">'+icon('bolt')+'Activar Pro ahora — $99.99/año</button>'+
     '<button onclick="startTrial()" class="btn" style="width:100%;padding:11px;font-size:13px;margin-bottom:10px;border:1px solid var(--border);background:transparent;color:var(--text2)">Iniciar prueba gratuita — 14 días sin tarjeta</button>'+
     '<p id="pro-cta-sub" style="font-size:11px;color:var(--text3);text-align:center;font-family:\'IBM Plex Mono\',monospace">Cancela en 1 click · Sin compromisos</p>'+
-    '<div style="margin-top:14px;padding:10px 14px;background:var(--card2);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);text-align:center;line-height:1.6">'+
+    '<div style="margin-top:14px;padding:10px 14px;background:var(--card2);border-radius:var(--r-md);font-size:12px;color:var(--text3);text-align:center;line-height:1.6">'+
     '¿Preguntas? <a href="mailto:invest@moyiq.app" style="color:var(--blue);text-decoration:none">invest@moyiq.app</a>'+
     '</div>'+
     '</div>'+
@@ -10060,7 +10068,7 @@ function renderCompSection(){
         var corrInsight=tickerStats.slice(1).map(function(s){
           if(s.corr===null||s.corr===undefined) return '';
           var c=s.corr;
-          var advice=c>0.8?'⚠️ Poca diversificación':c<0.2?'✅ Excelente par para diversificar':icon('volume')+' Correlación '+(c>0.5?'moderada':'baja');
+          var advice=c>0.8?'Poca diversificación':c<0.2?'Par con baja correlación':icon('volume')+' Correlación '+(c>0.5?'moderada':'baja');
           return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">'+
             '<span style="font-size:11px;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(tickerStats[0].t)+' vs '+esc(s.t)+'</span>'+
             '<span style="font-size:11px;color:var(--text2)">'+advice+'</span>'+
@@ -10105,7 +10113,7 @@ function renderCompSection(){
     statsContent+
     (COMP.synthetic&&COMP.synthetic.length?
       '<div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.3);border-radius:var(--r-md);padding:9px 14px;margin-top:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--amber)">'+
-      '⚠️ Datos simulados para: '+COMP.synthetic.join(', ')+' — Histórico real no disponible. Las líneas de estos tickers son referenciales, no reflejan precio real.'+
+      'Datos simulados para: '+COMP.synthetic.join(', ')+' — Histórico real no disponible. Las líneas de estos tickers son referenciales, no reflejan precio real.'+
       '</div>':'')+'</div></div>';
 }
 
@@ -10411,7 +10419,7 @@ function renderCapital(){
     '</div>';
 
   var pctWarning=tickers.length&&!pctOk?
-    '<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;margin-left:8px">⚠ suma '+totalPct.toFixed(1)+'% (debe ser 100%)</span>':'';
+    '<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;margin-left:8px">La suma es '+totalPct.toFixed(1)+'% (debe ser 100%)</span>':'';
 
   var importBtn=(S.portfolio&&S.portfolio.length)?
     '<button onclick="capImportFromPortfolio(false)" title="Reparte el aporte hacia lo que está por debajo de su objetivo de Rebalanceo" style="background:none;border:1px solid var(--border);border-radius:var(--r-md);color:var(--text3);font-size:11px;padding:4px 10px;cursor:pointer;margin-left:8px">↩ Repartir según mi asignación objetivo</button>':'';
@@ -10514,7 +10522,7 @@ function renderCapital(){
       '<div style="font-size:12px">Presiona <b>Calcular distribución</b> para analizar los tickers.</div>'+
       '</div>'))+
 
-    '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
+    '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:12px;color:var(--text3);line-height:1.8">'+
     '<b style="color:var(--text2)">Herramienta educativa de cálculo.</b> '+
     'Los tickers, los porcentajes y el reparto de los tramos los defines tú. Los tramos por media móvil y el RSI se muestran como datos, no como instrucciones de compra ni recomendación de inversión. Datos con posible retraso.'+
     '</div>';
@@ -10640,7 +10648,7 @@ function renderRebal(){
     '<span style="font-size:12px;color:var(--text2)">Suma total:</span>'+
     '<span id="rebal-sum" style="font-size:15px;font-weight:700;color:'+(balanced?'var(--pos)':'var(--neg)')+';font-family:\'IBM Plex Mono\',monospace">'+sumTargets+'%</span>'+
     '</div>'+
-    (!balanced?'<div style="font-size:11px;color:var(--red);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">⚠ Los pesos deben sumar 100%</div>':'<div style="font-size:11px;color:var(--pos);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">✓ Balanceado</div>')+
+    (!balanced?'<div style="font-size:11px;color:var(--red);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">Los pesos deben sumar 100 %</div>':'<div style="font-size:11px;color:var(--pos);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">Pesos balanceados</div>')+
     '<button onclick="rebalReset()" class="btn" style="margin-top:10px;width:100%">↺ Restaurar pesos actuales</button>'+
     '</div>'+
     '<div>'+
@@ -10655,12 +10663,12 @@ function renderRebal(){
       '<th title="Acciones a comprar o vender = monto ÷ precio actual">Cantidad</th>'+
       '<th title="Diferencia entre el valor objetivo y el valor actual de la posición">Monto USD</th>'+
       '</tr></thead><tbody>'+tradeRows+'</tbody></table></div>'+
-      '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:8px;line-height:1.6">'+
+      '<div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.6">'+
       'Cantidad = monto ÷ precio actual. El monto es lo que falta o sobra para alcanzar tu peso objetivo. '+
       'Los precios pueden venir con retraso: la cantidad final variará al ejecutar en tu bróker.</div>'+
-      '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:8px;line-height:1.5">Ajustes referenciales para alinear pesos con tu objetivo. Análisis educativo — no constituye recomendación ni instrucción de inversión.</div></div>'
+      '<div style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.5">Ajustes referenciales para alinear pesos con tu objetivo. Análisis educativo — no constituye recomendación ni instrucción de inversión.</div></div>'
     :'<div class="cb"><div style="text-align:center;padding:24px;color:var(--text3)">'+
-      '<div style="font-size:32px;margin-bottom:8px">✅</div>'+
+      
       '<div style="font-size:12px;font-weight:600;color:var(--bright)">Portfolio balanceado</div>'+
       '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;margin-top:4px">Ajusta los sliders para ver los cambios de peso</div></div></div>'
     )+
@@ -10782,7 +10790,7 @@ window.addEventListener('beforeinstallprompt',function(e){
 window.addEventListener('appinstalled',function(){
   _deferredPrompt=null;
   document.querySelectorAll('[data-pwa-install]').forEach(function(el){el.style.display='none';});
-  if(typeof showToast==='function') showToast('App instalada ✓');
+  if(typeof showToast==='function') showToast('App instalada');
 });
 
 
@@ -10816,7 +10824,7 @@ function renderDisclaimer(){
   // pantallas estrechas envolvia a 3-4 lineas y tapaba el contenido. Ahora es
   // una sola linea truncada con 'Ver aviso', y el texto integro se muestra al
   // hacer clic. Asi la altura es predecible y .main puede reservar el hueco.
-  d.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">⚠ <strong>No es un bróker</strong> · análisis educativo, no asesoría financiera · cada precio muestra su hora y su retraso</span>'+
+  d.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>No es un bróker</strong> · análisis educativo, no asesoría financiera · cada precio muestra su hora y su retraso</span>'+
     '<button onclick="toggleDisclaimer()" style="flex-shrink:0;background:none;border:1px solid rgba(180,83,9,.3);border-radius:4px;color:inherit;font:inherit;font-size:11px;padding:2px 8px;cursor:pointer;margin-left:8px">Ver aviso</button>';
   document.body.appendChild(d);
 }
@@ -10831,7 +10839,7 @@ function toggleDisclaimer(){
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
-    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance y CoinGecko (con retraso variable; cada precio muestra su hora) \u00b7 Fundamentos: Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
+    '<p style="font-size:12px;color:var(--text3);line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance y CoinGecko (con retraso variable; cada precio muestra su hora) \u00b7 Fundamentos: Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
     '<div style="display:flex;gap:14px"><a href="/terms.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">T\u00e9rminos \u2192</a><a href="/privacy.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Privacidad \u2192</a></div>'+
     '</div></div>';
 }

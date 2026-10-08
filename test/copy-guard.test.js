@@ -39,3 +39,22 @@ describe("I12 · sin capital ficticio por defecto", () => {
     expect(html).not.toMatch(/'Position Builder'/);
   });
 });
+
+describe("I10 · idioma, marca y cifras", () => {
+  it("sin emoji en la interfaz", () => {
+    expect(html).not.toMatch(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B06}\u{2B07}]/u);
+  });
+  it("fuentes self-hosted, nunca Google Fonts", () => {
+    expect(html).not.toMatch(/fonts\.googleapis\.com|fonts\.gstatic\.com/);
+    expect(html).toMatch(/href="\/fonts\.css"/);
+  });
+  it("radios de marca de 12 px como máximo", () => {
+    expect(html).not.toMatch(/--r-(lg|xl):\s*(1[3-9]|[2-9]\d)px/);
+    expect(html).not.toMatch(/border-radius:\s*999px/);
+  });
+  it("sin rótulos en inglés retirados", () => {
+    for (const w of ["Portfolio Manager", "Market Movers", "Mkt Cap", "Export CSV", "Shares inválido", "'Screener'", "label:\"Watchlist\"", "label:\"Dashboard\"", "✓ Beat", "✗ Miss"]) {
+      expect(html).not.toContain(w);
+    }
+  });
+});
