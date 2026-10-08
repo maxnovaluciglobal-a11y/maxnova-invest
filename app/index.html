@@ -2008,6 +2008,8 @@ div:has(>.dtab), div:has(>.rtab) {
 .cap-ask-f .btn-big { min-height:44px; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .risk-stop .inp { width:110px; min-height:44px; padding:6px 8px; }
+.local-note { font-size:13px; color:var(--text2); line-height:1.55; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
+.local-note b { color:var(--bright); font-weight:600; }
 </style>
 </head>
 <body>
@@ -7001,7 +7003,8 @@ function renderAlert(){
     '</div>';
 
   document.getElementById("main").innerHTML=
-    _ph('Seguir · Alertas','Alertas de Precio','// Vigila cuándo un activo cruza el nivel que definas')+
+    _ph('Seguir · Alertas','Alertas de precio','Vigila cuándo un activo cruza el nivel que definas')+
+    '<div class="local-note" role="note"><b>Se guardan solo en este navegador.</b> No se sincronizan con tu cuenta ni con otros dispositivos, y se pierden si borras los datos del navegador.</div>'+
     (function(){
       var perm=('Notification' in window)?Notification.permission:'unsupported';
       var base='Las alertas se evalúan cada 5 min mientras la app esté abierta (en cualquier sección). No funcionan con la app completamente cerrada.';
@@ -7143,11 +7146,20 @@ function mAlert(mr){
       '<div id="al-hint" style="font-size:11px;color:var(--text3);margin-top:7px;font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Escribe un activo para ver su precio actual.</div>'+
       '<div id="al-sug" style="margin-top:9px"></div>'+
       '<div id="al-err" class="wv3-err" role="alert" aria-live="polite" style="margin-top:8px"></div>'+
+      '<div class="local-note" style="margin:12px 0 0">Se guarda solo en este navegador.</div>'+
     '</div>'+
     '<div class="mf"><button class="btn" onclick="closeModal()">Cancelar</button>'+
     '<button class="btn-big" onclick="alSave()">Crear alerta</button></div>'+
     '</div></div>';
-  setTimeout(function(){var i=document.getElementById('al-tk'); if(i) i.focus();},40);
+  setTimeout(function(){
+    var i=document.getElementById('al-tk');
+    // I13: desde la ficha llega el ticker; se precarga su precio actual.
+    var t0=S.editPos&&S.editPos.t?String(S.editPos.t).toUpperCase():'';
+    var p0=t0?getLivePrice(t0):null;
+    var pr=document.getElementById('al-pr');
+    if(t0&&pr&&isFinite(p0)&&p0>0){ pr.value=(+p0).toFixed(2); alSync(); pr.focus(); pr.select(); }
+    else if(i) i.focus();
+  },40);
 }
 // Muestra el precio actual del activo escrito para que el objetivo no se fije a ciegas
 function alSync(){
@@ -8141,7 +8153,7 @@ function renderDrawerBody(){
     '<button class="btn" onclick="openCalculator(\''+esc(ticker)+'\','+(lq&&lq.price?+lq.price:0)+')">Calcular posición</button>'+
     '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
     '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+esc(ticker)+'\'})">Registrar</button>'+
-    '<button class="btn" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Alerta</button>'+
+    '<button class="btn" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Crear alerta</button>'+
     '<button class="btn" style="border-color:var(--border);color:var(--text3)" onclick="closeDrawer()">Cerrar</button>'+
     '</div>';
 
