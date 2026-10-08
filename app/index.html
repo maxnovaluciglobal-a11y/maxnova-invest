@@ -2069,6 +2069,12 @@ div:has(>.dtab), div:has(>.rtab) {
 .drw-news a:hover { text-decoration:underline; }
 .drw-news span { font-size:12px; color:var(--text2); }
 .drw-mine { margin-top:8px; }
+.m10-aporte { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; justify-content:space-between; padding:16px 18px; margin:0 0 16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
+.m10-aporte > div:first-child { flex:1 1 320px; }
+.m10-aporte p { margin:0; font-size:13px; color:var(--text2); line-height:1.55; max-width:62ch; }
+.m10-aporte-f { display:flex; gap:8px; flex-wrap:wrap; }
+.m10-aporte-f .inp { width:150px; min-height:44px; }
+.m10-aporte-f .btn-big { min-height:44px; }
 </style>
 </head>
 <body>
@@ -3682,7 +3688,8 @@ function renderMainNav(){
   el.innerHTML='<div class="mn-row">'+
     '<div class="mn-brand"><span class="mn-brand-i"><img src="/icon-192.png" alt="" width="26" height="26" style="display:block;width:100%;height:100%;object-fit:contain"/></span><span>MOY IQ <b>Invest</b></span></div>'+
     '<div class="mn-items">'+fila1+'</div>'+
-    '<a class="mn-item mn-cfg mn-suite" href="https://moyiq.app" title="Volver a MOY IQ">←<span> MOY IQ</span></a>'+
+    // I09: puente con MOY IQ (finanzas personales, misma cuenta). Abre la app, no lee sus datos.
+    '<a class="mn-item mn-cfg mn-suite" href="https://app.moyiq.app" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">Finanzas<span> ↗</span></a>'+
     '<button class="mn-item mn-cfg" onclick="setPage(\'settings\')" aria-label="Configuración">'+icon('settings')+'<span class="mn-cfg-lbl">Configuración</span></button>'+
     '</div>'+fila2;
 }
@@ -4715,7 +4722,7 @@ function renderSettings(){
     '<div class="st"><div class="stbar"></div>Tu regla de riesgo</div>'+
     '<p class="set-p">Se usan en Riesgo y en la Calculadora. Son tus números: Invest no los propone ni se conecta a ningún bróker.</p>'+
     '<div class="set-grid">'+
-    '<div class="calc-field"><label for="set-capital">Capital de referencia (USD)</label><input id="set-capital" class="inp" type="number" inputmode="decimal" min="0" step="100" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'"/><div class="calc-hint">Se guarda en tu cuenta.</div></div>'+
+    '<div class="calc-field"><label for="set-capital">Capital de referencia (USD)</label><input id="set-capital" class="inp" type="number" inputmode="decimal" min="0" step="any" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'"/><div class="calc-hint">Se guarda en tu cuenta.</div></div>'+
     '<div class="calc-field"><label for="set-risk">Riesgo por operación (% del capital)</label><input id="set-risk" class="inp" type="number" inputmode="decimal" min="0.1" max="10" step="0.25" value="'+riskRulePct()+'"/><div class="calc-hint">Cuánto aceptas perder si una posición toca su stop.</div></div>'+
     '<div class="calc-field"><label for="set-limit">Límite de concentración (%)</label><input id="set-limit" class="inp" type="number" inputmode="decimal" min="5" max="100" step="1" value="'+Math.round(riskConcentrationLimit()*100)+'"/><div class="calc-hint">Peso máximo de una posición. Se guarda en este dispositivo.</div></div>'+
     '</div>'+
@@ -5391,6 +5398,7 @@ function renderDash(){
     seedCleanupBanner()+
     '<div class="dash-hero-row">'+kpiCards+'</div>'+
     '<div class="m10-row">'+dashRiskCard(port)+dashAllocBar(port,T)+'</div>'+
+    dashAporteCard()+
     dashFocoCard(port)+
     // Fila 1: Top Senales + Portafolio (mi cartera) junto al rail de contexto
     // de mercado (Índices/Régimen/Movers) — antes el rail vivia abajo, al lado
@@ -5512,6 +5520,47 @@ var REGIME_MEANING={
   risk_off:'Cuando el índice amplio está bajo sus medias largas, las caídas suelen ser más largas y frecuentes. Revisa cuánto perderías si se activan tus stops y si ese monto cabe en tu regla.',
   neutral:'El índice está entre sus medias: el mercado no muestra una dirección clara. Las lecturas de corto plazo cambian seguido; tu regla de riesgo y tus stops son los que no cambian.'
 };
+
+// ── PUENTE CON MOY IQ (I09) ─────────────────────────────────────
+// Invest no lee los datos de MOY IQ (viven en el dispositivo de la persona).
+// La persona escribe cuánto puede aportar y va a Plan de Capital con ese
+// monto. MOY IQ puede enlazar a invest.moyiq.app/app?aporte=410.
+function dashAporteCard(){
+  var m=S.capitalPlan&&S.capitalPlan.monthly>0?S.capitalPlan.monthly:'';
+  return '<form class="m10-aporte" onsubmit="aporteGo(event)">'+
+    '<div><div class="m10-h">¿Cuánto puedes aportar este mes?</div>'+
+    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Lo repartes en Plan de Capital entre los tickers que elijas.</p></div>'+
+    '<div class="m10-aporte-f"><label class="sr-only" for="aporte-in">Aporte del mes en USD</label>'+
+    '<input id="aporte-in" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto (USD)" value="'+m+'"/>'+
+    '<button class="btn-big" type="submit">Repartir</button></div></form>';
+}
+function setAporte(v){
+  v=parseFloat(v);
+  if(!(v>0)) return false;
+  if(!S.capitalPlan.tickers) _capLoad();
+  S.capitalPlan.monthly=Math.round(v*100)/100;
+  _capSave(); S.capitalResults=null;
+  return true;
+}
+function aporteGo(e){
+  if(e) e.preventDefault();
+  var v=(document.getElementById('aporte-in')||{}).value;
+  if(!setAporte(v)){ showToast('Escribe un monto mayor que 0','warning'); return; }
+  track('bridge_aporte',{src:'panorama'});
+  setPage('capital');
+}
+// ?aporte=410 en la URL (enlace desde MOY IQ): precarga el monto y abre Plan de Capital.
+function applyAporteParam(){
+  try{
+    var qp=new URLSearchParams(window.location.search);
+    var v=qp.get('aporte');
+    if(v==null) return;
+    qp.delete('aporte');
+    var q=qp.toString();
+    history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
+    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); setPage('capital'); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
+  }catch(e){}
+}
 
 function dashLoadContext(){
   Promise.all([deGetRegime().catch(function(){return null;}),deGetVIX().catch(function(){return null;})]).then(function(res){
@@ -5713,7 +5762,7 @@ function saveRuleSettings(btn){
 // Bloque que piden Riesgo y Portafolio cuando falta el capital.
 function capitalAsk(where){
   return '<div class="cap-ask"><div><b>Define tu capital de referencia</b><span>Sin él, '+where+' se calcula sobre el valor de tu portafolio.</span></div>'+
-    '<div class="cap-ask-f"><label class="sr-only" for="cap-ask-'+where.length+'">Capital en USD</label><input id="cap-ask-'+where.length+'" class="inp" type="number" inputmode="decimal" min="0" step="100" placeholder="Capital (USD)"/>'+
+    '<div class="cap-ask-f"><label class="sr-only" for="cap-ask-'+where.length+'">Capital en USD</label><input id="cap-ask-'+where.length+'" class="inp" type="number" inputmode="decimal" min="0" step="any" placeholder="Capital (USD)"/>'+
     '<button class="btn-big" onclick="var v=document.getElementById(\'cap-ask-'+where.length+'\').value;if(parseFloat(v)>0){updateCap(v);renderMain();}">Guardar</button></div></div>';
 }
 // ── BITÁCORA (Transaction Log) ─────────────────────────────────
@@ -8443,7 +8492,7 @@ function renderPBBody(){
     _pbField('pb-stop','Stop (USD)','type="number" inputmode="decimal" step="0.01" min="0" placeholder="'+(est?'Sin stop: se estima '+est:'Precio donde saldrías')+'" value="'+(PB.stop||'')+'" oninput="PB.stop=parseFloat(this.value)||0;pbCalc()"',
       'Si lo dejas vacío se usa −8 % bajo la entrada, como estimación.')+
     '<div class="calc-row">'+
-    _pbField('pb-capital','Capital (USD)','type="number" inputmode="decimal" step="100" min="0" placeholder="Tu capital" value="'+(PB.capital||'')+'" oninput="PB.capital=parseFloat(this.value)||0;pbCalc()"',
+    _pbField('pb-capital','Capital (USD)','type="number" inputmode="decimal" step="any" min="0" placeholder="Tu capital" value="'+(PB.capital||'')+'" oninput="PB.capital=parseFloat(this.value)||0;pbCalc()"',
       S.capital>0?'':'<a href="#" onclick="setPage(\'settings\');return false">Defínelo en Configuración</a> para no escribirlo cada vez.')+
     _pbField('pb-risk','Tu regla: % del capital','type="number" inputmode="decimal" step="0.25" min="0.1" max="10" value="'+(PB.risk||'')+'" oninput="PB.risk=parseFloat(this.value)||0;pbCalc()"')+
     '</div>'+
@@ -10490,6 +10539,7 @@ renderDisclaimer();
   }catch(e){ console.error("boot session check failed",e); }
   render();
   if(S.user) bootLiveData(); // arranca carga de precios live (portfolio/watchlist/señales)
+  if(S.user) applyAporteParam();
 
   // ── Retorno post-pago de Stripe ──
   try{
