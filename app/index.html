@@ -10546,7 +10546,7 @@ renderDisclaimer();
     var qp=new URLSearchParams(window.location.search);
     if(qp.get('upgraded')==='1'){
       track('upgrade_success');
-      if(typeof showToast==='function') showToast('¡Bienvenido a Pro! '+icon('confetti')+' Tu suscripción está activa.','success');
+      if(typeof showToast==='function') showToast('Tu suscripción Pro está activa.','success');
       // El webhook actualiza el plan en Supabase; recargar datos por si hubo demora
       try{ var s2=await sb.auth.getSession(); if(s2.data.session&&s2.data.session.user){ await sbLoadUserData(s2.data.session.user); render(); } }catch(e){}
       history.replaceState({}, '', '/app'); // limpia el query param
