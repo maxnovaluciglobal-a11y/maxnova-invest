@@ -1917,6 +1917,30 @@ div:has(>.dtab), div:has(>.rtab) {
 .cap-empty { padding:28px 20px; border:1px dashed var(--border2); border-radius:var(--r-md); text-align:center; }
 .cap-empty-t { font-size:15px; font-weight:600; color:var(--bright); margin-bottom:6px; }
 .cap-empty-d { font-size:13px; color:var(--text2); line-height:1.6; max-width:460px; margin:0 auto 14px; }
+.demo-ribbon { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--laton); border-radius:var(--r-md); box-shadow:var(--shadow-sm); }
+.demo-ribbon-tag { font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--grn); background:var(--laton); padding:3px 8px; border-radius:var(--r-sm); }
+[data-theme="dark"] .demo-ribbon-tag { color:#14213D; }
+.demo-ribbon-txt { flex:1 1 220px; font-size:13px; color:var(--text); line-height:1.5; }
+.demo-ribbon .btn, .demo-ribbon .btn-big, .seed-banner .btn, .seed-banner .btn-big { min-height:44px; }
+.seed-banner { display:flex; flex-wrap:wrap; gap:14px 20px; align-items:center; padding:16px 18px; margin:0 0 18px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
+.seed-banner-body { flex:1 1 300px; }
+.seed-banner-t { font-size:14px; font-weight:600; color:var(--bright); margin-bottom:4px; }
+.seed-banner-d { font-size:13px; color:var(--text2); line-height:1.55; max-width:68ch; }
+.seed-banner-acts { display:flex; gap:8px; flex-wrap:wrap; }
+.first-run { max-width:720px; margin:24px auto 32px; padding:0 4px; }
+.first-run-t { font-size:24px; font-weight:700; color:var(--bright); letter-spacing:-0.01em; margin:0 0 8px; text-wrap:balance; }
+.first-run-d { font-size:14px; color:var(--text2); line-height:1.6; margin:0 0 22px; max-width:60ch; }
+.first-run-paths { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.first-run-path { display:flex; flex-direction:column; align-items:flex-start; gap:4px; text-align:left; min-height:88px; padding:16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); color:var(--bright); cursor:pointer; font:inherit; transition:border-color .15s ease, background-color .15s ease; }
+.first-run-path:hover { border-color:var(--grn); }
+.first-run-path:focus-visible { outline:2px solid var(--laton); outline-offset:2px; }
+.first-run-path.primary { background:var(--laton); border-color:var(--laton); color:#14213D; }
+.first-run-path-t { font-size:15px; font-weight:600; }
+.first-run-path-d { font-size:13px; opacity:.85; line-height:1.4; }
+@media (max-width:767px){ .first-run-paths { grid-template-columns:1fr; } .first-run-path { min-height:64px; } .first-run { margin-top:8px; } }
+.csv-prev { margin-top:12px; padding:10px 12px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; color:var(--text); }
+.csv-prev-h { font-weight:600; color:var(--bright); margin-bottom:6px; }
+.csv-prev ul { margin:0; padding-left:18px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -2057,6 +2081,8 @@ div:has(>.dtab), div:has(>.rtab) {
 <script src="/app/lib/rebalance.js"></script>
 <script src="/app/lib/risk.js"></script>
 <script src="/app/lib/readings.js"></script>
+<script src="/app/lib/demo-seed.js"></script>
+<script src="/app/lib/csv-import.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -2144,19 +2170,10 @@ const PLANS={
 var INVEST_BETA=true;
 
 // ── STATIC DATA ────────────────────────────────────────────────
-const DEF_PORT=[
-  {id:1, t:"AAPL", type:"Stock",sh:50, cost:172.50,cur:195.5,  note:"Core holding"},
-  {id:2, t:"MSFT", type:"Stock",sh:30, cost:342.00,cur:415.0,  note:"AI exposure"},
-  {id:3, t:"NVDA", type:"Stock",sh:15, cost:495.00,cur:878.0,  note:"Semiconductor"},
-  {id:4, t:"SPY",  type:"ETF",  sh:25, cost:452.00,cur:548.0,  note:"US index core"},
-  {id:5, t:"QQQ",  type:"ETF",  sh:20, cost:380.00,cur:468.0,  note:"Tech ETF"},
-  {id:6, t:"GOOGL",type:"Stock",sh:12, cost:142.00,cur:191.0,  note:"Digital ads"},
-  {id:7, t:"V",    type:"Stock",sh:20, cost:235.00,cur:287.0,  note:"Fintech"},
-  {id:8, t:"VTI",  type:"ETF",  sh:35, cost:218.00,cur:269.0,  note:"Total market"},
-  {id:9, t:"AMZN", type:"Stock",sh:10, cost:168.00,cur:199.0,  note:"E-commerce+Cloud"},
-  {id:10,t:"JPM",  type:"Stock",sh:18, cost:158.00,cur:196.0,  note:"Banking value"},
-];
-const DEF_WATCH=["AAPL","MSFT","NVDA","SPY","QQQ","GOOGL","META","TSLA","VTI","JPM","MELI","NU","GGB","BSBR","PBR"];
+// Portafolio de ejemplo: solo se muestra en el modo "Ver un ejemplo" (en
+// memoria, nunca se guarda). Desde I01 ya no se siembra en cuentas nuevas.
+const DEF_PORT=window.InvestDemo.DEMO_PORTFOLIO;
+const DEF_WATCH=window.InvestDemo.DEMO_WATCH;
 // ALL_SIG: universo de referencia. Antes traia sig/sc escritos a mano
 // (BUY 89, SELL 46...) que se mostraban como "valores de referencia" mientras
 // cargaba el motor: datos inventados. Desde el relanzamiento v2 solo lleva los
@@ -2217,6 +2234,9 @@ const fmtD=n=>n!=null?(+n).toLocaleString("es-CL",{minimumFractionDigits:2,maxim
 const pct=n=>(((n||0)*100).toFixed(1))+"%";
 const D=n=>"$"+fmt(Math.round(n||0));
 const fmtM=n=>!n?"—":n>=1e12?"$"+(n/1e12).toFixed(2)+"T":n>=1e9?"$"+(n/1e9).toFixed(2)+"B":"$"+fmt(n);
+// Cifras con signo tipográfico (−$773) y unidades sin ceros sobrantes.
+function fmtUSD(n,dec){ if(n==null||!isFinite(n)) return '—'; var d=dec==null?2:dec; var v=Math.abs(+n).toLocaleString("es-CL",{minimumFractionDigits:d,maximumFractionDigits:d}); return (n<0?'\u2212':'')+'$'+v; }
+function fmtUnits(n){ if(n==null||!isFinite(n)) return '—'; return (+n).toLocaleString("es-CL",{maximumFractionDigits:Math.abs(n)<1?6:4}); }
 const fmtV=n=>!n?"—":n>=1e9?(n/1e9).toFixed(1)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(0)+"K":fmt(n);
 
 // ── STATE ───────────────────────────────────────────────────────
@@ -2224,8 +2244,12 @@ const S={
   user:null,
   page:"dash",
   capital:100000,
-  portfolio:JSON.parse(JSON.stringify(DEF_PORT)),
-  watchlist:[...DEF_WATCH],
+  portfolio:[],
+  watchlist:[],
+  // Modo ejemplo (I01): portafolio de muestra en memoria, de solo lectura.
+  demoMode:false,
+  // Filas del sembrado viejo detectadas en la cuenta (D1). Ver app/lib/demo-seed.js.
+  seededIds:[],
   sigFilter:"ALL",
   newsFilter:"Todo",
   modal:null,editPos:null,
@@ -3046,19 +3070,126 @@ function genFallback(basePrice,days){
 }
 
 // ── RENDER HELPERS ─────────────────────────────────────────────
-// El portfolio inicial son posiciones de ejemplo (DEF_PORT, ids 1..10). Mostrar
-// $870K ficticios sin avisar hace que el usuario lea datos inventados como suyos.
-function isDemoPortfolio(){
-  try{
-    return S.portfolio.length>0 && S.portfolio[0] && S.portfolio[0].id<=10
-        && !localStorage.getItem('mv_demo_dismissed');
-  }catch(e){ return false; }
+// ── EJEMPLO Y SEMBRADO VIEJO (I01 / D1) ─────────────────────────────
+// "Ver un ejemplo" carga DEF_PORT solo en memoria. Mientras S.demoMode está
+// activo, las funciones sb* no escriben en Supabase y cada pantalla lleva el
+// rótulo fijo "Ejemplo". Al salir vuelve el portafolio real.
+function isDemoPortfolio(){ return !!S.demoMode; }
+function enterDemo(){
+  if(S.demoMode) return;
+  S._realPortfolio=S.portfolio; S._realWatch=S.watchlist;
+  S.portfolio=window.InvestDemo.demoPortfolioCopy();
+  S.watchlist=DEF_WATCH.slice(0,6);
+  S.demoMode=true;
+  track('demo_view',{});
+  setPage('dash');
+  if(typeof bootLiveData==='function'){ _bootRunning=false; bootLiveData(); }
 }
-function demoBanner(volverA){
-  if(!isDemoPortfolio()) return '';
-  return '<div style="background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.35);border-radius:var(--r-md);padding:10px 14px;margin:0 20px 14px;display:flex;align-items:center;gap:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace">'+
-    '<span aria-hidden="true">⚠️</span><span style="flex:1;color:var(--amber)">Estás viendo un <b>portfolio de ejemplo</b>. Los importes no son tuyos — elimina estas posiciones y agrega las reales.</span>'+
-    '<button onclick="localStorage.setItem(\'mv_demo_dismissed\',\'1\');'+volverA+'()" style="background:transparent;border:1px solid var(--amber);border-radius:var(--r-sm);padding:3px 8px;color:var(--amber);font-size:11px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace">Entendido</button></div>';
+function exitDemo(next){
+  if(!S.demoMode) return;
+  S.portfolio=S._realPortfolio||[]; S.watchlist=S._realWatch||[];
+  S._realPortfolio=null; S._realWatch=null;
+  S.demoMode=false; REBAL.targets={};
+  if(next==='addpos'){ setPage('port'); openModal('addpos'); return; }
+  setPage('dash');
+}
+function demoRibbon(){
+  if(!S.demoMode) return '';
+  return '<div class="demo-ribbon" role="status"><span class="demo-ribbon-tag">Ejemplo</span>'+
+    '<span class="demo-ribbon-txt">Estás viendo un portafolio ficticio. Nada de lo que cambies aquí se guarda.</span>'+
+    '<button class="btn" onclick="exitDemo()">Salir del ejemplo</button>'+
+    '<button class="btn-big" onclick="exitDemo(\'addpos\')">Agregar mi primera posición</button></div>';
+}
+function _seedDismissKey(){ return 'mv_seed_dismissed_'+(S.user&&S.user.id||''); }
+function seedCleanupBanner(){
+  if(S.demoMode||!S.seededIds||!S.seededIds.length) return '';
+  try{ if(localStorage.getItem(_seedDismissKey())) return ''; }catch(e){}
+  var n=S.seededIds.length;
+  return '<div class="seed-banner" role="region" aria-label="Posiciones de ejemplo">'+
+    '<div class="seed-banner-body"><div class="seed-banner-t">'+n+(n===1?' posición parece':' posiciones parecen')+' del ejemplo que la app cargaba antes</div>'+
+    '<div class="seed-banner-d">Al crear tu cuenta, la app agregaba un portafolio de muestra (AAPL, MSFT, NVDA y otros). Estas filas coinciden exactamente con ese ejemplo. Puedes borrarlas o quedarte con ellas: solo se borran esas '+n+'.</div></div>'+
+    '<div class="seed-banner-acts"><button class="btn" onclick="dismissSeedBanner()">Mantenerlas</button>'+
+    '<button class="btn-big" id="seed-del-btn" onclick="deleteSeededHoldings()">Borrar ejemplo</button></div></div>';
+}
+function dismissSeedBanner(){
+  try{ localStorage.setItem(_seedDismissKey(),'1'); }catch(e){}
+  renderMain();
+}
+async function deleteSeededHoldings(){
+  var ids=(S.seededIds||[]).slice();
+  if(!ids.length||!S.user||!S.user.id) return;
+  var btn=document.getElementById('seed-del-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Borrando…'; }
+  try{
+    // Solo esas filas: id + user_id, en una sola llamada.
+    var res=await withTimeout(sb.from('portfolio_holdings').delete().in('id',ids).eq('user_id',S.user.id),8000);
+    if(res&&res.error) throw res.error;
+    S.portfolio=S.portfolio.filter(function(h){ return ids.indexOf(h.id)<0; });
+    S.seededIds=[]; REBAL.targets={};
+    try{ localStorage.setItem(_seedDismissKey(),'1'); }catch(e){}
+    track('seed_cleanup',{count:ids.length});
+    showToast(ids.length+' posiciones de ejemplo borradas');
+  }catch(e){
+    console.error('deleteSeededHoldings failed',e);
+    showToast('No se pudieron borrar. Revisa tu conexión e inténtalo de nuevo.','error');
+  }
+  renderMain();
+}
+// Estado vacío de la cuenta nueva (Panorama y Portafolio): tres caminos.
+function firstRunEmpty(){
+  return '<div class="first-run">'+
+    '<h1 class="first-run-t">Empieza con tu portafolio</h1>'+
+    '<p class="first-run-d">Carga lo que ya tienes para ver tu valor, cuánto arriesgas en cada posición y si alguna pesa demasiado. Nada se carga solo: tú decides qué entra.</p>'+
+    '<div class="first-run-paths">'+
+    '<button class="first-run-path primary" onclick="openModal(\'addpos\')"><span class="first-run-path-t">Agregar mi primera posición</span><span class="first-run-path-d">Ticker, unidades y precio de compra</span></button>'+
+    '<button class="first-run-path" onclick="openModal(\'importcsv\')"><span class="first-run-path-t">Importar CSV</span><span class="first-run-path-d">Columnas Ticker, Unidades y Entrada</span></button>'+
+    '<button class="first-run-path" onclick="enterDemo()"><span class="first-run-path-t">Ver un ejemplo</span><span class="first-run-path-d">Un portafolio ficticio que no se guarda</span></button>'+
+    '</div></div>';
+}
+// ── IMPORTAR CSV ──
+function mImportCsv(mr){
+  var st=S._csv||{};
+  var preview='';
+  if(st.rows&&st.rows.length){
+    preview='<div class="csv-prev"><div class="csv-prev-h">'+st.rows.length+(st.rows.length===1?' posición lista':' posiciones listas')+' para importar</div>'+
+      '<ul>'+st.rows.slice(0,12).map(function(r){return '<li><b>'+esc(r.t)+'</b> <span class="num">'+fmtUnits(r.sh)+' u. · '+fmtUSD(r.cost)+'</span></li>';}).join('')+
+      (st.rows.length>12?'<li>y '+(st.rows.length-12)+' más</li>':'')+'</ul></div>';
+  }
+  var errs=(st.errors&&st.errors.length)?'<div class="err" style="display:block">'+st.errors.slice(0,5).map(esc).join('<br>')+(st.errors.length>5?'<br>y '+(st.errors.length-5)+' más':'')+'</div>':'';
+  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" role="dialog" aria-labelledby="csv-ttl" style="max-width:420px" onclick="event.stopPropagation()">'+
+    '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
+    '<h2 id="csv-ttl">Importar posiciones</h2>'+
+    '<p class="msub">Sube un CSV con las columnas Ticker, Unidades y Entrada (precio de compra). Tipo y Stop son opcionales. El CSV que exporta Invest sirve tal cual.</p>'+
+    '<input type="file" accept=".csv,text/csv" class="inp ifu" onchange="csvRead(this.files&&this.files[0])"/>'+
+    errs+preview+
+    '<button class="btn-big" style="width:100%;margin-top:12px" '+((st.rows&&st.rows.length)?'':'disabled ')+'onclick="csvImport()">'+((st.rows&&st.rows.length)?'Importar '+st.rows.length+(st.rows.length===1?' posición':' posiciones'):'Elige un archivo')+'</button>'+
+    '</div></div>';
+}
+function csvRead(file){
+  if(!file) return;
+  var r=new FileReader();
+  r.onload=function(e){ S._csv=window.InvestCsv.parseHoldingsCsv(e.target.result); renderModal(); };
+  r.onerror=function(){ S._csv={rows:[],errors:['No se pudo leer el archivo.']}; renderModal(); };
+  r.readAsText(file);
+}
+async function csvImport(){
+  var rows=(S._csv&&S._csv.rows)||[];
+  if(!rows.length) return;
+  if(S.demoMode) exitDemo();
+  var ok=0;
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i];
+    var h={id:S.nextId++,t:r.t,type:r.type,sh:r.sh,cost:r.cost,cur:r.cost};
+    if(r.stop!=null) h.stop=r.stop;
+    var realId=await sbAddHolding(h);
+    if(realId){ h.id=realId; S.portfolio.push(h); ok++; }
+  }
+  S._csv=null; REBAL.targets={};
+  S.modal=null; document.getElementById('mroot').innerHTML='';
+  showToast(ok===rows.length?ok+' posiciones importadas':ok+' de '+rows.length+' importadas. Revisa tu conexión.',ok===rows.length?undefined:'warning');
+  track('csv_import',{count:ok});
+  if(typeof bootLiveData==='function'){ _bootRunning=false; bootLiveData(); }
+  setPage('port');
 }
 // Iconos de navegacion. Sustituyen a los emoji: estos se renderizan distinto en
 // cada sistema operativo, no heredan el color del estado y dos paginas
@@ -3530,6 +3661,9 @@ var _modalLastFocus=null;
 function openModal(t,data){
   // Guarda el foco previo para restaurarlo al cerrar (a11y: el foco no debe
   // perderse al abrir/cerrar un dialogo).
+  // En el ejemplo, "Nueva posición" sale primero del ejemplo: lo que se
+  // agregue tiene que ir al portafolio real, no al ficticio.
+  if(S.demoMode&&(t==='addpos'||t==='importcsv')){ exitDemo(); }
   _modalLastFocus=document.activeElement;
   closeDrawer();S.modal=t;S.editPos=data||null;if(t==='upgrade')track('paywall_view');renderModal();
 }
@@ -4474,6 +4608,10 @@ function renderMain(){
   if(plan.locked.indexOf(S.page)>=0 && S.page!=='screener' && S.page!=='comp'){renderPaywall();return;}
   var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:function(){RISK_TAB='nueva';renderRisk();},comp:renderComp,sentiment:function(){ANALISIS_TAB='universo';renderAnalisis();},radar:function(){ANALISIS_TAB='universo';renderAnalisis();},decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:function(){RISK_TAB='mis';renderRisk();},back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
   (pages[S.page]||renderDash)();
+  if(S.demoMode){
+    var mainEl=document.getElementById('main');
+    if(mainEl){ var rb=document.createElement('div'); rb.innerHTML=demoRibbon(); if(rb.firstChild) mainEl.insertBefore(rb.firstChild,mainEl.firstChild); }
+  }
   var curPage=PAGES.find(function(p){return p.id===S.page;});
   var mLabel=document.getElementById('mobile-page-label');
   if(mLabel&&curPage) mLabel.textContent=curPage.label;
@@ -4990,24 +5128,9 @@ function renderDash(){
       '</tr>';
   }).join('');
 
-  // ── Empty state ──
+  // ── Empty state (I01): portada de la cuenta nueva ──
   if(port.length===0){
-    document.getElementById('main').innerHTML=
-      '<div class="dash-wrap">'+
-      '<div id="de-regime-banner" class="dash-ctx-card" style="margin-bottom:20px"><div class="dash-ctx-loading">// Cargando contexto de mercado…</div></div>'+
-      '<div style="text-align:center;padding:40px 20px;max-width:460px;margin:0 auto">'+
-      '<div style="margin-bottom:14px;color:var(--text3)">'+icon('ind','ico-xl')+'</div>'+
-      '<h2 style="font-size:18px;font-weight:700;color:var(--bright);margin-bottom:8px">Bienvenido a MOY IQ Invest</h2>'+
-      '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:20px">Agrega tu primera posición para ver tu dashboard completo con P&L, allocation y señales técnicas.</p>'+
-      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px">'+
-      '<button class="btn-big" onclick="setPage(\'port\')" style="padding:9px 22px">+ Agregar posición</button>'+
-      '<button class="btn" onclick="setPage(\'watch\')" style="padding:9px 16px">Ver Watchlist</button>'+
-      '</div>'+
-      '<div class="dash-actions">'+
-      '<div role="button" tabindex="0" class="dash-action-btn" onclick="setPage(\'decision\')"><div style="margin-bottom:5px;color:var(--grn)">'+icon('decision','ico-lg')+'</div><div style="font-size:12px;font-weight:600;color:var(--bright)">Motor de Análisis</div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:2px">Régimen + scores</div></div>'+
-      '<div role="button" tabindex="0" class="dash-action-btn" onclick="setPage(\'screener\')"><div style="margin-bottom:5px;color:var(--grn)">'+icon('screener','ico-lg')+'</div><div style="font-size:12px;font-weight:600;color:var(--bright)">Screener Pro</div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:2px">Filtra oportunidades</div></div>'+
-      '</div></div></div>';
-    dashLoadContext();
+    document.getElementById('main').innerHTML='<div class="dash-wrap">'+seedCleanupBanner()+firstRunEmpty()+'</div>';
     return;
   }
 
@@ -5100,7 +5223,7 @@ function renderDash(){
   document.getElementById('main').innerHTML=
     '<div class="dash-wrap">'+
     pageHeader+
-    demoBanner('renderDash')+
+    seedCleanupBanner()+
     '<div class="dash-hero-row">'+kpiCards+'</div>'+
     dashFocoCard(port)+
     // Fila 1: Top Senales + Portafolio (mi cartera) junto al rail de contexto
@@ -5225,6 +5348,10 @@ function portRebalHint(port,totM){
 
 function renderPort(){
   var plan=planOf();
+  if(!S.portfolio.length){
+    document.getElementById("main").innerHTML=seedCleanupBanner()+firstRunEmpty();
+    return;
+  }
   var port=S.portfolio.slice(0,plan.maxT);
   // Precio actual: live si existe, sino el último conocido, sino el costo
   // (evita NaN/"—" mientras cargan los precios o si el fetch falla)
@@ -5270,7 +5397,7 @@ function renderPort(){
     '</div>'+
     (plan.maxT>=999||S.portfolio.length<plan.maxT?'<button class="btn" onclick="openModal(\'addpos\')">+ Agregar</button>':'<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\'">Límite Free ('+plan.maxT+')</span>')+
     '</div></div>'+
-    demoBanner('renderPort')+
+    seedCleanupBanner()+
     freeBanner("Plan Free: máximo "+plan.maxT+" posiciones.")+
     (FOS_PORT_KPI_V2?
       // 1 respuesta (¿voy bien?) + 3 apoyos. Color solo donde hay estado real.
@@ -5314,7 +5441,7 @@ function renderPort(){
     '<button class="btn" onclick="openModal(\'addpos\')">+ Nueva posición</button>'+
     '<button class="btn" onclick="openModal(\'addtrade\')">'+icon('clipboard')+' Registrar operación</button>'+
     '<button class="btn" onclick="exportCSV()">'+icon('download')+'Export CSV</button>'+
-    '<button class="btn-r" onclick="resetPort()">↺ Restaurar demo</button>'+
+    '<button class="btn" onclick="openModal(\'importcsv\')">'+icon('download')+' Importar CSV</button>'+
     '</div>'+
     (port.length>=2?renderCorrelationMatrix(port):'');
 }
@@ -5322,17 +5449,6 @@ function updateCap(v){
   S.capital=Math.max(0,parseFloat(v)||0);
   persist(); // no re-render needed — input keeps its value
 }
-function resetPort(){
-  openModal('resetport');
-}
-function doResetPort(){
-  S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
-  S.nextId=10;persist();
-  S.modal=null;S.editPos=null;
-  document.getElementById("mroot").innerHTML="";
-  renderMain();
-}
-
 // ── BITÁCORA (Transaction Log) ─────────────────────────────────
 function renderBitacora(){
   loadTrades();loadAlerts();
@@ -5641,7 +5757,7 @@ function renderWatchSection(){
     // que ya tiene su propio h1 ("Investigar") — 4 h1 hermanos sin jerarquia
     // era invisible visualmente (misma clase .fos-module-title) pero rompia
     // la navegacion por headings de un lector de pantalla.
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h2 class="fos-module-title">Watchlist</h2><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' <button class="btn" style="border-color:var(--border);color:var(--text3);font-size:11px" onclick="resetWatch()">↺ Default</button></div></div>'+
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Investigar · Watchlist</div><h2 class="fos-module-title">Watchlist</h2><div class="fos-module-sub">'+wl.length+' tickers · <span id="saved">✓ Guardado</span></div></div><div class="ph-right">'+liveBadge()+' </div></div>'+
     '<div class="cb">'+
     '<div class="st"><div class="stbar"></div>Agregar ticker</div>'+
     '<div class="wtag-grid">'+quickTags+'</div>'+
@@ -5760,7 +5876,6 @@ function rmWatch(t){
   });
   if(isInvestigarPage()) renderMain();
 }
-function resetWatch(){S.watchlist=[...DEF_WATCH];persist();renderWatch();}
 
 // ── SIGNALS ────────────────────────────────────────────────────
 function renderSig(){
@@ -6803,7 +6918,7 @@ function renderModal(){
   else if(S.modal==="como-calcula") mComoCalcula(mr);
   else if(S.modal==="addalert") mAlert(mr);
   else if(S.modal==="delacct") mDelAccount(mr);
-  else if(S.modal==="resetport") mResetPort(mr);
+  else if(S.modal==="importcsv") mImportCsv(mr);
   else if(S.modal==="deltrade") mDelTrade(mr);
   _setupModalFocus();
 }
@@ -7109,16 +7224,6 @@ function mDel(mr){
     '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
     '<button class="btn btn-r" onclick="delPos('+pos.id+')">Sí, eliminar</button>'+
-    '</div></div></div>';
-}
-function mResetPort(mr){
-  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:310px;text-align:center" onclick="event.stopPropagation()">'+
-    '<div style="width:30px;height:30px;margin:0 auto 10px;color:var(--amber)">'+icon('rebal','ico-lg')+'</div>'+
-    '<h2>Restaurar portfolio demo</h2>'+
-    '<p class="msub">Se reemplaza tu portfolio actual por el portfolio demo de ejemplo. Esta acción no se puede deshacer.</p>'+
-    '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'+
-    '<button class="btn" onclick="closeModal()">Cancelar</button>'+
-    '<button class="btn btn-r" onclick="doResetPort()">Restaurar</button>'+
     '</div></div></div>';
 }
 function mDelTrade(mr){
@@ -10823,16 +10928,13 @@ async function _sbLoadUserDataImpl(authUser){
     delete S._trialUsedFromServer;
     S.capital=(prof&&prof.capital)?Number(prof.capital):100000;
 
-    if(holdings.length>0){
-      S.portfolio=holdings;
-      S.nextId=Math.max.apply(null,holdings.map(function(h){return h.id;}))+1;
-    } else {
-      // First login: seed Supabase with demo portfolio so the account isn't empty
-      await sbSeedPortfolio(authUser.id);
-      S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
-      S.nextId=Math.max.apply(null,DEF_PORT.map(function(h){return h.id;}))+1;
-    }
-    S.watchlist=watch.length>0?watch:[...DEF_WATCH];
+    // I01: una cuenta nueva empieza vacía. Ya no se siembra DEF_PORT/DEF_WATCH
+    // en Supabase; las cuentas que lo recibieron antes ven el aviso de D1.
+    S.portfolio=holdings;
+    S.nextId=holdings.length?Math.max.apply(null,holdings.map(function(h){return h.id;}))+1:1;
+    S.seededIds=window.InvestDemo.shouldOfferSeedCleanup(holdings)?window.InvestDemo.detectSeededHoldings(holdings):[];
+    S.demoMode=false;
+    S.watchlist=watch;
     loadTrades();loadAlerts();
     fetchFXLatam();
     // F1-07: consent gate — only active when CONSENT_GATE_ENABLED is true.
@@ -10851,22 +10953,12 @@ async function _sbLoadUserDataImpl(authUser){
     console.error("sbLoadUserData failed",e);
     // Fallback to defaults so the app still renders
     S.user={id:authUser.id,email:authUser.email,name:authUser.email.split("@")[0],plan:"free"};
-    S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
-    S.watchlist=[...DEF_WATCH];
+    S.portfolio=[];
+    S.watchlist=[];
+    S.seededIds=[];
     loadTrades();loadAlerts();
+    setTimeout(function(){ showToast('No se pudo cargar tu portafolio. Recarga la página.','error'); },800);
   }
-}
-
-// Seed initial portfolio rows for a brand-new account
-async function sbSeedPortfolio(userId){
-  try{
-    var rows=DEF_PORT.map(function(p){
-      return {user_id:userId, ticker:p.t, asset_type:p.type, shares:p.sh, avg_cost:p.cost, note:p.note||""};
-    });
-    await sb.from("portfolio_holdings").insert(rows);
-    var wrows=DEF_WATCH.map(function(t){return {user_id:userId, ticker:t};});
-    await sb.from("watchlist").insert(wrows);
-  }catch(e){ console.error("sbSeedPortfolio failed",e); }
 }
 
 // ── AUTH ACTIONS ──────────────────────────────────────────────
@@ -11079,8 +11171,9 @@ async function logout(){
   _sbLoadUserDataGuard.clear(); // limpia el guard de de-dup — el proximo login (mismo u otro usuario) debe cargar fresco
   S.user=null;S.page="dash";
   LIVE={};REBAL.targets={};DIVS.data={};
-  S.portfolio=JSON.parse(JSON.stringify(DEF_PORT));
-  S.watchlist=[...DEF_WATCH];
+  S.portfolio=[];
+  S.watchlist=[];
+  S.demoMode=false;S.seededIds=[];S._realPortfolio=null;S._realWatch=null;
   render();
 }
 
@@ -11090,7 +11183,7 @@ var _persistTimer=null;
 function persist(){
   var el=document.getElementById("saved");
   if(el){el.classList.add("show");setTimeout(function(){el.classList.remove("show");},1400);}
-  if(!S.user||!S.user.id) return;
+  if(!S.user||!S.user.id||S.demoMode) return;
   if(_persistTimer) clearTimeout(_persistTimer);
   _persistTimer=setTimeout(function(){
     sb.from("profiles").update({capital:S.capital}).eq("id",S.user.id).then(function(){},function(e){console.error("persist capital failed",e);});
@@ -11099,6 +11192,7 @@ function persist(){
 
 // ── PORTFOLIO CRUD (Supabase-backed) ─────────────────────────────
 async function sbAddHolding(h){
+  if(S.demoMode) return h.id; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return h.id;
   var res=await sb.from("portfolio_holdings").insert({
     user_id:S.user.id, ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""
@@ -11107,6 +11201,7 @@ async function sbAddHolding(h){
   return res.data.id;
 }
 async function sbUpdateHolding(h){
+  if(S.demoMode) return; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return;
   var res=await sb.from("portfolio_holdings").update({
     ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""
@@ -11114,16 +11209,19 @@ async function sbUpdateHolding(h){
   if(res.error) console.error("sbUpdateHolding failed",res.error);
 }
 async function sbDeleteHolding(id){
+  if(S.demoMode) return; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return;
   var res=await sb.from("portfolio_holdings").delete().eq("id",id).eq("user_id",S.user.id);
   if(res.error) console.error("sbDeleteHolding failed",res.error);
 }
 async function sbAddWatch(ticker){
+  if(S.demoMode) return; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return;
   var res=await sb.from("watchlist").insert({user_id:S.user.id, ticker:ticker});
   if(res.error) console.error("sbAddWatch failed",res.error);
 }
 async function sbRmWatch(ticker){
+  if(S.demoMode) return; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return;
   var res=await sb.from("watchlist").delete().eq("user_id",S.user.id).eq("ticker",ticker);
   if(res.error) console.error("sbRmWatch failed",res.error);
