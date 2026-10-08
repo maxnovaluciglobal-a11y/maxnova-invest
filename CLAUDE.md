@@ -112,9 +112,13 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
-- Cron de Vercel: `/api/trial-emails-cron` corre diario a las 14:00 UTC — necesita
-  `SUPABASE_SERVICE_KEY` y `RESEND_API_KEY` en el entorno o falla en silencio (ver guard
-  en `api/trial-emails-cron.js:190`).
+- **Modo pausa (T06, oct-2026):** `index.html` es una página de pausa con lista de espera
+  (RPC `register_invest_lead`, `p_fuente='waitlist'`). La landing completa y `faq`/
+  `perfil-inversor`/`estado-mercado` están en `_pausa/` (excluido con `.vercelignore` y
+  redirigido a `/`). `/app`, `/app/*` y `/docs/*` redirigen a `/` (307 temporal). El cron de
+  `/api/trial-emails-cron` se quitó de `vercel.json`; ese endpoint, `create-checkout`,
+  `billing-portal` y `stripe-webhook` devuelven 410 `invest_paused` (bloque al inicio del
+  handler, el código original sigue abajo). Para reactivar: revertir los commits `ux(T06)`.
 - Sin Supabase no hay login — es punto único de falla marcado como "Alto" sin plan B en
   `RUNBOOK.md`.
 - Antes de push: `node -e "new Function(<script de index.html>)"` para validar sintaxis

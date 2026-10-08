@@ -181,6 +181,11 @@ const TEMPLATES = {
 };
 
 export default async function handler(req) {
+  // Invest en pausa desde 2026-09-12 (D4). Quitar este bloque para reactivar.
+  return new Response(JSON.stringify({ error: 'invest_paused' }), {
+    status: 410,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
   // ── Auth: Vercel cron header OR bearer secret ──
   const isVercelCron = req.headers.get('x-vercel-cron') !== null;
   const auth = req.headers.get('authorization') || '';
