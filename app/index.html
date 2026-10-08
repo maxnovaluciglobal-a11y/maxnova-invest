@@ -1191,9 +1191,9 @@ tr:last-child td { border-bottom: none; }
 .wv3-legal{font-size:11px;color:var(--text3);text-align:center;line-height:1.6}
 .wv3-legal a{color:var(--grn);text-decoration:none;cursor:pointer}
 .wv3-legal a:hover{text-decoration:underline}
-.wv3-check-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer}
-.wv3-check-row input[type=checkbox]{margin-top:2px;width:14px;height:14px;accent-color:var(--grn);flex-shrink:0;cursor:pointer}
-.wv3-check-txt{font-size:11px;color:var(--text2);line-height:1.5}
+.wv3-check-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;min-height:32px}
+.wv3-check-row input[type=checkbox]{margin-top:1px;width:18px;height:18px;accent-color:var(--grn);flex-shrink:0;cursor:pointer}
+.wv3-check-txt{font-size:12px;color:var(--text2);line-height:1.5}
 .wv3-check-txt a{color:var(--grn);text-decoration:none;cursor:pointer}
 .wv3-pricing{margin-top:14px;text-align:center;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);line-height:1.9}
 .wv3-pricing .wv3-grn{color:var(--grn)}
@@ -1985,6 +1985,18 @@ div:has(>.dtab), div:has(>.rtab) {
 .calc-plan-acts { display:flex; gap:6px; }
 .calc-plan-acts .btn { min-height:44px; min-width:44px; }
 .calc-legal { margin-top:20px; padding:12px 16px; background:var(--card2); border:1px solid var(--border); border-radius:var(--r-md); font-size:12px; color:var(--text2); line-height:1.6; }
+.onb { max-width:440px; text-align:left; }
+.onb-dots { display:flex; gap:6px; margin-bottom:20px; }
+.onb-dots span { flex:1; height:3px; border-radius:2px; background:var(--border2); }
+.onb-dots span.on { background:var(--laton); }
+.onb-ico { width:40px; height:40px; color:var(--laton-700); margin-bottom:12px; }
+.onb-ico .ico { width:100%; height:100%; }
+.onb h2 { font-size:20px; margin:0 0 8px; color:var(--bright); text-wrap:balance; }
+.onb p { font-size:14px; color:var(--text2); line-height:1.6; margin:0 0 22px; }
+.onb-acts { display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+.onb-acts .btn, .onb-acts .btn-big { min-height:44px; }
+.onb-skip { display:block; margin:14px auto 0; min-height:44px; padding:0 12px; background:none; border:none; color:var(--text2); font-size:13px; cursor:pointer; text-decoration:underline; }
+.onb-overlay { z-index:500; }
 </style>
 </head>
 <body>
@@ -4829,7 +4841,11 @@ function renderWelcome(){
     '<div><label class="wv3-field-label" for="rn">NOMBRE</label><div class="wv3-field-wrap"><input id="rn" type="text" enterkeyhint="next" autocapitalize="words" placeholder="Tu nombre" autocomplete="name"/></div></div>'+
     '<div><label class="wv3-field-label" for="re">EMAIL</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" required/></div></div>'+
     '<div><label class="wv3-field-label" for="rp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
-    '<label class="wv3-check-row"><input id="rdisc" type="checkbox" required/><span class="wv3-check-txt">He leído y acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y la <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>. Entiendo que los análisis son educativos y no constituyen asesoría financiera.</span></label>'+
+    // I02: las tres casillas son los tres consentimientos que pide el gate.
+    // Se registran al crear la cuenta para que el gate no se repita al entrar.
+    '<label class="wv3-check-row"><input id="rdisc-tc" type="checkbox" required/><span class="wv3-check-txt">Acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a>.</span></label>'+
+    '<label class="wv3-check-row"><input id="rdisc-pp" type="checkbox" required/><span class="wv3-check-txt">Acepto la <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>.</span></label>'+
+    '<label class="wv3-check-row"><input id="rdisc" type="checkbox" required/><span class="wv3-check-txt">Entiendo que Invest es una herramienta educativa: no es asesoría financiera, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso.</span></label>'+
     '<div id="rerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis →</button>'+
     '</div>'+
@@ -8869,7 +8885,7 @@ function showRiskProfile(onDone){
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'+
       '<div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden">'+
       '<div style="height:100%;width:'+prog+'%;background:var(--grn);border-radius:2px;transition:.4s"></div></div>'+
-      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3);white-space:nowrap">'+(step+1)+'/'+q.length+' respondidas</span>'+
+      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3);white-space:nowrap">'+step+'/'+q.length+' respondidas</span>'+
       '</div>'+
       '<div style="font-size:11px;color:var(--grn);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Bloque '+nBloque+' · '+qd.block+'</div>'+
       '<h2 style="font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.01em;margin-bottom:20px;color:var(--bright)">'+qd.q+'</h2>'+
@@ -9420,74 +9436,50 @@ function trialBanner(){
 // ── ONBOARDING WIZARD ──────────────────────────────────────────
 var ONBOARD={step:0,shown:false};
 
+// I02: tres pasos que navegan de verdad (setPage) y terminan abriendo
+// "Nueva posición". El cuestionario de perfil ya no se pide: solo alimentaba
+// las cestas por ticker que se retiraron (I05/D2).
+var ONBOARD_STEPS=[
+  {icon:'port',page:'port',title:'Tu portafolio, con tus datos',
+   desc:'Cargas tus posiciones y ves su valor, el resultado y cuánto pesa cada una. Cada precio muestra su hora y si viene con retraso.'},
+  {icon:'sig',page:'sig',title:'Indicadores con su rango, no opiniones',
+   desc:'Cada activo muestra su tendencia, RSI, MACD y volumen por separado, con su rango y una frase que explica qué significa. Sin notas ni señales de compra o venta.'},
+  {icon:'pb',page:'pb',title:'Con tu regla de riesgo',
+   desc:'La calculadora te dice cuántas unidades caben si arriesgas un porcentaje fijo de tu capital hasta tu stop, y avisa si superas tu límite de concentración.'}
+];
 function showOnboarding(){
-  // El perfil se pide ANTES del recorrido, no dentro: mezclar captura con tour
-  // aumenta el abandono, y el resto de pasos puede referirse a "tu perfil".
-  // Saltable: si el usuario lo cierra, el tour sigue igual.
-  var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-  if(!pf && !localStorage.getItem('mv_perfil_omitido')){
-    try{ localStorage.setItem('mv_perfil_omitido','1'); }catch(e){}
-    showRiskProfile(function(){ showOnboarding(); });
-    return;
-  }
-  var steps=[
-    {icon:'port',title:'Tu portfolio, siempre actualizado',
-     desc:'Agrega tus posiciones y MOY IQ Invest calcula tu P&L con precios de Yahoo Finance. Cada precio muestra su hora y si viene con retraso.',
-     action:'Ver Portfolio',page:'port'},
-    {icon:'sig',title:'Indicadores técnicos, no opiniones',
-     desc:'Cada activo muestra su tendencia, RSI, MACD y volumen por separado, con su rango y una frase que explica qué significan. Sin notas ni señales de compra.',
-     action:'Ver tendencia',page:'sig'},
-    {icon:'pb',title:'Con tu regla de riesgo',
-     desc:'Calcula cuántas unidades caben si arriesgas un porcentaje fijo de tu capital hasta tu stop, y avisa si superas tu límite de concentración.',
-     action:'Abrir calculadora',page:'pb'},
-  ];
-
+  var steps=ONBOARD_STEPS;
   var step=steps[ONBOARD.step];
-  var progress=(ONBOARD.step/steps.length*100).toFixed(0);
   var isLast=ONBOARD.step===steps.length-1;
-
+  if(S.page!==step.page) setPage(step.page);
   document.getElementById('mroot').innerHTML=
-    '<div class="overlay" style="z-index:500" onclick="">'+
-    '<div class="modal" style="max-width:440px;text-align:center" onclick="event.stopPropagation()">'+
-    // Progress bar
-    '<div style="height:3px;background:var(--border);border-radius:2px;margin-bottom:22px;overflow:hidden">'+
-    '<div style="height:100%;width:'+progress+'%;background:var(--amber);border-radius:2px;transition:.4s"></div></div>'+
-    // Step counter
-    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px">'+
-    'Paso '+(ONBOARD.step+1)+' de '+steps.length+'</div>'+
-    // Icon
-    '<div style="width:48px;height:48px;margin:0 auto 14px;color:var(--amber)">'+icon(step.icon,'ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
-    // Title
-    '<h2 style="margin-bottom:10px;font-size:18px">'+step.title+'</h2>'+
-    // Description
-    '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px">'+step.desc+'</p>'+
-    // Buttons
-    '<div style="display:flex;gap:10px;justify-content:center">'+
-    (ONBOARD.step>0?'<button class="btn" onclick="onboardPrev()">← Anterior</button>':'')+
-    (isLast?
-      '<button class="btn-big" onclick="onboardFinish()">Empezar</button>':
-      '<button class="btn-big" onclick="onboardNext()">'+step.action+' →</button>')+
+    '<div class="overlay onb-overlay" onclick="">'+
+    '<div class="modal onb" role="dialog" aria-modal="true" aria-labelledby="onb-t" onclick="event.stopPropagation()">'+
+    '<div class="onb-dots" aria-label="Paso '+(ONBOARD.step+1)+' de '+steps.length+'">'+steps.map(function(_,i){return '<span class="'+(i<=ONBOARD.step?'on':'')+'"></span>';}).join('')+'</div>'+
+    '<div class="onb-ico">'+icon(step.icon,'ico-lg')+'</div>'+
+    '<h2 id="onb-t">'+step.title+'</h2>'+
+    '<p>'+step.desc+'</p>'+
+    '<div class="onb-acts">'+
+    (ONBOARD.step>0?'<button class="btn" onclick="onboardPrev()">Anterior</button>':'')+
+    (isLast
+      ?'<button class="btn-big" onclick="onboardFinish(true)">Agrega tu primera posición</button>'
+      :'<button class="btn-big" onclick="onboardNext()">Siguiente</button>')+
     '</div>'+
-    // Skip
-    '<div style="margin-top:14px"><button onclick="onboardFinish()" style="background:transparent;border:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:\'IBM Plex Mono\',monospace">Saltar tour</button></div>'+
+    '<button class="onb-skip" onclick="onboardFinish(false)">Saltar recorrido</button>'+
     '</div></div>';
 }
-
 function onboardNext(){
-  var steps=[{page:'port'},{page:'sig'},{page:'pb'}];   // sin IA mientras no exista
-  var s=steps[ONBOARD.step];
-  if(s.fn) window[s.fn]&&window[s.fn]();
-  else if(s.page) S.page=s.page;
-  ONBOARD.step++;
-  if(ONBOARD.step<steps.length) showOnboarding();
-  else onboardFinish();
+  ONBOARD.step=Math.min(ONBOARD.step+1,ONBOARD_STEPS.length-1);
+  showOnboarding();
 }
 function onboardPrev(){ONBOARD.step=Math.max(0,ONBOARD.step-1);showOnboarding();}
-function onboardFinish(){
+function onboardFinish(addPosition){
   document.getElementById('mroot').innerHTML='';
   ONBOARD.shown=true;
   try{localStorage.setItem('mv_onboard_done','1');}catch(e){/* silent */}
-  renderMain();
+  track('onboarding_done',{add:!!addPosition});
+  if(addPosition){ setPage('port'); openModal('addpos'); }
+  else setPage('dash');
 }
 function checkOnboarding(){
   try{if(localStorage.getItem('mv_onboard_done')) return;}catch(e){/* silent */}
@@ -10847,22 +10839,22 @@ function showConsentGate(userId){
         '<div class="overlay" onclick="" style="z-index:600">'+
         '<div class="modal" style="max-width:480px" onclick="event.stopPropagation()">'+
         '<div style="font-size:15px;font-weight:700;color:var(--bright);margin-bottom:8px">MOY IQ Invest — Confirmación de uso</div>'+
-        '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:20px;font-family:\'IBM Plex Mono\',monospace">'+
+        '<p style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px">'+
         'Antes de continuar, necesitamos que confirmes que leíste y aceptas las condiciones principales de uso de MOY IQ Invest.'+
         '</p>'+
         '<div style="text-align:left;display:flex;flex-direction:column;gap:14px;margin-bottom:20px">'+
-        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12px;color:var(--text);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">'+
+        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-tc" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
         '<span>Acepto los Términos de Uso de MOY IQ Invest.</span></label>'+
-        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12px;color:var(--text);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">'+
+        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-pp" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
         '<span>Acepto la Política de Privacidad.</span></label>'+
-        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12px;color:var(--text);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">'+
+        '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-inv" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
         '<span>Entiendo que MOY IQ Invest es una herramienta educativa de análisis. No proporciona asesoría financiera personalizada, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso y toda inversión implica riesgo.</span></label>'+
         '</div>'+
         (errMsg?'<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--red);font-family:\'IBM Plex Mono\',monospace">'+errMsg+'</div>':'')+
-        '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--amber);color:#fff;font-size:13px;font-weight:700;cursor:not-allowed;opacity:.4;transition:.2s">Confirmar y continuar</button>'+
+        '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--grn-solid);color:#14213D;font-size:14px;font-weight:700;min-height:44px;cursor:not-allowed;opacity:.55;transition:.2s">Confirmar y continuar</button>'+
         '<div style="margin-top:14px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-align:center">MAXNOVA & LUCI Global LLC</div>'+
         '</div></div>';
     }
@@ -10870,7 +10862,7 @@ function showConsentGate(userId){
     window.cgCheck=function(){
       var ok=['cg-tc','cg-pp','cg-inv'].every(function(id){var el=document.getElementById(id);return el&&el.checked;});
       var btn=document.getElementById('cg-btn');
-      if(btn){btn.disabled=!ok;btn.style.opacity=ok?'1':'.4';btn.style.cursor=ok?'pointer':'not-allowed';}
+      if(btn){btn.disabled=!ok;btn.style.opacity=ok?'1':'.55';btn.style.cursor=ok?'pointer':'not-allowed';}
     };
 
     window.cgConfirm=async function(uid){
@@ -10889,6 +10881,21 @@ function showConsentGate(userId){
 
     renderGate(null);
   });
+}
+
+// I02: si la persona marcó las tres casillas al registrarse (en este
+// navegador, en los últimos 30 días y con el mismo correo), se registran con
+// source 'signup' y el gate no se vuelve a mostrar.
+async function recordPendingSignupConsent(authUser){
+  var raw=null;
+  try{ raw=JSON.parse(localStorage.getItem('inv_pending_consent')||'null'); }catch(e){}
+  if(!raw||!raw.email||!authUser||!authUser.email) return;
+  var fresh=(Date.now()-(raw.ts||0))<30*24*3600*1000;
+  if(fresh&&raw.email===String(authUser.email).toLowerCase()){
+    var r=await recordUserConsents(authUser.id,'signup');
+    if(!r.ok) return; // se reintenta en el próximo ingreso
+  }
+  try{ localStorage.removeItem('inv_pending_consent'); }catch(e){}
 }
 
 // Check which required consents the user is missing and store in S.
@@ -10986,12 +10993,13 @@ async function _sbLoadUserDataImpl(authUser){
     // F1-07: consent gate — only active when CONSENT_GATE_ENABLED is true.
     // When false, no query to public.consents is made and no modal is shown.
     if(CONSENT_GATE_ENABLED){
+      await recordPendingSignupConsent(authUser);
       await checkConsentGate(authUser.id);
       if(S.consentGateRequired){
         // Awaits here until user accepts — resolves only after successful insert.
         // render() is called by the caller (boot/onAuthStateChange) after this resolves.
         await showConsentGate(authUser.id);
-        return; // prevent setTimeout(checkOnboarding) while gate was open; caller triggers render()
+        // I02: antes había un return que salteaba el tour en la primera sesión.
       }
     }
     setTimeout(checkOnboarding,600);
@@ -11153,11 +11161,15 @@ async function doRegister(){
   var e=document.getElementById("re").value.trim();
   var p=document.getElementById("rp").value;
   var disc=document.getElementById("rdisc");
+  var discTc=document.getElementById("rdisc-tc"), discPp=document.getElementById("rdisc-pp");
   var err=document.getElementById("rerr");
   var btn=document.getElementById("rbtn");
   if(!name||!e||!p){err.style.display="block";err.textContent="Completa todos los campos.";return;}
   if(p.length<6){err.style.display="block";err.textContent="La contraseña debe tener al menos 6 caracteres.";return;}
-  if(!disc.checked){err.style.display="block";err.textContent="Debes aceptar el aviso educativo para continuar.";return;}
+  if(!disc.checked||(discTc&&!discTc.checked)||(discPp&&!discPp.checked)){err.style.display="block";err.textContent="Marca las tres casillas para crear tu cuenta.";return;}
+  // Se recuerda la aceptación hasta el primer ingreso: si el correo requiere
+  // confirmación, todavía no hay sesión para escribir en consents.
+  try{ localStorage.setItem('inv_pending_consent',JSON.stringify({email:e.toLowerCase(),ts:Date.now()})); }catch(x){}
   if(btn){btn.disabled=true;btn.textContent="Creando cuenta...";}
   // Timeout de 15s: mismo patron que doLogin (mas arriba) — si signUp se
   // cuelga (p.ej. proyecto Supabase pausado o sin red), el boton se quedaba
@@ -11185,7 +11197,9 @@ async function doRegister(){
   // Notifica el alta a admin (RPC en financeos-app, mismo Supabase
   // compartido) — no bloquea el flujo si falla, best-effort igual que el
   // resto de llamadas de telemetria de esta funcion.
-  sb.rpc("notify_invest_signup",{p_email:e}).catch(function(){});
+  // rpc() devuelve un thenable sin .catch: envolverlo evita un TypeError que
+  // cortaba doRegister justo después del alta.
+  Promise.resolve(sb.rpc("notify_invest_signup",{p_email:e})).catch(function(){});
   if(res.data.session){
     // Activate 14-day trial for new accounts
     await sb.from("profiles").update({trial_started_at:new Date().toISOString()}).eq("id",res.data.user.id);
