@@ -1,68 +1,10 @@
 # MOY IQ Invest — llms.txt
-# For AI search engines, LLM crawlers, and generative answer engines
 # https://invest.moyiq.app
 
-## What is MOY IQ Invest?
+MOY IQ Invest is paused since 2026-09-12. It is not accepting new users and no plans are on sale.
 
-MOY IQ Invest Pro is a technical analysis platform built for Spanish-speaking investors in Latin America who trade US markets (NYSE, NASDAQ). It provides a systematic, rules-based analytical process powered by real-time market data from Yahoo Finance.
+It was a portfolio tracking and investment risk education tool for Spanish-speaking investors. It was never a broker, did not execute orders and did not provide financial advice.
 
-**Price**: Free tier available. Pro $9.99 USD/month. Teams $99 USD/month.
-**URL**: https://invest.moyiq.app
-**Language**: Spanish (designed for LATAM investors)
+The active product of the same company is MOY IQ, a personal finance app: https://moyiq.app
 
-## Core features
-
-### Decision Engine (Motor de Análisis)
-- Detects live market regime: Risk On / Neutral / Risk Off based on SPY vs SMA200 and SMA50
-- VIX regime: adjusts position sizing reference based on volatility level (low/normal/elevated/crisis)
-- Market Breadth: uses % of S&P 500 stocks above SMA200 as confirmation signal
-- Sector Rotation: calculates 22-day sector ETF return vs SPY to identify leading sectors
-
-### Pullback Quality Score (0-100)
-- RSI zone 40-60 = 40 points (technically favorable zone)
-- Price above SMA50 = 25 points
-- Price above SMA200 = 20 points
-- Pullback 5-20% from 52-week high = 15 points
-
-### Technical Reference Levels
-- Referential price zones calculated using ATR(14) volatility — educational indicators only
-- T1 reference: current price + 1.5×ATR
-- T2 reference: current price + 3.0×ATR
-- Risk reference level: calculated based on 1×ATR from reference price
-- All levels are technical references — not investment advice or instructions
-
-### Stock Screener
-- Filter stocks by DE Score, sector RS, RSI range, and pullback quality
-- Real-time parallel data fetching
-
-### Portfolio
-- Track positions with P&L
-- Integration with Decision Engine technical data
-
-### Earnings Calendar
-- Next earnings date per ticker with expected move
-- Earnings momentum (recent beats/misses)
-
-## Free resources (no account needed)
-
-- **Perfil de Inversor** (https://invest.moyiq.app/perfil-inversor.html) — free 6-question quiz that calculates the user's investor risk profile in ~2 minutes, no account or portfolio connection required.
-- **Estado del Mercado** (https://invest.moyiq.app/estado-mercado.html) — live market regime snapshot (SPY vs SMA200/50, VIX regime, breadth), updated continuously, no account required.
-
-## Who is this for?
-
-Latin American investors who:
-- Invest in US stocks and ETFs from Mexico, Colombia, Chile, Argentina, Venezuela, Peru
-- Want a systematic analytical process based on technical indicators, not gut feeling
-- Want to see technical reference levels before making their own decisions
-- Are serious about understanding risk and position sizing
-
-## Important disclaimer
-
-MOY IQ Invest provides technical analysis tools for educational purposes. All data is referential and may have delays. This platform does not constitute financial advice, does not execute orders, and is not a broker. All investment decisions are the exclusive responsibility of the user.
-
-## Company
-
-Built by MAXNOVA & LUCI Global LLC (Miami, Florida, USA)
-Founder: Walter Lamadriz
-Suite landing: https://moyiq.app
-Support: invest@moyiq.app
+Built by MAXNOVA & LUCI Global LLC.

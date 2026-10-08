@@ -1,0 +1,6 @@
+# Invest en pausa (T06): no publicar la landing archivada ni docs internas.
+# vercel.json además redirige /_pausa/* y *.md a / por si este archivo no aplica.
+_pausa/
+*.md
+supabase/
+test/
