@@ -2053,6 +2053,22 @@ div:has(>.dtab), div:has(>.rtab) {
 .m10-meaning { margin:4px 0 8px; font-size:12px; color:var(--text2); }
 .m10-meaning summary { cursor:pointer; color:var(--blue); min-height:32px; display:flex; align-items:center; }
 .m10-meaning p { margin:6px 0 0; line-height:1.6; }
+.drw-acts { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; margin-top:14px; }
+.drw-acts > .btn, .drw-acts > .btn-big, .drw-more > summary { min-height:44px; }
+.drw-acts > .btn-big { flex:1 1 160px; }
+.drw-acts > .btn { flex:1 1 160px; }
+.drw-more { position:relative; }
+.drw-more > summary { list-style:none; display:inline-flex; align-items:center; cursor:pointer; }
+.drw-more > summary::-webkit-details-marker { display:none; }
+.drw-more-m { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.drw-more-m .btn { min-height:44px; justify-content:flex-start; }
+.drw-attr { font-size:12px; color:var(--text2); margin:12px 0 0; }
+.drw-news { list-style:none; margin:8px 0 0; padding:0; }
+.drw-news li { padding:10px 0; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:3px; }
+.drw-news a { color:var(--bright); font-size:14px; line-height:1.45; text-decoration:none; }
+.drw-news a:hover { text-decoration:underline; }
+.drw-news span { font-size:12px; color:var(--text2); }
+.drw-mine { margin-top:8px; }
 </style>
 </head>
 <body>
@@ -3109,14 +3125,18 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
     var bars=hist.filter(function(d){return d.ts&&d.open&&d.high&&d.low&&d.close;});
     if(!bars.length) return;
 
-    var bgColor='#0d0f14';
-    var textColor='#8a9bbd';
-    var gridColor='rgba(255,255,255,0.04)';
+    // I07: colores de la paleta (--pos/--neg) y atribución en el pie, no sobre el gráfico.
+    var _cs=getComputedStyle(document.documentElement);
+    var _tok=function(n,f){ var v=(_cs.getPropertyValue(n)||'').trim(); return v||f; };
+    var bgColor=_tok('--card','#FAF8F2');
+    var textColor=_tok('--text2','#63604F');
+    var gridColor=_tok('--border','rgba(20,33,61,0.10)');
+    var posC=_tok('--pos','#356E57'), negC=_tok('--neg','#A23E2E');
 
     _lwChartMain=LW.createChart(mainEl,{
       width:mainEl.clientWidth||mainEl.offsetWidth||300,
       height:210,
-      layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"'IBM Plex Mono',monospace",fontSize:9},
+      layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,attributionLogo:false},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
       crosshair:{mode:LW.CrosshairMode.Normal},
       timeScale:{timeVisible:false,borderColor:'rgba(255,255,255,0.07)'},
@@ -3125,7 +3145,7 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
     var chart=_lwChartMain;
 
     var candleSeries=chart.addCandlestickSeries({
-      upColor:'#22c55e',downColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444',
+      upColor:posC,downColor:negC,wickUpColor:posC,wickDownColor:negC,
       borderVisible:false,
     });
     candleSeries.setData(bars.map(function(d){return {time:d.ts,open:d.open,high:d.high,low:d.low,close:d.close};}));
@@ -7784,6 +7804,34 @@ function saveTrade(){
 }
 
 // ── DRAWER ─────────────────────────────────────────────────────
+function drawerMinePane(ticker,own,cur){
+  var sh=0,costT=0,stop=null;
+  own.forEach(function(h){ sh+=h.sh; costT+=h.sh*h.cost; if(h.stop>0) stop=h.stop; });
+  var px=(LIVE[ticker]&&LIVE[ticker].price)||cur;
+  var value=sh*px;
+  var totV=S.portfolio.reduce(function(a,h){return a+h.sh*((LIVE[h.t]&&LIVE[h.t].price)||h.cur||h.cost);},0);
+  var weight=totV>0?value/totV:0;
+  var lim=riskConcentrationLimit();
+  var riskTxt=stop?fmtUSD(-Math.max(0,(px-stop)*sh),0):(HOLDINGS_STOP===true?'sin stop':fmtUSD(-px*RISK_DEFAULT_STOP_PCT*sh,0)+' <span class="calc-est">estimación −8 %</span>');
+  var h0=own[0];
+  return '<dl class="calc-facts drw-mine">'+
+    '<div><dt>Unidades</dt><dd class="num">'+fmtUnits(sh)+'</dd></div>'+
+    '<div><dt>Costo promedio</dt><dd class="num">'+fmtUSD(sh>0?costT/sh:0)+'</dd></div>'+
+    '<div><dt>Valor</dt><dd class="num">'+fmtUSD(value,0)+' <span>· '+fmtPctN(weight*100,0)+' del portafolio'+(weight>lim?' · supera tu límite':'')+'</span></dd></div>'+
+    '<div><dt>Resultado</dt><dd class="num" style="color:'+(value-costT>=0?'var(--pos)':'var(--neg)')+'">'+(value-costT>=0?'+':'')+fmtUSD(value-costT,0)+'</dd></div>'+
+    '<div><dt>Si toca el stop</dt><dd class="num">'+riskTxt+'</dd></div>'+
+    '</dl>'+
+    (HOLDINGS_STOP===true&&own.length===1
+      ?'<div class="calc-field" style="margin-top:12px"><label for="drw-stop">Tu stop (USD)</label><input id="drw-stop" class="inp num" type="number" inputmode="decimal" min="0" step="0.01" placeholder="sin stop" value="'+(stop?+stop.toFixed(2):'')+'" onchange="riskSetStop('+h0.id+',this.value).then(function(){renderDrawerBody();})"/></div>'
+      :'');
+}
+function drawerNewsPane(ticker){
+  var items=(LIVE_NEWS||[]).filter(function(n){ return (n.tickers||[]).indexOf(ticker)>=0||new RegExp('\\b'+ticker.replace(/[^A-Z0-9]/g,'')+'\\b').test(n.title||''); }).slice(0,8);
+  if(!items.length) return '<p class="m10-empty" style="padding:16px 0">No hay titulares recientes de '+esc(ticker)+' en la fuente.</p>';
+  return '<ul class="drw-news">'+items.map(function(n){
+    return '<li><a href="'+esc(n.link||'#')+'" target="_blank" rel="noopener noreferrer">'+esc(n.title||'')+'</a><span>'+esc(n.source||'')+(n.hoursAgo!=null?' · hace '+n.hoursAgo+' h':'')+'</span></li>';
+  }).join('')+'</ul>';
+}
 var dTicker=null,dTab="chart",dRange=60,dHistCache={},dFundCache={},dEarnCache={};
 var corrCache={};
 
@@ -8076,8 +8124,12 @@ function renderDrawerBody(){
   var s50Last=s50.length?s50[s50.length-1]:cur;
 
 
-  var tabBtns=["chart","rsi","macd","fundamentals"].map(function(t){
-    var labels={chart:icon('capital','ico-inline')+" Precio",rsi:"RSI",macd:"MACD",fundamentals:icon('clipboard','ico-inline')+" Fundamentales"};
+  // I07 (M11): "Mi posición" solo si el ticker está en tu portafolio, y "Noticias" del ticker.
+  var own=S.portfolio.filter(function(h){return h.t===ticker;});
+  if(dTab==='mine'&&!own.length) dTab='chart';
+  var tabList=["chart","rsi","macd","fundamentals"].concat(own.length?["mine"]:[]).concat(["news"]);
+  var tabBtns=tabList.map(function(t){
+    var labels={chart:"Precio",rsi:"RSI",macd:"MACD",fundamentals:"Fundamentales",mine:"Mi posición",news:"Noticias"};
     return '<button class="dtab'+(dTab===t?" on":"")+'" onclick="setDTab(\''+t+'\')">'+labels[t]+'</button>';
   }).join("");
 
@@ -8090,8 +8142,11 @@ function renderDrawerBody(){
   });
 
   var content="";
+  if(dTab==="mine"){ content=drawerMinePane(ticker,own,cur); }
+  else if(dTab==="news"){ content=drawerNewsPane(ticker); }
   // Chart/RSI/MACD need history — show per-area loading without blocking the whole drawer
-  if(hist.length===0&&(dTab==="chart"||dTab==="rsi"||dTab==="macd")){
+  if(dTab==="mine"||dTab==="news"){ /* ya resuelto arriba */ }
+  else if(hist.length===0&&(dTab==="chart"||dTab==="rsi"||dTab==="macd")){
     content='<div class="dload" style="height:220px"><div class="spin"></div>Cargando histórico...</div>';
   } else if(dTab==="chart"){
     content=
@@ -8135,8 +8190,6 @@ function renderDrawerBody(){
   } else {
     // Fundamentals
     var f=fund;
-    var recLabel={'strongbuy':'Sesgo alcista fuerte','buy':'Sesgo alcista','hold':'Neutro','sell':'Sesgo bajista','strongsell':'Sesgo bajista fuerte','neutral':'Sin consenso','strong buy':'Sesgo alcista fuerte','strong sell':'Sesgo bajista fuerte'};
-    var recColor={'strongbuy':'var(--grn)','buy':'var(--grn)','hold':'var(--amber)','sell':'var(--red)','strongsell':'var(--red)','neutral':'var(--text2)','strong buy':'var(--grn)','strong sell':'var(--red)'};
     // Consenso de analistas y precio objetivo (FMP) retirados en el relanzamiento
     // v2: son recomendaciones de compra/venta de terceros.
     var rec=null;
@@ -8180,15 +8233,6 @@ function renderDrawerBody(){
         :
         companyInfo+
         '<div class="fund3">'+fundCards+'</div>'+
-        // Analyst consensus
-        (rec?
-          '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">'+
-          '<div><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:3px">Consenso analistas · FMP</div>'+
-          '<div style="font-size:13px;font-weight:700;color:'+(recColor[rec]||'var(--text2)')+'">'+( recLabel[rec]||f.analystRating||rec)+'</div></div>'+
-          (f.targetPrice&&f.targetPrice>0?
-            '<div style="text-align:right"><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">DCF vs Mercado</div>'+
-            '<div style="font-size:13px;font-weight:700;color:'+(f.targetPrice>0?'var(--pos)':'var(--neg)')+'">'+( f.targetPrice>0?'+':'')+fmtD(f.targetPrice)+'</div></div>':'')+
-          '</div>':'')+
       '')+
       // Margins visual bar
       (f&&(f.grossMargin!=null||f.netMargin!=null)?
@@ -8269,15 +8313,18 @@ function renderDrawerBody(){
     // El drawer es el hub de decision: ademas de encolar (Watchlist/Portfolio),
     // enlaza a los siguientes pasos llevando el ticker actual, para no cerrar y
     // re-tipearlo en Riesgo / Comparador / Bitacora / Alertas.
-    '<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+
-    '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">+ Seguir</button>'+
-    '<button class="btn" onclick="openModal(\'addpos\');closeDrawer()">+ Portfolio</button>'+
+    // I07: solo dos acciones a la vista; el resto en "Más". Nunca "comprar".
+    '<div class="drw-acts">'+
+    '<button class="btn-big" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Crear alerta</button>'+
     '<button class="btn" onclick="openCalculator(\''+esc(ticker)+'\','+(lq&&lq.price?+lq.price:0)+')">Calcular posición</button>'+
-    '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
-    '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+esc(ticker)+'\'})">Registrar</button>'+
-    '<button class="btn" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Crear alerta</button>'+
-    '<button class="btn" style="border-color:var(--border);color:var(--text3)" onclick="closeDrawer()">Cerrar</button>'+
-    '</div>';
+    '<details class="drw-more"><summary class="btn">Más</summary><div class="drw-more-m">'+
+    '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">Agregar a mi lista</button>'+
+    '<button class="btn" onclick="openModal(\'addpos\');closeDrawer()">Agregar al portafolio</button>'+
+    '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar con SPY</button>'+
+    '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+esc(ticker)+'\'})">Registrar operación</button>'+
+    '</div></details>'+
+    '</div>'+
+    '<p class="drw-attr">Gráfico: TradingView Lightweight Charts. Precios con el retraso de la fuente.</p>';
 
   if(dTab==='chart') setTimeout(function(){renderLWCharts(hist,sma20,sma50,bbArr,sma200);},320);
 }
