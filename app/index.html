@@ -2251,12 +2251,6 @@ const DEF_WATCH=window.InvestDemo.DEMO_WATCH;
 // (loadAllSigScores). sig: 'UP' | 'MIX' | 'DOWN' | null (ver app/lib/readings.js).
 const ALL_SIG=["NVDA","AAPL","XLK","SPY","V","AMZN","VTI","MSFT","QQQ","GOOGL","META","JPM","TSLA","XLE","WMT","IVV","UNH","DIA","JNJ","XLV"]
   .map(function(t){return {t:t,sig:null,rsi:null};});
-const SCENARIOS=[
-  {name:"Bull Case",icon:"bull",prob:.35,ret:.25},
-  {name:"Base Case",icon:"macd",prob:.45,ret:.10},
-  {name:"Bear Case",icon:"bear",prob:.15,ret:-.10},
-  {name:"Black Swan",icon:"storm",prob:.05,ret:-.35}
-];
 // El campo `icon` no es un emoji: es el sufijo de su <g id="i-*"> en <defs>
 // (ver icon()/pageIcon() mas arriba). Antes tenia el emoji literal aunque el
 // campo no se renderiza en ningun lado (fila2 de renderMainNav llama icon(id)
@@ -2651,7 +2645,18 @@ async function fetchCryptoQuote(ticker){
 }
 
 // fetchHistory — OHLCV history via /api/history edge function
-async function fetchHistory(ticker,range){
+// I11: peticiones en vuelo compartidas. Régimen, VIX y fuerza sectorial pedían
+// el mismo histórico (SPY 1y, ^VIX 3mo) varias veces en paralelo al arrancar.
+var _histInflight={};
+function fetchHistory(ticker,range){
+  var k=ticker+'|'+(range||'3mo');
+  if(_histInflight[k]) return _histInflight[k];
+  var p=_fetchHistoryImpl(ticker,range);
+  _histInflight[k]=p;
+  p.then(function(){ delete _histInflight[k]; },function(){ delete _histInflight[k]; });
+  return p;
+}
+async function _fetchHistoryImpl(ticker,range){
   try{
     var r=range||'3mo';
     var ckey='h_'+ticker+'_'+r;
@@ -2913,7 +2918,7 @@ function manualRefresh(){
   var tickers=[];
   S.portfolio.forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.push(h.t);});
   S.watchlist.forEach(function(t){if(tickers.indexOf(t)<0)tickers.push(t);});
-  ALL_SIG.forEach(function(s){if(tickers.indexOf(s.t)<0)tickers.push(s.t);});
+  if(isAnalizarPage()) ALL_SIG.forEach(function(s){if(tickers.indexOf(s.t)<0)tickers.push(s.t);});
   refreshLive(tickers,true).then(function(){renderMain().catch(function(){});}).catch(function(){});
 }
 function getLivePrice(ticker){
@@ -2921,7 +2926,8 @@ function getLivePrice(ticker){
   var ph=S.portfolio.find(function(h){return h.t===ticker;});
   if(ph) return ph.cur;
   var sg=ALL_SIG.find(function(s){return s.t===ticker;});
-  return sg&&sg.p?sg.p:100;
+  // Sin dato no se inventa un precio (antes devolvía 100).
+  return sg&&sg.p?sg.p:null;
 }
 // ── TI ─────────────────────────────────────────────────────────
 var TI={
@@ -3742,6 +3748,11 @@ function setPage(p){
   if(p==='sentiment'||p==='radar') p='decision';
   S.page=p;
   track('module_view',{module:p});
+  if(isAnalizarPage()&&!S._universeQuotes){
+    S._universeQuotes=true;
+    var _u=ALL_SIG.map(function(x){return x.t;}).filter(function(t){return !LIVE[t];});
+    if(_u.length) refreshLive(_u).then(function(){ if(isAnalizarPage()) try{renderMain();}catch(e){} }).catch(function(){});
+  }
   closeDrawer();
   toggleMobileMenu(false);
   renderTopbar();
@@ -4016,6 +4027,33 @@ function _allSigIncluirUniverso(){
   (S.watchlist||[]).forEach(function(w){ add(typeof w==='string'?w:(w&&w.ticker)); });
   (S.portfolio||[]).forEach(function(h){ if(h.type!=='Crypto') add(h.t); });
 }
+
+// I11: Panorama solo necesita lo que la persona sigue (portafolio + lista).
+// El universo de referencia completo se calcula al entrar a Analizar.
+var MINE_SIG_REAL=false, _mineSigLoading=false;
+function _mineTickers(){
+  var out=[];
+  (S.portfolio||[]).forEach(function(h){ if(h.type!=='Crypto'&&out.indexOf(h.t)<0) out.push(h.t); });
+  (S.watchlist||[]).forEach(function(t){ if(out.indexOf(t)<0) out.push(t); });
+  return out;
+}
+async function loadMineSigScores(){
+  if(_mineSigLoading||MINE_SIG_REAL||ALL_SIG_REAL) return;
+  _mineSigLoading=true;
+  try{
+    _allSigIncluirUniverso();
+    var ts=_mineTickers(), n=0;
+    for(var i=0;i<ts.length;i++){
+      try{
+        var r=await deScoreTicker(ts[i]);
+        var x=ALL_SIG.find(function(y){return y.t===ts[i];});
+        if(r&&x){ x.sig=r.trend; x.rsi=r.rsi; n++; }
+      }catch(e){}
+    }
+    if(n>0){ MINE_SIG_REAL=true; if(S.page==='dash'){ try{ renderMain(); }catch(e){} } }
+  }finally{ _mineSigLoading=false; }
+}
+function isAnalizarPage(){ return ['sig','decision','ind','screener','comp'].indexOf(S.page)>=0; }
 
 async function loadAllSigScores(force){
   _allSigIncluirUniverso();
@@ -4358,10 +4396,13 @@ function renderDecisionEngineBody(){
       '</div>';
     var globalPane='<div id="de-pane-global">'+regimeCard+vixCard+earningsCard+'</div>';
     var assetsPane='<div id="de-pane-assets" style="display:none">'+scoresHtml+disclaimer+'</div>';
-    document.getElementById('de-body').innerHTML=tabNav+globalPane+assetsPane;
+    var deb=document.getElementById('de-body');
+    if(!deb) return; // la persona ya cambió de pantalla
+    deb.innerHTML=tabNav+globalPane+assetsPane;
     drawSPYMiniChart(regime);
   }).catch(function(err){
-    document.getElementById('de-body').innerHTML='<div style="color:var(--red);font-size:12px;padding:20px">Error al cargar datos: '+esc(err.message)+'</div>';
+    var deb2=document.getElementById('de-body'); if(!deb2) return;
+    deb2.innerHTML='<div style="color:var(--red);font-size:12px;padding:20px">Error al cargar datos: '+esc(err.message)+'</div>';
   });
 }
 
@@ -5120,13 +5161,13 @@ function dashFocoCard(port){
   // Relanzamiento v2: antes listaba "candidatos" con señal alcista en la
   // watchlist (para comprar) y bajista en el portafolio (para vender). Ahora
   // solo describe datos de lo que la persona ya sigue, sin sugerir operaciones.
-  if(!ALL_SIG_REAL && !allSigIsLoading()){
-    loadAllSigScores().catch(function(){});
+  if(!ALL_SIG_REAL && !MINE_SIG_REAL){
+    loadMineSigScores().catch(function(){});
   }
   var inPort={}; (port||[]).forEach(function(h){inPort[h.t]=true;});
   var wl=S.watchlist||[];
   var bajo=[], extremos=[];
-  if(ALL_SIG_REAL){
+  if(ALL_SIG_REAL||MINE_SIG_REAL){
     ALL_SIG.forEach(function(s){
       var mio=inPort[s.t]||wl.indexOf(s.t)>=0;
       if(!mio) return;
@@ -5140,7 +5181,7 @@ function dashFocoCard(port){
     }).join('');
   }
   var rows='';
-  if(!ALL_SIG_REAL){
+  if(!ALL_SIG_REAL&&!MINE_SIG_REAL){
     rows='<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Calculando indicadores con datos históricos…</div>';
   }else if(!bajo.length && !extremos.length){
     rows='<div style="font-size:12px;color:var(--text2);line-height:1.6">Ninguna de tus posiciones cotiza bajo sus dos medias y ningún activo que sigues tiene el RSI fuera de la zona 30–70.</div>';
@@ -8169,165 +8210,6 @@ function renderDrawerBody(){
 }
 
 
-// ── ASISTENTE (sin conectar; no hay entrada en la UI) ─────────────
-var AI={open:false,messages:[],loading:false};
-
-function toggleAI(){
-  AI.open=!AI.open;
-  var panel=document.getElementById('ai-panel');
-  if(!panel){renderAIPanel();return;}
-  panel.style.transform=AI.open?'translateX(0)':'translateX(100%)';
-  if(AI.open&&AI.messages.length===0) renderAIPanel();
-}
-
-function buildPortfolioContext(){
-  var port=S.portfolio;
-  var totM=port.reduce(function(s,h){return s+h.sh*h.cur;},0);
-  var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
-  var pnl=totM-totC;
-  var lines=["PORTFOLIO DEL USUARIO:"];
-  lines.push("Capital total: "+(S.capital>0?"$"+fmt(S.capital):"sin definir"));
-  lines.push("Valor de mercado: $"+fmt(totM));
-  lines.push("P&L total: "+(pnl>=0?"+":"")+D(pnl)+" ("+(pnl>=0?"+":"")+pct(pnl/(totC||1))+")");
-  lines.push("\nPOSICIONES:");
-  port.forEach(function(h){
-    var pnlH=h.sh*(h.cur-h.cost);
-    lines.push("- "+h.t+" ("+h.type+"): "+h.sh+" acciones @ $"+fmtD(h.cost)+" entrada, $"+fmtD(h.cur)+" actual, P&L: "+(pnlH>=0?"+":"")+D(pnlH));
-  });
-  lines.push("\nWATCHLIST: "+S.watchlist.join(", "));
-  lines.push("\nSEÑALES ACTUALES:");
-  ALL_SIG.slice(0,8).forEach(function(s){
-    lines.push("- "+s.t+": "+trendLabel(s.sig)+" (RSI "+(s.rsi==null?"—":s.rsi)+", precio $"+(s.p?fmtD(s.p):"—")+")");
-  });
-  lines.push("\nNOTICIAS RELEVANTES (semana actual):");
-  getNewsData().slice(0,4).forEach(function(n){
-    lines.push("- ["+n.cat+"] "+n.title+" ("+relTime(n.hoursAgo)+")");
-  });
-  return lines.join("\n");
-}
-
-async function sendAIMessage(userMsg){
-  if(!userMsg||!userMsg.trim()||AI.loading) return;
-  AI.messages.push({role:"user",content:userMsg});
-  AI.loading=true;
-  renderAIMessages();
-
-  var context=buildPortfolioContext();
-  var sysPrompt="Eres MOY IQ Analista, un asistente de análisis técnico educativo especializado en mercados de EE.UU. y LATAM. "+
-    "Ofreces análisis técnico educativo basado en datos y explicas conceptos de forma clara. "+
-    "NO das recomendaciones de inversión, ni instrucciones de compra/venta, ni asesoría personalizada. "+
-    "Toda decisión de inversión es responsabilidad exclusiva del usuario. "+
-    "Siempre considera el contexto del usuario: inversor en LATAM con exposición a mercados US. "+
-    "Responde en español, de forma educativa y clara. Máximo 3-4 párrafos por respuesta.\n\n"+
-    context;
-
-  var msgs=AI.messages.map(function(m){return {role:m.role,content:m.content};});
-
-  try{
-    await new Promise(function(r){setTimeout(r,600);});
-    var reply="El Análisis IA está en mantenimiento mientras migramos a un servidor seguro. Estará disponible muy pronto con mejoras importantes. Mientras tanto usa el Radar Financiero para análisis de tu portfolio.";
-    AI.messages.push({role:"assistant",content:reply});
-  }catch(e){
-    AI.messages.push({role:"assistant",content:"Error de conexión. Verifica tu acceso a la API de Claude."});
-  }
-  AI.loading=false;
-  renderAIMessages();
-}
-
-function renderAIPanel(){
-  // Create panel if not exists
-  if(!document.getElementById('ai-panel')){
-    var panel=document.createElement('div');
-    panel.id='ai-panel';
-    panel.style.cssText='position:fixed;top:0;right:0;width:380px;max-width:95vw;height:100vh;height:100dvh;background:var(--card);border-left:1px solid var(--border2);z-index:300;transform:'+(AI.open?'translateX(0)':'translateX(100%)')+';transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.6)';
-    document.body.appendChild(panel);
-  }
-  var panel=document.getElementById('ai-panel');
-  panel.style.transform=AI.open?'translateX(0)':'translateX(100%)';
-
-  var suggested=["¿Debo rebalancear mi portfolio?","¿Qué opinas de NVDA antes de sus earnings?","¿Cómo me afecta que la Fed no baje tasas?","¿Cuál es mi mayor riesgo actual?","¿Conviene agregar más SPY ahora?"];
-
-  panel.innerHTML=
-    // Header
-    '<div style="padding:16px 18px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">'+
-    '<div style="display:flex;align-items:center;gap:10px">'+
-    '<div style="width:32px;height:32px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff">'+icon('robot')+'</div>'+
-    '<div>'+
-    '<div style="font-size:13px;font-weight:700;color:var(--bright)">MOY IQ Analista</div>'+
-    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Motor de Análisis Técnico · Contexto de tu portfolio</div>'+
-    '</div></div>'+
-    '<button onclick="toggleAI()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px;border-radius:var(--r-sm);line-height:1" aria-label="Cerrar">'+icon('close')+'</button>'+
-    '</div>'+
-
-    // Messages area
-    '<div id="ai-msgs" style="flex:1;overflow-y:auto;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:10px">'+
-    (AI.messages.length===0?
-      '<div style="text-align:center;padding:24px 0">'+
-      '<div style="width:28px;height:28px;margin:0 auto 10px;color:var(--amber)">'+icon('robot','ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
-      '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:6px">Hola, soy tu MOY IQ Analista</div>'+
-      '<div style="font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:16px">Analizo tu portfolio con los datos que has registrado.<br>Pregúntame lo que quieras sobre tus inversiones.</div>'+
-      '<div style="display:flex;flex-direction:column;gap:6px">'+
-      suggested.map(function(q){
-        return '<button onclick="document.getElementById(\'ai-input\').value=\''+q+'\';sendFromInput()" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:8px 12px;font-size:11px;color:var(--text);cursor:pointer;text-align:left;transition:.15s;font-family:\'IBM Plex Mono\',monospace" onmouseover="this.style.borderColor=\'var(--orange-bd)\';this.style.color=\'var(--amber)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text)\'">'+icon('chat')+' '+q+'</button>';
-      }).join('')+
-      '</div></div>'
-    :'')+
-    '</div>'+
-
-    // Input area
-    '<div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--card2);flex-shrink:0">'+
-    '<div style="display:flex;gap:8px;align-items:flex-end">'+
-    '<textarea id="ai-input" placeholder="Pregunta sobre tu portfolio..." rows="1" style="flex:1;background:var(--card);border:1px solid var(--border2);border-radius:var(--r-md);padding:8px 11px;color:var(--bright);font-size:12px;font-family:\'IBM Plex Mono\',monospace;outline:none;resize:none;line-height:1.4;max-height:100px" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendFromInput();}" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,100)+\'px\'"></textarea>'+
-    '<button onclick="sendFromInput()" style="width:36px;height:36px;border-radius:var(--r-md);border:none;background:linear-gradient(135deg,var(--amber),var(--orange-d));color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(247,147,26,.3)" aria-label="Volver arriba"><span aria-hidden="true">↑</span></button>'+
-    '</div>'+
-    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:6px;text-align:center">Enter para enviar · Shift+Enter para nueva línea</div>'+
-    '</div>';
-
-  if(AI.messages.length>0) renderAIMessages();
-}
-
-function renderAIMessages(){
-  var panel=document.getElementById('ai-panel');
-  if(!panel) return;
-  var msgsEl=document.getElementById('ai-msgs');
-  if(!msgsEl) return;
-
-  var html=AI.messages.map(function(m){
-    var isUser=m.role==="user";
-    return '<div style="display:flex;gap:8px;justify-content:'+(isUser?'flex-end':'flex-start')+'">'+
-      (!isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;margin-top:2px">'+icon('robot')+'</div>':'')+
-      '<div style="max-width:85%;padding:9px 12px;border-radius:'+(isUser?'12px 12px 4px 12px':'12px 12px 12px 4px')+';background:'+(isUser?'var(--amber)':'var(--card)')+';color:'+(isUser?'#fff':'var(--text)')+';font-size:12px;line-height:1.6;border:1px solid '+(isUser?'transparent':'var(--border)')+';font-family:\'IBM Plex Sans\',sans-serif;white-space:pre-wrap">'+
-      esc(m.content)+
-      '</div>'+
-      (isUser?'<div style="width:26px;height:26px;border-radius:var(--r-sm);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;color:var(--text2)">'+icon('user')+'</div>':'')+
-      '</div>';
-  }).join('');
-
-  if(AI.loading){
-    html+='<div style="display:flex;gap:8px">'+
-      '<div style="width:26px;height:26px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--amber),var(--orange-d));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0">'+icon('robot')+'</div>'+
-      '<div style="padding:9px 14px;border-radius:var(--r-lg) 12px 12px 4px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;gap:5px">'+
-      '<div style="width:6px;height:6px;border-radius:50%;background:var(--amber);animation:blink .8s infinite"></div>'+
-      '<div style="width:6px;height:6px;border-radius:50%;background:var(--amber);animation:blink .8s .2s infinite"></div>'+
-      '<div style="width:6px;height:6px;border-radius:50%;background:var(--amber);animation:blink .8s .4s infinite"></div>'+
-      '</div></div>';
-  }
-
-  msgsEl.innerHTML=html||'<div></div>';
-  msgsEl.scrollTop=msgsEl.scrollHeight;
-}
-
-function sendFromInput(){
-  var input=document.getElementById('ai-input');
-  if(!input) return;
-  var msg=input.value.trim();
-  if(!msg) return;
-  input.value='';
-  input.style.height='auto';
-  sendAIMessage(msg);
-}
-
-
 // ── EXPORT CSV ──────────────────────────────────────────────────────────────
 // Copia de seguridad completa: todo vive en localStorage, un borrado de
 // navegador lo pierde todo. Serializa lo esencial y permite restaurarlo.
@@ -8336,7 +8218,6 @@ function exportBackup(){
     _v:1, _fecha:new Date().toISOString(),
     portfolio:S.portfolio, trades:S.trades, watchlist:S.watchlist,
     capitalPlan:S.capitalPlan, capital:S.capital,
-    profile:(RADAR&&RADAR.profile)||null,
     rebalTargets:(REBAL&&REBAL.targets)||{}
   };
   var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -8575,941 +8456,6 @@ async function pbAddToPortfolio(btn){
 }
 
 
-// ── MARKET SENTIMENT GAUGE ──────────────────────────────────────────────────
-// ── Sentiment history: persisted daily snapshots ──
-var SENT_HIST=(function(){
-  try{
-    var raw=JSON.parse(localStorage.getItem('mv_sent_hist')||'[]');
-    return Array.isArray(raw)?raw:[];
-  }catch(e){return[];}
-}());
-
-function sentSaveToday(score){
-  var today=new Date().toISOString().slice(0,10);
-  var existing=SENT_HIST.find(function(e){return e.d===today;});
-  if(existing){existing.v=score;}else{SENT_HIST.unshift({d:today,v:score});}
-  SENT_HIST=SENT_HIST.slice(0,30); // keep 30 days
-  try{localStorage.setItem('mv_sent_hist',JSON.stringify(SENT_HIST));}catch(e){}
-}
-
-function calcSentiment(){
-  var buyPct=ALL_SIG.length?
-    (ALL_SIG.filter(function(s){return s.sig==='BUY';}).length/ALL_SIG.length)*100:50;
-  var sigAvg=ALL_SIG.length?
-    ALL_SIG.reduce(function(s,x){return s+x.sc;},0)/ALL_SIG.length:50;
-  var port=S.portfolio;
-  var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
-  var totM=port.reduce(function(s,h){return s+h.sh*h.cur;},0);
-  var pnlPct=totC?((totM-totC)/(totC||1))*100:0;
-  var momentumScore=Math.max(0,Math.min(100,50+pnlPct*2));
-
-  // VIX: use cached DE value if available, otherwise default 18
-  var vixVal=(DE_CACHE.vix&&DE_CACHE.vix.vix)||18;
-  var vixScore=Math.max(0,Math.min(100,100-(vixVal-10)*3));
-  var vixDisplay=DE_CACHE.vix&&DE_CACHE.vix.vix?DE_CACHE.vix.vix.toFixed(1):'—';
-
-  // Esta variable se llamaba rsiAvg pero sumaba sig.sc, que es un score 0-100,
-  // no un RSI. Se mostraba al usuario como 'RSI portfolio': dato mal etiquetado.
-  // Ahora se usa el RSI real si IND_CACHE ya lo cargo, y si no, se cae al
-  // promedio de score PERO con la etiqueta correcta.
-  var rsiAvg=0,rsiCount=0,rsiEsReal=false;
-  port.forEach(function(h){
-    var ind=IND_CACHE[h.t];
-    if(ind&&ind.rsi!=null){ rsiAvg+=ind.rsi; rsiCount++; rsiEsReal=true; }
-  });
-  if(!rsiCount){
-    port.forEach(function(h){var sig=ALL_SIG.find(function(x){return x.t===h.t;});if(sig){rsiAvg+=sig.sc;rsiCount++;}});
-  }
-  rsiAvg=rsiCount?rsiAvg/rsiCount:sigAvg;
-
-  var score=Math.round(buyPct*0.30+sigAvg*0.15+rsiAvg*0.25+vixScore*0.15+momentumScore*0.15);
-  score=Math.max(0,Math.min(100,score));
-
-  var label,color,emoji,desc;
-  if(score<=20){label='Miedo Extremo';color='#e84142';emoji='face-panic';desc='Sentimiento extremadamente negativo. Históricamente asociado a alta volatilidad y ventas indiscriminadas.';}
-  else if(score<=40){label='Miedo';color='#f59e0b';emoji='face-fear';desc='Cautela. Posible sobreacción bajista en el corto plazo.';}
-  else if(score<=60){label='Neutral';color='#6b80a0';emoji='face-neutral';desc='Sin señal clara. El mercado procesa información.';}
-  else if(score<=80){label='Codicia';color='#f7931a';emoji='face-greed';desc='Optimismo. Cuidado con FOMO. Considera toma parcial de ganancias.';}
-  else{label='Codicia Extrema';color='#26a65b';emoji='face-euphoria';desc='Euforia. Riesgo de corrección. Revisa stops y diversificación.';}
-
-  sentSaveToday(score);
-
-  return{score:score,label:label,color:color,emoji:emoji,desc:desc,vixVal:vixVal,
-    components:[
-      {name:'Sesgo alcista', value:buyPct.toFixed(0)+'%',          score:buyPct,        icon:'bolt'},
-      {name:'Score DE avg',  value:sigAvg.toFixed(0)+'/100',        score:sigAvg,        icon:'capital'},
-      {name:(rsiEsReal?'RSI portafolio':'Score portafolio'), value:rsiAvg.toFixed(0), score:rsiAvg, icon:'ind'},
-      {name:'VIX inverso',   value:'VIX '+vixDisplay,               score:vixScore,      icon:'therm'},
-      {name:'Momentum P&L',  value:(pnlPct>=0?'+':'')+pnlPct.toFixed(1)+'%', score:momentumScore, icon:'cash'}
-    ]
-  };
-}
-
-async function refreshSentiment(){
-  var btn=document.getElementById('sent-refresh');
-  if(btn){btn.textContent='⟳ Actualizando...';btn.disabled=true;}
-  await deGetVIX();
-  renderSentimentWidget();
-}
-
-function buildDial(score,color,size){
-  var sz=size||200,cy=sz*0.5;
-  var ang=((score/100)*180)-90;
-  var rad=(ang-90)*Math.PI/180;
-  var r=sz*0.37;
-  var nx=(sz/2+r*Math.cos(rad)).toFixed(1);
-  var ny=(cy+r*Math.sin(rad)).toFixed(1);
-  var segs=[['#e84142',0,.2],['#f59e0b',.2,.4],['#6b80a0',.4,.6],['#f7931a',.6,.8],['#26a65b',.8,1]];
-  var arcs=segs.map(function(seg){
-    var s1=seg[1]*Math.PI,s2=seg[2]*Math.PI,sr=sz*0.41;
-    var x1=(sz/2-sr*Math.cos(s1)).toFixed(1),y1=(cy-sr*Math.sin(s1)).toFixed(1);
-    var x2=(sz/2-sr*Math.cos(s2)).toFixed(1),y2=(cy-sr*Math.sin(s2)).toFixed(1);
-    return '<path d="M '+x1+' '+y1+' A '+sr+' '+sr+' 0 0 1 '+x2+' '+y2+'" fill="none" stroke="'+seg[0]+'" stroke-width="'+(sz*0.065).toFixed(0)+'" opacity=".5"/>';
-  }).join('');
-  return '<svg viewBox="0 0 '+sz+' '+(cy+14)+'" style="width:100%;display:block">'+
-    arcs+
-    '<line x1="'+(sz/2)+'" y1="'+cy+'" x2="'+nx+'" y2="'+ny+'" stroke="'+color+'" stroke-width="3" stroke-linecap="round"/>'+
-    '<circle cx="'+(sz/2)+'" cy="'+cy+'" r="6" fill="'+color+'" opacity=".2"/>'+
-    '<circle cx="'+(sz/2)+'" cy="'+cy+'" r="3" fill="'+color+'"/>'+
-    '<text x="'+(sz/2)+'" y="'+(cy-6)+'" text-anchor="middle" fill="'+color+'" font-size="'+(sz*0.12).toFixed(0)+'" font-weight="700" font-family="IBM Plex Mono,monospace">'+score+'</text>'+
-    '</svg>';
-}
-
-
-function renderSentimentWidget(){
-  var d=calcSentiment();
-  var buy=ALL_SIG.filter(function(s){return s.sig==='BUY';}).length;
-  var hold=ALL_SIG.filter(function(s){return s.sig==='HOLD';}).length;
-  var sell=ALL_SIG.filter(function(s){return s.sig==='SELL';}).length;
-  var t=ALL_SIG.length||1;
-
-  // Real persisted history (up to 14 entries, oldest first)
-  var histData=SENT_HIST.slice(0,14).reverse();
-  // Pad with nulls if we have fewer than 14 days
-  while(histData.length<14) histData.unshift(null);
-  var hBars=histData.map(function(entry,i){
-    var isLast=i===histData.length-1;
-    if(!entry) return '<div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:2px">'+
-      '<div role="img" aria-label="Sin dato" style="width:100%;height:3px;background:var(--card3);border-radius:2px"></div>'+
-      '<div style="font-size:9px;color:var(--border2)">·</div></div>';
-    var v=entry.v;
-    var c2=v<=20?'var(--neg)':v<=40?'var(--amber)':v<=60?'var(--blue)':v<=80?'var(--amber)':'var(--pos)';
-    var dayLabel=isLast?'HOY':entry.d.slice(5); // MM-DD
-    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" title="'+entry.d+': '+v+'">'+
-      '<div role="img" aria-label="'+entry.d+': '+v+'" style="width:100%;height:'+Math.max(4,v*0.65)+'px;background:'+c2+';border-radius:2px 2px 0 0;opacity:'+(isLast?'1':'.5')+'"></div>'+
-      '<div style="font-size:9px;color:'+(isLast?c2:'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+dayLabel+'</div>'+
-      '</div>';
-  }).join('');
-  var compRows=d.components.map(function(c){
-    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">'+
-      '<span style="width:20px;display:inline-flex">'+icon(c.icon)+'</span>'+
-      '<span style="flex:1;font-size:12px;color:var(--text)">'+c.name+'</span>'+
-      '<span style="font-size:12px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:60px;text-align:right">'+c.value+'</span>'+
-      '<div style="width:80px;height:4px;background:var(--card3);border-radius:2px;overflow:hidden">'+
-      '<div style="height:100%;width:'+c.score+'%;background:'+d.color+';border-radius:2px"></div></div>'+
-      '</div>';
-  }).join('');
-
-  var vixStatus=DE_CACHE.vix&&DE_CACHE.vix.vix?
-    '<span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\',monospace">VIX '+d.vixVal.toFixed(1)+' · '+((DE_CACHE.vix&&DE_CACHE.vix.label)||'')+'</span>':
-    '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">VIX no cargado</span>';
-
-  document.getElementById("main").innerHTML=
-    _ph('Analizar · Sentiment','Market Sentiment','// Fear & Greed · 5 componentes ponderados · VIX real',vixStatus+'<button id="sent-refresh" onclick="refreshSentiment()" class="btn" style="padding:10px 16px;font-size:11px">⟳ Actualizar VIX</button>')+
-    '<div class="resp2" style="display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start">'+
-    '<div>'+
-    '<div class="cb" style="text-align:center">'+
-    buildDial(d.score,d.color,210)+
-    '<div style="display:flex;justify-content:center;margin-top:6px;color:'+d.color+'">'+icon(d.emoji,'ico-lg')+'</div>'+
-    '<div style="font-size:18px;font-weight:700;color:'+d.color+';margin-top:4px">'+d.label+'</div>'+
-    '<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:8px;">'+d.desc+'</div>'+
-    '</div>'+
-    '<div class="cb"><h3 class="st"><div class="stbar"></div>Últimos 14 días</h3>'+
-    '<div style="display:flex;align-items:flex-end;height:60px;gap:2px">'+hBars+'</div></div>'+
-    '</div>'+
-    '<div>'+
-    '<div class="cb"><h3 class="st"><div class="stbar"></div>Componentes del índice</h3>'+compRows+
-    '<div style="font-size:11px;color:var(--text3);margin-top:8px;font-family:\'IBM Plex Mono\',monospace">BUY×30% + Score×15% + RSI×25% + VIX×15% + Momentum×15%</div></div>'+
-    '<div class="cb"><h3 class="st"><div class="stbar"></div>Distribución de señales</h3>'+
-    '<div style="display:flex;height:36px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:10px">'+
-    '<div style="flex:'+(buy/t*100)+';background:var(--grn);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">BUY '+buy+'</div>'+
-    '<div style="flex:'+(hold/t*100)+';background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">HOLD '+hold+'</div>'+
-    '<div style="flex:'+(sell/t*100)+';background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--white)">SELL '+sell+'</div>'+
-    '</div>'+
-    '<div style="display:flex;flex-direction:column;gap:2px">'+
-    ALL_SIG.slice(0,6).map(function(s){
-      var lp=getLivePrice(s.t);
-      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">'+
-        '<span style="font-size:11px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:44px">'+s.t+'</span>'+
-        badge(s.sig)+
-        '<div style="flex:1;height:3px;background:var(--card3);border-radius:2px;overflow:hidden">'+
-        '<div style="height:100%;width:'+s.sc+'%;background:'+(s.sc>=72?'var(--grn)':s.sc>=52?'var(--amber)':'var(--red)')+';border-radius:2px"></div></div>'+
-        '<span style="font-size:11px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;width:24px;text-align:right">'+s.sc+'</span>'+
-        '<span style="font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace;width:52px;text-align:right">$'+fmtD(lp)+'</span>'+
-        '</div>';
-    }).join('')+
-    '</div></div>'+
-    '</div></div>';
-}
-
-
-// ── AI PORTFOLIO COACH ──────────────────────────────────────────────────────
-var COACH={report:null,loading:false,lastGenerated:null};
-
-// ══════════════════════════════════════════════════════════════════
-// RADAR FINANCIERO MOY IQ INVEST
-// Health Score · Perfil · 7 Secciones · Historial · PDF · Share
-// ══════════════════════════════════════════════════════════════════
-
-// ── STATE ─────────────────────────────────────────────────────────
-var RADAR={
-  loading:false,
-  report:null,      // current parsed report {date,score,sections,summary}
-  history:[],       // last 12 reports
-  profile:null,     // {risk:1-5, horizon:'short'|'mid'|'long', goal:'growth'|'income'|'preservation'}
-  view:'current',   // 'current' | index of history
-};
-
-// ── INIT ──────────────────────────────────────────────────────────
-function radarInit(){
-  try{
-    var h=JSON.parse(localStorage.getItem('mv_radar_history')||'[]');
-    if(Array.isArray(h)) RADAR.history=h.slice(0,12);
-    // La clave era global ('mv_radar_profile'): dos cuentas en el mismo
-    // navegador compartian perfil. Pasa a ser por usuario, como 'it_' e 'ia_'.
-    // Se lee la clave antigua como respaldo para no perder perfiles ya creados.
-    var k='mv_profile_'+(S.user&&S.user.id||'demo');
-    var p=JSON.parse(localStorage.getItem(k)||localStorage.getItem('mv_radar_profile')||'null');
-    if(p) RADAR.profile=p;
-  }catch(e){/* silent */}
-}
-
-function radarSave(){
-  try{
-    localStorage.setItem('mv_radar_history',JSON.stringify(RADAR.history.slice(0,12)));
-  }catch(e){/* silent */}
-}
-
-function radarSaveProfile(p){
-  RADAR.profile=p;
-  try{
-    localStorage.setItem('mv_profile_'+(S.user&&S.user.id||'demo'),JSON.stringify(p));
-  }catch(e){/* silent */}
-  // Si el perfil trae aporte mensual, Plan de Capital lo usa como punto de
-  // partida en vez del $1000 fijo que estaba hardcodeado.
-  try{
-    if(p&&p.monthly&&parseFloat(p.monthly)>0&&S.capitalPlan){
-      S.capitalPlan.monthly=parseFloat(p.monthly);
-      if(typeof _capSave==='function') _capSave();
-    }
-  }catch(e){/* silent */}
-}
-// Devuelve el perfil o null. Punto unico de lectura para el resto de pantallas.
-function perfilInversor(){
-  var p=RADAR&&RADAR.profile;
-  return (p&&p.risk)?p:null;
-}
-
-// ── HEALTH SCORE ──────────────────────────────────────────────────
-function calcHealthScore(){
-  var port=S.portfolio;
-  if(!port||!port.length) return{total:0,subs:{div:0,mom:0,risk:0,corr:0,val:0}};
-
-  var totM=port.reduce(function(s,h){return s+h.sh*(getLivePrice(h.t)||h.cur||0);},0);
-
-  // 1. Diversificación — HHI (Herfindahl-Hirschman Index)
-  var hhi=0;
-  port.forEach(function(h){
-    var w=totM>0?(h.sh*(getLivePrice(h.t)||h.cur||0))/totM:0;
-    hhi+=w*w;
-  });
-  var divScore=Math.round(Math.max(0,Math.min(100,(1-hhi)*120)));
-
-  // 2. Momentum — % posiciones en verde
-  var inProfit=port.filter(function(h){
-    return (getLivePrice(h.t)||h.cur||0)>h.cost;
-  }).length;
-  var momScore=Math.round((inProfit/port.length)*100);
-
-  // 3. Riesgo de concentración — mayor posición
-  var weights=port.map(function(h){
-    return totM>0?(h.sh*(getLivePrice(h.t)||h.cur||0))/totM:0;
-  });
-  var maxW=Math.max.apply(null,weights);
-  var riskScore=Math.round(Math.max(0,Math.min(100,(1-maxW)*130)));
-
-  // 4. Correlación — diversificación por tipo de activo
-  var types={};
-  port.forEach(function(h){ types[h.type]=(types[h.type]||0)+1; });
-  var nTypes=Object.keys(types).length;
-  var corrScore=Math.round(Math.min(100,nTypes*28));
-
-  // 5. Valoración — ratio señales BUY vs SELL en el portfolio
-  var portTickers=port.map(function(h){return h.t;});
-  var sigs=ALL_SIG.filter(function(s){return portTickers.indexOf(s.t)>=0;});
-  var buys=sigs.filter(function(s){return s.sig==='BUY';}).length;
-  var sells=sigs.filter(function(s){return s.sig==='SELL';}).length;
-  var total=sigs.length||1;
-  var valScore=Math.round(((buys-sells*0.5)/total)*80+40);
-  valScore=Math.max(0,Math.min(100,valScore));
-
-  var totalScore=Math.round(divScore*0.25+momScore*0.20+riskScore*0.25+corrScore*0.15+valScore*0.15);
-
-  return{
-    total:Math.max(0,Math.min(100,totalScore)),
-    subs:{div:divScore,mom:momScore,risk:riskScore,corr:corrScore,val:valScore}
-  };
-}
-
-// ── RISK PROFILE MODAL ────────────────────────────────────────────
-function showRiskProfile(onDone){
-  var mr=document.getElementById('mroot');
-  // 4 preguntas -> 9. Antes eran casi todo tolerancia y CERO capacidad, que es
-  // lo que da credibilidad regulatoria (estilo MiFID ligero) y hace que el
-  // resultado se sienta calculado y no elegido. Se agrupan en bloques visibles:
-  // capacidad objetiva, tu como inversor, y el aporte (operativo).
-  // Lenguaje neutro: 'declaras/estimas', nunca 'deberías/te conviene'.
-  var q=[
-    // ── Bloque A · Capacidad financiera (nuevas) ──
-    {
-      block:'Capacidad financiera',
-      key:'age',
-      q:'¿En qué rango de edad estás?',
-      opts:[
-        {v:'young',label:'18 – 30',desc:'Mayor margen temporal por delante'},
-        {v:'adult',label:'31 – 45',desc:'Etapa de acumulación'},
-        {v:'mature',label:'46 – 60',desc:'Horizonte más acotado'},
-        {v:'senior',label:'60+',desc:'Menor margen temporal'},
-      ]
-    },
-    {
-      block:'Capacidad financiera',
-      key:'emergency',
-      q:'Ante un gasto inesperado grande, ¿podrías cubrirlo sin tocar lo invertido?',
-      opts:[
-        {v:'yes',label:'Sí, tengo fondo de emergencia',desc:'Cubriría varios meses de gastos'},
-        {v:'partial',label:'Parcialmente',desc:'Cubriría parte, tocaría algo de lo invertido'},
-        {v:'no',label:'No',desc:'Tendría que retirar lo invertido'},
-      ]
-    },
-    {
-      block:'Capacidad financiera',
-      key:'income_stability',
-      q:'¿Cómo describes la estabilidad de tus ingresos?',
-      opts:[
-        {v:'stable',label:'Estables y predecibles',desc:'Ingreso fijo mes a mes'},
-        {v:'variable',label:'Variables',desc:'Fluctúan según el mes o la actividad'},
-        {v:'uncertain',label:'Inciertos',desc:'Difíciles de anticipar'},
-      ]
-    },
-    {
-      block:'Capacidad financiera',
-      key:'wealth_pct',
-      q:'¿Qué parte de tu patrimonio piensas destinar a esto?',
-      opts:[
-        {v:'low',label:'Menos del 10%',desc:'Una porción menor del total'},
-        {v:'mid',label:'10 – 30%',desc:'Una parte relevante'},
-        {v:'high',label:'30 – 60%',desc:'Una parte mayoritaria'},
-        {v:'most',label:'Más del 60%',desc:'La mayor parte de tu patrimonio'},
-      ]
-    },
-    // ── Bloque B · Tú como inversor ──
-    {
-      block:'Tú como inversor',
-      key:'risk',
-      q:'¿Cuál es tu tolerancia al riesgo como inversor?',
-      opts:[
-        {v:'1',label:'Muy conservador',desc:'Priorizo no perder dinero sobre ganar'},
-        {v:'2',label:'Conservador',desc:'Acepto pérdidas pequeñas por ganancias moderadas'},
-        {v:'3',label:'Moderado',desc:'Balance entre riesgo y retorno'},
-        {v:'4',label:'Agresivo',desc:'Acepto volatilidad por mayores retornos'},
-        {v:'5',label:'Muy agresivo',desc:'Busco máximo retorno, acepto pérdidas grandes'},
-      ]
-    },
-    {
-      block:'Tú como inversor',
-      key:'horizon',
-      q:'¿Cuál es tu horizonte de inversión?',
-      opts:[
-        {v:'short',label:'Corto plazo',desc:'Menos de 2 años'},
-        {v:'mid',  label:'Mediano plazo',desc:'2 a 7 años'},
-        {v:'long', label:'Largo plazo',desc:'Más de 7 años'},
-      ]
-    },
-    {
-      block:'Tú como inversor',
-      key:'goal',
-      q:'¿Cuál es tu objetivo principal?',
-      opts:[
-        {v:'growth',       label:'Crecimiento de capital',desc:'Maximizar el valor del portfolio'},
-        {v:'income',       label:'Ingresos pasivos',     desc:'Dividendos y flujo de caja'},
-        {v:'preservation', label:'Preservación',          desc:'Mantener el poder adquisitivo'},
-      ]
-    },
-    {
-      block:'Tú como inversor',
-      key:'knowledge',
-      q:'¿Cómo describirías tu familiaridad con instrumentos como ETFs, RSI o medias móviles?',
-      opts:[
-        {v:'learning',label:'Los estoy aprendiendo',desc:'Empezando a familiarizarme'},
-        {v:'basic',label:'Los entiendo a nivel básico',desc:'Conozco los conceptos'},
-        {v:'fluent',label:'Los uso con soltura',desc:'Trabajo con ellos habitualmente'},
-      ]
-    },
-    // ── Bloque C · Aporte (operativo, alimenta Plan de Capital) ──
-    {
-      block:'Tu aporte',
-      key:'monthly',
-      q:'¿Cuánto capital planeas destinar cada mes?',
-      opts:[
-        {v:'0',    label:'Aún no lo defino', desc:'Prefiero ver primero el marco de cálculo'},
-        {v:'250',  label:'Hasta $250',       desc:'Aportes pequeños y constantes'},
-        {v:'1000', label:'$250 – $1.000',    desc:'Aporte mensual regular'},
-        {v:'3000', label:'$1.000 – $5.000',  desc:'Aporte mensual alto'},
-        {v:'8000', label:'Más de $5.000',    desc:'Aporte mensual significativo'},
-      ]
-    }
-  ];
-
-  var profile={};
-  var step=0;
-
-  function renderStep(){
-    var qd=q[step];
-    var prog=Math.round((step/q.length)*100);
-    // numero de bloque para el eyebrow (1·Capacidad, 2·Inversor, 3·Aporte)
-    var bloques=[]; q.forEach(function(x){ if(bloques.indexOf(x.block)<0) bloques.push(x.block); });
-    var nBloque=bloques.indexOf(qd.block)+1;
-    mr.innerHTML='<div class="overlay" onclick=""><div class="modal" style="max-width:460px" onclick="event.stopPropagation()">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">'+
-      '<div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden">'+
-      '<div style="height:100%;width:'+prog+'%;background:var(--grn);border-radius:2px;transition:.4s"></div></div>'+
-      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3);white-space:nowrap">'+step+'/'+q.length+' respondidas</span>'+
-      '</div>'+
-      '<div style="font-size:11px;color:var(--grn);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Bloque '+nBloque+' · '+qd.block+'</div>'+
-      '<h2 style="font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.01em;margin-bottom:20px;color:var(--bright)">'+qd.q+'</h2>'+
-      '<div style="display:flex;flex-direction:column;gap:8px">'+
-      qd.opts.map(function(o){
-        var sel=profile[qd.key]===o.v;
-        return '<div role="button" tabindex="0" onclick="profileSelect(\''+qd.key+'\',\''+o.v+'\')" style="padding:12px 14px;border-radius:var(--r-md);border:1.5px solid '+(sel?'var(--orange-bd)':'var(--border)')+';background:'+(sel?'var(--orange-bg)':'var(--card2)')+';cursor:pointer;transition:.15s" onmouseover="this.style.borderColor=\'var(--orange-bd)\'" onmouseout="this.style.borderColor=\''+(sel?'var(--orange-bd)':'var(--border)')+'\'">'+
-          '<div style="font-size:13px;font-weight:600;color:var(--bright);margin-bottom:3px">'+o.label+'</div>'+
-          '<div style="font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">'+o.desc+'</div>'+
-          '</div>';
-      }).join('')+
-      '</div>'+
-      '<div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">'+
-      (step>0?'<button class="btn" onclick="profilePrev()">← Anterior</button>':'')+
-      '<button class="btn-big" onclick="profileNext()" '+(profile[qd.key]?'':'disabled')+'>'+(step===q.length-1?'Guardar perfil →':'Siguiente →')+'</button>'+
-      '</div>'+
-      (step===q.length-1?'<div style="margin-top:14px;font-size:12px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border);padding-top:10px">Este perfil es orientativo y sirve para ajustar los cálculos de la herramienta. No constituye asesoramiento financiero ni una evaluación de idoneidad.</div>':'')+
-      '</div></div>';
-  }
-
-  window.profileSelect=function(key,val){
-    profile[key]=val;
-    renderStep();
-  };
-  window.profilePrev=function(){
-    if(step>0){step--;renderStep();}
-  };
-  window.profileNext=function(){
-    if(!profile[q[step].key]) return;
-    if(step<q.length-1){step++;renderStep();}
-    else{
-      radarSaveProfile(profile);
-      mr.innerHTML='';
-      if(onDone) onDone();
-    }
-  };
-
-  renderStep();
-}
-
-// ── GENERATE REPORT ───────────────────────────────────────────────
-async function generateRadarReport(){
-  if(RADAR.loading) return;
-
-  // Check profile — show wizard first if missing
-  if(!RADAR.profile){
-    showRiskProfile(function(){
-      generateRadarReport();
-    });
-    return;
-  }
-
-  RADAR.loading=true;
-  renderRadar();
-
-  var port=S.portfolio;
-  var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
-  var totM=port.reduce(function(s,h){return s+h.sh*(getLivePrice(h.t)||h.cur||0);},0);
-  var pnl=totM-totC;
-  var health=calcHealthScore();
-  var sent=calcSentiment();
-
-  // Benchmark SPY vs portfolio this week
-  var spyLive=LIVE['SPY'];
-  var spyChgStr=spyLive?((spyLive.changePct||0)*100).toFixed(2)+'%':'desconocido';
-
-  // Top/worst positions
-  var sorted=port.slice().sort(function(a,b){
-    var ra=(getLivePrice(a.t)||a.cur||0)/a.cost-1;
-    var rb=(getLivePrice(b.t)||b.cur||0)/b.cost-1;
-    return rb-ra;
-  });
-  var topPos=sorted.slice(0,3).map(function(h){
-    var r=((getLivePrice(h.t)||h.cur||0)/h.cost-1)*100;
-    return h.t+'('+( r>=0?'+':'')+r.toFixed(1)+'%)';
-  }).join(', ');
-  var worstPos=sorted.slice(-2).map(function(h){
-    var r=((getLivePrice(h.t)||h.cur||0)/h.cost-1)*100;
-    return h.t+'('+( r>=0?'+':'')+r.toFixed(1)+'%)';
-  }).join(', ');
-
-  // BUY signals not in portfolio (opportunities)
-  var portTickers=port.map(function(h){return h.t;});
-  var opportunities=ALL_SIG
-    .filter(function(s){return s.sig==='BUY'&&portTickers.indexOf(s.t)<0;})
-    .sort(function(a,b){return b.sc-a.sc;})
-    .slice(0,3)
-    .map(function(s){return s.t+'(score:'+s.sc+')';}).join(', ');
-
-  // SELL signals in portfolio (exits)
-  var exitSignals=ALL_SIG
-    .filter(function(s){return s.sig==='SELL'&&portTickers.indexOf(s.t)>=0;})
-    .map(function(s){return s.t+'(score:'+s.sc+')';}).join(', ')||'ninguna';
-
-  // Dividend income next 4 weeks
-  var divIncome='no calculado';
-  if(Object.keys(DIVS.data).length>0){
-    var di=port.reduce(function(s,h){
-      var d=DIVS.data[h.t];
-      if(d&&d.annualRate) return s+(d.annualRate*h.sh/52*4);
-      return s;
-    },0);
-    divIncome='$'+fmtD(di);
-  }
-
-  // Profile labels
-  var riskLabel=['','Muy conservador','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'Moderado';
-  var horizonLabel={short:'Corto plazo (<2 años)',mid:'Mediano plazo (2-7 años)',long:'Largo plazo (>7 años)'}[RADAR.profile.horizon]||'Mediano plazo';
-  var goalLabel={growth:'Crecimiento de capital',income:'Ingresos pasivos',preservation:'Preservación de capital'}[RADAR.profile.goal]||'Crecimiento';
-
-  // Previous week score for comparison
-  var prevScore=RADAR.history.length>0?RADAR.history[0].score:null;
-  var scoreChange=prevScore!==null?' (semana anterior: '+prevScore+', cambio: '+(health.total-prevScore>0?'+':'')+( health.total-prevScore)+')':'';
-
-  var systemPrompt='Eres un analista financiero senior especializado en inversores individuales de LATAM. '+
-    'Generas reportes semanales concisos, específicos y accionables. '+
-    'Siempre usas los tickers y números exactos del portfolio. '+
-    'NUNCA das consejos genéricos — todo debe ser específico para este inversor. '+
-    'Respondes ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin backticks.';
-
-  var userPrompt='Genera el Radar Financiero semanal para este inversor.\n\n'+
-    'PERFIL DEL INVERSOR:\n'+
-    '- Tolerancia al riesgo: '+riskLabel+'\n'+
-    '- Horizonte: '+horizonLabel+'\n'+
-    '- Objetivo: '+goalLabel+'\n\n'+
-    'PORTFOLIO ('+port.length+' posiciones):\n'+
-    '- Capital total: $'+fmt(S.capital)+'\n'+
-    '- Valor mercado: $'+fmt(totM)+'\n'+
-    '- P&L: '+(pnl>=0?'+':'')+D(pnl)+' ('+(pnl>=0?'+':'')+((pnl/(totC||1))*100).toFixed(1)+'%)\n'+
-    '- Mejores posiciones: '+topPos+'\n'+
-    '- Posiciones con pérdida: '+worstPos+'\n\n'+
-    'INDICADORES DE MERCADO:\n'+
-    '- Health Score: '+health.total+'/100'+scoreChange+'\n'+
-    '- Sub-scores: Diversificación '+health.subs.div+'/100, Momentum '+health.subs.mom+'/100, Riesgo '+health.subs.risk+'/100, Correlación '+health.subs.corr+'/100, Valoración '+health.subs.val+'/100\n'+
-    '- Sentiment del mercado: '+sent.label+' ('+sent.score+'/100)\n'+
-    '- SPY esta semana: '+spyChgStr+'\n'+
-    '- Activos con indicador alto fuera del portfolio: '+opportunities+'\n'+
-    '- Activos con indicador bajo en el portfolio: '+exitSignals+'\n'+
-    '- Ingresos dividendos próximas 4 semanas: '+divIncome+'\n\n'+
-    'NOTICIAS RELEVANTES:\n'+
-    getNewsData().slice(0,5).map(function(n,i){return (i+1)+'. '+n.title.substring(0,80);}).join('\n')+'\n\n'+
-    'INSTRUCCIÓN DE FORMATO — responde SOLO con este JSON exacto:\n'+
-    '{\n'+
-    '  "summary": "Una frase que resuma el estado del portfolio esta semana (máx 15 palabras)",\n'+
-    '  "sections": [\n'+
-    '    {"id":"health","title":"Score de Salud","content":"Análisis del score '+health.total+'/100. Qué sub-score está más débil y cómo mejorar. 3-4 oraciones."},\n'+
-    '    {"id":"macro","title":"Contexto Macro","content":"Qué pasó en mercados esta semana y cómo afecta ESPECÍFICAMENTE a las posiciones de este portfolio. 3-4 oraciones."},\n'+
-    '    {"id":"portfolio","title":"Diagnóstico del Portfolio","content":"Análisis posición por posición. Cuál mantener, cuál reducir, cuál promediar. Menciona tickers concretos. 4-5 oraciones."},\n'+
-    '    {"id":"entries","title":"Oportunidades Técnicas","content":"Hasta 2 activos con condición técnica favorable según indicadores. Para cada uno: ticker, zona referencial de precio de soporte, nivel de riesgo referencial por ATR, proyección técnica referencial, ratio R/R estimado, y contexto en 1 línea. Solo análisis técnico educativo — no constituye asesoría financiera ni recomendación de inversión."},\n'+
-    '    {"id":"exits","title":"Señales de Alerta","content":"Posiciones con señal técnica de debilidad según los indicadores. Indica cuáles vigilar y por qué. El usuario decide cuándo actuar."},\n'+
-    '    {"id":"practice","title":"Práctica de la Semana","content":"UNA sola práctica de gestión de portfolio específica para este inversor, basada en su perfil '+riskLabel+' y sus datos actuales. Concreta, aplicable esta semana."},\n'+
-    '    {"id":"action","title":"Puntos de Atención","content":"3 puntos de seguimiento técnico para esta semana. Formato: \'1. [Observación técnica con ticker y nivel de referencia]\'. Análisis educativo, no directivo."}\n'+
-    '  ]\n'+
-    '}';
-
-  try{
-    // Sin delay artificial: antes un setTimeout(600) fingia que la IA
-    // "analizaba". El diagnostico es local e instantaneo; el analisis
-    // narrativo con IA todavia no esta conectado (ver banner en el reporte).
-    var reportObj={
-      date:new Date().toISOString(),
-      dateLabel:new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
-      score:health.total,subs:health.subs,profile:RADAR.profile,
-      summary:'Diagnóstico local del portfolio — Análisis IA disponible próximamente.',
-      sections:[
-        {id:'health',title:'Score de Salud',content:'Tu portfolio tiene un score de '+health.total+'/100. Diversificación: '+health.subs.div+' · Momentum: '+health.subs.mom+' · Riesgo: '+health.subs.risk+' · Correlación: '+health.subs.corr+' · Valoración: '+health.subs.val+'.'},
-        {id:'macro',title:'Análisis Técnico Avanzado',content:icon('volume')+' Los sub-scores del Health Score se calculan localmente con tus datos. El análisis narrativo completo estará disponible muy pronto.'},
-        {id:'action',title:'Mientras tanto',content:'1. Revisa tus posiciones en Portfolio. 2. Consulta Análisis Comparativo para ver indicadores históricos (Alto/Medio/Bajo). 3. Usa la Calculadora para dimensionar con tu regla de riesgo.'},
-      ],
-    };
-    RADAR.report=reportObj;
-    RADAR.history.unshift(reportObj);
-    if(RADAR.history.length>12) RADAR.history=RADAR.history.slice(0,12);
-    radarSave();
-  }catch(e){
-    RADAR.report={
-      date:new Date().toISOString(),
-      dateLabel:new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'}),
-      score:health.total,
-      subs:health.subs,
-      profile:RADAR.profile,
-      summary:'Error al generar el reporte. Verifica tu conexión.',
-      sections:[{id:'error',title:'Error',content:'No se pudo cargar el análisis. Intenta nuevamente en unos minutos.'}],
-    };
-  }
-  RADAR.loading=false;
-  renderRadar();
-}
-
-// ── SHARE LINK ────────────────────────────────────────────────────
-function radarShare(){
-  if(!RADAR.report) return;
-  try{
-    var payload={
-      v:1,
-      date:RADAR.report.dateLabel,
-      score:RADAR.report.score,
-      subs:RADAR.report.subs,
-      summary:RADAR.report.summary,
-      sections:RADAR.report.sections,
-      user:S.user?S.user.name||S.user.email.split('@')[0]:'Usuario',
-    };
-    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    var url=window.location.href.split('#')[0]+'#radar='+encoded;
-
-    // Copy to clipboard
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(url).then(function(){
-        radarToast(icon('link')+' Link copiado al portapapeles — válido 7 días');
-      });
-    } else {
-      // Fallback: show the URL
-      var ta=document.createElement('textarea');
-      ta.value=url;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      radarToast(icon('link')+' Link copiado al portapapeles');
-    }
-  }catch(e){
-    radarToast('Error al generar el link');
-  }
-}
-
-function radarCheckSharedLink(){
-  var hash=window.location.hash;
-  if(INVEST_BETA||!hash||!hash.startsWith('#radar=')) return; // Radar retirado en la beta (T18)
-  try{
-    var encoded=hash.replace('#radar=','');
-    var payload=JSON.parse(decodeURIComponent(escape(atob(encoded))));
-    renderRadarShared(payload);
-  }catch(e){/* silent */}
-}
-
-function renderRadarShared(payload){
-  document.getElementById('main').innerHTML=
-    '<div style="max-width:800px;margin:0 auto">'+
-    '<div style="background:var(--orange-bg);border:1px solid var(--orange-bd);border-radius:var(--r-md);padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;gap:10px">'+
-    icon('signal')+
-    '<span style="font-size:12px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">Reporte compartido por <strong>'+esc(payload.user)+'</strong> · '+esc(payload.date)+'</span>'+
-    '<button class="btn-big" onclick="openModal(\'login\')" style="margin-left:auto;padding:5px 14px;font-size:11px">Crear cuenta gratis →</button>'+
-    '</div>'+
-    radarReportHTML(payload,true)+
-    '</div>';
-}
-
-function radarToast(msg){
-  var d=document.createElement('div');
-  d.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--orange-bd);border-radius:var(--r-sm);padding:10px 18px;font-size:12px;font-family:\'IBM Plex Mono\',monospace;color:var(--amber);z-index:999;box-shadow:var(--shadow-md);transition:opacity .4s';
-  d.textContent=msg;
-  document.body.appendChild(d);
-  setTimeout(function(){d.style.opacity='0';setTimeout(function(){d.remove();},400);},3000);
-}
-
-// ── EXPORT PDF ────────────────────────────────────────────────────
-function radarExportPDF(){
-  if(!RADAR.report) return;
-  // Inject print styles once
-  var styleId='radar-print-css';
-  if(!document.getElementById(styleId)){
-    var style=document.createElement('style');
-    style.id=styleId;
-    style.textContent=[
-      '@media print{',
-      '  *{-webkit-print-color-adjust:exact!important;color-adjust:exact!important;print-color-adjust:exact!important}',
-      '  body{background:#fff!important;color:#1a1a1a!important;font-family:\'IBM Plex Sans\',Arial,sans-serif!important;font-size:11pt!important;margin:0!important}',
-      '  .sb,.main .ph .ph-right,.radar-actions,#ai-panel,.dov,.drw,button,nav{display:none!important}',
-      '  .main{margin:0!important;padding:0!important;max-width:100%!important}',
-      '  #radar-print-area{display:block!important;padding:0!important}',
-      '  .radar-print-hide{display:none!important}',
-      '  .radar-section{break-inside:avoid;page-break-inside:avoid;margin-bottom:14pt!important;border:1pt solid #ddd!important;border-radius:6pt!important;padding:12pt!important;background:#fafafa!important}',
-      '  .radar-section-title{font-size:10pt!important;font-weight:700!important;color:#f79533!important;text-transform:uppercase!important;letter-spacing:.8pt!important;margin-bottom:8pt!important;border-bottom:1pt solid #eee!important;padding-bottom:5pt!important}',
-      '  .radar-section-content{font-size:10pt!important;color:#333!important;line-height:1.6!important}',
-      '  .radar-pdf-header{display:flex!important;justify-content:space-between!important;align-items:center!important;padding:16pt 0 12pt!important;border-bottom:2pt solid #f79533!important;margin-bottom:16pt!important}',
-      '  .radar-pdf-logo{font-size:16pt!important;font-weight:800!important;color:#f79533!important;font-family:\'IBM Plex Mono\',monospace!important}',
-      '  .radar-pdf-meta{font-size:9pt!important;color:#666!important;text-align:right!important}',
-      '  .radar-score-block{display:flex!important;gap:16pt!important;margin-bottom:14pt!important;break-inside:avoid!important}',
-      '  .radar-score-big{font-size:42pt!important;font-weight:800!important;color:#f79533!important;line-height:1!important;font-family:\'IBM Plex Mono\',monospace!important}',
-      '  .radar-subscore{font-size:9pt!important;color:#555!important;margin-bottom:4pt!important}',
-      '  .radar-summary{font-size:13pt!important;color:#1a1a1a!important;font-style:italic!important;margin-bottom:14pt!important;padding:10pt!important;border-left:3pt solid #f79533!important;background:#fffbf7!important}',
-      '  @page{size:A4;margin:18mm 16mm 14mm!important}',
-      '}',
-    ].join('');
-    document.head.appendChild(style);
-  }
-
-  // Set title for the PDF filename
-  var origTitle=document.title;
-  document.title='MOYIQ-Invest-Radar-'+(new Date().toISOString().split('T')[0]);
-
-  // Show the print area, hide the rest
-  var printArea=document.getElementById('radar-print-area');
-  if(printArea){
-    printArea.style.display='block';
-    window.print();
-    document.title=origTitle;
-  } else {
-    window.print();
-    document.title=origTitle;
-  }
-}
-
-// ── REPORT HTML BUILDER ───────────────────────────────────────────
-function radarReportHTML(r,shared){
-  if(!r||!r.sections||!r.sections.length) return '';
-
-  var sectionIcons={
-    health:'risk',macro:'macro',portfolio:'port',
-    entries:'bull',exits:'bear',practice:'bitacora',action:'sig',error:'alert'
-  };
-  var sectionColors={
-    health:'var(--blue)',macro:'var(--text)',portfolio:'var(--text)',
-    entries:'var(--grn)',exits:'var(--red)',practice:'var(--amber)',action:'var(--amber)',
-    error:'var(--red)'
-  };
-
-  // Score block
-  var scoreHTML=
-    '<div class="radar-score-block" style="display:flex;gap:20px;align-items:flex-start;margin-bottom:16px">'+
-    '<div style="flex-shrink:0">'+
-    '<div class="radar-score-big" style="font-size:52px;font-weight:800;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;line-height:1">'+r.score+'</div>'+
-    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:.8px;margin-top:3px">/ 100</div>'+
-    '</div>'+
-    '<div style="flex:1">'+
-    '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px">Sub-scores</div>'+
-    Object.entries({
-      'Diversificación':r.subs&&r.subs.div||0,
-      'Momentum':r.subs&&r.subs.mom||0,
-      'Riesgo':r.subs&&r.subs.risk||0,
-      'Correlación':r.subs&&r.subs.corr||0,
-      'Valoración':r.subs&&r.subs.val||0,
-    }).map(function(kv){
-      var label=kv[0],val=kv[1];
-      var col=val>=70?'var(--grn)':val>=45?'var(--amber)':'var(--red)';
-      return '<div class="radar-subscore" style="margin-bottom:5px">'+
-        '<div style="display:flex;justify-content:space-between;font-size:11px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:2px">'+
-        '<span style="color:var(--text2)">'+label+'</span>'+
-        '<span style="color:'+col+';font-weight:700">'+val+'</span>'+
-        '</div>'+
-        '<div style="height:3px;background:var(--card3);border-radius:2px;overflow:hidden">'+
-        '<div style="height:100%;width:'+val+'%;background:'+col+';border-radius:2px"></div>'+
-        '</div></div>';
-    }).join('')+
-    '</div></div>';
-
-  // Summary
-  // esc() aca: r.summary/sec.content/sec.title pueden venir de un link
-  // compartido (#radar=... en renderRadarShared), es decir de un payload
-  // controlado por quien arma la URL, no solo del propio reporte local —
-  // sin esto era XSS reflejado via URL, no solo self-XSS.
-  // Sin border-left: mismo criterio que el banner de rebalanceo (ver comentario
-  // cerca de linea 5493) - fondo tenue completo, sin barra lateral tipo "side-tab accent".
-  var summaryHTML=r.summary?
-    '<div class="radar-summary" style="font-size:14px;color:var(--bright);font-style:italic;margin-bottom:16px;padding:12px 16px;background:var(--orange-bg);border-radius:var(--r-sm)">'+esc(r.summary)+'</div>':'';
-
-  // Sections
-  var sectHTML=r.sections.map(function(sec){
-    var secIco=sectionIcons[sec.id]||'help';
-    var color=sectionColors[sec.id]||'var(--text)';
-    // Format action plan with numbered items (escapar ANTES de insertar los <br>)
-    var content=esc(sec.content||'');
-    content=content.replace(/\n(\d+)\.\s/g,'<br><span style="color:var(--amber);font-weight:700">$1.</span> ');
-    content=content.replace(/\n/g,'<br>');
-    return '<div class="radar-section" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px">'+
-      '<div class="radar-section-title" style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:'+color+';font-family:\'IBM Plex Mono\',monospace;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border)">'+
-      '<span style="width:14px;height:14px;flex-shrink:0">'+icon(secIco).replace('class="ico"','class="ico" style="width:100%;height:100%"')+'</span>'+esc(sec.title)+
-      '</div>'+
-      '<div class="radar-section-content" style="font-size:12px;color:var(--text);line-height:1.75;font-family:\'IBM Plex Sans\',sans-serif">'+content+'</div>'+
-      '</div>';
-  }).join('');
-
-  return scoreHTML+summaryHTML+sectHTML;
-}
-
-// ── MAIN RENDER ───────────────────────────────────────────────────
-function renderRadar(){
-  var plan=planOf();if(plan.locked&&plan.locked.indexOf('radar')>=0){document.getElementById('main').innerHTML=lockedBanner('Radar Financiero','Evalúa tu salud financiera integral y genera un plan de acción personalizado.');return;}
-  radarInit();
-
-  var hasReport=!!RADAR.report;
-  var health=calcHealthScore();
-
-  // History sidebar items
-  var histItems=RADAR.history.map(function(r,i){
-    var isActive=RADAR.view===i||( RADAR.view==='current'&&i===0&&!RADAR.report);
-    var score=r.score;
-    var scoreColor=score>=70?'var(--grn)':score>=50?'var(--amber)':'var(--red)';
-    return '<div role="button" tabindex="0" onclick="radarViewHistory('+i+')" style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--r-sm);cursor:pointer;background:'+(RADAR.view===i?'var(--orange-bg)':'transparent')+';border:1px solid '+(RADAR.view===i?'var(--orange-bd)':'transparent')+';transition:.15s;margin-bottom:3px" onmouseover="this.style.background=\'var(--card2)\'" onmouseout="this.style.background=\''+(RADAR.view===i?'var(--orange-bg)':'transparent')+'\'">'+
-      '<div style="font-size:15px;font-weight:700;color:'+scoreColor+';font-family:\'IBM Plex Mono\',monospace;width:28px;text-align:center">'+score+'</div>'+
-      '<div>'+
-      '<div style="font-size:11px;font-weight:600;color:var(--bright)">'+new Date(r.date).toLocaleDateString('es-CL',{day:'numeric',month:'short'})+'</div>'+
-      '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+r.summary.substring(0,28)+'…</div>'+
-      '</div></div>';
-  }).join('');
-
-  // Sparkline of scores
-  var sparkHTML='';
-  if(RADAR.history.length>1){
-    var scores=RADAR.history.slice().reverse().map(function(r){return r.score;});
-    var minS=Math.min.apply(null,scores)-5;
-    var maxS=Math.max.apply(null,scores)+5;
-    var rngS=maxS-minS||1;
-    var W=200,H=36;
-    var pts=scores.map(function(s,i){
-      var x=(i/(scores.length-1))*(W-4)+2;
-      var y=H-((s-minS)/rngS)*(H-4)-2;
-      return x.toFixed(1)+','+y.toFixed(1);
-    }).join(' ');
-    sparkHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:36px;margin-bottom:8px">'+
-      '<polyline points="'+pts+'" fill="none" stroke="var(--amber)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'+
-      '</svg>';
-  }
-
-  // Determine what to show in main area
-  var mainContent='';
-  if(RADAR.loading){
-    mainContent='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px">'+
-      '<div class="spin" style="width:28px;height:28px;border-width:3px"></div>'+
-      '<div style="font-size:13px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">Calculando tu diagnóstico de salud...</div>'+
-      '</div>';
-  } else if(RADAR.view!=='current'&&RADAR.history[RADAR.view]){
-    mainContent=radarReportHTML(RADAR.history[RADAR.view],false);
-  } else if(RADAR.report){
-    mainContent=radarReportHTML(RADAR.report,false);
-  } else {
-    // Empty state
-    mainContent='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;text-align:center">'+
-      '<div style="width:56px;height:56px;margin-bottom:16px;color:var(--grn)">'+icon('signal','ico-lg')+'</div>'+
-      '<div style="font-size:18px;font-weight:700;color:var(--bright);margin-bottom:10px">Generá tu diagnóstico completo</div>'+
-      '<div style="font-size:13px;color:var(--text2);line-height:1.7;max-width:460px;margin-bottom:14px">'+
-      'Los indicadores de arriba ya están calculados en vivo. Generá el reporte para ver el <b>detalle por sección</b> — riesgo, correlación, entradas/salidas y plan de acción — con recomendaciones en lenguaje natural.'+
-      '</div>'+
-      '<button onclick="generateRadarReport()" class="btn-big" style="padding:13px 28px;font-size:14px">'+icon('radar')+' Ver diagnóstico de salud</button>'+
-      (RADAR.profile?'<div style="font-size:11px;color:var(--text3);margin-top:12px;font-family:\'IBM Plex Mono\',monospace">Perfil guardado: '+(['','Muy conservador','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'')+'</div>':
-        '<div style="font-size:11px;color:var(--text3);margin-top:12px;font-family:\'IBM Plex Mono\',monospace">Se te preguntará por tu perfil de inversor la primera vez</div>')+
-      '</div>';
-  }
-
-  // Profile badge
-  var profileBadge=RADAR.profile?
-    '<div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-xl);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text2)">'+
-    (['','Muy cons.','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'')+' · '+
-    ({short:'Corto',mid:'Mediano',long:'Largo'}[RADAR.profile.horizon]||'')+' plazo'+
-    '<button onclick="RADAR.profile=null;radarSaveProfile(null);renderRadar()" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;margin-left:4px" title="Cambiar perfil" aria-label="Editar"><span aria-hidden="true">'+icon('edit')+'</span></button>'+
-    '</div>':'';
-
-  document.getElementById('main').innerHTML=
-    _ph('Planificación · Radar','Radar Financiero','// Diagnóstico local de salud del portafolio, con datos y precios en vivo',profileBadge+
-    (hasReport?'<button onclick="radarExportPDF()" class="btn">'+icon('download')+'PDF</button>':'')+
-    (hasReport?'<button onclick="radarShare()" class="btn">'+icon('link')+'Compartir</button>':'')+
-    // Antes este boton del header siempre se mostraba, con texto "Ver
-    // diagnóstico" cuando todavia no habia reporte — el mismo momento en que
-    // el empty state de abajo mostraba su propio CTA "Ver diagnóstico de
-    // salud" para la MISMA accion (generateRadarReport()). Dos botones, un
-    // solo click posible. Se deja solo el del empty state (mas descriptivo)
-    // y el del header aparece unicamente para recalcular un reporte ya
-    // generado, que es la unica funcion que no duplica nada.
-    (hasReport?'<button onclick="generateRadarReport()" class="btn-big" style="padding:8px 18px;font-size:12px"'+(RADAR.loading?' disabled':'')+'>'+(RADAR.loading?'<span style="display:inline-flex;align-items:center;gap:6px"><span class="spin-sm"></span>Calculando...</span>':'Recalcular diagnóstico')+'</button>':''))+
-
-    // KPIs
-    '<div class="krow">'+
-    kpi('Health Score',health.total+'/100',health.total>=70?'Portfolio sano':health.total>=50?'Revisar algunos puntos':'Atención requerida',health.total>=70?'g':health.total>=50?'a':'r')+
-    kpi('Diversificación',health.subs.div+'/100','','n')+
-    kpi('Momentum',health.subs.mom+'%','Posiciones en verde','g')+
-    kpi('Valoración',health.subs.val+'/100','indicador alto/bajo','n')+
-    '</div>'+
-    '<div style="margin:-6px 0 16px"><button onclick="abrirComoCalcula(\'health\')" style="background:none;border:none;color:var(--blue);font-size:11px;cursor:pointer;padding:0;font-family:\'IBM Plex Mono\',monospace">\u00bfC\u00f3mo se calcula? \u2192</button></div>'+
-
-    // Two column layout
-    '<div class="resp2" style="display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start">'+
-
-    // LEFT: history sidebar
-    '<div>'+
-    (RADAR.history.length>0?
-      '<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Historial ('+RADAR.history.length+' semanas)</div>'+
-      sparkHTML+
-      histItems+
-      (RADAR.view!=='current'?'<button onclick="RADAR.view=\'current\';renderRadar()" class="btn" style="width:100%;margin-top:6px">Ver reporte actual</button>':'')+
-      '</div>':'')+
-    (RADAR.profile?
-      '<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Tu perfil</div>'+
-      '<div style="font-size:12px;color:var(--text2);line-height:1.8;">'+
-      '<div>Riesgo: '+(['','Muy conservador','Conservador','Moderado','Agresivo','Muy agresivo'][RADAR.profile.risk]||'')+'</div>'+
-      '<div>Horizonte: '+({short:'Corto plazo',mid:'Mediano plazo',long:'Largo plazo'}[RADAR.profile.horizon]||'')+'</div>'+
-      '<div>Objetivo: '+({growth:'Crecimiento',income:'Ingresos',preservation:'Preservación'}[RADAR.profile.goal]||'')+'</div>'+
-      '</div>'+
-      '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;margin-top:10px;font-size:11px">'+icon('edit')+' Cambiar perfil</button>'+
-      '</div>':'<div class="cb"><div class="st"><div class="stbar"></div>Perfil pendiente</div>'+
-      '<div style="font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:10px">El Radar se personaliza según tu perfil de riesgo, horizonte y objetivo.</div>'+
-      '<button onclick="showRiskProfile(function(){renderRadar();})" class="btn" style="width:100%;font-size:11px">Crear perfil →</button>'+
-      '</div>')+
-    '</div>'+
-
-    // RIGHT: report content (with print area wrapper)
-    '<div>'+
-    '<div id="radar-print-area">'+
-
-    // PDF header (only visible on print)
-    '<div class="radar-pdf-header" style="display:none">'+
-    '<div class="radar-pdf-logo" style="display:flex;align-items:center;gap:6px">'+icon('signal')+'MOY IQ Invest</div>'+
-    '<div class="radar-pdf-meta">Radar Financiero Semanal<br>'+esc(RADAR.report?RADAR.report.dateLabel:'')+'<br>'+
-    esc(S.user?S.user.name||S.user.email:'')+'</div>'+
-    '</div>'+
-
-    '<div class="cb">'+
-    mainContent+
-    '</div>'+
-    '</div>'+
-    '</div>'+
-
-    '</div>';
-}
-
-function radarViewHistory(i){
-  RADAR.view=i;
-  renderRadar();
-}
-
-
-
-
-
 // ── TRIAL SYSTEM ───────────────────────────────────────────────
 function getTrialDaysLeft(){
   if(!S.user||S.user.plan!=='trial') return null;
@@ -9621,7 +8567,7 @@ document.addEventListener('keydown',function(e){
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   var map={
     'n':'news','d':'dash','p':'port','w':'watch','s':'sig',
-    'b':'pb','c':'comp','m':'sentiment','a':'coach',
+    'b':'pb','c':'comp',
     'i':'ind','r':'risk','k':'back','t':'alert'
   };
   if(e.key==='?' ){showShortcuts();return;}
@@ -9636,15 +8582,15 @@ function showShortcuts(){
   var rows=[
     ['Alt+N','Noticias'],['Alt+D','Panorama'],['Alt+P','Portafolio'],
     ['Alt+W','Lista de seguimiento'],['Alt+S','Tendencia'],['Alt+B','Calculadora'],
-    ['Alt+C','Comparador'],['Alt+M','Sentiment'],['Alt+A','AI Coach'],
-    ['Alt+L','Chile/LATAM'],['Alt+I','Indicadores'],['Alt+R','Risk'],
-    ['Ctrl+R','Refresh precios'],['?','Ver atajos'],['Esc','Cerrar paneles'],
+    ['Alt+C','Comparador'],
+    ['Alt+I','Indicadores'],['Alt+R','Riesgo'],['Alt+K','Probar estrategia'],['Alt+T','Alertas'],
+    ['Ctrl+R','Actualizar precios'],['?','Ver atajos'],['Esc','Cerrar paneles'],
   ];
   document.getElementById('mroot').innerHTML=
     '<div class="overlay" onclick="document.getElementById(\'mroot\').innerHTML=\'\'">'+
     '<div class="modal" style="max-width:380px" onclick="event.stopPropagation()">'+
     '<button class="mx" onclick="document.getElementById(\'mroot\').innerHTML=\'\'" aria-label="Cerrar">'+icon('close')+'</button>'+
-    '<h2 style="margin-bottom:3px">⌨️ Atajos de teclado</h2>'+
+    '<h2 style="margin-bottom:3px">Atajos de teclado</h2>'+
     '<p class="msub">Navega MOY IQ Invest sin el mouse</p>'+
     '<div style="display:flex;flex-direction:column;gap:2px">'+
     rows.map(function(r){
@@ -10709,20 +9655,17 @@ var _bootRunning=false;
 async function bootLiveData(){
   if(_bootRunning) return;
   _bootRunning=true;
-  // Scores reales en segundo plano: no bloquea el arranque y se sirve de cache
-  // si ya se calcularon hace menos de 30 min.
-  setTimeout(function(){ loadAllSigScores(); }, 1200);
+  // I11: el universo de referencia (ALL_SIG, 20 tickers con un año de
+  // historia cada uno) ya no se carga al arrancar: lo piden Analizar y sus
+  // pantallas cuando se abren. Panorama usa loadMineSigScores().
   if(_bootInterval) clearInterval(_bootInterval);
 
   // Boot: portfolio + watchlist + top señales del dashboard
   var tickers=[];
   S.portfolio.forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.push(h.t);});
   S.watchlist.forEach(function(t){if(tickers.indexOf(t)<0)tickers.push(t);});
-  // TODAS las señales, no solo las 8 primeras. Señales muestra hasta 20 filas
-  // (maxS=999 en Pro) y las columnas Δ Hoy y vs mín 52s salen de LIVE[t]: con
-  // solo 8 tickers cargados, 12 de las 20 filas quedaban vacias.
-  // Son 20 tickers = 2 peticiones de 10, el mismo coste que ya tenia el resto.
-  ALL_SIG.forEach(function(s){if(tickers.indexOf(s.t)<0)tickers.push(s.t);});
+  // I11: el universo de referencia solo si la pantalla actual lo muestra.
+  if(isAnalizarPage()) ALL_SIG.forEach(function(s){if(tickers.indexOf(s.t)<0)tickers.push(s.t);});
 
   // ① Show cached prices instantly — user sees something immediately
   try{
@@ -10758,7 +9701,7 @@ async function bootLiveData(){
     S.watchlist.forEach(function(t){if(t2.indexOf(t)<0)t2.push(t);});
     // Mismo conjunto que en el arranque: si el refresco periodico no incluyera
     // las señales, sus columnas en vivo se quedarian congeladas a los 5 minutos.
-    ALL_SIG.forEach(function(s){if(t2.indexOf(s.t)<0)t2.push(s.t);});
+    if(isAnalizarPage()) ALL_SIG.forEach(function(s){if(t2.indexOf(s.t)<0)t2.push(s.t);});
     refreshLive(t2).then(function(){
       updateLiveBadge();
       updateLivePricesInDOM();
@@ -11411,8 +10354,6 @@ async function sbRmWatch(ticker){
 
 // ── STARTUP ──────────────────────────────────────────────────
 initTheme();
-radarInit();
-radarCheckSharedLink();
 renderDisclaimer();
 
 (async function boot(){
