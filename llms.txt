@@ -1,10 +1,39 @@
-# MOY IQ Invest — llms.txt
-# https://invest.moyiq.app
+# MOY IQ Invest
 
-MOY IQ Invest is paused since 2026-09-12. It is not accepting new users and no plans are on sale.
+> Educational tool for Spanish-speaking investors to track a portfolio, size each position with their own risk rule, and read technical indicators explained in plain Spanish. Free public beta since the relaunch on 2026-10-08. Not a broker, does not execute orders, does not give investment advice.
 
-It was a portfolio tracking and investment risk education tool for Spanish-speaking investors. It was never a broker, did not execute orders and did not provide financial advice.
+URL: https://invest.moyiq.app
+Language: Spanish
+Status: free public beta (relaunch v2, 2026-10-08). No card required, no paid plans on sale. If paid plans exist in the future, users will be notified in advance and what they use today is kept.
 
-The active product of the same company is MOY IQ, a personal finance app: https://moyiq.app
+## What it does
 
-Built by MAXNOVA & LUCI Global LLC.
+- Portfolio tracking with result per position, watchlist, price alerts, dividend calendar and a trade journal. Positions are entered manually; there is no broker connection.
+- Technical indicators (moving averages, RSI, MACD, volume, Bollinger bands) shown one by one, each with its value, its reference range and a plain-language reading. Example: "RSI 58 — neutral zone (30–70), neither overbought nor oversold".
+- No aggregate rating: the tool does not grade assets with a single 0-100 number.
+- Position-size calculator based on the user's own risk rule (max % of capital at risk per trade), with a per-position concentration limit and risk-at-stop per position and in total. Rebalancing toward target weights the user defines.
+- Asset comparison, market news and market context (indices, volatility, USD exchange rates).
+- Chile first: values in CLP using the "dólar observado" exchange rate.
+
+## Data sources and freshness
+
+Stock and ETF prices come from Yahoo Finance, crypto from CoinGecko and the Chilean "dólar observado" from mindicador.cl. These are free sources and can be delayed. Each price in the app shows its state ("Al día · hh:mm", "Retraso N min · hh:mm", "Mercado cerrado · hh:mm" or "Sin conexión · hh:mm"), computed from the timestamp the source reports.
+
+## Free pages (no account)
+
+- Investor profile quiz: https://invest.moyiq.app/perfil-inversor.html — 6 questions, about 2 minutes, conservative / moderate / aggressive. Indicative only.
+- Market status: https://invest.moyiq.app/estado-mercado.html — US indices, VIX and USD → LATAM exchange rates, with the time of each query.
+- FAQ: https://invest.moyiq.app/faq.html
+
+## Data and accounts
+
+The Invest portfolio is stored in the user's account (Supabase) to sync it. Login is shared with MOY IQ (same email and password); each app keeps its data separately. Account deletion is self-service and immediate (Settings → Delete account).
+
+## Disclaimer
+
+Educational tool. It does not constitute financial or tax advice, nor a recommendation to buy or sell. Investing involves risk of loss. It is not a broker and does not execute orders.
+
+## Company
+
+MAXNOVA & LUCI Global LLC. Support: invest@moyiq.app
+Sister product: MOY IQ, a personal finance app whose data lives on the user's device — https://moyiq.app

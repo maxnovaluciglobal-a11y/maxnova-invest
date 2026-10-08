@@ -1,76 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Términos de Uso — MOY IQ Invest</title>
-<meta name="robots" content="noindex"/>
-<link rel="canonical" href="https://invest.moyiq.app/terms.html">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://invest.moyiq.app/terms.html">
-<meta property="og:title" content="Términos de Uso — MOY IQ Invest">
-<meta property="og:site_name" content="MOY IQ Invest">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Términos de uso · MOY IQ Invest</title>
+<meta name="description" content="Términos de uso de MOY IQ Invest: herramienta educativa en beta pública gratuita. No es bróker ni asesoría financiera."/>
+<link rel="canonical" href="https://invest.moyiq.app/terms.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#14213D"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://invest.moyiq.app/terms.html"/>
+<meta property="og:title" content="Términos de uso · MOY IQ Invest"/>
+<meta property="og:description" content="Términos de uso de MOY IQ Invest: herramienta educativa en beta pública gratuita. No es bróker ni asesoría financiera."/>
+<meta property="og:site_name" content="MOY IQ Invest"/>
+<link rel="preload" as="style" href="/fonts.css"/>
+<link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
 <style>
-  :root {
-    --bg: #f7f8f9; --card: #ffffff; --bright: #111827;
-    --text2: #6b7280; --blue: #1d4ed8; --border: rgba(0,0,0,0.07);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #0c0f16; --card: #161b27; --bright: #f1f5f9; --text2: #94a3b8; --blue: #60a5fa; --border: rgba(255,255,255,0.07); }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--bright); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.7; }
-  .wrap { max-width: 740px; margin: 0 auto; padding: 48px 24px 80px; }
-  .logo { font-size: 13px; font-weight: 700; color: var(--text2); letter-spacing: .08em; margin-bottom: 32px; }
-  h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-  .meta { font-size: 12px; color: var(--text2); margin-bottom: 40px; }
-  h2 { font-size: 15px; font-weight: 700; margin: 32px 0 10px; }
-  p { color: var(--text2); margin-bottom: 14px; }
-  a { color: var(--blue); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .back { display: inline-block; margin-top: 48px; padding: 10px 20px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text2); }
-  .back:hover { color: var(--blue); text-decoration: none; }
+:root{
+  --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
+  --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
+  --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --text:#14213D;--text2:#4A5368;
+  --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
+  --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--papel-000);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--laton-700);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
+.nav :focus-visible{outline-color:#F1EEE6}
+.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--papel);color:var(--navy);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+.narrow{max-width:760px}
+.lockup{display:inline-flex;align-items:center;gap:.32em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);text-decoration:none;white-space:nowrap}
+.lockup .dial{width:1.1em;height:1.1em;flex-shrink:0}
+.lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.12em .32em;line-height:1;font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:0}
+.lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
+.lockup.on-dark{color:#F1EEE6}
+.lockup.on-dark .suffix{color:var(--navy-200)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
+.btn-cta{background:var(--laton);color:var(--navy)}
+.btn-cta:hover{box-shadow:inset 0 0 0 2px rgba(20,33,61,.25)}
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid var(--hair-on-navy)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.nav-r{display:flex;align-items:center;gap:4px}
+.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--navy-200);font-size:15px;font-weight:500;text-decoration:none}
+.nav-r a.lnk:hover{color:#F1EEE6}
+@media (max-width:640px){.nav-r a.lnk{display:none}}
+@media (max-width:400px){.nav .lockup{font-size:16px}.nav .btn{padding:0 12px;font-size:14px}}
+
+main{padding:clamp(40px,7vh,80px) 0 clamp(64px,10vh,112px)}
+.doc{max-width:740px}
+.doc h1{font-family:var(--display);font-weight:600;font-size:clamp(30px,4vw,42px);line-height:1.1;letter-spacing:-.02em;margin-bottom:8px;text-wrap:balance}
+.doc .meta{font-family:var(--mono);font-size:13px;color:var(--text2);margin-bottom:32px}
+.doc h2{font-size:18px;font-weight:600;margin:36px 0 10px;letter-spacing:-.005em}
+.doc p,.doc li{color:var(--text2);max-width:68ch}
+.doc p{margin-bottom:14px}
+.doc ul{margin:0 0 14px 20px}
+.doc li{margin-bottom:6px}
+.doc strong{color:var(--navy);font-weight:600}
+.callout{padding:16px 20px;border-radius:12px;background:var(--papel);margin:8px 0 16px}
+.callout p:last-child{margin-bottom:0}
+footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center}
+.foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 20px}
+.foot a{display:inline-flex;align-items:center;min-height:40px;color:var(--text2)}
+.foot a:hover{color:var(--navy)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="logo">MOY IQ · INVEST</div>
-  <h1>Términos de Uso</h1>
-  <p class="meta">Última actualización: julio 2026 · Versión v1.0</p>
+<a class="skip" href="#main">Saltar al contenido</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<symbol id="dial" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+  <path d="M 28.79 71.21 A 30 30 0 1 1 71.21 71.21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
+  <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
+</symbol>
+</defs>
+</svg>
 
-  <h2>1. Descripción del servicio</h2>
-  <p>MOY IQ Invest es una plataforma de análisis financiero educativo operada por MAXNOVA &amp; LUCI Global LLC. La plataforma provee herramientas de seguimiento de portafolio, señales técnicas, análisis de mercado y proyecciones basadas en datos históricos y públicos.</p>
+<header class="nav">
+  <div class="wrap">
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <nav class="nav-r" aria-label="Principal">
+      <a class="lnk" href="/faq.html">FAQ</a>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </nav>
+  </div>
+</header>
 
-  <h2>2. No es asesoría financiera</h2>
-  <p>Todo el contenido de MOY IQ Invest tiene carácter estrictamente educativo e informativo. No constituye asesoría financiera, recomendación de inversión, oferta de compra o venta de valores, ni garantía de rentabilidad futura. Los rendimientos pasados no garantizan resultados futuros. Consulta con un asesor financiero certificado antes de tomar decisiones de inversión.</p>
+<main id="main">
+  <article class="wrap doc">
+    <h1>Términos de uso</h1>
+    <p class="meta">Última actualización: 8 de octubre de 2026 · Versión 2.0</p>
 
-  <h2>3. Planes y precios</h2>
-  <p><strong>Plan Free:</strong> acceso gratuito con funcionalidades limitadas (hasta 5 activos, 3 alertas, señales básicas).</p>
-  <p><strong>Trial Pro:</strong> período de prueba de 14 días con acceso completo, sin tarjeta de crédito requerida. Solo disponible una vez por cuenta.</p>
-  <p><strong>Plan Pro:</strong> $9.99 USD/mes o $99.99 USD/año, con acceso ilimitado a todas las funcionalidades Pro. El cobro se realiza mensual o anualmente, según el plan elegido, mediante Stripe. Puedes cancelar en cualquier momento desde la configuración de tu cuenta; el acceso Pro se mantiene hasta el fin del período pagado.</p>
+    <h2>1. Descripción del servicio</h2>
+    <p>MOY IQ Invest es una herramienta educativa operada por MAXNOVA &amp; LUCI Global LLC. Permite registrar un portafolio de inversiones, calcular el tamaño de una posición según la regla de riesgo que define cada persona y leer indicadores técnicos calculados sobre datos históricos y públicos.</p>
 
-  <h2>4. Datos de precios</h2>
-  <p>Los precios de mercado se obtienen de Yahoo Finance y pueden tener un retraso de aproximadamente 15 minutos. Los datos de fundamentos provienen de Financial Modeling Prep y Finnhub. MOY IQ Invest no garantiza la exactitud, completitud o puntualidad de los datos mostrados.</p>
+    <h2>2. No es asesoría financiera ni un bróker</h2>
+    <div class="callout">
+      <p><strong>Herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Invertir implica riesgo de pérdida.</strong></p>
+    </div>
+    <p>MOY IQ Invest no ejecuta órdenes, no custodia dinero ni valores y no recomienda activos. Las lecturas de indicadores describen el comportamiento pasado de un activo; no son una predicción ni garantizan resultados futuros. Las decisiones de inversión son responsabilidad exclusiva de cada persona. Si necesitas asesoría, consulta con un asesor financiero habilitado en tu país.</p>
 
-  <h2>5. Cuentas y seguridad</h2>
-  <p>Eres responsable de mantener la confidencialidad de tus credenciales de acceso. No debes compartir tu cuenta ni utilizarla de forma que infrinja estos términos o la legislación aplicable.</p>
+    <h2>3. Beta pública gratuita</h2>
+    <p>Desde el 8 de octubre de 2026, MOY IQ Invest funciona como beta pública gratuita:</p>
+    <ul>
+      <li>Todas las funciones disponibles son gratuitas durante la beta y no pedimos tarjeta ni medio de pago.</li>
+      <li>Al ser una beta, las funciones pueden cambiar, agregarse o retirarse.</li>
+      <li>Si en el futuro hay planes pagos, te avisaremos por correo antes de que empiecen a regir. Lo que uses hoy no se pierde.</li>
+      <li>El servicio se ofrece tal cual, sin garantía de disponibilidad ni nivel de servicio (SLA). Puede haber interrupciones o errores.</li>
+    </ul>
 
-  <h2>6. Propiedad intelectual</h2>
-  <p>Todo el código, diseño, contenido y funcionalidades de MOY IQ Invest son propiedad de MAXNOVA &amp; LUCI Global LLC. Queda prohibida su reproducción, distribución o ingeniería inversa sin autorización escrita.</p>
+    <h2>4. Datos de precios</h2>
+    <p>Los precios de acciones y ETF se obtienen de Yahoo Finance, los de criptoactivos de CoinGecko y el dólar observado de mindicador.cl. Los datos de empresas y resultados trimestrales provienen de Financial Modeling Prep y Finnhub. Son fuentes gratuitas que pueden tener retraso o errores. Cada precio muestra su estado y la hora que informa la fuente. MAXNOVA &amp; LUCI Global LLC no garantiza la exactitud, integridad ni actualidad de los datos.</p>
 
-  <h2>7. Limitación de responsabilidad</h2>
-  <p>En la máxima medida permitida por la ley aplicable, MAXNOVA &amp; LUCI Global LLC no será responsable por pérdidas o daños derivados del uso de la plataforma, incluyendo pérdidas de inversión basadas en la información mostrada.</p>
+    <h2>5. Cuentas y seguridad</h2>
+    <p>Eres responsable de mantener la confidencialidad de tus credenciales. El acceso a MOY IQ Invest usa el mismo sistema de cuentas que MOY IQ: el mismo correo y contraseña sirven en ambas apps. No debes compartir tu cuenta ni usarla de forma que infrinja estos términos o la ley aplicable. Puedes eliminar tu cuenta en cualquier momento desde Configuración → Eliminar cuenta.</p>
 
-  <h2>8. Modificaciones</h2>
-  <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios materiales serán notificados por correo electrónico con al menos 14 días de anticipación.</p>
+    <h2>6. Propiedad intelectual</h2>
+    <p>El código, diseño, contenido y funciones de MOY IQ Invest son propiedad de MAXNOVA &amp; LUCI Global LLC. Queda prohibida su reproducción, distribución o ingeniería inversa sin autorización escrita.</p>
 
-  <h2>9. Ley aplicable</h2>
-  <p>Estos términos se rigen por las leyes del estado de Wyoming, Estados Unidos, y los tratados internacionales aplicables al comercio electrónico en América Latina.</p>
+    <h2>7. Limitación de responsabilidad</h2>
+    <p>En la máxima medida permitida por la ley aplicable, MAXNOVA &amp; LUCI Global LLC no será responsable por pérdidas o daños derivados del uso de la herramienta, incluidas pérdidas de inversión basadas en la información mostrada.</p>
 
-  <h2>10. Contacto</h2>
-  <p>Para consultas sobre estos términos: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a></p>
+    <h2>8. Modificaciones</h2>
+    <p>Podemos modificar estos términos. Los cambios materiales se notificarán por correo electrónico con al menos dos semanas de anticipación.</p>
 
-  <a href="/" class="back">← Volver a MOY IQ Invest</a>
-</div>
+    <h2>9. Ley aplicable</h2>
+    <p>Estos términos se rigen por las leyes del estado de Wyoming, Estados Unidos, y los tratados internacionales aplicables al comercio electrónico en América Latina.</p>
+
+    <h2>10. Contacto</h2>
+    <p>Para consultas sobre estos términos: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a></p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>© 2026 MAXNOVA &amp; LUCI Global LLC</span>
+      <nav aria-label="Pie de página">
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/docs/novedades.html">Novedades</a></li>
+          <li><a href="/terms.html">Términos</a></li>
+          <li><a href="/privacy.html">Privacidad</a></li>
+          <li><a href="mailto:invest@moyiq.app">invest@moyiq.app</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
 </body>
 </html>

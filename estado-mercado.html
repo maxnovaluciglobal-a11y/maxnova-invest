@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Estado del mercado hoy · MOY IQ Invest</title>
+<meta name="description" content="Índices de EE.UU., volatilidad (VIX), oro, petróleo, bitcoin y dólar en Chile y LATAM en un vistazo. Gratis y sin cuenta. Datos de fuentes gratuitas, con posible retraso."/>
+<link rel="canonical" href="https://invest.moyiq.app/estado-mercado.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#14213D"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://invest.moyiq.app/estado-mercado.html"/>
+<meta property="og:title" content="Estado del mercado hoy · MOY IQ Invest"/>
+<meta property="og:description" content="Índices, volatilidad (VIX) y tipos de cambio LATAM en un vistazo. Gratis, sin cuenta, con la hora de cada consulta."/>
+<meta property="og:image" content="https://invest.moyiq.app/og-invest.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:locale" content="es_419"/>
+<meta property="og:site_name" content="MOY IQ Invest"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="preload" as="style" href="/fonts.css"/>
+<link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
+<style>
+:root{
+  --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
+  --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
+  --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --text:#14213D;--text2:#4A5368;
+  --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
+  --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--papel-000);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--laton-700);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
+.nav :focus-visible{outline-color:#F1EEE6}
+.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--papel);color:var(--navy);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+.narrow{max-width:760px}
+.lockup{display:inline-flex;align-items:center;gap:.32em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);text-decoration:none;white-space:nowrap}
+.lockup .dial{width:1.1em;height:1.1em;flex-shrink:0}
+.lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.12em .32em;line-height:1;font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:0}
+.lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
+.lockup.on-dark{color:#F1EEE6}
+.lockup.on-dark .suffix{color:var(--navy-200)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
+.btn-cta{background:var(--laton);color:var(--navy)}
+.btn-cta:hover{box-shadow:inset 0 0 0 2px rgba(20,33,61,.25)}
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid var(--hair-on-navy)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.nav-r{display:flex;align-items:center;gap:4px}
+.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--navy-200);font-size:15px;font-weight:500;text-decoration:none}
+.nav-r a.lnk:hover{color:#F1EEE6}
+@media (max-width:640px){.nav-r a.lnk{display:none}}
+@media (max-width:400px){.nav .lockup{font-size:16px}.nav .btn{padding:0 12px;font-size:14px}}
+
+main{padding:clamp(40px,7vh,80px) 0 0}
+.kicker{font-family:var(--mono);font-size:13px;color:var(--laton-700);margin-bottom:16px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,48px);line-height:1.08;letter-spacing:-.02em;margin-bottom:14px;text-wrap:balance}
+.sub{font-size:18px;color:var(--text2);max-width:60ch}
+.snap-banner{margin-top:20px;padding:12px 16px;border-radius:8px;background:var(--papel);font-size:15px}
+.upd-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;margin:32px 0 20px}
+.upd-time{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--text2)}
+.upd-time svg{width:14px;height:14px}
+.actions-row{display:flex;flex-wrap:wrap;gap:8px}
+.btn-line{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 1px rgba(20,33,61,.42)}
+.btn-line:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
+.sec{margin-bottom:40px}
+.sec h2{font-size:15px;font-weight:600;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));border-top:1px solid var(--hair);border-left:1px solid var(--hair)}
+.tile{padding:16px;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);background:#fff;min-height:96px}
+.tile-label{font-size:14px;color:var(--text2)}
+.tile-val{font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;font-size:22px;font-weight:500;margin-top:4px;letter-spacing:-.01em}
+.tile-chg{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;margin-top:2px}
+.tile-chg.up{color:#356E57}.tile-chg.down{color:#A3402F}.tile-chg.flat{color:var(--text2)}
+.tile-src{font-size:12px;color:var(--text2);margin-top:4px}
+.err-note{margin-top:12px;font-size:14px;color:#A3402F}
+.vix-card{display:none;align-items:center;gap:16px;margin-top:16px;padding:16px 20px;border-radius:12px;background:var(--papel)}
+.vix-dot{flex:none;width:10px;height:10px;border-radius:50%}
+.vix-label{font-weight:600}
+.vix-tip{font-size:15px;color:var(--text2)}
+.vix-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:24px;font-weight:500}
+.disclaimer{font-size:14px;color:var(--text2);max-width:80ch;padding:16px 20px;border-radius:12px;background:var(--papel);margin-bottom:56px}
+.cta-box{background:var(--navy);color:#F1EEE6;padding:clamp(48px,8vh,88px) 0}
+.cta-box .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px}
+.cta-box h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.12;letter-spacing:-.015em;max-width:22ch;margin-bottom:10px}
+.cta-box p{color:var(--navy-200);max-width:58ch}
+.cta-box :focus-visible{outline-color:#F1EEE6}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#F1EEE6;padding:10px 16px;border-radius:8px;font-size:15px;opacity:0;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:no-preference){.toast{transition:opacity .2s ease}}
+
+footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center}
+.foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 20px}
+.foot a{display:inline-flex;align-items:center;min-height:40px;color:var(--text2)}
+.foot a:hover{color:var(--navy)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<symbol id="dial" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+  <path d="M 28.79 71.21 A 30 30 0 1 1 71.21 71.21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
+  <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
+</symbol>
+</defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <nav class="nav-r" aria-label="Principal">
+      <a class="lnk" href="/#como-funciona">Cómo funciona</a>
+      <a class="lnk" href="/perfil-inversor.html">Tu perfil de inversor</a>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <p class="kicker">Gratis · sin cuenta</p>
+    <h1>Estado del mercado hoy</h1>
+    <p class="sub">Índices de EE.UU., volatilidad y tipos de cambio para LATAM en un vistazo. Los datos vienen de fuentes gratuitas que pueden tener retraso: mostramos la hora de cada consulta.</p>
+    <div id="snapBanner"></div>
+
+    <div class="upd-row">
+      <p class="upd-time" id="updTime" role="status">Cargando datos…</p>
+      <div class="actions-row">
+        <button class="btn btn-line" id="btnShare" type="button">Compartir este estado</button>
+        <a class="btn btn-line" href="/app">Ver en la app</a>
+      </div>
+    </div>
+
+    <section class="sec" aria-labelledby="h-idx">
+      <h2 id="h-idx">Índices y activos clave</h2>
+      <div class="grid" id="grid"></div>
+      <p class="err-note" id="errNote" style="display:none"></p>
+      <div class="vix-card" id="vixCard">
+        <span class="vix-dot" id="vixDot" aria-hidden="true"></span>
+        <div style="flex:1">
+          <p class="vix-label" id="vixLabel"></p>
+          <p class="vix-tip" id="vixTip"></p>
+        </div>
+        <p class="vix-val" id="vixVal">—</p>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="h-fx">
+      <h2 id="h-fx">Tipo de cambio USD → LATAM</h2>
+      <div class="grid" id="fxGrid"></div>
+    </section>
+
+    <p class="disclaimer">Índices y activos: Yahoo Finance. Tipos de cambio: Yahoo Finance y, para el peso chileno, el dólar observado de mindicador.cl (Banco Central de Chile), que se publica una vez por día hábil. Las cotizaciones de EE.UU. pueden traer 15 a 20 minutos de retraso y los tipos de cambio se guardan en caché hasta 1 hora. No son cotizaciones para operar. Herramienta educativa: no constituye asesoría financiera, tributaria ni recomendación de compra o venta.</p>
+  </div>
+
+  <section class="cta-box" aria-labelledby="h-cta">
+    <div class="wrap">
+      <div>
+        <h2 id="h-cta">Sigue tu propio portafolio, con contexto</h2>
+        <p>La app agrega tu portafolio, tu regla de riesgo y la lectura de cada indicador explicada en español. Gratis durante la beta.</p>
+      </div>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>© 2026 MAXNOVA &amp; LUCI Global LLC</span>
+      <nav aria-label="Pie de página">
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/terms.html">Términos</a></li>
+          <li><a href="/privacy.html">Privacidad</a></li>
+          <li><a href="mailto:invest@moyiq.app">invest@moyiq.app</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  // Las etiquetas de /api/marketbar vienen en inglés; se muestran en español.
+  var LABEL_ES = {
+    '^GSPC':'S&P 500', '^DJI':'Dow Jones', '^IXIC':'Nasdaq', '^RUT':'Russell 2000',
+    'CL=F':'Petróleo (WTI)', 'GC=F':'Oro', 'SI=F':'Plata', 'EURUSD=X':'EUR/USD',
+    '^TNX':'Bono EE.UU. 10 años (%)', 'BTC-USD':'Bitcoin (US$)', '^VIX':'VIX'
+  };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function nf(v, dec){ return v.toLocaleString('es-CL', {minimumFractionDigits:dec, maximumFractionDigits:dec}); }
+
+  function fmtPrice(sym, v){
+    if (v == null) return '—';
+    if (sym === 'BTC-USD') return nf(v, 0);
+    if (sym === '^VIX' || sym === '^TNX') return nf(v, 2);
+    if (v >= 1000) return nf(v, 0);
+    return nf(v, 2);
+  }
+  function fmtPct(p){
+    if (p == null) return '';
+    return (p >= 0 ? '+' : '−') + nf(Math.abs(p), 2) + ' %';
+  }
+  function pctClass(p){ if (p == null || Math.abs(p) < 0.005) return 'flat'; return p > 0 ? 'up' : 'down'; }
+  function hhmm(ts){ return new Date(ts).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}); }
+
+  function vixRegime(v){
+    if (v == null) return {label:'VIX sin dato', color:'#4A5368', tip:'No se pudo obtener el VIX en esta consulta.'};
+    if (v < 15) return {label:'VIX bajo', color:'#356E57', tip:'Volatilidad esperada por debajo de su promedio histórico.'};
+    if (v < 20) return {label:'VIX en rango normal', color:'#14213D', tip:'Volatilidad esperada dentro de su rango histórico habitual.'};
+    if (v < 30) return {label:'VIX elevado', color:'#8A6329', tip:'Volatilidad esperada sobre su promedio: más incertidumbre de lo habitual.'};
+    return {label:'VIX muy elevado', color:'#A3402F', tip:'Volatilidad esperada en niveles históricamente altos: los movimientos bruscos son más frecuentes.'};
+  }
+
+  function b64urlEncode(str){
+    var b64 = btoa(unescape(encodeURIComponent(str)));
+    return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function b64urlDecode(str){
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while (str.length % 4) str += '=';
+    return decodeURIComponent(escape(atob(str)));
+  }
+
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2400);
+  }
+
+  function renderGrid(items, missing){
+    var grid = document.getElementById('grid');
+    grid.innerHTML = items.map(function(it){
+      var cls = pctClass(it.changePct);
+      return '<div class="tile">'+
+        '<p class="tile-label">'+esc(LABEL_ES[it.sym] || it.label)+'</p>'+
+        '<p class="tile-val">'+fmtPrice(it.sym, it.price)+'</p>'+
+        '<p class="tile-chg '+cls+'">'+fmtPct(it.changePct)+'</p>'+
+      '</div>';
+    }).join('');
+    var errNote = document.getElementById('errNote');
+    if (missing && missing.length){
+      errNote.style.display = 'block';
+      errNote.textContent = 'Sin dato en esta consulta: ' + missing.map(function(s){ return LABEL_ES[s] || s; }).join(', ') + '.';
+    } else {
+      errNote.style.display = 'none';
+    }
+  }
+
+  function renderVix(vixItem){
+    if (!vixItem || vixItem.price == null) return;
+    var r = vixRegime(vixItem.price);
+    var card = document.getElementById('vixCard');
+    card.style.display = 'flex';
+    document.getElementById('vixDot').style.background = r.color;
+    document.getElementById('vixLabel').textContent = r.label;
+    document.getElementById('vixTip').textContent = r.tip;
+    document.getElementById('vixVal').textContent = nf(vixItem.price, 1);
+  }
+
+  // rates: {CLP: 950.1, ...}; sources: {CLP:'mindicador'|'yahoo'|'fallback'}.
+  // Un valor 'fallback' es un número fijo del servidor, no una cotización:
+  // se muestra como "sin dato" en vez de presentarlo como actual.
+  function renderFx(rates, sources){
+    var LABELS = {CLP:'Chile (CLP)', MXN:'México (MXN)', COP:'Colombia (COP)', ARS:'Argentina (ARS)', PEN:'Perú (PEN)'};
+    var SRC = {mindicador:'Dólar observado · mindicador.cl', yahoo:'Yahoo Finance'};
+    var grid = document.getElementById('fxGrid');
+    grid.innerHTML = Object.keys(LABELS).map(function(cur){
+      var v = rates && rates[cur];
+      var src = sources && sources[cur];
+      var ok = v && src !== 'fallback';
+      return '<div class="tile">'+
+        '<p class="tile-label">USD → '+LABELS[cur]+'</p>'+
+        '<p class="tile-val">'+(ok ? nf(v, 2) : '—')+'</p>'+
+        '<p class="tile-src">'+(ok ? esc(SRC[src] || '') : 'Sin conexión con la fuente')+'</p>'+
+      '</div>';
+    }).join('');
+  }
+
+  function cleanRates(rates, sources){
+    if (!rates) return null;
+    var out = {};
+    Object.keys(rates).forEach(function(k){ if (!sources || sources[k] !== 'fallback') out[k] = rates[k]; });
+    return out;
+  }
+
+  function buildSnapshot(items, fxRates, fxSources){
+    return {
+      t: Date.now(),
+      items: items.map(function(it){ return {s: it.sym, l: it.label, p: it.price, c: it.changePct}; }),
+      fx: fxRates,
+      fs: fxSources
+    };
+  }
+
+  function shareUrl(snapshot){
+    var payload = b64urlEncode(JSON.stringify(snapshot));
+    var url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('snap', payload);
+    return url.toString();
+  }
+
+  function renderSnapshotBanner(ts){
+    var d = new Date(ts);
+    var fecha = d.toLocaleString('es-CL', {dateStyle:'medium', timeStyle:'short'});
+    var box = document.getElementById('snapBanner');
+    box.innerHTML = '<p class="snap-banner">Estás viendo un estado compartido, consultado el ' + esc(fecha) + '. No se actualiza. <a href="'+esc(window.location.pathname)+'">Ver el estado actual</a></p>';
+  }
+
+  function renderFromSnapshot(snap){
+    renderSnapshotBanner(snap.t);
+    var items = (snap.items || []).map(function(i){ return {sym:i.s, label:i.l, price:i.p, changePct:i.c}; });
+    renderGrid(items, []);
+    var vixItem = items.filter(function(i){ return i.sym === '^VIX'; })[0];
+    renderVix(vixItem);
+    renderFx(snap.fx, snap.fs);
+    document.getElementById('updTime').textContent = 'Estado compartido · consultado ' + hhmm(snap.t);
+    document.getElementById('btnShare').style.display = 'none';
+  }
+
+  var LIVE_STATE = null;
+  var CLOCK = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5V8l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+
+  function fetchLive(){
+    document.getElementById('updTime').textContent = 'Cargando datos…';
+    Promise.all([
+      fetch('/api/marketbar').then(function(r){ return r.json(); }).catch(function(){ return {items:[], missing:['índices']}; }),
+      fetch('/api/fx-latam').then(function(r){ return r.json(); }).catch(function(){ return {rates:null}; })
+    ]).then(function(res){
+      var mb = res[0], fx = res[1];
+      var items = mb.items || [];
+      renderGrid(items, mb.missing);
+      var vixItem = items.filter(function(i){ return i.sym === '^VIX'; })[0];
+      renderVix(vixItem);
+      renderFx(fx.rates, fx.sources);
+      if (!items.length && !fx.rates){
+        document.getElementById('updTime').textContent = 'No se pudieron cargar los datos. Inténtalo de nuevo en unos minutos.';
+        return;
+      }
+      // Hora de la consulta (no la de cada cotización: estas fuentes pueden traer retraso).
+      var ts = mb.fetchedAt || Date.now();
+      document.getElementById('updTime').innerHTML = CLOCK + 'Consultado ' + hhmm(ts) + ' · las cotizaciones pueden tener retraso';
+      LIVE_STATE = buildSnapshot(items, cleanRates(fx.rates, fx.sources), fx.sources);
+    }).catch(function(){
+      document.getElementById('updTime').textContent = 'No se pudieron cargar los datos. Inténtalo de nuevo en unos minutos.';
+    });
+  }
+
+  document.getElementById('btnShare').addEventListener('click', function(){
+    if (!LIVE_STATE){ showToast('Espera a que carguen los datos.'); return; }
+    var url = shareUrl(LIVE_STATE);
+    var text = 'Estado del mercado · MOY IQ Invest';
+    if (navigator.share){
+      navigator.share({ title: text, text: text, url: url }).catch(function(){});
+    } else if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){ showToast('Enlace copiado'); }, function(){ showToast(url); });
+    } else {
+      window.prompt('Copia este enlace para compartir:', url);
+    }
+  });
+
+  var params = new URLSearchParams(window.location.search);
+  var snapParam = params.get('snap');
+  if (snapParam){
+    try {
+      var snap = JSON.parse(b64urlDecode(snapParam));
+      renderFromSnapshot(snap);
+    } catch(e){
+      fetchLive();
+    }
+  } else {
+    fetchLive();
+  }
+})();
+</script>
+</body>
+</html>

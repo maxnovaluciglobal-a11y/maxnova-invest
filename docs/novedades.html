@@ -1,44 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Novedades — MOY IQ Invest</title>
-<link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#12161F">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Novedades · MOY IQ Invest</title>
+<meta name="description" content="Registro de cambios de MOY IQ Invest. 8 de octubre de 2026: relanzamiento como beta pública gratuita."/>
+<link rel="canonical" href="https://invest.moyiq.app/docs/novedades.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#14213D"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://invest.moyiq.app/docs/novedades.html"/>
+<meta property="og:title" content="Novedades · MOY IQ Invest"/>
+<meta property="og:description" content="Registro de cambios de MOY IQ Invest. 8 de octubre de 2026: relanzamiento como beta pública gratuita."/>
+<meta property="og:site_name" content="MOY IQ Invest"/>
+<link rel="preload" as="style" href="/fonts.css"/>
+<link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
 <style>
-  :root{
-    --grn:#CC9A52;--laton:#CC9A52;--on-accent:#14213D;
-    --verde:#74C2A3;
-    --bg:#12161F;--card:#181D29;--card2:#1E2433;
-    --text:#C7C2B2;--text2:#9C9686;--text3:#948E7D;--bright:#FAF8F2;
-    --border:rgba(228,223,209,0.10);--border2:rgba(228,223,209,0.20);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{overscroll-behavior:none}
-  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:740px;margin:0 auto;padding:48px 24px 80px}
-  .lockup{font-family:'Instrument Sans',Georgia,serif;font-weight:600;font-size:16px;text-transform:uppercase;letter-spacing:.08em;color:var(--bright);text-decoration:none;display:inline-flex;align-items:center;gap:.32em;margin-bottom:32px}
-  .lockup .dial{width:1em;height:1em;flex-shrink:0}
-  .lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.1em .3em;line-height:1;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.6em;letter-spacing:0;text-transform:uppercase}
-  .lockup .suffix{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:.62em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.1em}
-  .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--grn);margin-bottom:10px}
-  h1{font-family:'Instrument Sans',Georgia,serif;font-weight:700;font-size:clamp(26px,4vw,36px);letter-spacing:-.01em;color:var(--bright);margin-bottom:8px}
-  .meta{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);margin-bottom:40px}
-  h2{font-family:'Instrument Sans',Georgia,serif;font-weight:700;font-size:18px;color:var(--bright);margin:32px 0 10px;letter-spacing:-.005em}
-  p{color:var(--text2);margin-bottom:14px}
-  a{color:var(--grn);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .entry{border-bottom:.5px solid var(--border);padding-bottom:28px;margin-bottom:28px}
-  .entry:last-of-type{border-bottom:none}
-  .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:2px 8px;border-radius:8px;background:rgba(204,154,82,.12);color:var(--grn);margin-right:6px;letter-spacing:.02em}
-  .notice{background:var(--card);border:.5px solid var(--border);border-radius:10px;padding:14px 18px;margin:24px 0;font-size:13px;color:var(--text3)}
-  .back{display:inline-block;margin-top:40px;padding:10px 20px;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);text-decoration:none}
-  .back:hover{color:var(--grn);text-decoration:none;border-color:var(--border2)}
+:root{
+  --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
+  --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
+  --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --text:#14213D;--text2:#4A5368;
+  --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
+  --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--papel-000);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--laton-700);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
+.nav :focus-visible{outline-color:#F1EEE6}
+.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--papel);color:var(--navy);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+.narrow{max-width:760px}
+.lockup{display:inline-flex;align-items:center;gap:.32em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);text-decoration:none;white-space:nowrap}
+.lockup .dial{width:1.1em;height:1.1em;flex-shrink:0}
+.lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.12em .32em;line-height:1;font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:0}
+.lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
+.lockup.on-dark{color:#F1EEE6}
+.lockup.on-dark .suffix{color:var(--navy-200)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
+.btn-cta{background:var(--laton);color:var(--navy)}
+.btn-cta:hover{box-shadow:inset 0 0 0 2px rgba(20,33,61,.25)}
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid var(--hair-on-navy)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.nav-r{display:flex;align-items:center;gap:4px}
+.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--navy-200);font-size:15px;font-weight:500;text-decoration:none}
+.nav-r a.lnk:hover{color:#F1EEE6}
+@media (max-width:640px){.nav-r a.lnk{display:none}}
+@media (max-width:400px){.nav .lockup{font-size:16px}.nav .btn{padding:0 12px;font-size:14px}}
+
+main{padding:clamp(40px,7vh,80px) 0 clamp(64px,10vh,112px)}
+.doc{max-width:740px}
+.doc h1{font-family:var(--display);font-weight:600;font-size:clamp(30px,4vw,42px);line-height:1.1;letter-spacing:-.02em;margin-bottom:8px;text-wrap:balance}
+.doc .meta{font-family:var(--mono);font-size:13px;color:var(--text2);margin-bottom:32px}
+.doc h2{font-size:18px;font-weight:600;margin:36px 0 10px;letter-spacing:-.005em}
+.doc p,.doc li{color:var(--text2);max-width:68ch}
+.doc p{margin-bottom:14px}
+.doc ul{margin:0 0 14px 20px}
+.doc li{margin-bottom:6px}
+.doc strong{color:var(--navy);font-weight:600}
+.callout{padding:16px 20px;border-radius:12px;background:var(--papel);margin:8px 0 16px}
+.callout p:last-child{margin-bottom:0}
+footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center}
+.foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 20px}
+.foot a{display:inline-flex;align-items:center;min-height:40px;color:var(--text2)}
+.foot a:hover{color:var(--navy)}
+.entry{padding:28px 0;border-bottom:1px solid var(--hair)}
+.entry:first-of-type:not(.entry-main){padding-top:0}
+.entry .date{font-family:var(--mono);font-size:13px;color:var(--laton-700);margin-bottom:4px}
+.entry h2{margin-top:0}
+.entry-main{padding:24px;border-radius:12px;background:#fff;border:1px solid var(--hair);margin-bottom:8px}
+.entry-main + .entry{border-top:0}
+.doc code{font-family:var(--mono);font-size:.92em}
+.doc .callout{margin-top:32px}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<a class="skip" href="#main">Saltar al contenido</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
 <defs>
 <symbol id="dial" viewBox="0 0 100 100">
   <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
@@ -46,51 +93,90 @@
   <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#CC9A52"/>
-  <circle cx="50" cy="50" r="3.5" fill="#CC9A52"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
+  <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
 </symbol>
 </defs>
 </svg>
-<div class="wrap">
-  <a class="lockup" href="/"><svg class="dial" viewBox="0 0 100 100"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
 
-  <div class="label">Novedades</div>
-  <h1>Qué cambió en MOY IQ Invest</h1>
-  <p class="meta">Registro de cambios reales, a partir del historial de commits del repo · actualizado septiembre 2026</p>
-
-  <div class="entry">
-    <span class="badge">rebrand</span>
-    <h2>Invest pasa a la familia MOY</h2>
-    <p>La landing y la app se realinearon al sistema visual real de MOY IQ: paleta oscura (los mismos tokens que corren en <code>/app</code>, no una imitación), tipografía Instrument Sans + IBM Plex, y el mismo lockup de logo (dial + "MOY" + placa "IQ") con el sufijo "Invest" para distinguir el producto. El dominio principal pasó a <code>invest.moyiq.app</code>.</p>
+<header class="nav">
+  <div class="wrap">
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <nav class="nav-r" aria-label="Principal">
+      <a class="lnk" href="/faq.html">FAQ</a>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </nav>
   </div>
+</header>
 
-  <div class="entry">
-    <span class="badge">privacidad</span>
-    <h2>Borrado de cuenta automatizado</h2>
-    <p>Eliminar la cuenta ahora borra los datos y el usuario de autenticación de forma automática, en vez de depender de una promesa manual de soporte. El flujo corre contra Supabase con la misma clave de servicio que usan el resto de los endpoints protegidos.</p>
+<main id="main">
+  <article class="wrap doc">
+    <h1>Qué cambió en MOY IQ Invest</h1>
+    <p class="meta">Registro de cambios reales · actualizado el 8 de octubre de 2026</p>
+
+    <section class="entry entry-main" aria-labelledby="e-relanzamiento">
+      <p class="date">8 de octubre de 2026</p>
+      <h2 id="e-relanzamiento">Relanzamiento: beta pública gratuita</h2>
+      <p>Invest vuelve después de la pausa de septiembre, con cambios de fondo en cómo muestra la información:</p>
+      <ul>
+        <li><strong>Sin notas agregadas de 0 a 100.</strong> Una sola cifra por activo se leía como una calificación de compra. Ya no existe.</li>
+        <li><strong>Cada indicador con su rango y lectura.</strong> RSI, MACD, medias móviles y volumen muestran su valor, su rango de referencia y una frase en español simple.</li>
+        <li><strong>Etiqueta de frescura en cada precio.</strong> «Al día», «Retraso N min» o «Sin conexión», con la hora que informa la fuente y no la hora de la consulta.</li>
+        <li><strong>Calculadora «con tu regla de riesgo».</strong> Ahora incluye límite de concentración por posición y riesgo al stop, por posición y en total.</li>
+        <li><strong>Todo gratis durante la beta.</strong> Sin tarjeta y sin planes a la venta. Si en el futuro hay planes pagos, avisaremos antes y lo que usas hoy no se pierde.</li>
+      </ul>
+    </section>
+
+    <section class="entry" aria-labelledby="e-rebrand">
+      <p class="date">Septiembre de 2026</p>
+      <h2 id="e-rebrand">Invest pasa a la familia MOY</h2>
+      <p>La landing y la app se realinearon al sistema visual de MOY IQ: tipografía Instrument Sans + IBM Plex y el mismo logo (dial + «MOY» + placa «IQ») con el sufijo «Invest» para distinguir el producto. El dominio principal pasó a <code>invest.moyiq.app</code>.</p>
+    </section>
+
+    <section class="entry" aria-labelledby="e-borrado">
+      <p class="date">Septiembre de 2026</p>
+      <h2 id="e-borrado">Borrado de cuenta automatizado</h2>
+      <p>Eliminar la cuenta borra los datos y el usuario de acceso de forma automática, sin depender de una solicitud manual a soporte.</p>
+    </section>
+
+    <section class="entry" aria-labelledby="e-xss">
+      <p class="date">Septiembre de 2026</p>
+      <h2 id="e-xss">Endurecimiento contra XSS</h2>
+      <p>Se revisaron y escaparon los puntos donde datos ingresados por la persona (tickers, valores de rebalanceo) se insertaban en la página, para cerrar vectores de inyección.</p>
+    </section>
+
+    <section class="entry" aria-labelledby="e-copy">
+      <p class="date">Septiembre de 2026</p>
+      <h2 id="e-copy">Textos más honestos</h2>
+      <p>Se corrigieron textos que prometían más de lo que la herramienta hace: la referencia de stop pasó a describirse como una referencia estándar, y se quitaron citas de clientes que no existían.</p>
+    </section>
+
+    <section class="entry" aria-labelledby="e-estado">
+      <p class="date">Septiembre de 2026</p>
+      <h2 id="e-estado">Estado del mercado, gratis y sin cuenta</h2>
+      <p>Se agregó una página de <a href="/estado-mercado.html">estado del mercado</a>: índices, volatilidad y tipos de cambio en un vistazo, sin crear cuenta.</p>
+    </section>
+
+    <p class="callout">MOY IQ Invest es una herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Esta página reúne los cambios más relevantes, no cada ajuste.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>© 2026 MAXNOVA &amp; LUCI Global LLC</span>
+      <nav aria-label="Pie de página">
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/docs/novedades.html">Novedades</a></li>
+          <li><a href="/terms.html">Términos</a></li>
+          <li><a href="/privacy.html">Privacidad</a></li>
+          <li><a href="mailto:invest@moyiq.app">invest@moyiq.app</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
-
-  <div class="entry">
-    <span class="badge">seguridad</span>
-    <h2>Endurecimiento contra XSS</h2>
-    <p>Se revisaron y escaparon los puntos donde datos controlados por el usuario (tickers, valores de rebalanceo) se insertaban en el HTML de la página, para cerrar vectores de inyección antes de mostrarlos.</p>
-  </div>
-
-  <div class="entry">
-    <span class="badge">copy</span>
-    <h2>Etiquetas más honestas en los planes</h2>
-    <p>Se corrigieron textos que sobreprometían: la referencia de stop/target de Risk Management Pro pasó a describirse como lo que es, el CTA del plan Pro aclara que es una prueba de 14 días (no el plan gratuito), y se quitaron testimonios de clientes que no existían.</p>
-  </div>
-
-  <div class="entry">
-    <span class="badge">datos</span>
-    <h2>Snapshot gratuito del mercado</h2>
-    <p>Se agregó una página de estado del mercado (<a href="/estado-mercado.html">estado-mercado.html</a>) como lead magnet: un vistazo rápido y gratuito a indicadores clave, sin necesidad de crear cuenta.</p>
-  </div>
-
-  <div class="notice">MOY IQ Invest es una herramienta de análisis educativo. Esta página no constituye asesoría financiera ni un registro exhaustivo de cada cambio — reúne los hitos más relevantes del historial de desarrollo.</div>
-
-  <a href="/" class="back">← Volver a MOY IQ Invest</a>
-</div>
+</footer>
 </body>
 </html>

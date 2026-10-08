@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Preguntas frecuentes · MOY IQ Invest</title>
+<meta name="description" content="Beta gratuita, de dónde vienen los precios y qué tan actuales son, qué pasa con tus datos, cuenta compartida con MOY IQ y cómo eliminarla. Invest no es bróker ni da asesoría."/>
+<link rel="canonical" href="https://invest.moyiq.app/faq.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<meta name="theme-color" content="#14213D"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://invest.moyiq.app/faq.html"/>
+<meta property="og:title" content="Preguntas frecuentes · MOY IQ Invest"/>
+<meta property="og:description" content="Beta gratuita, frescura de los precios, tus datos, cuenta compartida con MOY IQ y cómo eliminarla."/>
+<meta property="og:image" content="https://invest.moyiq.app/og-invest.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:locale" content="es_419"/>
+<meta property="og:site_name" content="MOY IQ Invest"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="preload" as="style" href="/fonts.css"/>
+<link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
+<!-- JSON-LD FAQPage: mismas preguntas y respuestas que la página, textuales -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "¿Qué es MOY IQ Invest?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Una herramienta educativa para seguir tu portafolio de inversiones, calcular el tamaño de cada posición según tu propia regla de riesgo y leer indicadores técnicos explicados en español. No es un bróker y no da recomendaciones." } },
+    { "@type": "Question", "name": "¿Cuánto cuesta?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nada durante la beta pública: todas las funciones están abiertas y no pedimos tarjeta. Cuando haya planes pagos, te avisamos antes y lo que usas hoy no se pierde." } },
+    { "@type": "Question", "name": "¿Qué pasa con mis datos cuando termine la beta?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Siguen en tu cuenta. Si más adelante hay planes pagos, te avisamos por correo antes de cualquier cambio y lo que usas hoy no se pierde. Puedes eliminar tu cuenta cuando quieras." } },
+    { "@type": "Question", "name": "¿Los precios están al día?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el dólar observado de mindicador.cl. Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente." } },
+    { "@type": "Question", "name": "¿Invest me dice qué comprar o vender?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Invest describe lo que muestran los datos históricos; la decisión es tuya." } },
+    { "@type": "Question", "name": "¿Por qué no hay una nota de 0 a 100 por activo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Porque una sola cifra se lee como una calificación de compra, y mezcla indicadores que miden cosas distintas. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70), ni sobrecomprado ni sobrevendido." } },
+    { "@type": "Question", "name": "¿Qué es la regla de riesgo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Es el porcentaje máximo de tu capital que aceptas perder en una sola operación. Con ese número, tu stop y el precio, la calculadora muestra cuántas unidades caben, cuánto perderías si el precio llega al stop y si la posición supera tu límite de concentración. Los valores los defines tú." } },
+    { "@type": "Question", "name": "¿Se conecta con mi bróker?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Registras tus posiciones a mano: ticker, cantidad y precio. Invest no pide credenciales de ningún bróker ni banco." } },
+    { "@type": "Question", "name": "¿Dónde se guarda mi portafolio?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas. No vendemos tus datos." } },
+    { "@type": "Question", "name": "¿Puedo entrar con mi cuenta de MOY IQ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí. Invest y MOY IQ usan el mismo sistema de acceso: usas el mismo correo y contraseña en las dos. Los datos de cada app se guardan por separado." } },
+    { "@type": "Question", "name": "¿Cómo elimino mi cuenta?",
+      "acceptedAnswer": { "@type": "Answer", "text": "En la app, entra a Configuración → Eliminar cuenta. El borrado es automático e inmediato: tu portafolio, watchlist, bitácora, consentimientos y tu acceso. Como el acceso es el mismo que en MOY IQ, ese correo y contraseña también dejan de funcionar allí. Si prefieres que lo hagamos nosotros, escribe a invest@moyiq.app." } },
+    { "@type": "Question", "name": "¿Es asesoría financiera?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Invertir implica riesgo de pérdida." } }
+  ]
+}
+</script>
+<style>
+:root{
+  --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
+  --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
+  --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --text:#14213D;--text2:#4A5368;
+  --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
+  --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--papel-000);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--laton-700);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
+.nav :focus-visible{outline-color:#F1EEE6}
+.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--papel);color:var(--navy);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+.narrow{max-width:760px}
+.lockup{display:inline-flex;align-items:center;gap:.32em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);text-decoration:none;white-space:nowrap}
+.lockup .dial{width:1.1em;height:1.1em;flex-shrink:0}
+.lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.12em .32em;line-height:1;font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:0}
+.lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
+.lockup.on-dark{color:#F1EEE6}
+.lockup.on-dark .suffix{color:var(--navy-200)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
+.btn-cta{background:var(--laton);color:var(--navy)}
+.btn-cta:hover{box-shadow:inset 0 0 0 2px rgba(20,33,61,.25)}
+.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid var(--hair-on-navy)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.nav-r{display:flex;align-items:center;gap:4px}
+.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--navy-200);font-size:15px;font-weight:500;text-decoration:none}
+.nav-r a.lnk:hover{color:#F1EEE6}
+@media (max-width:640px){.nav-r a.lnk{display:none}}
+@media (max-width:400px){.nav .lockup{font-size:16px}.nav .btn{padding:0 12px;font-size:14px}}
+
+main{padding:clamp(48px,8vh,88px) 0 clamp(64px,10vh,112px)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,48px);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px;text-wrap:balance}
+.intro{font-size:18px;color:var(--text2);max-width:58ch;margin-bottom:40px}
+.faq details{border-bottom:1px solid var(--hair)}
+.faq details:first-child{border-top:1px solid var(--hair)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;padding:14px 0;font-size:17px;font-weight:600}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:10px;height:10px;border-right:2px solid var(--laton-700);border-bottom:2px solid var(--laton-700);transform:rotate(45deg) translate(-2px,-2px)}
+.faq details[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.faq details p{padding:0 0 20px;color:var(--text2);max-width:66ch}
+.faq q{quotes:"«" "»"}
+.legalbox{margin-top:40px;padding:20px 24px;border-radius:12px;background:var(--papel);font-size:15px;color:var(--text2)}
+.legalbox strong{color:var(--navy)}
+.cta-end{margin-top:40px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.cta-end p{color:var(--text2)}
+
+footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center}
+.foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 20px}
+.foot a{display:inline-flex;align-items:center;min-height:40px;color:var(--text2)}
+.foot a:hover{color:var(--navy)}
+.foot-note{margin-top:12px;font-size:13px;max-width:80ch}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<symbol id="dial" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+  <path d="M 28.79 71.21 A 30 30 0 1 1 71.21 71.21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
+  <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
+</symbol>
+</defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <nav class="nav-r" aria-label="Principal">
+      <a class="lnk" href="/#como-funciona">Cómo funciona</a>
+      <a class="lnk" href="/perfil-inversor.html">Tu perfil de inversor</a>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap narrow">
+    <h1>Preguntas frecuentes</h1>
+    <p class="intro">MOY IQ Invest está en beta pública gratuita desde el relanzamiento del 8 de octubre de 2026. Aquí está lo que conviene saber antes de crear tu cuenta.</p>
+
+    <div class="faq">
+      <details open>
+        <summary>¿Qué es MOY IQ Invest?</summary>
+        <p>Una herramienta educativa para seguir tu portafolio de inversiones, calcular el tamaño de cada posición según tu propia regla de riesgo y leer indicadores técnicos explicados en español. No es un bróker y no da recomendaciones.</p>
+      </details>
+      <details>
+        <summary>¿Cuánto cuesta?</summary>
+        <p>Nada durante la beta pública: todas las funciones están abiertas y no pedimos tarjeta. Cuando haya planes pagos, te avisamos antes y lo que usas hoy no se pierde.</p>
+      </details>
+      <details>
+        <summary>¿Qué pasa con mis datos cuando termine la beta?</summary>
+        <p>Siguen en tu cuenta. Si más adelante hay planes pagos, te avisamos por correo antes de cualquier cambio y lo que usas hoy no se pierde. Puedes eliminar tu cuenta cuando quieras.</p>
+      </details>
+      <details>
+        <summary>¿Los precios están al día?</summary>
+        <p>Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el dólar observado de mindicador.cl. Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente.</p>
+      </details>
+      <details>
+        <summary>¿Invest me dice qué comprar o vender?</summary>
+        <p>No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Invest describe lo que muestran los datos históricos; la decisión es tuya.</p>
+      </details>
+      <details>
+        <summary>¿Por qué no hay una nota de 0 a 100 por activo?</summary>
+        <p>Porque una sola cifra se lee como una calificación de compra, y mezcla indicadores que miden cosas distintas. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70), ni sobrecomprado ni sobrevendido.</p>
+      </details>
+      <details>
+        <summary>¿Qué es la regla de riesgo?</summary>
+        <p>Es el porcentaje máximo de tu capital que aceptas perder en una sola operación. Con ese número, tu stop y el precio, la calculadora muestra cuántas unidades caben, cuánto perderías si el precio llega al stop y si la posición supera tu límite de concentración. Los valores los defines tú.</p>
+      </details>
+      <details>
+        <summary>¿Se conecta con mi bróker?</summary>
+        <p>No. Registras tus posiciones a mano: ticker, cantidad y precio. Invest no pide credenciales de ningún bróker ni banco.</p>
+      </details>
+      <details>
+        <summary>¿Dónde se guarda mi portafolio?</summary>
+        <p>Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas. No vendemos tus datos. Detalle en la <a href="/privacy.html">política de privacidad</a>.</p>
+      </details>
+      <details>
+        <summary>¿Puedo entrar con mi cuenta de MOY IQ?</summary>
+        <p>Sí. Invest y MOY IQ usan el mismo sistema de acceso: usas el mismo correo y contraseña en las dos. Los datos de cada app se guardan por separado.</p>
+      </details>
+      <details>
+        <summary>¿Cómo elimino mi cuenta?</summary>
+        <p>En la app, entra a Configuración → Eliminar cuenta. El borrado es automático e inmediato: tu portafolio, watchlist, bitácora, consentimientos y tu acceso. Como el acceso es el mismo que en MOY IQ, ese correo y contraseña también dejan de funcionar allí. Si prefieres que lo hagamos nosotros, escribe a <a href="mailto:invest@moyiq.app">invest@moyiq.app</a>.</p>
+      </details>
+      <details>
+        <summary>¿Es asesoría financiera?</summary>
+        <p>No. Herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Invertir implica riesgo de pérdida.</p>
+      </details>
+    </div>
+
+    <p class="legalbox"><strong>Aviso.</strong> Herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Invertir implica riesgo de pérdida.</p>
+
+    <div class="cta-end">
+      <p>¿Otra pregunta? Escribe a <a href="mailto:invest@moyiq.app">invest@moyiq.app</a>.</p>
+      <a href="/app" class="btn btn-cta">Empezar gratis</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>© 2026 MAXNOVA &amp; LUCI Global LLC</span>
+      <nav aria-label="Pie de página">
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/estado-mercado.html">Estado del mercado</a></li>
+          <li><a href="/docs/novedades.html">Novedades</a></li>
+          <li><a href="/terms.html">Términos</a></li>
+          <li><a href="/privacy.html">Privacidad</a></li>
+          <li><a href="mailto:invest@moyiq.app">invest@moyiq.app</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
