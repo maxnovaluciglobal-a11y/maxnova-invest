@@ -30,7 +30,7 @@ Qué cambió desde la pausa:
 
 Entrar: https://invest.moyiq.app/app
 
-Puedes crear la cuenta con este mismo correo.
+Puedes crear la cuenta con este mismo correo. Si ya tienes cuenta en MOY IQ, usas el mismo correo y contraseña.
 
 Si algo no funciona o no se entiende, responde este correo. Lo leo yo.
 
@@ -75,7 +75,7 @@ Recibes este correo porque te anotaste en la lista de espera de MOY IQ Invest. D
         <a href="https://invest.moyiq.app/app?ref=relaunch-email" style="display:inline-block;padding:12px 22px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#14213D;text-decoration:none;">Entrar a Invest</a>
       </td>
     </tr></table>
-    <p style="margin:0 0 16px;">Puedes crear la cuenta con este mismo correo.</p>
+    <p style="margin:0 0 16px;">Puedes crear la cuenta con este mismo correo. Si ya tienes cuenta en MOY IQ, usas el mismo correo y contraseña.</p>
     <p style="margin:0 0 16px;">Si algo no funciona o no se entiende, responde este correo. Lo leo yo.</p>
     <p style="margin:0;">Walter<br>MOY IQ Invest</p>
   </td></tr>

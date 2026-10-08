@@ -137,6 +137,13 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
     `vercel.json`.
   - Email a la lista de espera: borrador en `docs/relaunch-email.md` (no publicado:
     `*.md` está en `.vercelignore`).
+  - `api/delete-account.js` borra **solo datos de Invest** (holdings, watchlist,
+    consents, trial_emails, profiles). Nunca el `auth.users`: es compartido con MOY IQ;
+    la baja de la cuenta se pide por `support@moyiq.app`.
+  - Leads del quiz: `perfil-inversor.html` manda `p_consent_marketing`, que requiere la
+    migración `financeos-app/supabase/migrations/20261009000100_*` aplicada antes del push.
+  - `og-invest.png` se genera desde `tools/og/og-invest.html` (headless Chrome; `tools/`
+    no se despliega). Términos con ley de Florida y el bloque de empresa de moyiq.app.
 - Sin Supabase no hay login — es punto único de falla marcado como "Alto" sin plan B en
   `RUNBOOK.md`.
 - Antes de push: `node -e "new Function(<script de index.html>)"` para validar sintaxis
