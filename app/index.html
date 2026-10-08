@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,interactive-widget=resizes-content"/>
-<title>MOY IQ Invest — Análisis Técnico de Inversiones</title>
-<meta name="description" content="Motor de análisis técnico para invertir en acciones de EE. UU. (NYSE/NASDAQ): régimen SPY/SMA200, scoring RSI/MACD/ATR, screener y portafolio con P&amp;L. Desde $9.99 USD/mes."/>
+<title>MOY IQ Invest · App</title>
+<meta name="description" content="App de MOY IQ Invest: portafolio, indicadores técnicos explicados y calculadora con tu regla de riesgo. Beta pública gratuita. Herramienta educativa, no asesoría financiera."/>
 <!-- Preconnect for critical origins -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -14,7 +14,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'"/>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"/></noscript>
 <!-- SEO & GEO -->
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+<!-- Relanzamiento v2: la app no se indexa (la landing publica es /). -->
+<meta name="robots" content="noindex, follow"/>
 <!-- Logo de marca FinanceOS Pro. Antes el favicon era un SVG de relleno con las
      letras "FI" sobre el verde antiguo, que ya ni siquiera es color de marca. -->
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png"/>
@@ -27,143 +28,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Invest"/>
-<link rel="canonical" href="https://invest.moyiq.app/"/>
-<meta name="author" content="Walter Lamadriz — MAXNOVA & LUCI Global LLC"/>
-<meta name="keywords" content="análisis técnico acciones, plataforma de inversiones, señales técnicas, gestión riesgo portafolio, decision engine inversiones, screener acciones, finanzas"/>
-<meta name="geo.region" content="US-FL"/>
-<meta name="geo.placename" content="Miami, Florida"/>
-<!-- hreflang: español -->
-<link rel="alternate" hreflang="es"       href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="es-MX"    href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="es-CO"    href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="es-CL"    href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="es-AR"    href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="es-VE"    href="https://invest.moyiq.app/"/>
-<link rel="alternate" hreflang="x-default" href="https://invest.moyiq.app/"/>
-<!-- Open Graph -->
-<meta property="og:type"        content="website"/>
-<meta property="og:url"         content="https://invest.moyiq.app/"/>
-<meta property="og:title"       content="MOY IQ Invest — Análisis Técnico de Inversiones"/>
-<meta property="og:description" content="Plataforma de análisis técnico para inversores en acciones de EE. UU.: Motor de Análisis con régimen de mercado SPY, scoring por activo, gestión de riesgo, screener y portafolio. Datos referenciales con posible retraso."/>
-<meta property="og:image"       content="https://invest.moyiq.app/og-invest.png"/>
-<meta property="og:image:width" content="1200"/>
-<meta property="og:image:height" content="630"/>
-<meta property="og:image:alt"   content="MOY IQ Invest — Análisis técnico de inversiones"/>
-<meta property="og:locale"      content="es"/>
-<meta property="og:site_name"   content="MOY IQ Invest"/>
-<!-- Twitter Card -->
-<meta name="twitter:card"        content="summary_large_image"/>
-<meta name="twitter:site"        content="@FinanceOSPro"/>
-<meta name="twitter:title"       content="MOY IQ Invest — Análisis Técnico de Inversiones"/>
-<meta name="twitter:description" content="Motor de Análisis con régimen de mercado SPY, scoring técnico y gestión de riesgo para invertir en acciones de EE. UU. Datos referenciales con posible retraso."/>
-<meta name="twitter:image"       content="https://invest.moyiq.app/og-invest.png"/>
-<!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-[
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "MOY IQ Invest",
-    "alternateName": ["MOY IQ Invest Pro"],
-    "description": "Plataforma de análisis técnico educativo para invertir en acciones de EE. UU. Motor de Análisis con régimen de mercado SPY, scoring por activo, indicadores técnicos RSI/MACD/ATR, gestión de riesgo, screener y portafolio. Datos referenciales con posible retraso.",
-    "url": "https://invest.moyiq.app/",
-    "applicationCategory": "FinanceApplication",
-    "operatingSystem": "Web, iOS, Android",
-    "offers": {
-      "@type": "Offer",
-      "price": "9.99",
-      "priceCurrency": "USD",
-      "priceValidUntil": "2027-01-01",
-      "availability": "https://schema.org/InStock"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "MAXNOVA & LUCI Global LLC",
-      "url": "https://moyiq.app"
-    },
-    "featureList": [
-      "Motor de Análisis con régimen de mercado SPY/SMA200",
-      "Indicadores técnicos: RSI, MACD, ATR(14), SMA50/200",
-      "Niveles de precio referenciales basados en volatilidad ATR(14)",
-      "Screener de acciones con filtros técnicos",
-      "Gestión de riesgo y sizing de posición",
-      "Calendario de earnings por ticker",
-      "Pullback Quality Score",
-      "Portafolio con tracking de P&L"
-    ],
-    "inLanguage": ["es", "es-419"],
-    "datePublished": "2026-06-01",
-    "dateModified": "2026-06-18"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "MAXNOVA & LUCI Global LLC",
-    "url": "https://moyiq.app",
-    "logo": "https://moyiq.app/logo.png",
-    "sameAs": ["https://invest.moyiq.app", "https://app.moyiq.app"]
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "¿Qué es el Motor de Análisis de MOY IQ Invest?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El Motor de Análisis evalúa el régimen de mercado usando SPY vs SMA200, calcula el Pullback Quality Score de cada activo (RSI, SMA50, SMA200, distancia a máximo de 52 semanas) y genera niveles de precio referenciales basados en volatilidad ATR(14). Herramienta educativa — no constituye asesoría financiera. Datos referenciales con posible retraso."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cómo calcula MOY IQ Invest los niveles de precio referenciales?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El Motor de Análisis usa ATR(14) para calcular zonas de precio referenciales basadas en la volatilidad histórica del activo. Estos niveles son indicadores técnicos educativos — no son instrucciones de compra, venta ni gestión de posición. Toda decisión de inversión es responsabilidad exclusiva del usuario."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué activos puedo analizar en MOY IQ Invest?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Acciones estadounidenses y ETFs del mercado NYSE y NASDAQ. Puedes analizar cualquier ticker disponible en Yahoo Finance: acciones individuales, ETFs sectoriales (XLF, XLK, XLE...), ETFs de índice (SPY, QQQ, IWM), y ADRs internacionales."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuánto cuesta MOY IQ Invest Pro?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "MOY IQ Invest Pro tiene un costo de $9.99 USD por mes. Incluye acceso completo al Motor de Análisis, screener ilimitado, portafolio con tracking de P&L, y actualizaciones continuas."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Desde qué países puedo usar MOY IQ Invest?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Desde cualquier país. Analiza acciones y ETFs de EE. UU. (NYSE, NASDAQ) y está disponible en español. Optimizada para inversores hispanohablantes que operan en mercados estadounidenses. Colombia, Chile, Argentina, Venezuela y Perú."
-        }
-      }
-    ]
-  }
-]
-</script>
-<!-- Speakable (AI voice + conversational answer engines) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "url": "https://invest.moyiq.app/",
-  "name": "MOY IQ Invest — Análisis Técnico de Inversiones",
-  "speakable": {
-    "@type": "SpeakableSpecification",
-    "cssSelector": ["h1", "h2", ".de-regime-badge", ".page-title"]
-  }
-}
-</script>
+<link rel="canonical" href="https://invest.moyiq.app/app"/>
+<meta name="author" content="MAXNOVA &amp; LUCI Global LLC"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
    MOY IQ INVEST — Sistema de diseño alineado con FinanceOS Pro
@@ -805,6 +671,21 @@ tr:last-child td { border-bottom: none; }
 .badge.hold { background: var(--amber-bg); color: var(--amber); }
 .badge.sell { background: var(--red-bg); color: var(--red); }
 
+/* ── LECTURAS POR INDICADOR (relanzamiento v2, T18) ── */
+.badge{white-space:nowrap}
+.rd-list{display:flex;flex-direction:column;gap:0;margin:0}
+.rd-row{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;padding:8px 0;border-bottom:1px solid var(--border)}
+.rd-row:last-child{border-bottom:none}
+.rd-lbl{font-size:12px;font-weight:600;color:var(--bright);margin:0}
+.rd-rng{display:block;font-size:11px;font-weight:400;color:var(--text3);margin-top:1px}
+.rd-val{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;margin:0;white-space:nowrap}
+.rd-txt{grid-column:1 / -1;font-size:12px;color:var(--text2);line-height:1.5;margin:0}
+.rd-panel{background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;margin-bottom:12px}
+.rd-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;font-size:11px;color:var(--text3)}
+.rd-foot{font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5}
+.fresh-tag{font-size:11px;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
+.conc-warn{margin-top:10px;padding:9px 12px;border:1px solid var(--amber);border-radius:var(--r-sm);font-size:12px;color:var(--text);line-height:1.5}
+.conc-warn b{color:var(--amber)}
 /* ── LIVE BADGE ── */
 .live-badge {
   display: inline-flex; align-items: center; gap:4px;
@@ -2029,37 +1910,12 @@ div:has(>.dtab), div:has(>.rtab) {
   .spin, .spin-sm { animation: none !important; }
 }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "MOY IQ Invest",
-  "url": "https://invest.moyiq.app/",
-  "inLanguage": "es",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": { "@type": "EntryPoint", "urlTemplate": "https://invest.moyiq.app/?q={search_term_string}" },
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
 </head>
 <body>
 <noscript>
 <main style="max-width:720px;margin:0 auto;padding:32px 20px;font-family:system-ui,sans-serif;line-height:1.6">
-<h1>Análisis técnico de inversiones</h1>
-<p>MOY IQ Invest es una plataforma de análisis técnico para invertir en acciones y ETFs de Estados Unidos (NYSE, NASDAQ). Evalúa el régimen de mercado con SPY frente a su media móvil de 200 sesiones (SMA200) y calcula un puntaje técnico de 0 a 100 por activo usando RSI, MACD y ATR(14). Desde $9.99 USD al mes.</p>
-<h2>Características principales</h2>
-<ul>
-<li>Motor de Análisis con régimen de mercado SPY/SMA200</li>
-<li>Indicadores técnicos: RSI, MACD, ATR(14), SMA50/200</li>
-<li>Screener de acciones NYSE y NASDAQ</li>
-<li>Portafolio con seguimiento de P&amp;L</li>
-<li>Gestión de riesgo y dimensionamiento de posición</li>
-<li>Plan de capital y rebalanceo</li>
-</ul>
-<h2>¿Cuánto cuesta MOY IQ Invest Pro?</h2>
-<p>$9.99 USD al mes: screener ilimitado, Motor de Análisis completo y portafolio con P&amp;L. Análisis educativo — no constituye asesoría financiera ni ejecuta órdenes.</p>
+<h1>MOY IQ Invest necesita JavaScript</h1>
+<p>Activa JavaScript para usar la app. Invest es gratis durante la beta pública. Herramienta educativa: no es asesoría financiera ni ejecuta órdenes.</p>
 </main>
 </noscript>
 <!-- Sprite de iconos. Linea de 1.5px sobre viewBox 24 y stroke=currentColor:
@@ -2192,6 +2048,7 @@ div:has(>.dtab), div:has(>.rtab) {
 <script src="/app/lib/async-guards.js"></script>
 <script src="/app/lib/rebalance.js"></script>
 <script src="/app/lib/risk.js"></script>
+<script src="/app/lib/readings.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -2268,7 +2125,15 @@ const PLANS={
     price:9.99,desc:"Todo ilimitado · Motor de Análisis · Soporte prioritario"},
   teams:{label:"Teams",maxT:999,maxA:999,maxS:999,locked:[],
     price:99,desc:"Multi-usuario · API access · SLA 99.9%"},
+  // Relanzamiento v2 (oct-2026): beta publica gratuita, todo incluido.
+  beta:{label:"Beta pública gratuita",maxT:999,maxA:999,maxS:999,locked:[],
+    price:0,desc:"Todo incluido mientras dure la beta"},
 };
+// Relanzamiento v2: mientras INVEST_BETA sea true, todas las cuentas usan el
+// plan "beta" sin importar profiles.plan, y la app no ofrece pagos. El cobro
+// vuelve cuando se cumpla el disparador del plan de relanzamiento
+// (00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md).
+var INVEST_BETA=true;
 
 // ── STATIC DATA ────────────────────────────────────────────────
 const DEF_PORT=[
@@ -2284,18 +2149,13 @@ const DEF_PORT=[
   {id:10,t:"JPM",  type:"Stock",sh:18, cost:158.00,cur:196.0,  note:"Banking value"},
 ];
 const DEF_WATCH=["AAPL","MSFT","NVDA","SPY","QQQ","GOOGL","META","TSLA","VTI","JPM","MELI","NU","GGB","BSBR","PBR"];
-const ALL_SIG=[
-  {t:"NVDA",sig:"BUY",sc:89},{t:"AAPL",sig:"BUY",sc:82},
-  {t:"XLK",sig:"BUY",sc:81},{t:"SPY",sig:"BUY",sc:79},
-  {t:"V",sig:"BUY",sc:78},{t:"AMZN",sig:"BUY",sc:77},
-  {t:"VTI",sig:"BUY",sc:75},{t:"MSFT",sig:"HOLD",sc:73},
-  {t:"QQQ",sig:"HOLD",sc:69},{t:"GOOGL",sig:"HOLD",sc:62},
-  {t:"META",sig:"HOLD",sc:68},{t:"JPM",sig:"HOLD",sc:69},
-  {t:"TSLA",sig:"SELL",sc:54},{t:"XLE",sig:"SELL",sc:46},
-  {t:"WMT",sig:"SELL",sc:51},{t:"IVV",sig:"HOLD",sc:71},
-  {t:"UNH",sig:"HOLD",sc:59},{t:"DIA",sig:"HOLD",sc:61},
-  {t:"JNJ",sig:"HOLD",sc:61},{t:"XLV",sig:"HOLD",sc:71}
-];
+// ALL_SIG: universo de referencia. Antes traia sig/sc escritos a mano
+// (BUY 89, SELL 46...) que se mostraban como "valores de referencia" mientras
+// cargaba el motor: datos inventados. Desde el relanzamiento v2 solo lleva los
+// tickers; tendencia y RSI se llenan con datos historicos reales
+// (loadAllSigScores). sig: 'UP' | 'MIX' | 'DOWN' | null (ver app/lib/readings.js).
+const ALL_SIG=["NVDA","AAPL","XLK","SPY","V","AMZN","VTI","MSFT","QQQ","GOOGL","META","JPM","TSLA","XLE","WMT","IVV","UNH","DIA","JNJ","XLV"]
+  .map(function(t){return {t:t,sig:null,rsi:null};});
 const SCENARIOS=[
   {name:"Bull Case",icon:"bull",prob:.35,ret:.25},
   {name:"Base Case",icon:"macd",prob:.45,ret:.10},
@@ -2311,8 +2171,8 @@ const PAGES=[
   {id:"dash",     icon:"dash", label:"Dashboard"},
   {id:"port",     icon:"port",label:"Portfolio"},
   {id:"watch",    icon:"watch",label:"Watchlist"},
-  {id:"sig",      icon:"sig",label:"Señales"},
-  {id:"pb",       icon:"pb",label:"Position Builder",pro:true},
+  {id:"sig",      icon:"sig",label:"Tendencia"},
+  {id:"pb",       icon:"pb",label:"Calculadora",pro:true},
   {id:"comp",     icon:"comp",label:"Comparador"},
   {id:"sentiment",icon:"sentiment",label:"Sentimiento"},
   {id:"radar",    icon:"radar",label:"Radar Financiero"},
@@ -2408,7 +2268,7 @@ function addAlert(ticker,tipo,trigger){
   if(tipo!=='Max'&&tipo!=='Min'){ showToast('Tipo de alerta inválido','error'); return false; }
   var plan=planOf();
   if(plan.maxA<999 && S.alerts.length>=plan.maxA){
-    showToast('Plan Free: máximo '+plan.maxA+' alertas. Elimina una o mejora a Pro.','warning');
+    showToast('Llegaste al máximo de '+plan.maxA+' alertas. Elimina una para crear otra.','warning');
     return false;
   }
   if(S.alerts.some(function(a){return a.asset===ticker&&a.type===tipo&&a.trigger===t;})){
@@ -2625,12 +2485,17 @@ async function fetchQuote(ticker){
       var price=m.regularMarketPrice; var prev=m.chartPreviousClose||m.previousClose||price;
       q={ticker:ticker,price:price,prevClose:prev,change:price-prev,changePct:prev?(price-prev)/prev:0,
          volume:m.regularMarketVolume||0,marketCap:0,high52:m.fiftyTwoWeekHigh||null,
-         low52:m.fiftyTwoWeekLow||0,currency:m.currency||'USD'};
+         low52:m.fiftyTwoWeekLow||0,currency:m.currency||'USD',
+         marketTime:m.regularMarketTime?m.regularMarketTime*1000:null,
+         tradingStart:m.currentTradingPeriod&&m.currentTradingPeriod.regular?m.currentTradingPeriod.regular.start*1000:null,
+         tradingEnd:m.currentTradingPeriod&&m.currentTradingPeriod.regular?m.currentTradingPeriod.regular.end*1000:null,
+         fetchedAt:Date.now()};
     }
     var out={ticker:ticker,price:q.price,prevClose:q.prevClose,
              change:q.change,changePct:q.changePct,volume:q.volume||0,
              marketCap:q.marketCap||0,high52:q.high52||null,
-             low52:q.low52||0,exchange:'',marketState:'REGULAR'};
+             low52:q.low52||0,exchange:'',marketState:'REGULAR',
+             marketTime:q.marketTime||null,tradingStart:q.tradingStart||null,tradingEnd:q.tradingEnd||null,fetchedAt:q.fetchedAt||Date.now()};
     _cacheSet(ckey,out);fetchStats.ok++;fetchStats.lastOk=Date.now();
     return out;
   }catch(e){fetchStats.fail++;fetchStats.lastErr=e.message;return null;}
@@ -2654,7 +2519,8 @@ async function fetchCryptoQuote(ticker){
     var out={ticker:ticker,price:q.price,prevClose:q.prevClose,
              change:q.change,changePct:q.changePct,volume:q.volume||0,
              marketCap:q.marketCap||0,high52:q.high52||null,
-             low52:q.low52||0,exchange:'',marketState:'REGULAR'};
+             low52:q.low52||0,exchange:'',marketState:'REGULAR',
+             marketTime:q.marketTime||null,fetchedAt:q.fetchedAt||Date.now()};
     _cacheSet(ckey,out);fetchStats.ok++;fetchStats.lastOk=Date.now();
     return out;
   }catch(e){fetchStats.fail++;fetchStats.lastErr=e.message;return null;}
@@ -3223,14 +3089,30 @@ function kpi(l,v,s,c,extra){
   var sc=s?(s.charAt(0)==="+")?"pos":(s.charAt(0)==="-")?"neg":"neu":"";
   return '<div class="kpi k'+c+(extra?' '+extra:'')+'"><div class="kl">'+l+'</div><div class="kv">'+v+'</div>'+(s?'<div class="ks '+sc+'">'+s+'</div>':'')+'</div>';
 }
-function sigLabel(sig){
-  if(sig==="BUY")  return "Alcista";
-  if(sig==="SELL") return "Bajista";
-  return "Neutro";
-}
+// Tendencia frente a las medias de 50 y 200 dias (no es una recomendacion).
+function sigLabel(sig){ return trendLabel(sig); }
 function badge(sig){
-  var c=sig==="BUY"?"buy":sig==="SELL"?"sell":"hold";
-  return '<span class="badge '+c+'">'+sigLabel(sig)+'</span>';
+  var c=sig==="UP"?"buy":sig==="DOWN"?"sell":"hold";
+  return '<span class="badge '+c+'" title="Precio frente a sus medias de 50 y 200 días">'+sigLabel(sig)+'</span>';
+}
+// RSI con su zona, para tablas: "58 · neutral".
+function rsiCell(rsi){
+  if(rsi==null||!isFinite(rsi)) return '<span style="color:var(--text3)">—</span>';
+  var z=rsiZone(rsi);
+  var col=z.key==='mid'?'var(--text)':'var(--amber)';
+  return '<span style="font-family:\'IBM Plex Mono\',monospace;color:'+col+'" title="'+esc(z.reading)+'">'+Math.round(rsi)+'</span> <span style="font-size:11px;color:var(--text3)">'+(z.key==='mid'?'neutral':z.key==='high'?'sobre 70':'bajo 30')+'</span>';
+}
+// Lecturas por indicador (T18): valor, rango y una frase. compact = sin rango.
+function readingsHtml(readings,compact){
+  if(!readings||!readings.length) return '<div style="font-size:11px;color:var(--text3)">Sin historia suficiente para calcular indicadores.</div>';
+  var tone={pos:'var(--pos)',neg:'var(--neg)',warn:'var(--amber)',neu:'var(--text)'};
+  return '<dl class="rd-list">'+readings.map(function(r){
+    return '<div class="rd-row">'+
+      '<dt class="rd-lbl">'+esc(r.label)+(compact?'':'<span class="rd-rng">'+esc(r.range)+'</span>')+'</dt>'+
+      '<dd class="rd-val" style="color:'+(tone[r.tone]||'var(--text)')+'">'+esc(r.value)+'</dd>'+
+      '<dd class="rd-txt">'+esc(r.reading)+'</dd>'+
+    '</div>';
+  }).join('')+'</dl>';
 }
 function timeAgo(ts){
   if(!ts) return '';
@@ -3240,9 +3122,11 @@ function timeAgo(ts){
   if(h<24) return 'hace '+h+'h';
   return 'hace '+(Math.floor(h/24))+'d';
 }
-function sbar(sc){
-  var c=sc>=72?"var(--grn)":sc>=52?"var(--amber)":"var(--red)";
-  return '<span class="sbar"><span class="sf" style="width:'+sc+'%;background:'+c+'"></span></span>';
+// Barra de RSI 0-100 con la zona neutral 30-70 marcada (solo posicion, sin
+// premiar sobreventa ni castigar sobrecompra con colores de compra/venta).
+function sbar(rsi){
+  if(rsi==null||!isFinite(rsi)) return '';
+  return '<span class="sbar" title="RSI '+Math.round(rsi)+' en escala 0–100"><span class="sf" style="width:'+Math.max(2,Math.min(100,rsi))+'%;background:var(--text3)"></span></span>';
 }
 function typeTag(t){
   var bg=t==="ETF"?"rgba(14,165,201,.12)":t==="Crypto"?"rgba(90,63,181,.12)":"rgba(15,124,90,.12)";
@@ -3262,7 +3146,7 @@ function _ph(crumb,title,sub,right,tag){
     '</div>';
 }
 function freeBanner(txt){
-  if(!S.user||S.user.plan!=="free")return "";
+  if(INVEST_BETA||!S.user||S.user.plan!=="free")return "";
   return '<div class="ban">⚠️ '+txt+' <button class="btn btn-up" style="margin-left:auto;padding:3px 9px;font-size:11px" onclick="openModal(\'upgrade\')">Upgrade Pro</button></div>';
 }
 function lockedBanner(title,desc){
@@ -3270,8 +3154,8 @@ function lockedBanner(title,desc){
     'Indicadores Pro':['RSI · MACD · Bandas Bollinger sobre datos reales','Tabla comparativa para todos tus activos','Señales técnicas unificadas por portafolio'],
     'Gestión de Riesgo':['Position sizing basado en tu capital y tolerancia al riesgo','Escenarios de mercado (bull/base/bear)','Análisis de correlación entre posiciones'],
     'Simulación Histórica':['Backtesting de estrategias sobre datos históricos reales','Análisis del rendimiento de tu Bitácora','Curva de equity de tus operaciones registradas'],
-    'Screener':['Filtro técnico sobre más de 50 activos simultáneamente','Score Motor de Análisis para cada resultado','Export CSV con todos los datos'],
-    'Motor de Análisis':['Régimen de mercado SPY + scoring técnico 0–100','Entry/Stop/Target basados en ATR(14) por activo','Pullback Quality Score + lectura técnica educativa']
+    'Screener':['Filtro por tendencia, RSI y sector','Indicadores por activo con su lectura','Export CSV con todos los datos'],
+    'Motor de Análisis':['Contexto de mercado: SPY, VIX y amplitud','Cada indicador con su rango y su lectura','Sin notas agregadas ni niveles de entrada']
   };
   var feat=features[title]||['Herramienta de análisis técnico educativo','Datos reales de mercado','Integrado con tu Portfolio y Watchlist'];
   return '<div style="margin:20px;padding:28px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);text-align:center;max-width:500px;margin-left:auto;margin-right:auto">'+
@@ -3285,26 +3169,26 @@ function lockedBanner(title,desc){
     '<button class="btn-big" onclick="openModal(\'upgrade\')" style="width:100%">Ver planes →</button>'+
     '</div>';
 }
-function planOf(){return S.user?PLANS[S.user.plan]:PLANS.free;}
+function planOf(){ if(INVEST_BETA) return PLANS.beta; return S.user?(PLANS[S.user.plan]||PLANS.free):PLANS.free; }
 function liveBadge(){
-  var hasLive=Object.keys(LIVE).length>0;
-  var lastT=liveUpdated?new Date(liveUpdated).toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"}):"...";
-  var state=liveFailed?"error":liveFromCache?"cache":liveLoading?"loading":hasLive?"live":"loading";
-  var cfg={
-    live:   {cls:"live-badge",       txt:"Datos en tiempo diferido · "+lastT, dot:true},
-    loading:{cls:"live-badge loading",txt:"Actualizando...",     dot:false},
-    cache:  {cls:"live-badge loading",txt:"Precios al "+lastT+" — datos en caché", dot:false},
-    error:  {cls:"live-badge error",  txt:"Sin conexión a datos", dot:false},
-  };
-  var c=cfg[state]||cfg.loading;
-  // Show prominent stale warning if cache is older than 30 min
-  var staleWarn='';
-  if((liveFromCache||liveFailed)&&liveUpdated&&(Date.now()-liveUpdated)>30*60*1000){
-    var minAgo=Math.round((Date.now()-liveUpdated)/60000);
-    staleWarn='<div style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:var(--r-xl);font-size:11px;font-family:monospace;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);margin-left:6px">⚠ Precios hace '+minAgo+' min</div>';
-  }
-  return "<div class=\""+c.cls+"\" role=\"status\" aria-live=\"polite\" style=\"display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-xl);font-size:11px;font-family:monospace\">"+
-    (c.dot?"<span class=\"live-dot\"></span>":"")+c.txt+"</div>"+staleWarn;
+  // T18: estado honesto del dato con la hora que informa la fuente (Yahoo
+  // Finance / CoinGecko). Muestra el peor caso entre los precios cargados.
+  var qs=Object.keys(LIVE).map(function(k){return LIVE[k];});
+  var f;
+  if(liveLoading&&!qs.length) f={state:'loading',label:'Actualizando precios…'};
+  else f=summarizeFreshness(qs,Date.now(),liveFailed||liveFromCache);
+  var cls=f.state==='offline'?'live-badge error':(f.state==='live'?'live-badge':'live-badge loading');
+  var ico=f.state==='offline'?'⚠':'◷';
+  return '<div class="'+cls+'" role="status" aria-live="polite" title="Fuente: Yahoo Finance (acciones y ETF) y CoinGecko (cripto). La hora es la del último precio informado por la fuente." style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace">'+
+    '<span aria-hidden="true">'+ico+'</span>'+esc(f.label)+'</div>';
+}
+// Etiqueta por precio (ficha del activo).
+function freshTag(ticker){
+  var q=LIVE[ticker];
+  if(!q) return '<span class="fresh-tag" style="color:var(--text3)">◷ Precio no cargado</span>';
+  var f=quoteFreshness(q,Date.now(),liveFailed||liveFromCache);
+  var col=f.state==='offline'?'var(--neg)':f.state==='live'?'var(--pos)':'var(--text3)';
+  return '<span class="fresh-tag" style="color:'+col+'" title="Hora del último precio según la fuente">'+(f.state==='offline'?'⚠ ':'◷ ')+esc(f.label)+'</span>';
 }
 function updateLiveBadge(){
   document.querySelectorAll('.live-badge-wrap').forEach(function(el){el.innerHTML=liveBadge();});
@@ -3451,10 +3335,12 @@ function render(){renderSidebar();renderTopbar();renderMainNav();renderMain();re
 var NAV_C=[
   {id:'panorama',  label:'Panorama',      pages:['dash']},
   {id:'investigar',label:'Investigar',    pages:['watch','screener','comp']},
-  {id:'analizar',  label:'Analizar',      pages:['decision','sig','ind','sentiment']},
+  {id:'analizar',  label:'Analizar',      pages:['decision','sig','ind']},
   {id:'decidir',   label:'Decidir',       pages:['risk','capital','back']},
-  {id:'seguir',    label:'Seguir',        pages:['port','bitacora','divs','rebal','alert']},
-  {id:'plan',      label:'Planificación', pages:['radar']}
+  {id:'seguir',    label:'Seguir',        pages:['port','bitacora','divs','rebal','alert']}
+  // 'sentiment' (indice compuesto tipo Fear & Greed) y 'radar' (Health Score
+  // 0-100 + IA no conectada) se retiraron en el relanzamiento v2 (T18): eran
+  // notas agregadas y promesas sin respaldo. Sus rutas caen en Analizar.
 ];
 function navGrupoDe(pageId){
   for(var i=0;i<NAV_C.length;i++) if(NAV_C[i].pages.indexOf(pageId)>=0) return NAV_C[i];
@@ -3464,7 +3350,7 @@ function renderMainNav(){
   var el=document.getElementById('mainnav');
   if(!el) return;
   if(!S.user){ el.innerHTML=''; return; }
-  var plan=S.user?PLANS[S.user.plan]:null;
+  var plan=S.user?planOf():null;
   var activo=navGrupoDe(S.page);
 
   var fila1=NAV_C.map(function(g){
@@ -3591,7 +3477,7 @@ function renderTopbar(){
     // vez de recortar, para que ninguno quede inaccesible. flex:1 aqui y no en
     // un separador aparte, para que la banda ocupe el espacio disponible.
     '<div class="mkt-strip" style="display:flex;align-items:center;height:100%;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden">'+chips+regChip+'</div>'+
-    '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3);margin-right:14px;white-space:nowrap">~15min delay</span>'+
+    '<span class="live-badge-wrap" style="margin-right:14px;white-space:nowrap">'+liveBadge()+'</span>'+
     '<div role="button" tabindex="0" title="'+u.email+'" style="width:28px;height:28px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-lt);display:flex;align-items:center;justify-content:center;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--grn);flex-shrink:0;cursor:pointer" onclick="setPage(\'settings\')">'+initials+'</div>';
 
   if(!r||!v){
@@ -3620,6 +3506,7 @@ function setPage(p){
   // Contexto/Noticias se fusiono dentro del Dashboard (banda "Mercado hoy").
   // Cualquier enlace antiguo a 'news' aterriza en el Dashboard.
   if(p==='news') p='dash';
+  if(p==='sentiment'||p==='radar') p='decision';
   S.page=p;
   track('module_view',{module:p});
   closeDrawer();
@@ -3746,7 +3633,7 @@ async function deGetSectorRS(ticker){
     var etfRet=(etfH[etfH.length-1].close-etfH[etfH.length-22].close)/etfH[etfH.length-22].close;
     var spyRet=(spyH[spyH.length-1].close-spyH[spyH.length-22].close)/spyH[spyH.length-22].close;
     var rs=etfRet-spyRet;
-    var label=etf+' '+(rs>=0.02?'outperform':rs>=-0.02?'≈ en línea':'underperform');
+    var label=etf+' '+(rs>=0.02?'rinde más que SPY':rs>=-0.02?'en línea con SPY':'rinde menos que SPY');
     var color=rs>=0.02?'var(--grn)':rs>=-0.02?'var(--text2)':'var(--red)';
     var mult=rs>=0.02?1.2:rs>=-0.02?1.0:0.7;
     var result={etf:etf,rs:rs,label:label,color:color,mult:mult,etfRet:etfRet,spyRet:spyRet};
@@ -3768,14 +3655,14 @@ async function deGetRegime(){
   var regime,label,color,emoji,desc;
   var pct200=(last-s200)/s200;
   if(last>s200&&s50>s200&&pct200>0.01){
-    regime='risk_on';label='Risk On';color='var(--grn)';emoji='🟢';
-    desc='Precio y SMA50 sobre SMA200. Tendencia alcista confirmada.';
+    regime='risk_on';label='Tendencia alcista';color='var(--grn)';emoji='🟢';
+    desc='SPY y su media de 50 días están sobre la media de 200 días.';
   }else if(last<s200&&s50<s200){
-    regime='risk_off';label='Risk Off';color='var(--red)';emoji='🔴';
-    desc='Precio y SMA50 bajo SMA200. Mercado en tendencia bajista.';
+    regime='risk_off';label='Tendencia bajista';color='var(--red)';emoji='🔴';
+    desc='SPY y su media de 50 días están bajo la media de 200 días.';
   }else{
-    regime='neutral';label='Neutral';color='var(--amber)';emoji='🟡';
-    desc='SPY entre SMA50 y SMA200. Zona de transición — mayor cautela.';
+    regime='neutral';label='En transición';color='var(--amber)';emoji='🟡';
+    desc='SPY está entre sus medias de 50 y 200 días.';
   }
   var result={regime:regime,label:label,color:color,emoji:emoji,desc:desc,spy:last,sma200:s200,sma50:s50,pct200:pct200,hist:hist};
   DE_CACHE.regime=result;DE_CACHE.lastFetch=Date.now();
@@ -3875,21 +3762,27 @@ function _allSigFromCache(){
     var raw=localStorage.getItem(_allSigKey());
     if(!raw) return false;
     var o=JSON.parse(raw);
-    if(!o||!o.ts||(Date.now()-o.ts)>ALL_SIG_TTL) return false;
+    if(!o||!o.v||o.v<2||!o.ts||(Date.now()-o.ts)>ALL_SIG_TTL) return false;
     var n=0;
     ALL_SIG.forEach(function(x){
       var v=o.d[x.t];
-      if(v){ x.sc=v.sc; x.sig=v.sig; n++; }
+      if(v){ x.sig=v.sig; x.rsi=v.rsi; n++; }
     });
     if(n>0){ ALL_SIG_REAL=true; return true; }
   }catch(e){}
   return false;
 }
 
-// Un score 0-100 se traduce a las tres bandas que ya usa la UI.
-function _sigDesdeScore(sc){ return sc>=70?'BUY':sc>=45?'HOLD':'SELL'; }
+// Suma al universo los tickers de la watchlist y del portafolio, para que
+// sus tablas muestren tendencia y RSI reales y no un "—".
+function _allSigIncluirUniverso(){
+  var add=function(t){ if(t&&!ALL_SIG.some(function(x){return x.t===t;})) ALL_SIG.push({t:t,sig:null,rsi:null}); };
+  (S.watchlist||[]).forEach(function(w){ add(typeof w==='string'?w:(w&&w.ticker)); });
+  (S.portfolio||[]).forEach(function(h){ if(h.type!=='Crypto') add(h.t); });
+}
 
 async function loadAllSigScores(force){
+  _allSigIncluirUniverso();
   if(!force && _allSigFromCache()){ return; }
   try{
     await _allSigGate.run(async function(){
@@ -3898,30 +3791,28 @@ async function loadAllSigScores(force){
         var x=ALL_SIG[i];
         try{
           var r=await deScoreTicker(x.t);
-          if(r&&isFinite(r.score)){
-            x.sc=Math.round(r.score);
-            x.sig=_sigDesdeScore(x.sc);
-            guardar[x.t]={sc:x.sc,sig:x.sig};
+          if(r){
+            x.sig=r.trend; x.rsi=r.rsi;
+            guardar[x.t]={sig:x.sig,rsi:x.rsi};
           }
         }catch(e){/* un ticker que falla no detiene al resto */}
       }
       if(!Object.keys(guardar).length){
-        // Ningun ticker resolvio (ej. corte de red): que el gate lo trate
-        // como fallo y reintente solo mas adelante, en vez de quedar
-        // ALL_SIG_REAL en false para siempre.
-        throw new Error('sin scores reales — reintentar');
+        throw new Error('sin datos reales — reintentar');
       }
       ALL_SIG_REAL=true;
-      try{ localStorage.setItem(_allSigKey(),JSON.stringify({ts:Date.now(),d:guardar})); }catch(e){}
-      // Repintar solo las pantallas que leen ALL_SIG
-      if(['sig','dash','sentiment','radar','ind'].indexOf(S.page)>=0){ try{ renderMain(); }catch(e){} }
+      try{ localStorage.setItem(_allSigKey(),JSON.stringify({v:2,ts:Date.now(),d:guardar})); }catch(e){}
+      if(['sig','dash','ind','watch'].indexOf(S.page)>=0){ try{ renderMain(); }catch(e){} }
       return guardar;
     });
   }catch(e){/* cooldown o fallo real: el proximo render que necesite ALL_SIG_REAL reintenta */}
 }
 
+// Relanzamiento v2 (T18): el motor ya no suma puntos en una nota de 0 a 100
+// ni propone niveles de entrada/stop/objetivo. Calcula cada indicador con un
+// año de historia y devuelve una lectura por indicador (app/lib/readings.js).
 async function deScoreTicker(ticker){
-  if(DE_CACHE.scores[ticker]&&(Date.now()-DE_CACHE.lastFetch)<1800000)return DE_CACHE.scores[ticker];
+  if(DE_CACHE.scores[ticker]&&(Date.now()-(DE_CACHE.scores[ticker]._ts||0))<DE_CACHE_TTL)return DE_CACHE.scores[ticker];
   var hist=await fetchHistory(ticker,'1y');
   if(!hist||hist.length<30)return null;
   var closes=hist.map(function(d){return d.close;});
@@ -3929,130 +3820,31 @@ async function deScoreTicker(ticker){
   var lows=hist.map(function(d){return d.low;});
   var vols=hist.map(function(d){return d.vol;});
   var last=closes[closes.length-1];
-  var score=0;var signals=[];
 
-  // 1. Trend vs SMA200 (30pts)
-  if(closes.length>=200){
-    var s200=TI.sma(closes,200);var v200=s200[s200.length-1];
-    var pct=(last-v200)/v200;
-    if(last>v200){
-      var pts=pct>0.15?15:pct>0.05?22:30;score+=pts;
-      signals.push(pct<0.05?icon('check','ico-inline')+' Sobre SMA200 (cerca)':icon('check','ico-inline')+' Sobre SMA200');
-    }else{score+=5;signals.push('⚠️ Bajo SMA200');}
-  }
-
-  // 2. RSI position (25pts — ideal 40-60)
-  var rsiArr=TI.rsi(closes);var rsi=rsiArr[rsiArr.length-1];
-  if(rsi>=40&&rsi<=60){score+=25;signals.push(icon('check','ico-inline')+' RSI neutro ('+rsi.toFixed(0)+')');}
-  else if(rsi<40){score+=20;signals.push(icon('check','ico-inline')+' RSI oversold ('+rsi.toFixed(0)+') — condición técnica de sobreventa');}
-  else if(rsi>70){score+=5;signals.push('⚠️ RSI sobrecomprado ('+rsi.toFixed(0)+')');}
-  else{score+=12;signals.push(icon('capital','ico-inline')+' RSI '+rsi.toFixed(0));}
-
-  // 3. MACD momentum (20pts)
-  var macd=TI.macd(closes);var mhist=macd.hist;
-  var mLast=mhist[mhist.length-1];var mPrev=mhist[mhist.length-2];
-  if(mLast>0&&mLast>mPrev){score+=20;signals.push(icon('check','ico-inline')+' MACD alcista y acelerando');}
-  else if(mLast>0){score+=14;signals.push(icon('capital','ico-inline')+' MACD positivo');}
-  else if(mLast<0&&mLast>mPrev){score+=10;signals.push(icon('capital','ico-inline')+' MACD recuperando');}
-  else{score+=3;signals.push('⚠️ MACD negativo');}
-
-  // 4. Volume confirmation (25pts)
-  var avgVol=vols.slice(-20).reduce(function(a,b){return a+b;},0)/20;
-  var lastVol=vols[vols.length-1];
-  var volRatio=lastVol/avgVol;
-  var priceUp=last>closes[closes.length-2];
-  if(priceUp&&volRatio>1.2){score+=25;signals.push(icon('check','ico-inline')+' Volumen alto en alza ('+volRatio.toFixed(1)+'x)');}
-  else if(!priceUp&&volRatio>1.2){score+=8;signals.push('⚠️ Volumen alto en baja');}
-  else{score+=15;signals.push(icon('capital','ico-inline')+' Volumen normal ('+volRatio.toFixed(1)+'x)');}
-
-  // ATR-based entry/stop/target
-  var atrArr=TI.atr(highs,lows,closes,14);var atr=atrArr[atrArr.length-1]||last*0.02;
-  var entry=parseFloat((last*(1-0.005)).toFixed(2));
-  var stop =parseFloat((last-atr*1.5).toFixed(2));
-  var target=parseFloat((last+atr*3).toFixed(2));
-  var rr=((target-entry)/(entry-stop)).toFixed(1);
-
-  // Sector RS multiplier
-  var sectorRS=await deGetSectorRS(ticker);
-  var sectorMult=sectorRS?sectorRS.mult:1.0;
-  var finalScore=Math.min(100,Math.round(score*sectorMult));
-
-  var action=finalScore>=75?'Score alto':finalScore>=55?'Score medio':finalScore>=35?'Score bajo':'Fuera de criterio';
-  var actionColor=finalScore>=75?'var(--grn)':finalScore>=55?'var(--blue)':finalScore>=35?'var(--amber)':'var(--red)';
-
-  // Scale-out targets
-  var t1=parseFloat((entry+atr*1.5).toFixed(2));
-  var t2=parseFloat((entry+atr*3.0).toFixed(2));
-
-  // Pullback Quality Score
-  var pqScore=0;
   var s50arr=TI.sma(closes,Math.min(50,closes.length));var s50v=s50arr[s50arr.length-1];
   var s200v=closes.length>=200?(function(){var a=TI.sma(closes,200);return a[a.length-1];}()):null;
+  var rsiArr=TI.rsi(closes);var rsi=rsiArr[rsiArr.length-1];
+  var macd=TI.macd(closes);var mhist=macd.hist;
+  var mLast=mhist[mhist.length-1];var mPrev=mhist[mhist.length-2];
+  var avgVol=vols.slice(-20).reduce(function(a,b){return a+b;},0)/20;
+  var lastVol=vols[vols.length-1];
+  var volRatio=avgVol>0?lastVol/avgVol:null;
+  var atrArr=TI.atr(highs,lows,closes,14);var atr=atrArr[atrArr.length-1]||null;
   var high52=Math.max.apply(null,highs.slice(-Math.min(252,highs.length)));
-  var pullbackPct=(high52-last)/high52;
-  // RSI zone (40 pts)
-  if(rsi>=30&&rsi<=55){pqScore+=40;}else if(rsi<30){pqScore+=30;}else if(rsi<=65){pqScore+=20;}else{pqScore+=5;}
-  // Above SMA50 (25 pts)
-  if(last>s50v) pqScore+=25;
-  // Above SMA200 (20 pts)
-  if(s200v&&last>s200v) pqScore+=20;
-  // Distance from 52w high: 5-20% ideal (15 pts)
-  if(pullbackPct>=0.05&&pullbackPct<=0.20){pqScore+=15;}else if(pullbackPct<0.05||pullbackPct>0.35){pqScore+=0;}else{pqScore+=8;}
-  // Volume declining on pullback = orderly (not a panic dump)
-  var vol3avg=vols.slice(-3).reduce(function(a,b){return a+b;},0)/3;
-  var vol20avg=vols.slice(-20).reduce(function(a,b){return a+b;},0)/20;
-  // (bonus) — not added to pqScore since it can be 0 on volatile tickers
-  var volOrderly=vol3avg<vol20avg*0.9;
-  var pqLabel=pqScore>=75?'Excelente':pqScore>=55?'Bueno':pqScore>=35?'Regular':'Débil';
-  var pqColor=pqScore>=75?'var(--grn)':pqScore>=55?'var(--blue)':pqScore>=35?'var(--amber)':'var(--red)';
-  var pqTip=pqScore>=75?'Condiciones técnicas favorables — indicadores alineados.':pqScore>=55?'Condiciones técnicas moderadamente favorables.':pqScore>=35?'Condiciones técnicas mixtas — señales divergentes.':'Condiciones técnicas desfavorables — indicadores débiles.';
+  var sectorRS=null;
+  try{ sectorRS=await deGetSectorRS(ticker); }catch(e){}
 
-  // Expected Value (EV) from Bitácora trade history
-  loadTrades();loadAlerts();
-  var sells=S.trades.filter(function(t){return t.type==='sell'&&t.pnl!=null;});
-  var ev=null;
-  if(sells.length>=3){
-    var wins=sells.filter(function(t){return t.pnl>0;});
-    var losses=sells.filter(function(t){return t.pnl<=0;});
-    var winRate=wins.length/sells.length;
-    var avgWinPct=wins.length?wins.reduce(function(s,t){return s+(t.pnl/t.amount);},0)/wins.length:0;
-    var avgLossPct=losses.length?Math.abs(losses.reduce(function(s,t){return s+(t.pnl/t.amount);},0)/losses.length):0;
-    ev=(winRate*avgWinPct)-((1-winRate)*avgLossPct);
-  }
-
-  var result={ticker:ticker,score:finalScore,rawScore:score,sectorRS:sectorRS,signals:signals,rsi:rsi.toFixed(0),action:action,actionColor:actionColor,entry:entry,stop:stop,target:target,t1:t1,t2:t2,rr:rr,last:last,atr:atr,ev:ev,pqScore:pqScore,pqLabel:pqLabel,pqColor:pqColor,pqTip:pqTip,volOrderly:volOrderly,pullbackPct:pullbackPct,s50v:s50v,s200v:s200v};
+  var trend=classifyTrend(last,s50v,s200v);
+  var readings=buildReadings({last:last,rsi:rsi,s50:s50v,s200:s200v,macdHist:mLast,macdPrev:mPrev,volRatio:volRatio,high52:high52,atr:atr});
+  var result={ticker:ticker,last:last,rsi:isFinite(rsi)?Math.round(rsi):null,trend:trend,trendLabel:trendLabel(trend),
+    readings:readings,sectorRS:sectorRS,atr:atr,s50v:s50v,s200v:s200v,high52:high52,_ts:Date.now()};
   DE_CACHE.scores[ticker]=result;
   return result;
 }
 
-function deNarrative(s,regime,vix,breadth){
-  var parts=[];
-  if(regime){
-    if(regime.regime==='risk_on') parts.push('El mercado está en modo <b>Risk On</b> — SPY sobre SMA200, tendencia alcista global confirmada.');
-    else if(regime.regime==='risk_off') parts.push('El mercado está en <b>Risk Off</b> — SPY bajo SMA200. Contexto técnico de mayor incertidumbre.');
-    else parts.push('Mercado en zona de <b>transición</b> — SPY entre SMA50 y SMA200. Selectividad alta.');
-  }
-  if(vix&&vix.vix){
-    var vixVal=vix.vix.toFixed(1);
-    if(vix.regime==='low') parts.push('Volatilidad baja (VIX '+vixVal+') — entorno de baja volatilidad histórica.');
-    else if(vix.regime==='normal') parts.push('Volatilidad normal (VIX '+vixVal+') — nivel de volatilidad dentro del rango histórico promedio.');
-    else if(vix.regime==='elevated') parts.push('Volatilidad elevada (VIX '+vixVal+') — entorno de mayor incertidumbre de mercado.');
-    else parts.push('VIX en niveles extremos ('+vixVal+') — volatilidad histórica muy elevada.');
-  }
-  var rsi=parseFloat(s.rsi);
-  if(rsi<=30) parts.push(s.ticker+' en zona de sobreventa (RSI '+s.rsi+') — condición técnica de sobreventa; verificar soporte como referencia.');
-  else if(rsi<=50) parts.push('RSI '+s.rsi+' — momentum moderado, espacio alcista disponible sin señal de sobrecompra.');
-  else if(rsi<=65) parts.push('RSI '+s.rsi+' — momentum positivo y saludable.');
-  else parts.push('RSI '+s.rsi+' — zona de sobrecompra; esperar consolidación para entrada de mejor calidad.');
-  if(s.sectorRS) parts.push('Sector <b>'+s.sectorRS.etf+'</b> '+s.sectorRS.label.toLowerCase()+' vs SPY — factor sectorial '+s.sectorRS.mult+'x '+(s.sectorRS.mult>=1.2?'añadiendo impulso al score.':s.sectorRS.mult<=0.7?'reduciendo el score por debilidad relativa.':'sin impacto significativo.'));
-  if(s.pullbackPct!=null){
-    var pp=(s.pullbackPct*100).toFixed(0);
-    if(s.pullbackPct<0.03) parts.push(s.ticker+' cotiza cerca de su máximo anual ('+pp+'% abajo) — riesgo de entrada en techo.');
-    else if(s.pullbackPct<=0.20) parts.push('Pullback del '+pp+'% desde el máximo — zona de entrada con buena relación riesgo/recompensa.');
-    else parts.push('Corrección del '+pp+'% desde el máximo anual — esperar señales de estabilización antes de acumular.');
-  }
-  parts.push('Zona referencial de precio · ATR(14): <b>$'+s.entry+'</b> · Nivel de riesgo referencial: <b>$'+s.stop+'</b> ('+( ((s.entry-s.stop)/s.entry)*100).toFixed(1)+'% Δ) · R:R <b>'+s.rr+'x</b>.');
-  return parts.join(' ');
+// Lectura en texto: una frase por indicador, sin instrucciones.
+function deNarrative(s){
+  return (s.readings||[]).map(function(r){return '<b>'+esc(r.label)+':</b> '+esc(r.reading);}).join('<br>');
 }
 
 async function deGetEarnings(ticker){
@@ -4085,11 +3877,11 @@ function deSetTab(tab){
   if(!gPane||!aPane) return;
   if(tab==='global'){
     gPane.style.display='';aPane.style.display='none';
-    gBtn.style.background='var(--grn)';gBtn.style.color='#0a1208';
+    gBtn.style.background='var(--grn)';gBtn.style.color='var(--bg)';
     aBtn.style.background='transparent';aBtn.style.color='var(--text3)';
   } else {
     gPane.style.display='none';aPane.style.display='';
-    aBtn.style.background='var(--grn)';aBtn.style.color='#0a1208';
+    aBtn.style.background='var(--grn)';aBtn.style.color='var(--bg)';
     gBtn.style.background='transparent';gBtn.style.color='var(--text3)';
   }
 }
@@ -4138,13 +3930,12 @@ function renderDecisionEngineBody(){
       : '<b style="color:var(--bright)">Analizando '+tickers.length+' activos:</b> '+nWatch+' de tu Watchlist y '+nPort+' de tu Portafolio. '+
         '<button class="btn" style="padding:2px 9px;font-size:11px;margin-left:4px" onclick="setPage(\'watch\')">Editar Watchlist →</button>')+
     '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
-    'El score 0–100 combina tendencia frente a la SMA200 (30%), RSI (25%), MACD (20%) y volumen (25%), ajustado por la fuerza relativa del sector. '+
-    'Los niveles de entrada, stop y objetivo son zonas de referencia calculadas con ATR(14), no recomendaciones.'+
+    'Cada activo muestra sus indicadores por separado (medias de 50 y 200 días, RSI, MACD, volumen), con su rango y una frase que explica qué significa. '+
+    'No hay una nota que los combine ni niveles de entrada: son lecturas de datos históricos, no recomendaciones.'+
     '</div></div>';
-  main.innerHTML=_ph('Analizar · Motor de Análisis','Motor de Análisis','// Régimen SPY · Volatilidad VIX · Scoring técnico 0–100 por activo','<button class="btn" style="font-size:11px;border-color:var(--border);color:var(--text3)" onclick="openModal(\'score-info\')">¿Cómo se calcula? →</button>')+
+  main.innerHTML=_ph('Analizar · Motor de Análisis','Motor de Análisis','// Contexto de mercado · Cada indicador con su rango y su lectura','<button class="btn" style="font-size:11px;border-color:var(--border);color:var(--text3)" onclick="openModal(\'score-info\')">¿Qué mide cada indicador? →</button>')+
     analisisTabs()+
     explicaUniverso+
-    (isFreeUser&&teaserUsed?'<div style="margin:0 20px 16px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--r-md);font-size:12px;color:var(--amber);display:flex;align-items:center;gap:10px">'+icon('bolt')+' Vista previa utilizada hoy — <button onclick="openModal(\'upgrade\')" style="background:var(--amber);color:#000;border:none;border-radius:var(--r-sm);padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">Activar Pro →</button></div>':'')+
     '<div id="de-body" style="padding:0 20px 40px">'+
     // Skeleton screens — show structure immediately, data fills in
     '<div class="de-skeleton">'+
@@ -4173,7 +3964,7 @@ function renderDecisionEngineBody(){
     var regime=results[0];
     var vix=results[1];
     var breadth=results[2];
-    var scores=results.slice(3,3+tickers.length).filter(Boolean).sort(function(a,b){return b.score-a.score;});
+    var scores=results.slice(3,3+tickers.length).filter(Boolean).sort(function(a,b){return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;});
     var earningsArr=results.slice(3+tickers.length).filter(Boolean);
     var earningsMap={};earningsArr.forEach(function(e){if(e)earningsMap[e.ticker]=e;});
     // ── COLORES RÉGIMEN ──
@@ -4203,13 +3994,13 @@ function renderDecisionEngineBody(){
               '<div style="display:flex;justify-content:space-between;font-family:\'IBM Plex Mono\',monospace;font-size:11px"><span style="color:var(--text3)">Δ200</span><b style="color:'+(regime.pct200>=0?'var(--pos)':'var(--neg)')+'">'+( regime.pct200>=0?'+':'')+( regime.pct200*100).toFixed(1)+'%</b></div>'+
             '</div>':'')  +
           '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);background:rgba(0,0,0,.15);border-radius:var(--r-md);padding:8px 12px;line-height:1.5">'+
-            '<span style="color:var(--text2)">Contexto:</span> '+(regime.regime==='risk_on'?'Momentum alcista activo':regime.regime==='risk_off'?'Modo defensivo activo':'Selectividad alta requerida')+'</div>'+
+            '<span style="color:var(--text2)">Contexto:</span> '+(regime.regime==='risk_on'?'S&amp;P 500 sobre su media de 200 días':regime.regime==='risk_off'?'S&amp;P 500 bajo su media de 200 días':'S&amp;P 500 entre sus medias de 50 y 200 días')+'</div>'+
         '</div>'+
       '</div>'+
       '<canvas id="spy-mini-chart" style="width:100%;height:72px;display:block;margin-top:16px;border-radius:var(--r-sm);opacity:.85"></canvas>'+
       '<div id="spy-mini-fallback" style="display:none;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:8px">No se pudo cargar el gráfico SPY.</div>'+
       '<div id="spy-mini-status" style="display:none"></div>'+
-      '<div style="margin-top:6px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3)">Referencia educativa · No constituye señal de compra o venta.</div>'+
+      '<div style="margin-top:6px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3)">Lectura de datos históricos · No es una recomendación ni una predicción.</div>'+
       '</div>';
 
     // ── KPI ROW: VIX + BREADTH + SIZING ──
@@ -4236,12 +4027,13 @@ function renderDecisionEngineBody(){
           '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:4px"><div style="height:100%;width:'+(breadth.pct||0)+'%;background:'+breadth.color+';border-radius:2px"></div></div>'+
           (breadth.warning?'<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">⚠ '+breadth.warning+'</div>':'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">% sobre SMA200</div>')+
         '</div>'+
-        // SIZING
+        // TU REGLA: antes era "Sizing sugerido" (X % del tamaño normal según
+        // el VIX), una instruccion. Ahora solo recuerda la regla de la persona.
         '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px">'+
-          '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Sizing Sugerido</div>'+
-          '<div style="font-size:32px;font-weight:800;color:'+vix.color+';font-family:\'IBM Plex Mono\',monospace;margin-bottom:6px">'+(vix.sizing*100).toFixed(0)+'%</div>'+
-          '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">del tamaño normal de posición</div>'+
-          '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px"><div style="height:100%;width:100%;transform:scaleX('+vix.sizing+');transform-origin:left;background:'+vix.color+';border-radius:2px;transition:transform .4s"></div></div>'+
+          '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Tu regla de riesgo</div>'+
+          '<div style="font-size:28px;font-weight:800;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;margin-bottom:6px">'+((typeof PB!=='undefined'&&PB.risk)||2)+' %</div>'+
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:8px">del capital por operación, hasta tu stop</div>'+
+          '<button class="btn" style="font-size:11px" onclick="setPage(\'pb\')">Abrir calculadora</button>'+
         '</div>'+
       '</div>';
 
@@ -4270,88 +4062,48 @@ function renderDecisionEngineBody(){
     var actionGuide=''; // collapsed into card colors
 
     var scoresHtml='<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
-      '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)">'+scores.length+' activos analizados · ordenados por score</div>'+
-      '<div style="display:flex;gap:6px;align-items:center">'+
-        [['var(--grn)','≥75'],['var(--blue)','55–74'],['var(--amber)','35–54'],['var(--red)','<35']].map(function(l){
-          return '<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace"><span style="width:6px;height:6px;border-radius:50%;background:'+l[0]+';display:inline-block"></span>'+l[1]+'</span>';
-        }).join('')+
-      '</div>'+
+      '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)">'+scores.length+' activos · orden alfabético</div>'+
+      '<div class="live-badge-wrap">'+liveBadge()+'</div>'+
       '</div>';
     if(usingDefaults){
       scoresHtml+='<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);margin-bottom:12px;padding:8px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md)">'+
-        icon('bolt')+' Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Agrega tu Watchlist →</span></div>';
+        'Activos de referencia. <span role="button" tabindex="0" onclick="setPage(\'watch\')" style="color:var(--grn);cursor:pointer">Agrega tu Watchlist →</span></div>';
     }
     if(!scores.length){
-      scoresHtml+='<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;color:var(--text3);font-size:12px">Sin datos disponibles. Verifica tu conexión.</div>';
+      scoresHtml+='<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;color:var(--text3);font-size:12px">Sin datos disponibles. Revisa tu conexión.</div>';
     }else{
       scoresHtml+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">';
       scores.forEach(function(s){
-        var sc=s.score;
-        var barColor=sc>=75?'var(--grn)':sc>=55?'var(--blue)':sc>=35?'var(--amber)':'var(--red)';
-        var borderHighlight=sc>=75?'rgba(61,190,122,.25)':sc>=55?'rgba(59,130,246,.2)':sc>=35?'rgba(245,158,11,.2)':'rgba(248,113,113,.2)';
-        var rsi=parseFloat(s.rsi);
-        var rsiC=rsi>=70?'var(--red)':rsi<=30?'var(--grn)':'var(--text2)';
-        var rr=parseFloat(s.rr);
-        var rrC=rr>=2?'var(--grn)':rr>=1?'var(--amber)':'var(--red)';
         var inWatch=S.watchlist.indexOf(s.ticker)>=0;
         var inPort=S.portfolio.some(function(h){return h.t===s.ticker;});
-        var narr=deNarrative(s,regime,vix,breadth);
-        var nid='narr-'+s.ticker;
+        var principales=(s.readings||[]).filter(function(r){return ['sma200','sma50','rsi','macd','vol'].indexOf(r.key)>=0;});
+        var resto=(s.readings||[]).filter(function(r){return ['sma200','sma50','rsi','macd','vol'].indexOf(r.key)<0;});
+        var nid='narr-'+s.ticker.replace(/[^A-Za-z0-9]/g,'_');
         scoresHtml+=
-          '<div style="background:var(--card);border:1px solid '+borderHighlight+';border-radius:var(--r-lg);padding:0;overflow:hidden;display:flex;flex-direction:column">'+
-            // Header strip with score + ticker
-            '<div style="background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 100%);padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.05)">'+
-              '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">'+
+          '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column">'+
+            '<div style="padding:14px 16px 8px;border-bottom:1px solid var(--border)">'+
+              '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
                 '<div>'+
                   '<div role="button" tabindex="0" style="font-size:18px;font-weight:800;color:var(--bright);font-family:\'IBM Plex Mono\',monospace;cursor:pointer;line-height:1" onclick="openDrawer(\''+s.ticker+'\','+s.last+')">'+s.ticker+' <span style="font-size:11px;color:var(--text3)">↗</span></div>'+
-                  '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:2px">$'+s.last.toFixed(2)+'</div>'+
+                  '<div style="font-size:12px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace;margin-top:4px">$'+s.last.toFixed(2)+' <span style="font-size:11px;color:var(--text3)">cierre diario</span></div>'+
                 '</div>'+
-                // Score circle
-                '<div style="width:44px;height:44px;border-radius:50%;background:conic-gradient('+barColor+' '+sc+'%, rgba(255,255,255,.07) '+sc+'%);display:flex;align-items:center;justify-content:center;position:relative">'+
-                  '<div style="width:34px;height:34px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center">'+
-                    '<span style="font-size:11px;font-weight:800;color:'+barColor+';font-family:\'IBM Plex Mono\',monospace">'+sc+'</span>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              // Action pill + signals
-              '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-                '<span style="padding:3px 10px;border-radius:var(--r-xl);font-size:11px;font-weight:700;border:1px solid '+s.actionColor+';color:'+s.actionColor+';font-family:\'IBM Plex Mono\',monospace">'+s.action+'</span>'+
-                '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+s.signals.slice(0,2).join(' · ')+'</span>'+
+                badge(s.trend)+
               '</div>'+
             '</div>'+
-            // Score bar
-            '<div style="height:3px;background:rgba(255,255,255,.06)"><div style="height:100%;width:100%;transform:scaleX('+(sc/100)+');transform-origin:left;background:'+barColor+';transition:transform .5s ease"></div></div>'+
-            // Key metrics grid
-            '<div style="padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 12px">'+
-              '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">Entrada</div><div style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">$'+s.entry+'</div></div>'+
-              '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">Stop ref.</div><div style="font-size:12px;font-weight:700;color:var(--red);font-family:\'IBM Plex Mono\',monospace">$'+s.stop+'</div></div>'+
-              '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">R:R</div><div style="font-size:12px;font-weight:700;color:'+rrC+';font-family:\'IBM Plex Mono\',monospace">'+s.rr+'x</div></div>'+
-              '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">RSI</div><div style="font-size:12px;font-weight:700;color:'+rsiC+';font-family:\'IBM Plex Mono\',monospace">'+s.rsi+'</div></div>'+
-              '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">PQ</div><div style="font-size:12px;font-weight:700;color:'+(s.pqScore>=70?'var(--grn)':s.pqScore>=45?'var(--amber)':'var(--red)')+';font-family:\'IBM Plex Mono\',monospace">'+s.pqScore+'</div></div>'+
-              (s.sectorRS?'<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">Sector RS</div><div style="font-size:11px;font-weight:700;color:'+s.sectorRS.color+';font-family:\'IBM Plex Mono\',monospace">'+s.sectorRS.label+'</div></div>':'<div></div>')+
-            '</div>'+
-            // Pullback Quality bar
-            '<div style="padding:0 16px 10px">'+
-              '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">'+
-                '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px">Calidad Pullback</div>'+
-                '<div style="font-size:11px;font-weight:700;color:'+s.pqColor+';font-family:\'IBM Plex Mono\',monospace">'+s.pqLabel+'</div>'+
-              '</div>'+
-              '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px"><div style="height:100%;width:100%;transform:scaleX('+(s.pqScore/100)+');transform-origin:left;background:'+s.pqColor+';border-radius:2px;transition:transform .4s"></div></div>'+
-            '</div>'+
-            // Collapsible narrative
-            '<div style="padding:0 16px 10px">'+
-              '<button onclick="var el=document.getElementById(\''+nid+'\');var open=el.style.display!==\'none\';el.style.display=open?\'none\':\'block\';this.querySelector(\'.arr\').textContent=open?\'▸\':\'▾\'" '+
-                'style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace;cursor:pointer;padding:4px 10px;width:100%;text-align:left;display:flex;justify-content:space-between">'+
-                '<span>Lectura técnica</span><span class="arr">▸</span></button>'+
-              '<div id="'+nid+'" style="display:none;margin-top:6px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;line-height:1.7;color:var(--text2)">'+narr+'</div>'+
-            '</div>'+
-            // Action buttons
-            '<div style="padding:0 16px 14px;display:flex;gap:6px">'+
+            '<div style="padding:4px 16px">'+readingsHtml(principales,true)+'</div>'+
+            (s.sectorRS?'<div style="padding:0 16px 8px;font-size:11px;color:var(--text3)">Frente a su sector (3 meses): '+esc(s.sectorRS.label)+'</div>':'')+
+            (resto.length?'<div style="padding:0 16px 10px">'+
+              '<button onclick="var el=document.getElementById(\''+nid+'\');var open=el.style.display!==\'none\';el.style.display=open?\'none\':\'block\';this.setAttribute(\'aria-expanded\',!open);this.querySelector(\'.arr\').textContent=open?\'▸\':\'▾\'" aria-expanded="false" '+
+                'style="background:transparent;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace;cursor:pointer;padding:4px 10px;width:100%;text-align:left;display:flex;justify-content:space-between">'+
+                '<span>Máximo anual y volatilidad</span><span class="arr">▸</span></button>'+
+              '<div id="'+nid+'" style="display:none;margin-top:6px">'+readingsHtml(resto,false)+'</div>'+
+            '</div>':'')+
+            '<div style="padding:0 16px 14px;display:flex;gap:6px;margin-top:auto">'+
               '<button class="btn" style="font-size:11px;flex:1" onclick="openDrawer(\''+s.ticker+'\','+s.last+')">↗ Gráfico</button>'+
               (inWatch
-                ?'<button class="btn" style="font-size:11px;border-color:rgba(59,130,246,.4);color:var(--blue)" disabled>'+icon('check')+' Watch</button>'
+                ?'<button class="btn" style="font-size:11px" disabled>'+icon('check')+' Watch</button>'
                 :'<button class="btn" style="font-size:11px" onclick="addWatch(\''+s.ticker+'\');markWatched(this)">'+icon('plus')+' Watch</button>')+
-              (inPort?'<span style="font-size:11px;padding:3px 7px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:var(--r-sm);color:var(--blue);align-self:center;font-family:\'IBM Plex Mono\',monospace">✓ Port</span>':'')+
+              (inPort?'<span style="font-size:11px;padding:3px 7px;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text2);align-self:center;font-family:\'IBM Plex Mono\',monospace">En tu portafolio</span>':'')+
             '</div>'+
           '</div>';
       });
@@ -4359,33 +4111,17 @@ function renderDecisionEngineBody(){
     }
 
     var disclaimer='<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
-      '<b style="color:var(--text2)">⚠ Análisis técnico educativo.</b> '+
-      'Los niveles de precio (Entry, Stop, Target) son zonas referenciales basadas en ATR(14). No constituye asesoría financiera ni señal de compra o venta. La decisión de operar es exclusiva del usuario.'+
+      '<b style="color:var(--text2)">Herramienta educativa.</b> '+
+      'Indicadores calculados con un año de cierres diarios de Yahoo Finance. Describen lo que pasó, no lo que va a pasar. No constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida.'+
       '</div>';
 
-    // ── RENDER TABS ──
     var tabNav=
       '<div style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:3px;margin-bottom:16px;width:fit-content">'+
-      '<button id="de-tab-global" onclick="deSetTab(\'global\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:var(--grn);color:#0a1208;transition:.15s">'+icon('globe')+' Mercado Global</button>'+
-      '<button id="de-tab-assets" onclick="deSetTab(\'assets\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.15s">'+icon('volume')+' Por Activo ('+scores.length+')</button>'+
+      '<button id="de-tab-global" onclick="deSetTab(\'global\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:var(--grn);color:var(--bg);transition:.15s">'+icon('globe')+' Mercado</button>'+
+      '<button id="de-tab-assets" onclick="deSetTab(\'assets\')" style="padding:5px 16px;border:none;border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.15s">'+icon('volume')+' Por activo ('+scores.length+')</button>'+
       '</div>';
     var globalPane='<div id="de-pane-global">'+regimeCard+vixCard+earningsCard+'</div>';
-    // Free teaser: show assets pane but blur rows after the first one + upgrade overlay
-    var assetsPaneContent=scoresHtml+disclaimer;
-    if(isFreeUser){
-      assetsPaneContent=
-        '<div style="position:relative">'+
-        scoresHtml+disclaimer+
-        // Blur overlay covering content below first row
-        '<div style="position:absolute;bottom:0;left:0;right:0;height:75%;background:linear-gradient(to bottom,transparent,var(--bg) 60%);pointer-events:none;border-radius:var(--r-lg)"></div>'+
-        '<div style="position:absolute;bottom:40px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:20px">'+
-          '<div style="font-size:13px;font-weight:700;color:var(--bright)">Análisis completo de '+scores.length+' activos disponible en Pro</div>'+
-          '<div style="font-size:11px;color:var(--text2)">Estás viendo el régimen de mercado. Activa Pro para el scoring de cada activo con Entry, Stop y Target.</div>'+
-          '<button onclick="openModal(\'upgrade\')" class="btn-big" style="padding:10px 28px">'+icon('bolt')+'Activar Pro — desde $8.33/mes →</button>'+
-        '</div>'+
-        '</div>';
-    }
-    var assetsPane='<div id="de-pane-assets" style="display:none">'+assetsPaneContent+'</div>';
+    var assetsPane='<div id="de-pane-assets" style="display:none">'+scoresHtml+disclaimer+'</div>';
     document.getElementById('de-body').innerHTML=tabNav+globalPane+assetsPane;
     drawSPYMiniChart(regime);
   }).catch(function(err){
@@ -4402,15 +4138,17 @@ function renderScreenerBody(){ renderInvestigar('screener'); }
 function renderScreenerSection(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('screener')>=0){
-    return _ph('Investigar · Screener','Screener','// Filtro técnico · Score Motor · Export CSV',null,'h2')+
-      lockedBanner('Screener','Filtra más de 50 activos simultáneamente por score técnico, señal y sector. Exporta resultados a CSV.');
+    return _ph('Investigar · Screener','Screener','// Filtro por indicador · Export CSV',null,'h2')+
+      lockedBanner('Screener','Filtra activos por tendencia, RSI y sector. Exporta resultados a CSV.');
   }
   var f=S.screenerFilters;
   var running=S.screenerRunning;
   var results=S.screenerResults;
 
-  var actionOpts=['ALL','Acumular','Neutral','Reducir','Esperar'].map(function(a){
-    return '<option value="'+a+'"'+(f.action===a?' selected':'')+'>'+a+'</option>';
+  // Antes: Acumular / Neutral / Reducir / Esperar (instrucciones). Ahora el
+  // filtro es por tendencia frente a las medias de 50 y 200 dias.
+  var actionOpts=[['ALL','Todas'],['UP','Sobre sus medias'],['MIX','Tendencia mixta'],['DOWN','Bajo sus medias']].map(function(a){
+    return '<option value="'+a[0]+'"'+(f.action===a[0]?' selected':'')+'>'+a[1]+'</option>';
   }).join('');
 
   var resultsHtml='';
@@ -4423,41 +4161,25 @@ function renderScreenerSection(){
   } else {
     var filtered=results.filter(function(r){
       if(r.error) return false;
-      if(r.score<f.scoreMin) return false;
       var rsi=parseFloat(r.rsi);
       if(rsi<f.rsiMin||rsi>f.rsiMax) return false;
-      if(f.action!=='ALL'&&r.action!==f.action) return false;
+      if(f.action!=='ALL'&&r.trend!==f.action) return false;
       return true;
-    }).sort(function(a,b){return b.score-a.score;});
+    }).sort(function(a,b){return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;});
 
     var errors=results.filter(function(r){return !!r.error;});
 
     var rows=filtered.map(function(s){
-      var sc=s.score;
-      var barC=sc>=75?'var(--grn)':sc>=55?'var(--blue)':sc>=35?'var(--amber)':'var(--red)';
-      var rsi=parseFloat(s.rsi);
-      var rsiC=rsi>=70?'var(--red)':rsi<=30?'var(--grn)':'var(--text2)';
-      var rr=parseFloat(s.rr);
-      var rrC=rr>=2?'var(--grn)':rr>=1?'var(--amber)':'var(--red)';
-      var pq=s.pqScore!=null?s.pqScore:null;
-      var pqC=pq!=null?(pq>=70?'var(--grn)':pq>=45?'var(--amber)':'var(--red)'):'var(--text3)';
+      var d200=s.s200v?(s.last-s.s200v)/s.s200v:null;
+      var atrPct=s.atr&&s.last?s.atr/s.last*100:null;
       return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+s.ticker+'\','+s.last+')" title="Ver detalles">'+
         '<td style="font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+s.ticker+'</td>'+
         '<td style="font-family:\'IBM Plex Mono\',monospace">$'+s.last.toFixed(2)+'</td>'+
-        '<td>'+
-          '<div style="display:flex;align-items:center;gap:6px">'+
-          '<div style="width:40px;height:4px;background:var(--card3);border-radius:2px"><div style="height:100%;width:'+sc+'%;background:'+barC+';border-radius:2px"></div></div>'+
-          '<span style="font-size:11px;font-weight:700;color:'+barC+'">'+sc+'</span>'+
-          '</div>'+
-        '</td>'+
-        '<td><span style="font-size:11px;padding:2px 8px;border-radius:var(--r-md);border:1px solid '+s.actionColor+';color:'+s.actionColor+'">'+s.action+'</span></td>'+
-        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:'+rsiC+'">'+s.rsi+'</td>'+
-        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:'+pqC+';font-weight:600">'+(pq!=null?pq:'—')+'</td>'+
-        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:var(--blue)">$'+s.entry+'</td>'+
-        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:var(--red)">$'+s.stop+'</td>'+
-        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:'+rrC+'">'+s.rr+'x</td>'+
-        '<td class="col-sec" style="font-size:11px;color:var(--text3)'+(s.sectorRS?';color:'+s.sectorRS.color:'')+'">'+
-          (s.sectorRS?s.sectorRS.etf+' '+s.sectorRS.label:'—')+'</td>'+
+        '<td>'+badge(s.trend)+'</td>'+
+        '<td>'+rsiCell(s.rsi)+'</td>'+
+        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;color:'+(d200==null?'var(--text3)':d200>=0?'var(--pos)':'var(--neg)')+'">'+(d200==null?'—':(d200>=0?'+':'')+(d200*100).toFixed(1)+'%')+'</td>'+
+        '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace">'+(atrPct==null?'—':atrPct.toFixed(1)+'%')+'</td>'+
+        '<td class="col-sec" style="font-size:11px;color:var(--text3)">'+(s.sectorRS?esc(s.sectorRS.label):'—')+'</td>'+
         '</tr>';
     }).join('');
 
@@ -4469,19 +4191,17 @@ function renderScreenerSection(){
       '</span>'+
       '<button onclick="exportScreenerCSV()" class="btn" style="margin-left:auto;font-size:11px;padding:4px 10px">'+icon('download')+'Export CSV</button>'+
       '</div>'+
-      // En movil quedan Ticker/Precio/Score DE/Acción — lo que responde "cuál
-      // y qué tan bueno es"; RSI/PQ/Entrada/Stop/R:R/Sector RS son el detalle
-      // de sizing que ya está un toque mas adentro (abrir el drawer del activo).
+      // En movil quedan Ticker/Precio/Tendencia/RSI; el resto es detalle.
       '<div class="tw"><table>'+
       '<thead><tr>'+
-        '<th>Ticker</th><th>Precio</th><th>Score DE</th><th>Acción</th>'+
-        '<th class="col-sec" title="Fuerza Relativa (0-100): arriba de 70 se considera sobrecomprado, abajo de 30 sobrevendido">RSI</th><th class="col-sec">PQ</th><th class="col-sec">Entrada</th><th class="col-sec" title="Basado en ATR(14): cuanto se mueve el precio en un dia tipico">Stop</th><th class="col-sec">R:R</th><th class="col-sec">Sector RS</th>'+
+        '<th>Ticker</th><th>Precio</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th>'+
+        '<th title="RSI (14), escala 0–100: entre 30 y 70 es zona neutral">RSI</th><th class="col-sec" title="Distancia a la media de 200 días">vs 200 días</th><th class="col-sec" title="ATR (14): movimiento diario promedio">Volatilidad</th><th class="col-sec" title="Rendimiento de 3 meses de su sector frente a SPY">Sector</th>'+
       '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
       (errors.length?'<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">No disponibles: '+errors.map(function(e){return e.ticker+' ('+(e.reason||'sin datos')+')';}).join(', ')+'</div>':'')+
       '</div>';
   }
 
-  return _ph('Investigar · Screener','Screener','// Filtra el universo de activos por Score DE, RSI, acción y sector',null,'h2')+
+  return _ph('Investigar · Screener','Screener','// Filtra activos por tendencia, RSI y sector',null,'h2')+
 
     '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:16px">'+
     '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start">'+
@@ -4496,10 +4216,6 @@ function renderScreenerSection(){
 
     '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:flex-end">'+
     '<div>'+
-      '<label for="scr-scoreMin" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Score mínimo</label>'+
-      '<input type="number" id="scr-scoreMin" min="0" max="100" value="'+f.scoreMin+'" style="width:70px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
-    '</div>'+
-    '<div>'+
       '<label for="scr-rsiMin" title="Fuerza Relativa (0-100): mide si un activo esta sobrecomprado o sobrevendido" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">RSI mín</label>'+
       '<input type="number" id="scr-rsiMin" min="0" max="100" value="'+f.rsiMin+'" style="width:60px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
     '</div>'+
@@ -4508,7 +4224,7 @@ function renderScreenerSection(){
       '<input type="number" id="scr-rsiMax" min="0" max="100" value="'+f.rsiMax+'" style="width:60px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+
     '</div>'+
     '<div>'+
-      '<label for="scr-action" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Acción</label>'+
+      '<label for="scr-action" style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--text3);display:block;margin-bottom:4px">Tendencia</label>'+
       '<select id="scr-action" style="background:var(--card3);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:12px;padding:5px 8px;outline:none">'+actionOpts+'</select>'+
     '</div>'+
     '<button onclick="screenerApplyFilters()" class="btn" style="padding:6px 14px;font-size:11px">Aplicar filtros</button>'+
@@ -4647,11 +4363,12 @@ function renderSettings(){
     '<div><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:4px">PLAN ACTUAL</div>'+
     '<div style="font-size:13px;color:var(--bright);font-weight:500">'+plan.label+(plan.price>0?' — $'+plan.price+'/mes':'')+'</div></div>'+
     '</div>'+
-    (trialInfo?'<div style="margin-top:12px">'+trialInfo+'</div>':'')+
-    (u&&u.plan==='free'?'<div style="margin-top:12px"><button class="btn-big" onclick="openModal(\'upgrade\')" style="padding:10px 24px">'+icon('bolt')+'Actualizar a Pro — $9.99/mes</button></div>':'')+
+    (trialInfo&&!INVEST_BETA?'<div style="margin-top:12px">'+trialInfo+'</div>':'')+
+    (INVEST_BETA?'<div style="margin-top:12px;font-size:12px;color:var(--text2);line-height:1.6">Invest es gratis durante la beta pública. Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.</div>':'')+
+    (!INVEST_BETA&&u&&u.plan==='free'?'<div style="margin-top:12px"><button class="btn-big" onclick="openModal(\'upgrade\')" style="padding:10px 24px">'+icon('bolt')+'Actualizar a Pro — $9.99/mes</button></div>':'')+
     // Gestionar/cancelar suscripcion via el Billing Portal de Stripe. Solo se
     // ofrece a quien tiene una suscripcion de pago (pro/teams), no en trial ni free.
-    ((u&&(u.plan==='pro'||u.plan==='teams'))?'<div style="margin-top:12px"><button class="btn" id="btn-portal" onclick="abrirPortalPago()">Gestionar o cancelar suscripción</button><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:6px">Cambiar tarjeta, ver facturas o cancelar. Se abre el portal seguro de Stripe.</div></div>':'')+
+    ((!INVEST_BETA&&u&&(u.plan==='pro'||u.plan==='teams'))?'<div style="margin-top:12px"><button class="btn" id="btn-portal" onclick="abrirPortalPago()">Gestionar o cancelar suscripción</button><div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:6px">Cambiar tarjeta, ver facturas o cancelar. Se abre el portal seguro de Stripe.</div></div>':'')+
     '</div>'+
 
     // Appearance section
@@ -4747,7 +4464,7 @@ function renderMain(){
   // renderScreenerSection/renderCompSection) dentro de renderInvestigar,
   // dejando Watchlist visible y utilizable igual para el usuario free.
   if(plan.locked.indexOf(S.page)>=0 && S.page!=='screener' && S.page!=='comp'){renderPaywall();return;}
-  var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:function(){RISK_TAB='nueva';renderRisk();},comp:renderComp,sentiment:renderSentimentWidget,radar:renderRadar,decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:function(){RISK_TAB='mis';renderRisk();},back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
+  var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:function(){RISK_TAB='nueva';renderRisk();},comp:renderComp,sentiment:function(){ANALISIS_TAB='universo';renderAnalisis();},radar:function(){ANALISIS_TAB='universo';renderAnalisis();},decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:function(){RISK_TAB='mis';renderRisk();},back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
   (pages[S.page]||renderDash)();
   var curPage=PAGES.find(function(p){return p.id===S.page;});
   var mLabel=document.getElementById('mobile-page-label');
@@ -4851,15 +4568,15 @@ function renderWelcome(){
     '<div class="wv3-wrap">'+
     // ── COLUMNA IZQUIERDA ──
     '<div class="wv3-left">'+
-    '<div class="wv3-badge"><div class="wv3-dot"></div><span>MOY IQ Invest · v3.0</span></div>'+
-    '<h1 class="wv3-h1">Analiza el mercado<br>con criterio técnico.</h1>'+
-    '<p class="wv3-sub">Motor de Análisis con régimen SPY, scoring técnico 0–100 por activo e indicadores RSI/MACD/ATR. Sin opiniones, solo datos.</p>'+
+    '<div class="wv3-badge"><div class="wv3-dot"></div><span>Beta pública gratuita</span></div>'+
+    '<h1 class="wv3-h1">Entiende tu portafolio<br>antes de mover un peso.</h1>'+
+    '<p class="wv3-sub">Sigue tus posiciones, define cuánto arriesgas en cada operación y lee los indicadores técnicos explicados en español.</p>'+
     // Cards de contexto live
     '<div>'+
-    '<div class="wv3-ctx-label">// Contexto de mercado · Referencial · Tiempo real</div>'+
+    '<div class="wv3-ctx-label">// Contexto de mercado · Datos con el retraso de la fuente</div>'+
     '<div class="wv3-ctx-grid">'+
     '<div id="wlc-spy" class="wv3-ctx-card">'+
-    '<div class="wv3-ctx-ttl" title="Si el mercado en general esta en tendencia alcista (Risk On) o bajista (Risk Off), medido con el S&amp;P 500">RÉGIMEN SPY</div>'+
+    '<div class="wv3-ctx-ttl" title="Si el S&amp;P 500 (SPY) está sobre o bajo su media de 200 días">TENDENCIA SPY</div>'+
     '<div class="wv3-ctx-val" style="color:var(--text3)">Cargando…</div>'+
     '</div>'+
     '<div id="wlc-vix" class="wv3-ctx-card">'+
@@ -4867,21 +4584,25 @@ function renderWelcome(){
     '<div class="wv3-ctx-val" style="color:var(--text3)">Cargando…</div>'+
     '</div>'+
     '</div></div>'+
-    // Score preview
+    // Ejemplo ilustrativo de lectura por indicador (T18 / M3). Antes: tres
+    // "scores" (78, 64, 80) animados con count-up, sin datos reales detras.
     '<div>'+
-    '<div class="wv3-ctx-label">// Scores técnicos · Muestra</div>'+
-    '<div class="wv3-scores-grid">'+
-    '<div class="wv3-score-card"><div class="wv3-score-head"><span class="wv3-score-ticker">AAPL</span><div class="wv3-score-circle" style="background:var(--grn-bg);border-color:var(--grn);color:var(--grn)"><span id="wv3-s-aapl">0</span></div></div><div class="wv3-score-rsi" title="Fuerza Relativa (0-100): arriba de 70 sobrecomprado, abajo de 30 sobrevendido">RSI 52</div><div class="wv3-score-smas" title="Si el precio esta arriba de su promedio movil de N dias (tendencia de mediano/largo plazo)"><span style="color:var(--grn)">SMA50 ✓</span><span style="color:var(--grn)">SMA200 ✓</span></div></div>'+
-    '<div class="wv3-score-card"><div class="wv3-score-head"><span class="wv3-score-ticker">NVDA</span><div class="wv3-score-circle" style="background:rgba(245,158,11,.10);border-color:var(--amber);color:var(--amber)"><span id="wv3-s-nvda">0</span></div></div><div class="wv3-score-rsi" title="Fuerza Relativa (0-100): arriba de 70 sobrecomprado, abajo de 30 sobrevendido">RSI 48</div><div class="wv3-score-smas" title="Si el precio esta arriba de su promedio movil de N dias (tendencia de mediano/largo plazo)"><span style="color:var(--grn)">SMA50 ✓</span><span style="color:var(--red)">SMA200 ✗</span></div></div>'+
-    '<div class="wv3-score-card"><div class="wv3-score-head"><span class="wv3-score-ticker">MSFT</span><div class="wv3-score-circle" style="background:var(--grn-bg);border-color:var(--grn);color:var(--grn)"><span id="wv3-s-msft">0</span></div></div><div class="wv3-score-rsi" title="Fuerza Relativa (0-100): arriba de 70 sobrecomprado, abajo de 30 sobrevendido">RSI 55</div><div class="wv3-score-smas" title="Si el precio esta arriba de su promedio movil de N dias (tendencia de mediano/largo plazo)"><span style="color:var(--grn)">SMA50 ✓</span><span style="color:var(--grn)">SMA200 ✓</span></div></div>'+
+    '<div class="wv3-ctx-label">// Así se lee un activo · Ejemplo ilustrativo</div>'+
+    '<div class="wv3-score-card" style="padding:12px 14px">'+
+      '<div class="wv3-score-head"><span class="wv3-score-ticker">AAPL · ejemplo</span><span class="badge buy">Sobre sus medias</span></div>'+
+      readingsHtml([
+        {label:'Media de 50 días',value:'+4,6 %',range:'',reading:'Por encima de su promedio de 50 días: el movimiento de los últimos meses sigue al alza.',tone:'pos'},
+        {label:'RSI (14)',value:'58',range:'',reading:'Entre 30 y 70: ni sobrecomprado ni sobrevendido.',tone:'neu'},
+        {label:'Volumen',value:'−18 %',range:'',reading:'El movimiento de hoy tiene poca participación.',tone:'neu'}
+      ],true)+
     '</div>'+
-    '<div class="wv3-scores-note">Accede para ver scores en tiempo real de tu watchlist</div>'+
+    '<div class="wv3-scores-note">Lectura de datos históricos. No es una recomendación ni una predicción.</div>'+
     '</div>'+
     // Features
     '<div class="wv3-feats">'+
-    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('decision')+'</span><div><div class="wv3-feat-title">Motor de Análisis</div><div class="wv3-feat-desc">Régimen SPY + VIX + scoring técnico 0–100 por activo.</div></div></div>'+
-    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('risk')+'</span><div><div class="wv3-feat-title">Gestión de Riesgo Referencial</div><div class="wv3-feat-desc">Niveles ATR(14) calculados por volatilidad histórica.</div></div></div>'+
-    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portfolio y Screener</div><div class="wv3-feat-desc">Seguimiento P&amp;L, watchlist y filtro técnico sobre 50+ activos.</div></div></div>'+
+    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('decision')+'</span><div><div class="wv3-feat-title">Motor de Análisis</div><div class="wv3-feat-desc">Contexto de mercado y cada indicador con su rango y su lectura.</div></div></div>'+
+    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('risk')+'</span><div><div class="wv3-feat-title">Con tu regla de riesgo</div><div class="wv3-feat-desc">Tamaño de posición, riesgo al stop y límite de concentración.</div></div></div>'+
+    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portfolio y Screener</div><div class="wv3-feat-desc">Seguimiento de P&amp;L, watchlist y filtro por indicador.</div></div></div>'+
     '</div>'+
     '<div class="wv3-disc">'+icon('shield')+' Análisis técnico educativo · No asesoría financiera · No somos bróker · No ejecutamos órdenes</div>'+
     '</div>'+ // end wv3-left
@@ -4920,27 +4641,23 @@ function renderWelcome(){
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis →</button>'+
     '</div>'+
     '</div>'+ // end wv3-auth-card
-    '<div class="wv3-pricing"><div><span class="wv3-grn">✓</span> Plan Free incluido sin tarjeta de crédito</div><div><span class="wv3-grn">✓</span> Invest Pro · US$9.99/mes — cancela cuando quieras</div></div>'+
+    '<div class="wv3-pricing"><div><span class="wv3-grn">✓</span> Gratis durante la beta pública, sin tarjeta</div><div><span class="wv3-grn">✓</span> Cada precio muestra su hora y su retraso</div></div>'+
     '</div>'+ // end wv3-right
     '</div>'+ // end wv3-wrap
     '<div class="wv3-footer">© 2025–2026 MAXNOVA &amp; LUCI Global LLC · No somos asesores financieros · Datos referenciales</div>'+
     '</div>'; // end wv3-outer
   globeBgStart();
-  // Animaciones de count-up en score cards
-  wv3CountUp('wv3-s-aapl',78,400);
-  wv3CountUp('wv3-s-nvda',64,550);
-  wv3CountUp('wv3-s-msft',80,700);
-  // Cargar contexto de mercado en tiempo real — sin auth requerida
+  // Cargar contexto de mercado (datos con el retraso de la fuente) — sin auth
   (async function(){
     try{
       var regime=await deGetRegime();
       var spyEl=document.getElementById('wlc-spy');
       if(spyEl&&regime){
-        var lbl=regime.regime==='risk_on'?'RISK ON':regime.regime==='risk_off'?'RISK OFF':'TRANSICIÓN';
+        var lbl=regime.regime==='risk_on'?'ALCISTA':regime.regime==='risk_off'?'BAJISTA':'EN TRANSICIÓN';
         var col=regime.color||'var(--text2)';
         var dot=regime.regime==='risk_on'?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grn);margin-right:4px;vertical-align:middle;animation:wv3pulse 2s ease-in-out infinite"></span>':'';
         var hint=regime.spy?'SPY $'+regime.spy.toFixed(2):'SPY sobre SMA200';
-        spyEl.innerHTML='<div class="wv3-ctx-ttl" title="Si el mercado en general esta en tendencia alcista (Risk On) o bajista (Risk Off), medido con el S&amp;P 500">RÉGIMEN SPY</div>'+
+        spyEl.innerHTML='<div class="wv3-ctx-ttl" title="Si el S&amp;P 500 (SPY) está sobre o bajo su media de 200 días">TENDENCIA SPY</div>'+
           '<div class="wv3-ctx-val" style="color:'+col+'">'+dot+lbl+'</div>'+
           '<div class="wv3-ctx-hint">'+hint+'</div>';
       }
@@ -4964,7 +4681,7 @@ function openTCModal(tab){
     '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de Uso — MOY IQ Invest</h3>'+
     '<div style="font-size:11px;color:var(--text2);line-height:1.7;font-family:\'IBM Plex Mono\',monospace">'+
     '<b style="color:var(--bright)">1. Naturaleza del servicio</b><br>'+
-    'MOY IQ Invest es una plataforma de análisis técnico educativo. Los indicadores, scores, señales y '+
+    'MOY IQ Invest es una plataforma de análisis técnico educativo. Los indicadores, lecturas y '+
     'cualquier output generado por la plataforma son herramientas de análisis basadas en datos históricos '+
     'y modelos matemáticos. No constituyen asesoría financiera, recomendaciones de inversión ni predicciones de mercado.<br><br>'+
     '<b style="color:var(--bright)">2. Datos y retrasos</b><br>'+
@@ -5048,7 +4765,7 @@ function renderPaywall(){
     '<div class="pw"><div style="width:36px;height:36px;margin:0 auto 12px;color:var(--amber)">'+icon('lock','ico-lg')+'</div>'+
     '<h2 style="margin-bottom:6px">'+m.t+'</h2>'+
     '<div style="margin-bottom:20px">'+feats+'</div>'+
-    '<button class="btn-big" onclick="openModal(\'upgrade\')">'+icon('bolt')+'Ver planes Pro →</button></div>';
+    '<button class="btn-big" onclick="openModal(\'upgrade\')">'+icon('bolt')+'Ver qué incluye la beta →</button></div>';
 }
 
 // ── DASHBOARD ──────────────────────────────────────────────────
@@ -5107,7 +4824,7 @@ function indicesCard(){
   return '<div class="fos-card" style="overflow:hidden">'+
     '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:space-between">'+
       '<h2 class="fos-section-label" style="margin:0">Índices</h2>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">~15min delay</span>'+
+      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace" title="La fuente de índices no informa la hora de cada dato">Con retraso de la fuente</span>'+
     '</div>'+
     '<div style="padding:4px 14px 8px">'+idxRows+'</div>'+
   '</div>';
@@ -5156,56 +4873,49 @@ function moversCard(){
 // (ALL_SIG_REAL); si no, muestra un estado de carga. Encuadre educativo: son
 // señales técnicas "para revisar", no recomendaciones de compra/venta.
 function dashFocoCard(port){
-  // Antes ALL_SIG_REAL solo podia pasar a true por el unico disparo de
-  // loadAllSigScores() en bootLiveData (setTimeout 1200ms). Si ese intento
-  // fallaba (ver loadAllSigScores), esta tarjeta quedaba en "Calculando
-  // señales técnicas…" para siempre. Ahora se autopide los datos si hace
-  // falta — loadAllSigScores/createLoadGate ya evitan pedidos duplicados.
+  // Relanzamiento v2: antes listaba "candidatos" con señal alcista en la
+  // watchlist (para comprar) y bajista en el portafolio (para vender). Ahora
+  // solo describe datos de lo que la persona ya sigue, sin sugerir operaciones.
   if(!ALL_SIG_REAL && !allSigIsLoading()){
     loadAllSigScores().catch(function(){});
   }
   var inPort={}; (port||[]).forEach(function(h){inPort[h.t]=true;});
   var wl=S.watchlist||[];
-  var buyC=[], sellC=[];
+  var bajo=[], extremos=[];
   if(ALL_SIG_REAL){
     ALL_SIG.forEach(function(s){
-      if(s.sig==='BUY' && wl.indexOf(s.t)>=0 && !inPort[s.t]) buyC.push(s);
-      else if(s.sig==='SELL' && inPort[s.t]) sellC.push(s);
+      var mio=inPort[s.t]||wl.indexOf(s.t)>=0;
+      if(!mio) return;
+      if(inPort[s.t]&&s.sig==='DOWN') bajo.push(s);
+      if(s.rsi!=null&&(s.rsi>=70||s.rsi<=30)) extremos.push(s);
     });
-    buyC.sort(function(a,b){return (b.sc||0)-(a.sc||0);});
-    sellC.sort(function(a,b){return (a.sc||0)-(b.sc||0);});
   }
-  function tkChips(arr){
-    return arr.slice(0,5).map(function(s){
-      return '<button class="btn" style="font-size:11px;padding:3px 9px" onclick="openDrawer(\''+s.t+'\','+(s.p||100)+')">'+s.t+' · '+(s.sc||0)+'</button>';
+  function tkChips(arr,conRsi){
+    return arr.slice(0,6).map(function(s){
+      return '<button class="btn" style="font-size:11px;padding:3px 9px" onclick="openDrawer(\''+s.t+'\','+getLivePrice(s.t)+')">'+s.t+(conRsi?' · RSI '+s.rsi:'')+'</button>';
     }).join('');
   }
   var rows='';
   if(!ALL_SIG_REAL){
-    rows='<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Calculando señales técnicas…</div>';
-  }else if(!buyC.length && !sellC.length){
-    rows='<div style="font-size:11px;color:var(--text2);line-height:1.6">Sin señales técnicas destacadas en tu watchlist ni portafolio ahora mismo. Revisa tu P&amp;L y el contexto de mercado abajo.</div>';
+    rows='<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Calculando indicadores con datos históricos…</div>';
+  }else if(!bajo.length && !extremos.length){
+    rows='<div style="font-size:12px;color:var(--text2);line-height:1.6">Ninguna de tus posiciones cotiza bajo sus dos medias y ningún activo que sigues tiene el RSI fuera de la zona 30–70.</div>';
   }else{
-    if(buyC.length){
-      rows+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:'+(sellC.length?'10px':'0')+'">'+
-        statusDot('🟢',12)+'<span style="font-size:12px;color:var(--text);font-weight:600">'+buyC.length+' en tu watchlist con señal alcista</span>'+
-        '<span style="font-size:11px;color:var(--text3)">para revisar:</span>'+tkChips(buyC)+'</div>';
+    if(bajo.length){
+      rows+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:'+(extremos.length?'10px':'0')+'">'+
+        '<span style="font-size:12px;color:var(--text);font-weight:600">'+bajo.length+(bajo.length===1?' posición cotiza':' posiciones cotizan')+' bajo sus medias de 50 y 200 días</span>'+tkChips(bajo,false)+'</div>';
     }
-    if(sellC.length){
+    if(extremos.length){
       rows+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
-        statusDot('🔴',12)+'<span style="font-size:12px;color:var(--text);font-weight:600">'+sellC.length+' de tus posiciones con señal bajista</span>'+
-        '<span style="font-size:11px;color:var(--text3)">para revisar:</span>'+tkChips(sellC)+'</div>';
+        '<span style="font-size:12px;color:var(--text);font-weight:600">'+extremos.length+(extremos.length===1?' activo que sigues tiene':' activos que sigues tienen')+' el RSI fuera de 30–70</span>'+tkChips(extremos,true)+'</div>';
     }
   }
   return '<div class="fos-card" style="padding:var(--sp-8);margin-bottom:16px">'+
-    // El boton "Motor completo →" se quito el 13-sep-2026: era uno de los 5
-    // caminos redundantes a Analizar -> Motor de Analisis (ver auditoria UX);
-    // la pestaña "Analizar" del nav principal ya cubre esto.
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'+
-      '<h2 class="fos-section-label" style="margin:0;display:flex;align-items:center;gap:8px">'+icon('decision')+' Foco de hoy</h2>'+
+      '<h2 class="fos-section-label" style="margin:0;display:flex;align-items:center;gap:8px">'+icon('decision')+' Para revisar hoy</h2>'+
     '</div>'+
     rows+
-    '<div style="margin-top:12px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Señales técnicas educativas para revisar — no son recomendaciones de compra o venta.</div>'+
+    '<div style="margin-top:12px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.5">Datos para revisar, no instrucciones de compra o venta.</div>'+
   '</div>';
 }
 
@@ -5221,7 +4931,6 @@ function renderDash(){
   var pnlPct=totC>0?((pnl/totC)*100):0;
   var winners=port.filter(function(h){return h.cur>h.cost;}).length;
   var losers=port.filter(function(h){return h.cur<h.cost;}).length;
-  var avgScore=ALL_SIG.length>0?Math.round(ALL_SIG.slice(0,10).reduce(function(s,x){return s+x.sc;},0)/Math.min(10,ALL_SIG.length)):0;
   var top=ALL_SIG.slice(0,5);
 
   // ── helpers locales ──
@@ -5242,7 +4951,8 @@ function renderDash(){
     var lqd=LIVE[s.t];
     return '<tr role="button" tabindex="0" style="cursor:pointer" onclick="openDrawer(\''+s.t+'\','+lp+')" onmouseenter="prefetchFund(\''+s.t+'\');this.style.background=\'var(--card3)\'" onmouseleave="this.style.background=\'\'">'+
       '<td style="font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+s.t+'</td>'+
-      '<td>'+scoreCircle(s.sc)+'</td>'+
+      '<td>'+badge(s.sig)+'</td>'+
+      '<td class="col-sec">'+rsiCell(s.rsi)+'</td>'+
       '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--text)">'+fmtMoney(lp)+'</td>'+
       '<td>'+chgBadge(lqd)+'</td>'+
       '</tr>';
@@ -5331,10 +5041,10 @@ function renderDash(){
   var sigCard=
     '<div class="fos-card">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">'+
-    '<h2 class="fos-card-title">Top Señales <span title="Datos de referencia — no en tiempo real" style="font-size:11px;background:var(--amber);color:#000;padding:1px 5px;border-radius:3px;font-weight:700;vertical-align:middle">REF</span></h2>'+
+    '<h2 class="fos-card-title">Tendencia del universo</h2>'+
     '<button onclick="setPage(\'sig\')" style="font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:\'IBM Plex Mono\',monospace">Ver todas →</button>'+
     '</div>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>Score</th><th>Precio</th><th>Δ Hoy</th></tr></thead>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th><th class="col-sec">RSI</th><th>Precio</th><th>Δ Hoy</th></tr></thead>'+
     '<tbody>'+sigRows+'</tbody></table></div></div>';
 
   // ── Portfolio card ──
@@ -5349,7 +5059,7 @@ function renderDash(){
     '<h2 class="fos-card-title">Portafolio</h2>'+
     '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">'+port.length+' de '+(S.portfolio.length)+' posiciones</span>'+
     '</div>'+
-    (S.user.plan==='free'&&S.portfolio.length>plan.maxT?
+    (!INVEST_BETA&&S.user.plan==='free'&&S.portfolio.length>plan.maxT?
       '<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;padding:0 20px 10px">⚠ Mostrando '+plan.maxT+' de '+S.portfolio.length+' · <span role="button" tabindex="0" onclick="openModal(\'upgrade\')" style="cursor:pointer;text-decoration:underline">Upgrade Pro</span></div>':'')+
     '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>Nombre</th><th>Precio</th><th>Cambio</th><th>P&amp;L</th><th>Peso%</th></tr></thead>'+
     '<tbody>'+portRows+'</tbody></table></div></div>';
@@ -5841,9 +5551,9 @@ function exportTradesCSV(){
 function exportScreenerCSV(){
   var results=S.screenerResults.filter(function(r){return !r.error;});
   if(!results.length){showToast("No hay resultados para exportar.","warning");return;}
-  var rows=[["Ticker","Precio","Score DE","Acción","RSI","PQ Score","Entrada","Stop","R:R","Sector RS"]];
-  results.sort(function(a,b){return b.score-a.score;}).forEach(function(s){
-    rows.push([s.ticker,s.last,s.score,s.action,s.rsi,s.pqScore!=null?s.pqScore:'',s.entry,s.stop,s.rr,s.sectorRS?s.sectorRS.etf+' '+s.sectorRS.label:'']);
+  var rows=[["Ticker","Precio","Tendencia","RSI 14","Media 50 días","Media 200 días","ATR 14","Sector vs SPY"]];
+  results.sort(function(a,b){return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;}).forEach(function(s){
+    rows.push([s.ticker,s.last,trendLabel(s.trend),s.rsi==null?'':s.rsi,s.s50v!=null?s.s50v.toFixed(2):'',s.s200v!=null?s.s200v.toFixed(2):'',s.atr!=null?s.atr.toFixed(2):'',s.sectorRS?s.sectorRS.label:'']);
   });
   var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
   var a=document.createElement("a");
@@ -5872,12 +5582,13 @@ function sigTableRow(s, opts){
   var t = s.t;
   var lp = getLivePrice(t);
   var lq = LIVE[t];
-  return '<tr class="trow" role="button" tabindex="0" data-sc="'+s.sc+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onclick="openDrawer(\''+esc(t)+'\','+lp+')" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
+  return '<tr class="trow" role="button" tabindex="0" data-rsi="'+(s.rsi==null?'':s.rsi)+'" data-price="'+lp+'" data-chg="'+(lq?(lq.changePct||0):0)+'" onclick="openDrawer(\''+esc(t)+'\','+lp+')" onmouseenter="prefetchFund(\''+esc(t)+'\')">'+
     '<td style="font-weight:600;color:var(--bright)">'+esc(t)+(opts.tickerExtra||'')+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
     '<td>'+badge(s.sig)+'</td>'+
-    '<td style="font-weight:700;color:'+(s.sc>=72?"var(--grn)":s.sc>=52?"var(--amber)":"var(--red)")+'">'+s.sc+'</td>'+
-    '<td class="col-sec">'+sbar(s.sc)+'</td>'+
-    '<td style="font-weight:600">$'+fmtD(lp)+'</td>'+
+    '<td>'+rsiCell(s.rsi)+'</td>'+
+    '<td class="col-sec">'+sbar(s.rsi)+'</td>'+
+    // Sin cotizacion ni posicion no hay precio real: antes caia en $100 (relleno de getLivePrice).
+    '<td style="font-weight:600">'+((lq||S.portfolio.some(function(h){return h.t===t;}))?'$'+fmtD(lp):'<span style="color:var(--text3)">—</span>')+'</td>'+
     '<td>'+chgCell(lq)+'</td>'+
     '<td class="col-sec">'+dist52wCell(lp,lq)+'</td>'+
     (opts.trailing||'')+
@@ -5902,21 +5613,17 @@ function renderWatchSection(){
   var isPro=S.user&&planOf().locked.indexOf('decision')<0;
 
   var wRows=wl.map(function(t){
-    var s=ALL_SIG.find(function(x){return x.t===t;})||{t:t,sig:"HOLD",sc:60,p:100};
+    var s=ALL_SIG.find(function(x){return x.t===t;})||{t:t,sig:null,rsi:null};
     var inPort=S.portfolio.some(function(h){return h.t===t;});
     var portBadge=inPort?'<span style="font-size:11px;padding:1px 5px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:3px;color:var(--blue);margin-left:4px">PORT</span>':'';
-    var deCell=isPro
-      ?'<td class="col-sec" id="des-'+t+'" style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">…</td>'
-      :'<td class="col-sec" style="color:var(--text3)">'+icon('lock')+'</td>';
+    var deCell=''; // columna "DE Score" retirada en el relanzamiento v2 (T18)
     var rmCell='<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist">'+icon('close')+'</button></td>';
     return sigTableRow(s,{tickerExtra:portBadge, trailing:deCell+rmCell});
   }).join("");
 
-  var emptyMsg=wl.length===0?'<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px;font-family:\'IBM Plex Mono\'">Lista vacía — agrega tickers arriba</td></tr>':'';
+  var emptyMsg=wl.length===0?'<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:20px;font-family:\'IBM Plex Mono\'">Lista vacía — agrega tickers arriba</td></tr>':'';
 
-  var deHeader=isPro
-    ?'<th onclick="setPage(\'decision\')" style="cursor:pointer;color:var(--blue)" title="Ver Motor de Análisis completo">'+icon('target')+' DE Score</th>'
-    :'<th style="color:var(--text3)">'+icon('target')+' DE</th>';
+  var deHeader='';
 
   return (
     // El boton "Motor →" de esta cabecera se quito el 13-sep-2026: era el
@@ -5944,7 +5651,7 @@ function renderWatchSection(){
     // como una franja de fondo vacio antes del Screener (bug confirmado por
     // critique dual-agent del 14-sep-2026). 480px ~= 9-10 filas visibles,
     // scrollea el resto en vez de estirar la columna sin limite.
-    '<div class="tw" style="max-height:480px;overflow-y:auto"><table id="tbl-watch" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("watch","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("watch","price","Precio")+sortTh("watch","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th>'+deHeader.replace('<th ','<th class="col-sec" ')+'<th>Quitar</th></tr></thead>'+
+    '<div class="tw" style="max-height:480px;overflow-y:auto"><table id="tbl-watch" class="fos-table"><thead><tr><th>Ticker</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th>'+sortTh("watch","rsi","RSI","RSI (14), escala 0–100: entre 30 y 70 es zona neutral; sobre 70 suele leerse como sobrecompra y bajo 30 como sobreventa.")+'<th class="col-sec">Escala 0–100</th>'+sortTh("watch","price","Precio")+sortTh("watch","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Quitar</th></tr></thead>'+
     '<tbody>'+emptyMsg+wRows+'</tbody></table></div>'
   );
 }
@@ -5952,7 +5659,7 @@ function investigarWatchPostRender(){
   var wl=S.watchlist;
   var isPro=S.user&&planOf().locked.indexOf('decision')<0;
   // Async DE scores — update cells one by one as they load
-  if(isPro&&wl.length){
+  if(false&&isPro&&wl.length){ // DE Score retirado en el relanzamiento v2 (T18)
     wl.forEach(function(t){
       deScoreTicker(t).then(function(r){
         var el=document.getElementById('des-'+t);
@@ -6049,49 +5756,43 @@ function resetWatch(){S.watchlist=[...DEF_WATCH];persist();renderWatch();}
 
 // ── SIGNALS ────────────────────────────────────────────────────
 function renderSig(){
-  // Mismo autoheal que dashFocoCard: si ALL_SIG_REAL sigue en false y no hay
-  // una carga en curso, pedirla — evita que el badge "CALCULANDO" (ver
-  // _ph(...) mas abajo) quede pegado si el unico intento de boot fallo.
+  // Relanzamiento v2 (T18): antes "Señales técnicas" con un score 0-100 y
+  // filtros Alcista/Bajista derivados de esa nota. Ahora es la tendencia de
+  // cada activo frente a sus medias, mas su RSI con la zona de referencia.
   if(!ALL_SIG_REAL && !allSigIsLoading()){
     loadAllSigScores().catch(function(){});
   }
   var plan=planOf();
   var sigs=ALL_SIG.slice(0,plan.maxS);
   var f=S.sigFilter;
+  if(['ALL','UP','MIX','DOWN'].indexOf(f)<0) f='ALL';
   var list=f==="ALL"?sigs:sigs.filter(function(s){return s.sig===f;});
 
-  var filterBtns=["ALL","BUY","HOLD","SELL"].map(function(ff){
-    var lbl=ff==="ALL"?"Todos":ff==="BUY"?"Alcista":ff==="SELL"?"Bajista":"Neutro";
-    return '<button class="tab'+(f===ff?" act":"")+'" onclick="setSigF(\''+ff+'\')">'+lbl+'</button>';
+  var filterBtns=[["ALL","Todos"],["UP","Sobre sus medias"],["MIX","Tendencia mixta"],["DOWN","Bajo sus medias"]].map(function(ff){
+    return '<button class="tab'+(f===ff[0]?" act":"")+'" aria-pressed="'+(f===ff[0])+'" onclick="setSigF(\''+ff[0]+'\')">'+ff[1]+'</button>';
   }).join("");
 
   var rows=list.map(function(s){
     var inW=S.watchlist.indexOf(s.t)>=0;
-    var wbtn='<button class="btn" style="padding:2px 7px;font-size:11px;'+(inW?"border-color:var(--amber);color:var(--amber)":"border-color:var(--text3);color:var(--text3)")+'" onclick="event.stopPropagation();'+(inW?"rmWatch('"+s.t+"')":"addWatch('"+s.t+"')")+'">'+(inW?"✓":"+")+' Watch</button>';
+    var wbtn='<button class="btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();'+(inW?"rmWatch('"+s.t+"')":"addWatch('"+s.t+"')")+'">'+(inW?"✓":"+")+' Watch</button>';
     return sigTableRow(s,{trailing:'<td>'+wbtn+'</td>'});
   }).join("");
 
+  var cuenta=function(code){return sigs.filter(function(s){return s.sig===code;}).length;};
   document.getElementById("main").innerHTML=
-    _ph('Analizar · Señales','Señales Técnicas'+(ALL_SIG_REAL?'':' <span style="font-size:11px;background:var(--amber);color:#000;padding:2px 6px;border-radius:4px;font-weight:700;vertical-align:middle;margin-left:6px">CALCULANDO</span>'),(ALL_SIG_REAL?'// Score 0–100 por activo · SMA200 30% + RSI 25% + MACD 20% + Volumen 25%, ajustado por fuerza del sector':'// Calculando scores con datos reales del último año…'),liveBadge())+
-    (ALL_SIG_REAL?'':'<div style="padding:8px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:var(--r-sm);margin-bottom:14px;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">⏳ Calculando los scores con datos reales del último año. Mientras tanto ves valores de referencia.</div>')+
-    freeBanner("Estás viendo "+plan.maxS+" de "+ALL_SIG.length+" indicadores. Pro los muestra todos.")+
+    _ph('Analizar · Tendencia','Tendencia por activo',(ALL_SIG_REAL?'// Precio frente a sus medias de 50 y 200 días · RSI (14) con su zona':'// Calculando con un año de cierres diarios…'),liveBadge())+
+    (ALL_SIG_REAL?'':'<div role="status" style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:14px;font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">Calculando los indicadores con datos reales del último año. Mientras tanto la tabla muestra "Calculando".</div>')+
     '<div style="margin-bottom:14px">'+filterBtns+'</div>'+
-    // "Total" era la suma exacta de los otros tres: dato redundante, fuera.
-    // Aqui el color SI es semantico (alto/medio/bajo es un estado), se conserva.
     '<div class="krow">'+
-    kpi("Indicador Alcista",sigs.filter(function(s){return s.sig==="BUY";}).length,"de "+sigs.length,"g")+
-    kpi("Indicador Neutro",sigs.filter(function(s){return s.sig==="HOLD";}).length,"de "+sigs.length,"a")+
-    kpi("Indicador Bajista",sigs.filter(function(s){return s.sig==="SELL";}).length,"de "+sigs.length,"r")+
+    kpi("Sobre sus medias",cuenta('UP'),"de "+sigs.length,"n")+
+    kpi("Tendencia mixta",cuenta('MIX'),"de "+sigs.length,"n")+
+    kpi("Bajo sus medias",cuenta('DOWN'),"de "+sigs.length,"n")+
     '</div>'+
-    // Header decia "Indicador" mientras que la misma columna (Alcista/Neutro/
-    // Bajista) en Watchlist/Panorama se llama "Señal" — mismo concepto, dos
-    // nombres. Unificado a "Señal" el 13-sep-2026 (prioridad 6 de la auditoria).
-    '<div class="tw"><table id="tbl-sig" class="fos-table"><thead><tr><th>Ticker</th><th>Señal</th>'+sortTh("sig","sc","Score","Score 0–100: combina SMA200, RSI, MACD y volumen en un solo número. Arriba de 70 es una señal técnica fuerte, abajo de 40 es débil.")+'<th class="col-sec">Fuerza</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
+    '<div class="tw"><table id="tbl-sig" class="fos-table"><thead><tr><th>Ticker</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th>'+sortTh("sig","rsi","RSI","RSI (14), escala 0–100: entre 30 y 70 es zona neutral.")+'<th class="col-sec">Escala 0–100</th>'+sortTh("sig","price","Precio")+sortTh("sig","chg","Δ Hoy")+'<th class="col-sec" title="Distancia sobre el mínimo de 52 semanas">vs mín 52s</th><th>Watch</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
-    '⚠ Los sesgos mostrados resultan de modelos técnicos automatizados (Trend×30% · Vol×20% · RSI×25% · MACD×25%). '+
-    'No son recomendaciones personalizadas de inversión. Datos de mercado · posible retraso ≤15 min'+(liveUpdated?' · actualizado '+timeAgo(liveUpdated):'')+' · Fuente: Yahoo Finance. '+
-    'Toda inversión implica riesgo de pérdida parcial o total del capital.'+
+    'Lectura de datos históricos: describe cómo se movió cada activo, no qué va a hacer. No es una recomendación de compra o venta. '+
+    'Fuente: Yahoo Finance; la hora y el retraso de los precios se muestran arriba. Invertir implica riesgo de pérdida.'+
     '</div>';
 }
 function setSigF(f){S.sigFilter=f;renderMain();}
@@ -6638,13 +6339,13 @@ function renderInd(){
   ALL_SIG.forEach(function(s){if(allT.indexOf(s.t)<0)allT.push(s.t);});
 
   var portRows=S.portfolio.map(function(h){
-    var s=ALL_SIG.find(function(x){return x.t===h.t;})||{sig:"HOLD",sc:60};
+    var s=ALL_SIG.find(function(x){return x.t===h.t;})||{sig:null,rsi:null};
     var lp=getLivePrice(h.t);
     var ind=IND_CACHE[h.t];
     // '…' mientras carga; '—' solo si de verdad no hay dato para ese ticker
     var rsiE   = ind===undefined ? '…' : (ind.rsi!=null   ? ind.rsi.toFixed(1) : '—');
     var sma20E = ind===undefined ? '…' : (ind.sma20!=null ? '$'+fmtD(ind.sma20) : '—');
-    var rsiCol = (ind&&ind.rsi!=null) ? (ind.rsi>=70?'var(--red)':ind.rsi<=30?'var(--grn)':'var(--text)') : 'var(--text3)';
+    var rsiCol = (ind&&ind.rsi!=null) ? ((ind.rsi>=70||ind.rsi<=30)?'var(--amber)':'var(--text)') : 'var(--text3)';
     return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(h.t)+'\','+lp+')">'+
       '<td style="font-weight:600;color:var(--bright)">'+esc(h.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
       '<td style="color:'+rsiCol+';font-family:\'IBM Plex Mono\',monospace;font-weight:'+((ind&&ind.rsi!=null&&(ind.rsi>=70||ind.rsi<=30))?'700':'400')+'">'+rsiE+'</td>'+
@@ -6655,9 +6356,9 @@ function renderInd(){
   }).join("");
 
   var tickerCards=allT.map(function(t){
-    var s=ALL_SIG.find(function(x){return x.t===t;})||{sig:"HOLD",sc:60,p:100};
+    var s=ALL_SIG.find(function(x){return x.t===t;})||{sig:null,rsi:null};
     var lp=getLivePrice(t);
-    var col=s.sig==="BUY"?"var(--grn)":s.sig==="SELL"?"var(--red)":"var(--amber)";
+    var col=s.sig==="UP"?"var(--pos)":s.sig==="DOWN"?"var(--neg)":"var(--text2)";
     return '<div role="button" tabindex="0" onclick="openDrawer(\''+esc(t)+'\','+lp+')" style="cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;transition:.15s;text-align:center;min-width:76px;box-shadow:var(--shadow)" onmouseover="this.style.borderColor=\'var(--grn-lt)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
       '<div style="font-size:12px;font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\'">'+esc(t)+'</div>'+
       '<div style="font-size:11px;color:'+col+';font-family:\'IBM Plex Mono\';margin-top:1px">'+sigLabel(s.sig)+'</div>'+
@@ -6671,15 +6372,14 @@ function renderInd(){
     '<button class="btn" onclick="var t=document.getElementById(\'ind-in\').value.toUpperCase().trim();if(t){var s=ALL_SIG.find(function(x){return x.t===t;});openDrawer(t,s&&s.p?s.p:100);}">'+icon('volume')+' Analizar</button>'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Portfolio — Click para análisis completo</div>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th title="Arriba de 70 es señal fuerte de sobrecompra, abajo de 30 de sobreventa">RSI (14)</th><th>Precio</th><th class="col-sec" title="Promedio móvil simple de los últimos 20 días">SMA 20</th><th class="col-sec" title="Distancia porcentual del precio actual respecto a la SMA20">vs SMA20</th><th>Ver</th></tr></thead><tbody>'+portRows+'</tbody></table></div>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th title="Escala 0–100. Sobre 70 suele leerse como sobrecompra; bajo 30, como sobreventa.">RSI (14)</th><th>Precio</th><th class="col-sec" title="Promedio móvil simple de los últimos 20 días">SMA 20</th><th class="col-sec" title="Distancia porcentual del precio actual respecto a la SMA20">vs SMA20</th><th>Ver</th></tr></thead><tbody>'+portRows+'</tbody></table></div>'+
     '<div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:8px 0">'+
     icon('idea')+' Indicadores reales disponibles en el gráfico — click en cualquier ticker para abrir el análisis completo.'+
     '</div>'+
     '<div class="st"><div class="stbar"></div>Todos los tickers — Click para abrir análisis</div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tickerCards+'</div>'+
     '<div style="margin-top:12px;padding:8px 10px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">'+
-    '⚠ Los sesgos mostrados resultan de modelos técnicos automatizados (Trend×30% · Vol×20% · RSI×25% · MACD×25%). '+
-    'No son recomendaciones personalizadas de inversión. Datos de mercado · posible retraso ≤15 min'+(liveUpdated?' · actualizado '+timeAgo(liveUpdated):'')+' · Fuente: Yahoo Finance. '+
+    'Lecturas de datos históricos, no recomendaciones de compra o venta. Fuente: Yahoo Finance'+(liveUpdated?' · consultado '+timeAgo(liveUpdated):'')+'; cada precio muestra su hora y su retraso. '+
     'Toda inversión implica riesgo de pérdida parcial o total del capital.'+
     '</div>';
 
@@ -6699,7 +6399,7 @@ function renderRisk(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('risk')>=0){
     document.getElementById('main').innerHTML=
-      _ph('Decidir · Riesgo y Sizing','Riesgo y Sizing','// Cuánto arriesgar por posición · Escenarios · Niveles de referencia')+
+      _ph('Decidir · Riesgo','Riesgo de tu portafolio','// Riesgo al stop · Límite de concentración')+
       lockedBanner('Riesgo y Sizing','Calcula cuánto capital destinar a cada posición según tu tolerancia al riesgo, tanto para lo que ya tienes como para una posición nueva.');
     return;
   }
@@ -6713,118 +6413,64 @@ function riskTabs(){
     '<button style="'+st('nueva')+'" aria-pressed="'+(RISK_TAB==='nueva')+'" onclick="RISK_TAB=\'nueva\';renderRisk()">Nueva posición</button>';
 }
 function renderRiskBody(){
-  var plan=planOf();
+  // Relanzamiento v2 (T18 / M10): "Riesgo al stop" por posicion y en total,
+  // y el limite de concentracion. Se retiraron los escenarios con
+  // probabilidades inventadas (Bull 35 %...), el "valor esperado" y la
+  // "asignacion sugerida" con tickers por perfil: eran recomendaciones.
   var cap=S.capital;
-  // Calculo extraido a app/lib/risk.js (computeRiskRows) el 13-sep-2026 —
-  // mismo patron que app/lib/rebalance.js. -8%/+15% son una referencia
-  // estandar fija, no un dato historico real por ticker (ver comentario ahi).
-  var riskCalc=computeRiskRows(S.portfolio, cap, .02);
-  var rA=riskCalc.rA;
-  var ev=SCENARIOS.reduce(function(s,sc){return s+sc.prob*sc.ret*cap;},0);
-  var rows=riskCalc.rows;
+  var regla=(typeof PB!=='undefined'&&PB.risk)?PB.risk:2;
+  var limite=RISK_CONCENTRATION_LIMIT;
+  var port=S.portfolio.map(function(h){return {t:h.t,sh:h.sh,cur:getLivePrice(h.t)||h.cur||h.cost,stop:h.stop};});
+  var rs=computeRiskAtStop(port,cap,limite);
+  var sizing=computeRiskRows(port,cap,regla/100);
+  var sizeByT={}; sizing.rows.forEach(function(r){sizeByT[r.t]=r;});
+  var sobre=rs.rows.filter(function(r){return r.overLimit;});
+  var mayor=rs.rows.slice().sort(function(a,b){return b.weight-a.weight;})[0];
 
-  var tableRows=rows.slice(0,8).map(function(r){
-    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.t)+'\','+r.cur+')">'+
+  var tableRows=rs.rows.map(function(r){
+    var sz=sizeByT[r.t]||{};
+    return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.t)+'\','+(sz.cur||0)+')">'+
       '<td style="font-weight:600;color:var(--bright)">'+esc(r.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td class="col-sec" style="font-weight:600">$'+fmtD(r.cur)+'</td>'+
-      '<td class="col-sec" style="color:var(--red)">$'+fmtD(r.stop)+'</td>'+
-      '<td style="color:var(--amber)">$'+fmt(rA)+'</td>'+
-      '<td style="font-weight:600">$'+fmt(r.ps)+'</td>'+
-      '<td class="col-sec">'+fmtD(r.ps/r.cur)+'</td>'+
-      '<td style="font-weight:600;color:'+(r.rr>=2?"var(--grn)":r.rr>=1.5?"var(--amber)":"var(--red)")+'">'+fmtD(r.rr)+'x</td></tr>';
+      '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace">$'+fmtD(sz.cur||0)+'</td>'+
+      '<td style="font-family:\'IBM Plex Mono\',monospace" title="'+(r.stopIsDefault?'Sin stop propio: se usa −8 % como referencia':'Tu stop')+'">$'+fmtD(r.stop)+(r.stopIsDefault?' <span style="font-size:11px;color:var(--text3)">ref.</span>':'')+'</td>'+
+      '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--neg)">−'+D(r.riskAtStop)+' <span style="font-size:11px;color:var(--text3)">· '+(r.riskPctCapital*100).toFixed(1)+' %</span></td>'+
+      '<td style="font-family:\'IBM Plex Mono\',monospace">'+(r.overLimit?'<b style="color:var(--amber)">! ':'')+(r.weight*100).toFixed(0)+' %'+(r.overLimit?'</b>':'')+'</td>'+
+      '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(sz.ps||0)+'</td>'+
+      '</tr>';
   }).join("");
 
-  var scRows=SCENARIOS.map(function(sc){
-    var pnl=sc.prob*sc.ret*cap;
-    return '<div class="scrow">'+
-      '<div style="width:110px;font-size:12px;font-weight:600;color:var(--bright);display:flex;align-items:center;gap:6px">'+icon(sc.icon)+sc.name+'</div>'+
-      '<div style="width:30px;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\'">'+(sc.prob*100).toFixed(0)+'%</div>'+
-      '<div style="flex:1;height:5px;background:var(--card3);border-radius:2px"><div style="height:100%;width:'+Math.min(Math.abs(sc.ret)*200,100)+'%;background:'+(sc.ret>=0?"var(--pos)":"var(--neg)")+';border-radius:2px"></div></div>'+
-      '<div style="width:70px;text-align:right;font-size:11px;font-weight:600;font-family:\'IBM Plex Mono\';color:'+(pnl>=0?"var(--pos)":"var(--neg)")+'">'+(pnl>=0?"+":"")+D(pnl)+'</div></div>';
-  }).join("");
-
-  var rrRows=rows.slice(0,6).map(function(r){
-    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-      '<div style="width:44px;font-size:11px;font-family:\'IBM Plex Mono\';font-weight:600;color:var(--bright)">'+esc(r.t)+'</div>'+
-      '<div style="flex:1;height:4px;background:var(--card3);border-radius:2px"><div style="height:100%;width:'+Math.min(r.rr/4*100,100)+'%;background:'+(r.rr>=2?"var(--grn)":r.rr>=1.5?"var(--amber)":"var(--red)")+';border-radius:2px"></div></div>'+
-      '<div style="width:32px;font-size:11px;font-family:\'IBM Plex Mono\';font-weight:600;color:'+(r.rr>=2?"var(--grn)":"var(--amber)")+'">'+fmtD(r.rr)+'x</div></div>';
-  }).join("");
-
-  // ── Asignación sugerida por perfil de riesgo
-  var allocHtml='';
-  var rp=RADAR&&RADAR.profile;
-  if(rp){
-    var rLvl=rp.risk||3;
-    var ALLOCS=[
-      null,
-      {eq:20,bo:60,ca:15,al:5,  label:'Muy Conservador', tilt:'Bonos, T-Bills, defensivos (XLP, XLU, XLV)'},
-      {eq:40,bo:40,ca:10,al:10, label:'Conservador',      tilt:'Mezcla bonos/equity — dividendos (VYM, SCHD)'},
-      {eq:60,bo:25,ca:5, al:10, label:'Moderado',         tilt:'Equity diversificado — SPY/QQQ + algo de bonos'},
-      {eq:80,bo:10,ca:2, al:8,  label:'Agresivo',         tilt:'Growth y tech (XLK, NVDA, TSLA, QQQ)'},
-      {eq:95,bo:0, ca:2, al:3,  label:'Muy Agresivo',     tilt:'Full equity — growth, momentum, sector puro'},
-    ];
-    var al=ALLOCS[rLvl]||ALLOCS[3];
-    var goalAdj={income:'Ajuste: más peso en bonos y dividendos.',preservation:'Ajuste: prioriza capital preservation — más cash y TLT.',growth:''}[rp.goal||'growth']||'';
-    var bars=[
-      {label:'Equity',pct:al.eq,color:'var(--blue)'},
-      {label:'Bonos',pct:al.bo,color:'var(--grn)'},
-      {label:'Cash',pct:al.ca,color:'var(--amber)'},
-      {label:'Alternativos',pct:al.al,color:'var(--amber)'},
-    ];
-    var barsHtml=bars.map(function(b){
-      return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">'+
-        '<div style="width:90px;font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">'+b.label+'</div>'+
-        '<div style="flex:1;height:6px;background:var(--card3);border-radius:3px"><div style="height:100%;width:100%;transform:scaleX('+(b.pct/100)+');transform-origin:left;background:'+b.color+';border-radius:3px;transition:transform .4s"></div></div>'+
-        '<div style="width:34px;text-align:right;font-size:12px;font-weight:700;color:'+b.color+';font-family:\'IBM Plex Mono\',monospace">'+b.pct+'%</div>'+
-      '</div>';
-    }).join('');
-    allocHtml='<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Asignación Sugerida — Perfil '+al.label+'</div>'+
-      barsHtml+
-      '<div style="padding:8px 12px;background:var(--card3);border-radius:var(--r-sm);margin-top:8px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text2)">'+
-      icon('idea')+' '+al.tilt+
-      (goalAdj?' <br><span style="color:var(--amber)">'+goalAdj+'</span>':'')+
-      '</div>'+
-      '<button onclick="showRiskProfile(function(){renderRisk();})" style="margin-top:10px;background:transparent;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace;padding:4px 10px;cursor:pointer">'+icon('edit')+' Cambiar perfil</button>'+
-      '</div>';
-  } else {
-    allocHtml='<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Asignación Sugerida</div>'+
-      '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:10px">Crea tu perfil de riesgo para obtener una asignación de activos personalizada.</div>'+
-      '<button onclick="showRiskProfile(function(){renderRisk();})" class="btn" style="font-size:11px">Crear perfil de riesgo →</button>'+
-      '</div>';
-  }
+  var concHtml='<div class="cb"><div class="st"><div class="stbar"></div>Límite de concentración</div>'+
+    '<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Tu límite: ninguna posición sobre el <b style="color:var(--bright)">'+Math.round(limite*100)+' %</b> del portafolio.</div>'+
+    (rs.rows.length===0?'<div style="font-size:12px;color:var(--text3)">Agrega posiciones para ver su peso.</div>':
+      sobre.length
+        ?'<div class="conc-warn" role="note"><b>! '+sobre.length+(sobre.length===1?' posición supera':' posiciones superan')+' tu límite:</b> '+sobre.map(function(r){return esc(r.t)+' ('+(r.weight*100).toFixed(0)+' %)';}).join(', ')+'.</div>'
+        :'<div style="font-size:12px;color:var(--text2)">Ninguna posición supera el límite. La mayor es '+esc(mayor.t)+' con '+(mayor.weight*100).toFixed(0)+' %.</div>')+
+    '<div style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5">El 25 % es una referencia por defecto, no una recomendación.</div>'+
+    '</div>';
 
   document.getElementById("main").innerHTML=
-    '<div class="fos-module-header"><div><div class="fos-module-crumb">Decidir · Riesgo y Sizing</div><h1 class="fos-module-title">Riesgo y Sizing</h1><div class="fos-module-sub">Cuánto arriesgar en cada posición · '+S.portfolio.length+' posiciones abiertas</div></div>'+
+    '<div class="fos-module-header"><div><div class="fos-module-crumb">Decidir · Riesgo</div><h1 class="fos-module-title">Riesgo de tu portafolio</h1><div class="fos-module-sub">Cuánto perderías si cada precio toca su stop · '+S.portfolio.length+' posiciones</div></div>'+
     '<div class="ph-right">'+riskTabs()+'</div>'+
     '</div>'+
     '<div class="krow">'+
-    kpi("Capital",D(cap),"","g")+
-    kpi("Riesgo/Op",D(rA),"2% del capital","r")+
-    kpi("Ref. Baja","8%","Referencia estándar","n")+
-    kpi("Ref. Alta","15%","Referencia estándar","g")+
-    kpi("Valor Esp.",D(ev),ev>=0?"+Positivo":"Negativo",ev>=0?"g":"r")+
+    kpi("Capital",D(cap),"","n")+
+    kpi("Tu regla",regla+" %",D(cap*regla/100)+" por operación","n")+
+    kpi("Riesgo al stop",rs.rows.length?'−'+D(rs.totalRisk):'—',rs.rows.length?(rs.totalRiskPct*100).toFixed(1)+' % si todos los stops se activan':'',"r")+
+    kpi("Mayor peso",mayor?esc(mayor.t):'—',mayor?(mayor.weight*100).toFixed(0)+' % del portafolio':'',mayor&&mayor.overLimit?"a":"n")+
     '</div>'+
     '<div class="resp2" style="display:grid;grid-template-columns:1fr 268px;gap:16px;align-items:start">'+
     '<div>'+
-    '<div class="st"><div class="stbar"></div>Position Sizing</div>'+
-    (rows.length>8?'<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-bottom:6px">Mostrando 8 de '+rows.length+' posiciones</div>':'')+
-    // En movil quedan Activo/Risk $/Tamaño/R:R — la salida real de la calculadora
-    // de riesgo; Precio, Ref-8% y Unidades son contexto derivable.
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th class="col-sec" title="Referencia estándar de baja –8% (no es un dato histórico por ticker)">Ref. –8%</th><th>Risk $</th><th>Tamaño</th><th class="col-sec">Unidades</th><th>R/R</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+
+    '<div class="st"><div class="stbar"></div>Riesgo al stop por posición</div>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th title="Tu stop o, si no cargaste uno, −8 % como referencia">Stop</th><th title="Pérdida si el precio toca el stop, en dinero y % de tu capital">Riesgo al stop</th><th title="Peso en el portafolio">Peso</th><th class="col-sec" title="Tamaño de posición con tu regla de riesgo">Con tu regla</th></tr></thead><tbody>'+
+    (tableRows||'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:18px">Sin posiciones. Agrégalas en Seguir · Portafolio.</td></tr>')+
+    '</tbody></table></div>'+
+    '<div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">"Con tu regla": cuánto ocuparía la posición si arriesgaras '+regla+' % de tu capital hasta ese stop. Los stops marcados "ref." usan −8 % porque la posición no tiene uno propio.</div>'+
     '</div>'+
-    '<div>'+
-    allocHtml+
-    '<div class="cb"><div class="st"><div class="stbar"></div>Escenarios</div>'+scRows+
-    '<div style="display:flex;justify-content:space-between;padding-top:9px;border-top:1px solid var(--border);margin-top:2px"><span style="font-weight:700;color:var(--bright);font-size:12px">Valor Esperado</span><span style="font-weight:700;color:'+(ev>=0?"var(--pos)":"var(--neg)")+';font-family:\'IBM Plex Mono\'">'+(ev>=0?"+":"")+D(ev)+'</span></div></div>'+
-    '<div class="cb"><div class="st"><div class="stbar"></div>R/R por Activo</div>'+rrRows+
-    '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\';margin-top:4px">Referencia mínima: 2.0x</div></div>'+
-    '</div>'+
+    '<div>'+concHtml+'</div>'+
     '</div>'+
     '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
-    '<b style="color:var(--text2)">⚠ Guía educativa de riesgo y sizing.</b> '+
-    'Los porcentajes de riesgo, referencias de baja/alta y ratios R/R son indicadores técnicos educativos, no instrucciones de compra ni recomendación de inversión. La decisión de asignar capital es exclusiva del usuario.'+
+    '<b style="color:var(--text2)">Herramienta educativa.</b> '+
+    'Son cálculos con tus datos y tu regla, no instrucciones de compra o venta ni una recomendación de inversión. La decisión es tuya.'+
     '</div>';
 }
 
@@ -7130,7 +6776,7 @@ function renderAlert(){
       '<div style="display:flex;justify-content:flex-end;margin-bottom:10px">'+
       (puedeCrear
         ? '<button class="btn" onclick="openModal(\'addalert\')">+ Nueva alerta</button>'
-        : '<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\'">Límite Free ('+plan.maxA+') · elimina una o mejora a Pro</span>')+
+        : '<span style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\'">Máximo '+plan.maxA+' alertas · elimina una para crear otra</span>')+
       '</div>'+
       '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th>Tipo</th><th class="col-sec">Objetivo</th><th>Precio actual</th><th class="col-sec">Distancia</th><th>Estado</th><th>Acción</th></tr></thead>'+
       '<tbody>'+tableRows+'</tbody></table></div>'
@@ -7597,38 +7243,33 @@ function abrirComoCalcula(key){ S.comoCalculaKey=key; openModal('como-calcula');
 
 function mScoreInfo(mr){
   var rows=[
-    {factor:'RSI(14)',pts:'40 pts',desc:'RSI entre 30–50 = score completo (condición técnica de sobreventa moderada). RSI 50–65 = 20 pts (momentum neutro). RSI &gt; 70 o &lt; 20 = 0 pts.'},
-    {factor:'SMA50',pts:'25 pts',desc:'Precio sobre SMA(50) = 25 pts. Precio entre –3% y SMA50 = 15 pts (pullback a soporte). Precio bajo SMA50 = 0 pts.'},
-    {factor:'SMA200',pts:'20 pts',desc:'Precio sobre SMA(200) = 20 pts. Indica tendencia alcista de largo plazo. Bajo SMA200 = 0 pts.'},
-    {factor:'Volumen',pts:'15 pts',desc:'Volumen reciente &gt; 20% sobre su media de 20 días = 15 pts (acumulación técnica). Volumen normal = 8 pts.'},
-    {factor:'Sector RS',pts:'×mult',desc:'Multiplicador sectorial: sector líder = 1.2×, neutro = 1.0×, rezagado = 0.7×. Ajusta el score final.'},
-    {factor:'ATR(14)',pts:'referencial',desc:'Entry/Stop/Target calculados con ATR(14): Stop = Entry − 1×ATR · Target = Entry + 2×ATR · R:R objetivo ≥ 2.0×.'}
+    {factor:'Medias de 50 y 200 días',desc:'Promedio del precio de cierre de los últimos 50 y 200 días hábiles. Si el precio está por encima, la tendencia de ese plazo es alcista; si está por debajo, bajista. "Sobre sus medias" quiere decir sobre las dos; "Tendencia mixta", entre ellas.'},
+    {factor:'RSI (14)',desc:'Escala de 0 a 100 que compara las subidas y bajadas de las últimas 14 sesiones. Entre 30 y 70 es zona neutral. Sobre 70 suele leerse como sobrecompra y bajo 30 como sobreventa: describen velocidad del movimiento, no qué va a pasar.'},
+    {factor:'MACD (12, 26, 9)',desc:'Diferencia entre dos medias exponenciales. El histograma sobre cero indica impulso de corto plazo positivo; bajo cero, negativo.'},
+    {factor:'Volumen',desc:'Volumen de la última sesión frente a su promedio de 20 sesiones. Indica cuánta participación tuvo el movimiento.'},
+    {factor:'Máximo de 52 semanas',desc:'Distancia entre el precio y el máximo del último año.'},
+    {factor:'Volatilidad (ATR 14)',desc:'Rango promedio que recorre el precio en un día, en dinero y en porcentaje. Sirve para elegir un stop que tenga sentido con lo que se mueve el activo.'}
   ];
   mr.innerHTML='<div class="overlay" onclick="closeModal()">'+
-    '<div class="modal" onclick="event.stopPropagation()" style="max-width:540px">'+
+    '<div class="modal" role="dialog" aria-labelledby="si-ttl" onclick="event.stopPropagation()" style="max-width:540px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'+
-    '<h2 style="margin:0;font-size:16px">¿Cómo se calcula el Score?</h2>'+
+    '<h2 id="si-ttl" style="margin:0;font-size:16px">¿Qué mide cada indicador?</h2>'+
     '<button onclick="closeModal()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
-    '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px">El score es un indicador técnico compuesto (0–100). Combina 4 factores de análisis técnico educativo. No constituye asesoría financiera ni señal de compra o venta.</p>'+
+    '<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px">Invest no combina los indicadores en una nota ni propone precios de entrada. Muestra cada uno con su rango y una frase que lo explica, calculado con un año de cierres diarios.</p>'+
     '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">'+
     rows.map(function(r){
       return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px">'+
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">'+
-        '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700;color:var(--bright);min-width:80px">'+r.factor+'</span>'+
-        '<span style="font-size:11px;padding:2px 8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:4px;color:var(--blue);font-family:\'IBM Plex Mono\',monospace">'+r.pts+'</span>'+
-        '</div>'+
-        '<p style="font-size:11px;color:var(--text2);margin:0;line-height:1.5">'+r.desc+'</p>'+
+        '<div style="font-size:12px;font-weight:700;color:var(--bright);margin-bottom:4px">'+r.factor+'</div>'+
+        '<p style="font-size:12px;color:var(--text2);margin:0;line-height:1.5">'+r.desc+'</p>'+
         '</div>';
     }).join('')+
     '</div>'+
-    '<div style="padding:10px 14px;background:var(--card2);border-radius:var(--r-sm);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.6">'+
-    'Score 75–100: condiciones técnicas favorables · 55–74: moderadas · 35–54: mixtas · 0–34: desfavorables.<br>'+
-    'Los niveles de precio son referenciales. La decisión de operar es exclusiva del usuario.'+
+    '<div style="padding:10px 14px;background:var(--card2);border-radius:var(--r-sm);font-size:11px;color:var(--text3);line-height:1.6">'+
+    'Lectura de datos históricos. No es una recomendación ni una predicción. La decisión de operar es tuya.'+
     '</div>'+
     '</div></div>';
 }
-
 function mTradeTypeChange(){
   var type=document.getElementById("tr_type").value;
   var showTicker=["buy","sell","dividend"].indexOf(type)>=0;
@@ -7843,7 +7484,7 @@ async function loadCorrData(){
 
 function openDrawer(ticker,curPrice){
   dTicker=ticker;dTab="chart";
-  var sig=ALL_SIG.find(function(s){return s.t===ticker;})||{sig:"HOLD",sc:60};
+  var sig=ALL_SIG.find(function(s){return s.t===ticker;})||{sig:null,rsi:null};
   var price=curPrice||sig.p||100;
   renderDrawerHead(ticker,price);
   document.getElementById("dov").classList.add("open");
@@ -7936,7 +7577,7 @@ function renderDrawerHead(ticker,price){
     // "hay lq pero exchange vino vacio". Confirmado navegando: drawer de SPY
     // mostraba "SPY undefined".
     '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--card2);border:1px solid var(--border);color:var(--text3);font-family:\'IBM Plex Mono\'">'+((lq&&lq.exchange)?lq.exchange:"NASDAQ")+'</span>'+
-    '<span style="font-size:11px;padding:2px 6px;border-radius:4px;background:'+(isLN?"var(--gbg)":"var(--ambg)")+';border:1px solid '+(isLN?"var(--gborder)":"var(--amborder)")+';color:'+(isLN?"var(--grn)":"var(--amber)")+';font-family:\'IBM Plex Mono\'">'+(isLN?"LIVE":"Estimado")+'</span>'+
+    freshTag(ticker)+
     marketStatusBadge()+
     '</div>'+
     '<div style="display:flex;align-items:baseline;gap:8px;margin-top:5px;flex-wrap:wrap">'+
@@ -8024,7 +7665,7 @@ function fundSkeleton(){
 function renderDrawerBody(){
   var ticker=dTicker;
   if(!ticker)return;
-  var sig=ALL_SIG.find(function(s){return s.t===ticker;})||{sig:"HOLD",sc:60};
+  var sig=ALL_SIG.find(function(s){return s.t===ticker;})||{sig:null,rsi:null};
   var hist=dHistCache[ticker+"_"+dRange]||[];
   var isSynthetic=hist.length>0&&hist[0]._synthetic===true;
   var fund=dFundCache[ticker]||null;
@@ -8047,9 +7688,6 @@ function renderDrawerBody(){
   var s50=sma50.filter(function(v){return v!=null;});
   var s50Last=s50.length?s50[s50.length-1]:cur;
 
-  var sigClass=sig.sig==="BUY"?"buy":sig.sig==="SELL"?"sell":"hold";
-  var sigColor=sig.sig==="BUY"?"var(--grn)":sig.sig==="SELL"?"var(--red)":"var(--amber)";
-  var sigIcon=sig.sig==="BUY"?"ind":sig.sig==="SELL"?"trend-down":"capital";
 
   var tabBtns=["chart","rsi","macd","fundamentals"].map(function(t){
     var labels={chart:icon('capital','ico-inline')+" Precio",rsi:"RSI",macd:"MACD",fundamentals:icon('clipboard','ico-inline')+" Fundamentals"};
@@ -8080,16 +7718,16 @@ function renderDrawerBody(){
   } else if(dTab==="rsi"){
     content=
       '<div class="cha">'+
-      '<div class="chl">RSI (14) — Sobrecomprado >70 · Sobrevendido <30<span style="color:'+(rsiVal>70?"var(--red)":rsiVal<30?"var(--grn)":"var(--amber)")+'">RSI: '+rsiVal.toFixed(1)+'</span></div>'+
+      '<div class="chl">RSI (14) — escala 0–100 · neutral entre 30 y 70<span style="color:'+((rsiVal>70||rsiVal<30)?"var(--amber)":"var(--text)")+'">RSI: '+rsiVal.toFixed(1)+'</span></div>'+
       svgBars(chartData.map(function(d,i){return {rsi:rsiArr[i+1]||50};}),["rsi"],400,90,50,[{val:70,color:'rgba(239,68,68,0.45)'},{val:30,color:'rgba(34,197,94,0.45)'}])+
       '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\';margin-top:5px">'+
-      '<span style="color:var(--grn)">← Sobrevendido (BUY)</span><span>Neutral</span><span style="color:var(--red)">Sobrecomprado (SELL) →</span></div>'+
+      '<span>← Bajo 30: zona de sobreventa</span><span>Neutral 30–70</span><span>Sobre 70: zona de sobrecompra →</span></div>'+
       '</div>'+
       '<div class="ind2">'+
-      '<div class="icard"><div class="icl">RSI Actual</div><div class="icv" style="color:'+(rsiVal>70?"var(--red)":rsiVal<30?"var(--grn)":"var(--amber)")+'">'+rsiVal.toFixed(1)+'</div><div class="ics">'+(rsiVal>70?"Sobrecomprado":rsiVal<30?"Sobrevendido":"Neutral")+'</div></div>'+
-      '<div class="icard"><div class="icl">Señal RSI</div><div class="icv" style="color:'+(rsiVal>70?"var(--red)":rsiVal<30?"var(--grn)":"var(--amber)")+'">'+(rsiVal>70?"SOBRECOMPRA":rsiVal<30?"SOBREVENTA":"NEUTRAL")+'</div><div class="ics">Nivel '+rsiVal.toFixed(0)+'/100</div></div>'+
-      '<div class="icard"><div class="icl">BB Superior</div><div class="icv">$'+(bb.upper?bb.upper.toFixed(2):"—")+'</div><div class="ics">Resistencia</div></div>'+
-      '<div class="icard"><div class="icl">BB Inferior</div><div class="icv">$'+(bb.lower?bb.lower.toFixed(2):"—")+'</div><div class="ics">Soporte</div></div>'+
+      '<div class="icard"><div class="icl">RSI actual</div><div class="icv" style="color:'+((rsiVal>70||rsiVal<30)?"var(--amber)":"var(--text)")+'">'+rsiVal.toFixed(1)+'</div><div class="ics">Escala 0–100</div></div>'+
+      '<div class="icard"><div class="icl">Zona</div><div class="icv">'+(rsiVal>70?"Sobre 70":rsiVal<30?"Bajo 30":"Neutral")+'</div><div class="ics">'+esc(rsiZone(rsiVal).reading)+'</div></div>'+
+      '<div class="icard"><div class="icl">Banda superior</div><div class="icv">$'+(bb.upper?bb.upper.toFixed(2):"—")+'</div><div class="ics">Bollinger (20, 2)</div></div>'+
+      '<div class="icard"><div class="icl">Banda inferior</div><div class="icv">$'+(bb.lower?bb.lower.toFixed(2):"—")+'</div><div class="ics">Bollinger (20, 2)</div></div>'+
       '</div>';
   } else if(dTab==="macd"){
     content=
@@ -8102,8 +7740,8 @@ function renderDrawerBody(){
       svgLine(chartData.map(function(d,i){return {macdLine:macdData.line[i]||null,macdSig:macdData.signal[i]||null};}),["macdLine","macdSig"],["var(--amber)","var(--blue)"],400,70)+
       '</div>'+
       '<div class="ind2">'+
-      '<div class="icard"><div class="icl">MACD Hist.</div><div class="icv" style="color:'+(macdH>=0?"var(--pos)":"var(--neg)")+'">'+macdH.toFixed(3)+'</div><div class="ics">'+(macdH>=0?"Momentum alcista":"Momentum bajista")+'</div></div>'+
-      '<div class="icard"><div class="icl">Señal</div><div class="icv" style="color:'+(macdH>=0?"var(--pos)":"var(--neg)")+'">'+(macdH>=0?"ALCISTA":"BAJISTA")+'</div><div class="ics">'+(macdH>=0?"Comprador dom.":"Vendedor dom.")+'</div></div>'+
+      '<div class="icard"><div class="icl">MACD hist.</div><div class="icv" style="color:'+(macdH>=0?"var(--pos)":"var(--neg)")+'">'+macdH.toFixed(3)+'</div><div class="ics">'+(macdH>=0?"Sobre cero":"Bajo cero")+'</div></div>'+
+      '<div class="icard"><div class="icl">Lectura</div><div class="icv" style="color:'+(macdH>=0?"var(--pos)":"var(--neg)")+'">'+(macdH>=0?"Impulso +":"Impulso −")+'</div><div class="ics">'+(macdH>=0?"Impulso de corto plazo positivo":"Impulso de corto plazo negativo")+'</div></div>'+
       '<div class="icard"><div class="icl">SMA 20</div><div class="icv">$'+s20Last.toFixed(2)+'</div><div class="ics" style="color:'+(cur>s20Last?"var(--pos)":"var(--neg)")+'">'+(cur>s20Last?"↑ Por encima":"↓ Por debajo")+'</div></div>'+
       '<div class="icard"><div class="icl">SMA 50</div><div class="icv">$'+s50Last.toFixed(2)+'</div><div class="ics" style="color:'+(cur>s50Last?"var(--pos)":"var(--neg)")+'">'+(cur>s50Last?"↑ Por encima":"↓ Por debajo")+'</div></div>'+
       '</div>';
@@ -8112,7 +7750,9 @@ function renderDrawerBody(){
     var f=fund;
     var recLabel={'strongbuy':'Sesgo alcista fuerte','buy':'Sesgo alcista','hold':'Neutro','sell':'Sesgo bajista','strongsell':'Sesgo bajista fuerte','neutral':'Sin consenso','strong buy':'Sesgo alcista fuerte','strong sell':'Sesgo bajista fuerte'};
     var recColor={'strongbuy':'var(--grn)','buy':'var(--grn)','hold':'var(--amber)','sell':'var(--red)','strongsell':'var(--red)','neutral':'var(--text2)','strong buy':'var(--grn)','strong sell':'var(--red)'};
-    var rec=f&&(f.recommendationKey||f.analystRating)?(f.recommendationKey||f.analystRating).toLowerCase():null;
+    // Consenso de analistas y precio objetivo (FMP) retirados en el relanzamiento
+    // v2: son recomendaciones de compra/venta de terceros.
+    var rec=null;
     var mktCap=f&&f.marketCap?f.marketCap:(lq&&lq.marketCap?lq.marketCap:null);
     var fi=[
       ["P/E (TTM)",       f&&f.peRatio!=null       ? f.peRatio.toFixed(1)+"x"  : "—"],
@@ -8212,8 +7852,8 @@ function renderDrawerBody(){
         '<div style="color:var(--text3);font-size:11px;font-family:\'IBM Plex Mono\',monospace">Cargando rango...</div>')+
       '</div>'+
       '<div class="cha" style="margin-top:0">'+
-      '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-family:\'IBM Plex Mono\';margin-bottom:8px">Niveles clave</div>'+
-      [["Ref. Baja (-8%)","$"+(cur*.92).toFixed(2),"var(--red)"],["SMA 20","$"+s20Last.toFixed(2),"var(--amber)"],["Precio actual","$"+cur.toFixed(2),"var(--bright)"],["Ref. Alta (+12%)","$"+(cur*1.12).toFixed(2),"var(--grn)"]].map(function(r){
+      '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;font-family:\'IBM Plex Mono\';margin-bottom:8px">Medias móviles</div>'+
+      [["Precio actual","$"+cur.toFixed(2),"var(--bright)"],["Media de 20 días","$"+s20Last.toFixed(2),"var(--text)"],["Media de 50 días","$"+s50Last.toFixed(2),"var(--text)"]].map(function(r){
         return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px;font-family:\'IBM Plex Mono\'"><span style="color:var(--text3)">'+r[0]+'</span><span style="color:'+r[2]+';font-weight:500">'+r[1]+'</span></div>';
       }).join("")+
       '</div>'+
@@ -8225,12 +7865,16 @@ function renderDrawerBody(){
   }
 
   document.getElementById("drwb").innerHTML=
-    '<div class="sigb '+sigClass+'">'+
-    '<div style="width:24px;height:24px;color:'+sigColor+'">'+icon(sigIcon,'ico-lg')+'</div>'+
-    '<div><div style="font-size:13px;font-weight:700;color:'+sigColor+'">'+sigLabel(sig.sig)+' — Score '+sig.sc+'/100</div>'+
-    '<div style="font-size:11px;font-family:\'IBM Plex Mono\';color:var(--text);margin-top:2px">'+
-    (sig.sig==="BUY"?"Tendencia histórica alcista · Indicador alto":sig.sig==="SELL"?"Presión vendedora histórica · Indicador bajo":"Sin tendencia clara · Indicador medio")+
-    '</div></div></div>'+
+    (function(){
+      // T18 / M11: cada indicador con su rango y una frase, sin nota agregada.
+      var de=DE_CACHE.scores[ticker];
+      if(!de){ deScoreTicker(ticker).then(function(r){ if(r&&dTicker===ticker) renderDrawerBody(); }).catch(function(){}); }
+      return '<section class="rd-panel" aria-label="Indicadores de '+esc(ticker)+'">'+
+        '<div class="rd-head">'+badge(de?de.trend:null)+'<span>Indicadores con un año de cierres diarios</span></div>'+
+        (de?readingsHtml(de.readings,false):'<div class="dload" style="height:60px"><div class="spin"></div>Calculando indicadores…</div>')+
+        '<div class="rd-foot">Lectura de datos históricos. No es una recomendación ni una predicción.</div>'+
+      '</section>';
+    })()+
     '<div>'+tabBtns+'</div>'+
     '<div style="margin-bottom:10px">'+rangeBtns+'</div>'+
     (isSynthetic?'<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--r-md);padding:8px 12px;margin-bottom:10px;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--amber);display:flex;gap:8px;align-items:center"><span>⚠️</span><span>Histórico no disponible para este activo — gráfico ilustrativo referencial, no son precios reales.</span></div>':'')+
@@ -8241,7 +7885,7 @@ function renderDrawerBody(){
     '<div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">'+
     '<button class="btn" onclick="addWatch(\''+esc(ticker)+'\');closeDrawer()">+ Watchlist</button>'+
     '<button class="btn" onclick="openModal(\'addpos\');closeDrawer()">+ Portfolio</button>'+
-    '<button class="btn" onclick="PB.ticker=\''+esc(ticker)+'\';setPage(\'pb\');pbFetchPrice()">Calcular tamaño</button>'+
+    '<button class="btn" onclick="PB.ticker=\''+esc(ticker)+'\';setPage(\'pb\');pbFetchPrice()">Calcular posición</button>'+
     '<button class="btn" onclick="compSet(\''+esc(ticker)+'\',\'SPY\');setPage(\'comp\')">Comparar</button>'+
     '<button class="btn" onclick="openModal(\'addtrade\',{t:\''+esc(ticker)+'\'})">Registrar</button>'+
     '<button class="btn" onclick="openModal(\'addalert\',{t:\''+esc(ticker)+'\'})">Alerta</button>'+
@@ -8252,7 +7896,7 @@ function renderDrawerBody(){
 }
 
 
-// ── AI ADVISOR ─────────────────────────────────────────────────
+// ── ASISTENTE (sin conectar; no hay entrada en la UI) ─────────────
 var AI={open:false,messages:[],loading:false};
 
 function toggleAI(){
@@ -8280,7 +7924,7 @@ function buildPortfolioContext(){
   lines.push("\nWATCHLIST: "+S.watchlist.join(", "));
   lines.push("\nSEÑALES ACTUALES:");
   ALL_SIG.slice(0,8).forEach(function(s){
-    lines.push("- "+s.t+": "+s.sig+" (Score "+s.sc+", precio $"+(s.p?fmtD(s.p):"—")+")");
+    lines.push("- "+s.t+": "+trendLabel(s.sig)+" (RSI "+(s.rsi==null?"—":s.rsi)+", precio $"+(s.p?fmtD(s.p):"—")+")");
   });
   lines.push("\nNOTICIAS RELEVANTES (semana actual):");
   getNewsData().slice(0,4).forEach(function(n){
@@ -8499,22 +8143,23 @@ function renderPBBody(){
       var newP=c.price*(1+chg);
       var pnlS=(newP-c.price)*c.units;
       return '<tr style="background:'+(chg<0?'rgba(232,65,66,.04)':'rgba(38,166,91,.04)')+'">'+
-        '<td style="font-weight:700;color:'+(chg<0?'var(--neg)':'var(--pos)')+'">'+( chg>0?'+':''+(chg*100).toFixed(0))+'%</td>'+
+        '<td style="font-weight:700;color:'+(chg<0?'var(--neg)':'var(--pos)')+'">'+(chg>0?'+':'')+(chg*100).toFixed(0)+'%</td>'+
         '<td>$'+fmtD(newP)+'</td>'+
         '<td style="font-weight:700;color:'+(pnlS>=0?'var(--pos)':'var(--neg)')+'">'+( pnlS>=0?'+':'')+D(pnlS)+'</td>'+
         '<td style="color:'+(pnlS>=0?'var(--pos)':'var(--neg)')+'">'+( pnlS>=0?'+':'')+((pnlS/c.posSize)*100).toFixed(1)+'%</td>'+
         '</tr>';
     }).join('');
     var conc=(c.posSize/cap);
+    var LIM=RISK_CONCENTRATION_LIMIT;
     scenHtml=
       '<div class="cb">'+
       '<div class="st"><div class="stbar"></div>Simulación de escenarios — '+esc(c.ticker)+'</div>'+
       '<div class="tw"><table><thead><tr><th>Movimiento</th><th>Precio</th><th>P&L</th><th>Retorno</th></tr></thead><tbody>'+scRows+'</tbody></table></div>'+
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px">'+
-      [['Precio Entrada','$'+fmtD(c.price),'var(--bright)'],
-       ['Ref. Baja','$'+fmtD(c.stop),'var(--red)'],
-       ['Target R2','$'+fmtD(c.target),'var(--grn)'],
-       ['R/R Ratio',c.rr.toFixed(2)+'x',c.rr>=2?'var(--pos)':'var(--neg)']
+      [['Precio','$'+fmtD(c.price),'var(--bright)'],
+       ['Stop','$'+fmtD(c.stop),'var(--neg)'],
+       ['Objetivo ('+fmtD(c.rr)+'R)','$'+fmtD(c.target),'var(--text)'],
+       ['Riesgo/recompensa',c.rr.toFixed(2)+'x','var(--text)']
       ].map(function(r){
         return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px">'+
           '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:.8px">'+r[0]+'</div>'+
@@ -8526,26 +8171,34 @@ function renderPBBody(){
       '<span>Posición: $'+fmt(c.posSize)+' ('+(conc*100).toFixed(1)+'% del capital)</span>'+
       '<span>'+c.units.toFixed(4)+' unidades</span></div>'+
       '<div style="height:6px;background:var(--card3);border-radius:3px;overflow:hidden">'+
-      '<div style="height:100%;width:'+Math.min(conc*100,100)+'%;background:'+(conc>0.15?'var(--red)':conc>0.08?'var(--amber)':'var(--grn)')+';border-radius:3px"></div></div>'+
-      '<div style="font-size:11px;color:'+(conc>0.15?'var(--red)':conc>0.08?'var(--amber)':'var(--grn)')+';margin-top:4px;font-family:\'IBM Plex Mono\',monospace">'+
-      (conc>0.15?'⚠ Alta concentración — considera reducir':'✓ Concentración aceptable')+'</div></div>'+
+      '<div style="height:100%;width:'+Math.min(conc*100,100)+'%;background:'+(conc>LIM?'var(--amber)':'var(--text3)')+';border-radius:3px"></div></div>'+
+      '<div style="font-size:11px;color:'+(conc>LIM?'var(--amber)':'var(--text2)')+';margin-top:4px;font-family:\'IBM Plex Mono\',monospace">'+
+      (conc>LIM?'! Supera tu límite de concentración ('+Math.round(LIM*100)+' %)':'Dentro de tu límite de concentración ('+Math.round(LIM*100)+' %)')+'</div></div>'+
       '<button onclick="pbAddToPortfolio()" class="btn-big" style="margin-top:12px;padding:9px 20px;font-size:12px">+ Agregar al Portfolio</button>'+
       '</div>';
   }
 
   var resultPanel=PB.computed?
-    '<div class="cb"><div class="st"><div class="stbar"></div>Resultado — '+esc(PB.computed.ticker)+'</div>'+
+    '<div class="cb"><div class="st"><div class="stbar"></div>Con tu regla de riesgo — '+esc(PB.computed.ticker)+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
     [['Riesgo $',D(PB.computed.riskAmt),'var(--red)'],
      ['Posición',D(PB.computed.posSize),'var(--bright)'],
      ['Unidades',PB.computed.units.toFixed(4),'var(--bright)'],
-     ['% Capital',((PB.computed.posSize/cap)*100).toFixed(1)+'%',PB.computed.posSize/cap>0.15?'var(--neg)':'var(--pos)']
+     ['% Capital',((PB.computed.posSize/cap)*100).toFixed(1)+'%',PB.computed.posSize/cap>RISK_CONCENTRATION_LIMIT?'var(--amber)':'var(--bright)']
     ].map(function(r){
       return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px">'+
         '<div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace">'+r[0]+'</div>'+
         '<div style="font-size:20px;font-weight:700;color:'+r[2]+';font-family:\'IBM Plex Mono\',monospace;margin-top:3px">'+r[1]+'</div></div>';
     }).join('')+
-    '</div></div>'
+    '</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6">Si el precio toca tu stop ($'+fmtD(PB.computed.stop)+'), pierdes <b style="color:var(--neg)">'+D(PB.computed.riskAmt)+'</b>.</div>'+
+    (function(){
+      var alt=concentrationAlternative(PB.computed.price,PB.computed.units,cap,RISK_CONCENTRATION_LIMIT);
+      if(!alt) return '<div style="font-size:11px;color:var(--text3);margin-top:6px">Dentro de tu límite de concentración del '+Math.round(RISK_CONCENTRATION_LIMIT*100)+' %.</div>';
+      return '<div class="conc-warn" role="note"><b>!</b> Supera tu límite de concentración del '+Math.round(alt.limit*100)+' % ('+(alt.weight*100).toFixed(0)+' % de tu capital). '+
+        (alt.maxUnits>0?'Con '+alt.maxUnits+' unidades quedarías en '+(alt.weightAtMax*100).toFixed(0)+' %.':'Con este precio, ni una unidad entera cabe en el límite.')+'</div>';
+    })()+
+    '</div>'
   :
     '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;background:var(--card);border:1px dashed var(--border2);border-radius:var(--r-lg);text-align:center">'+
     '<div style="margin-bottom:12px;color:var(--text3)">'+icon('calc','ico-xl')+'</div>'+
@@ -8553,7 +8206,7 @@ function renderPBBody(){
     '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6">Ticker · Precio · Capital · % Riesgo · Ref. Baja</div></div>';
 
   document.getElementById("main").innerHTML=
-    _ph('Decidir · Position Builder','Position Builder','// Calculadora de entrada óptima · Regla del 2% · Simulación de escenarios',riskTabs())+
+    _ph('Decidir · Calculadora','Con tu regla de riesgo','// Cuánto comprar si arriesgas un % fijo de tu capital hasta tu stop',riskTabs())+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
     '<div><div class="cb">'+
     '<div class="st"><div class="stbar"></div>Configuración</div>'+
@@ -8568,7 +8221,7 @@ function renderPBBody(){
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'+
     '<div><label for="pb-capital" style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Capital ($)</label>'+
     '<input id="pb-capital" class="inp" style="width:100%" type="number" value="'+cap+'" oninput="PB.capital=parseFloat(this.value)||0;pbCalc()"/></div>'+
-    '<div><label for="pb-risk" style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Riesgo máx (%)</label>'+
+    '<div><label for="pb-risk" style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Tu regla: % del capital</label>'+
     '<input id="pb-risk" class="inp" style="width:100%" type="number" value="'+PB.risk+'" min="0.5" max="10" step="0.5" oninput="PB.risk=parseFloat(this.value)||2;pbCalc()"/></div></div>'+
     '<div style="margin-bottom:10px"><label for="pb-stop" style="display:block;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:\'IBM Plex Mono\',monospace;margin-bottom:5px">Stop Loss (vacío = -8% automático)</label>'+
     '<input id="pb-stop" class="inp" style="width:100%" type="number" placeholder="Auto — 8% bajo precio entrada" value="'+(PB.stop||'')+'" oninput="PB.stop=parseFloat(this.value)||0;pbCalc()"/></div>'+
@@ -8584,7 +8237,7 @@ function renderPBBody(){
     '<input id="pb-rr" type="number" class="inp" min="0.5" max="10" step="0.5" value="'+PB.rr+'" oninput="PB.rr=parseFloat(this.value)||2;pbCalc()" style="width:72px;padding:5px 8px;font-size:11px" placeholder="Custom"/>'+
     '</div></div>'+
 
-    '<button onclick="pbCalc()" class="btn-big" style="width:100%">Calcular posición óptima →</button>'+
+    '<button onclick="pbCalc()" class="btn-big" style="width:100%">Calcular con tu regla →</button>'+
     '</div></div>'+
     '<div>'+resultPanel+'</div></div>'+
     scenHtml+
@@ -9222,7 +8875,7 @@ async function generateRadarReport(){
       summary:'Diagnóstico local del portfolio — Análisis IA disponible próximamente.',
       sections:[
         {id:'health',title:'Score de Salud',content:'Tu portfolio tiene un score de '+health.total+'/100. Diversificación: '+health.subs.div+' · Momentum: '+health.subs.mom+' · Riesgo: '+health.subs.risk+' · Correlación: '+health.subs.corr+' · Valoración: '+health.subs.val+'.'},
-        {id:'macro',title:'Análisis Técnico Avanzado',content:icon('volume')+' Los sub-scores del Health Score son calculados localmente con datos en tiempo real. El análisis narrativo completo estará disponible muy pronto.'},
+        {id:'macro',title:'Análisis Técnico Avanzado',content:icon('volume')+' Los sub-scores del Health Score se calculan localmente con tus datos. El análisis narrativo completo estará disponible muy pronto.'},
         {id:'action',title:'Mientras tanto',content:'1. Revisa tus posiciones en Portfolio. 2. Consulta Análisis Comparativo para ver indicadores históricos (Alto/Medio/Bajo). 3. Usa el Position Builder para calcular niveles de referencia.'},
       ],
     };
@@ -9283,7 +8936,7 @@ function radarShare(){
 
 function radarCheckSharedLink(){
   var hash=window.location.hash;
-  if(!hash||!hash.startsWith('#radar=')) return;
+  if(INVEST_BETA||!hash||!hash.startsWith('#radar=')) return; // Radar retirado en la beta (T18)
   try{
     var encoded=hash.replace('#radar=','');
     var payload=JSON.parse(decodeURIComponent(escape(atob(encoded))));
@@ -9590,6 +9243,7 @@ function getTrialDaysLeft(){
 }
 
 function trialBanner(){
+  if(INVEST_BETA) return '';
   var days=getTrialDaysLeft();
   if(!S.user||!days&&days!==0) return '';
   var urgency=days<=3?'var(--red)':days<=7?'var(--amber)':'var(--blue)';
@@ -9617,14 +9271,14 @@ function showOnboarding(){
   }
   var steps=[
     {icon:'port',title:'Tu portfolio, siempre actualizado',
-     desc:'Agrega tus posiciones y MOY IQ Invest las conecta con precios en vivo de Yahoo Finance para calcular tu P&L.',
+     desc:'Agrega tus posiciones y MOY IQ Invest calcula tu P&L con precios de Yahoo Finance. Cada precio muestra su hora y si viene con retraso.',
      action:'Ver Portfolio',page:'port'},
     {icon:'sig',title:'Indicadores técnicos, no opiniones',
-     desc:'20 activos analizados con 4 indicadores técnicos. Score compuesto 0-100. Indicadores alto, medio y bajo actualizados con el mercado.',
-     action:'Ver Señales',page:'sig'},
-    {icon:'pb',title:'Position Builder',
-     desc:'Calcula el tamaño óptimo de cada operación según tu capital y tolerancia al riesgo, antes de abrir la posición.',
-     action:'Calcular entrada',page:'pb'},
+     desc:'Cada activo muestra su tendencia, RSI, MACD y volumen por separado, con su rango y una frase que explica qué significan. Sin notas ni señales de compra.',
+     action:'Ver tendencia',page:'sig'},
+    {icon:'pb',title:'Con tu regla de riesgo',
+     desc:'Calcula cuántas unidades caben si arriesgas un porcentaje fijo de tu capital hasta tu stop, y avisa si superas tu límite de concentración.',
+     action:'Abrir calculadora',page:'pb'},
   ];
 
   var step=steps[ONBOARD.step];
@@ -9650,7 +9304,7 @@ function showOnboarding(){
     '<div style="display:flex;gap:10px;justify-content:center">'+
     (ONBOARD.step>0?'<button class="btn" onclick="onboardPrev()">← Anterior</button>':'')+
     (isLast?
-      '<button class="btn-big" onclick="onboardFinish()">Empezar a invertir '+icon('rocket')+'</button>':
+      '<button class="btn-big" onclick="onboardFinish()">Empezar</button>':
       '<button class="btn-big" onclick="onboardNext()">'+step.action+' →</button>')+
     '</div>'+
     // Skip
@@ -9752,23 +9406,23 @@ function showShortcuts(){
 // ── HELP CENTER ────────────────────────────────────────────────
 function renderHelp(){
   var topics=[
-    {icon:'ind',q:'¿Qué significan RSI, MACD, ATR, Régimen y Score?',
-     a:'RSI (Fuerza Relativa): 0–100, mide si un activo está sobrecomprado (&gt;70) o sobrevendido (&lt;30). MACD: compara dos promedios de precio para detectar cambios de tendencia. ATR: cuánto se mueve el precio en un día típico — se usa para calcular niveles de stop. Régimen: si el mercado en general está en tendencia alcista (Risk On) o bajista (Risk Off), medido con el S&amp;P 500. Score (0–100): combina estos indicadores en un solo número — arriba de 70 es una señal técnica fuerte, abajo de 40 es débil. Ninguno es una recomendación de compra o venta, solo datos técnicos.'},
-    {icon:'radar',q:'¿Por qué los precios dicen "Caché"?',
-     a:'Yahoo Finance limita las requests. Si ves el badge naranja "Caché", los precios son de la última actualización exitosa (máx 2h). Presiona ↻ para intentar actualizar.'},
-    {icon:'pb',q:'¿Cómo funciona el Position Builder?',
-     a:'Ingresa ticker, precio de entrada, capital disponible y stop loss. Calcula automáticamente el tamaño de posición usando la Regla del 2% — nunca arriesgues más del 2% de tu capital en una sola operación.'},
+    {icon:'ind',q:'¿Qué significan las medias, el RSI, el MACD y el ATR?',
+     a:'Medias de 50 y 200 días: el promedio del precio en esos plazos; sobre ellas, la tendencia de ese plazo es alcista. RSI (14): escala 0–100; entre 30 y 70 es zona neutral, sobre 70 suele leerse como sobrecompra y bajo 30 como sobreventa. MACD: el histograma sobre cero indica impulso de corto plazo positivo. ATR (14): cuánto se mueve el precio en un día típico. Invest no combina estos datos en una nota: muestra cada uno con su rango y una frase. Ninguno es una recomendación de compra o venta.'},
+    {icon:'radar',q:'¿Qué significa "Al día", "Retraso" o "Sin conexión"?',
+     a:'Cada precio muestra la hora que informa la fuente (Yahoo Finance para acciones y ETF, CoinGecko para cripto). "Al día": el precio tiene 2 minutos o menos. "Retraso N min": la fuente o la caché lo entregan con ese atraso. "Mercado cerrado": es el último precio de la sesión. "Sin conexión": no se pudo actualizar y ves el último dato guardado. Presiona ↻ para reintentar.'},
+    {icon:'pb',q:'¿Cómo funciona la calculadora "con tu regla de riesgo"?',
+     a:'Ingresas ticker, precio, capital, el porcentaje que estás dispuesto a perder por operación (tu regla, por defecto 2 %) y tu stop. La calculadora te dice cuántas unidades caben con esa regla, cuánto pierdes si el precio toca el stop y si la posición supera tu límite de concentración (25 % del capital por defecto). La regla es tuya: la app solo hace la cuenta.'},
     
-    {icon:'robot',q:'¿Cómo funciona el Análisis IA?',
-     a:'El asistente conoce tu portfolio real (posiciones, P&L, señales activas, noticias). Hazle preguntas sobre el contexto de tus activos. Es análisis educativo, no asesoría personalizada.'},
+    {icon:'robot',q:'¿Invest tiene un asistente con IA?',
+     a:'No. Invest no usa inteligencia artificial para analizar tu portafolio ni da opiniones sobre activos. Todo lo que ves son cálculos con datos históricos y con tus propios datos.'},
     {icon:'divs',q:'¿Cuándo se actualizan los dividendos?',
      a:'Presiona "Cargar dividendos" en el módulo Dividendos. Se obtienen de Yahoo Finance y se proyectan para los próximos 12 meses según la frecuencia histórica de cada posición.'},
     {icon:'comp',q:'¿Qué significa la correlación en el Comparador?',
      a:'1.0 = activos se mueven igual (no diversifican). 0 = independientes. -1.0 = se mueven opuesto. Para diversificar bien, busca pares con correlación < 0.5.'},
     {icon:'rebal',q:'¿Cómo uso el Rebalanceo?',
      a:'Define los pesos objetivo moviendo los sliders. La herramienta calcula los ajustes técnicos referenciales para llegar a esa distribución con tu capital actual. La decisión de actuar es exclusiva del usuario.'},
-    {icon:'capital',q:'¿Cómo actualizo mi plan?',
-     a:'Haz click en "Upgrade Pro" en cualquier módulo o en el sidebar. Desde ahí puedes activar el plan Pro y acceder a todas las herramientas.'},
+    {icon:'capital',q:'¿Cuánto cuesta Invest?',
+     a:'Nada mientras dure la beta pública: todas las herramientas están incluidas, sin tarjeta. Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.'},
   ];
 
   document.getElementById('main').innerHTML=
@@ -9797,7 +9451,21 @@ function renderHelp(){
 
 // ── ENHANCED UPGRADE MODAL ─────────────────────────────────────
 function mUpgrade(mr){
-  var plan=S.user?PLANS[S.user.plan]:PLANS.free;
+  // Relanzamiento v2: no hay planes a la venta. Cualquier camino viejo que
+  // abra 'upgrade' muestra que todo esta incluido durante la beta.
+  if(INVEST_BETA){
+    mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" role="dialog" aria-labelledby="beta-ttl" onclick="event.stopPropagation()" style="max-width:440px">'+
+      '<h2 id="beta-ttl" style="font-size:17px;margin-bottom:10px">Gratis durante la beta</h2>'+
+      '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">Todas las herramientas de Invest están incluidas mientras dure la beta pública: portafolio, watchlist, indicadores, calculadora con tu regla de riesgo, comparador, alertas y rebalanceo. No hay nada que pagar ni tarjeta que cargar.</p>'+
+      '<p style="font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:18px">Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.</p>'+
+      '<button class="btn-big" style="width:100%" onclick="closeModal()">Entendido</button>'+
+      '</div></div>';
+    return;
+  }
+  mUpgradeLegacy(mr);
+}
+function mUpgradeLegacy(mr){
+  var plan=planOf();
 
   // Solo se listan funciones que de verdad estan en PLANS.free.locked o que son
   // un limite cuantitativo real. Antes se vendian como Pro: Position Builder,
@@ -10096,10 +9764,10 @@ function renderCompSection(){
         // Sharpe distinto solo por cambiar el período elegido (1M vs 1A),
         // sin que cambiara nada del riesgo/retorno real.
         var sharpe=vol>0?(mean/vol)*Math.sqrt(252):0;
-        var sig=ALL_SIG.find(function(x){return x.t===s.t;})||{sig:'HOLD',sc:60};
+        var sig=ALL_SIG.find(function(x){return x.t===s.t;})||{sig:null,rsi:null};
         var lq=LIVE[s.t];
         return{t:s.t,color:s.color,ret:ret,vol:vol,maxR:maxR,minR:minR,sharpe:sharpe,
-          cur:lq?lq.price:closes[closes.length-1],sig:sig.sig+' ('+sig.sc+')',returns:returns};
+          cur:lq?lq.price:closes[closes.length-1],sig:trendLabel(sig.sig),returns:returns};
       });
 
       if(tickerStats.length>=2){
@@ -10824,7 +10492,7 @@ function renderRebal(){
       '</tr></thead><tbody>'+tradeRows+'</tbody></table></div>'+
       '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:8px;line-height:1.6">'+
       'Cantidad = monto ÷ precio actual. El monto es lo que falta o sobra para alcanzar tu peso objetivo. '+
-      'Precios con ~15 min de retraso: la cantidad final variará al ejecutar.</div>'+
+      'Los precios pueden venir con retraso: la cantidad final variará al ejecutar en tu bróker.</div>'+
       '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;margin-top:8px;line-height:1.5">Ajustes referenciales para alinear pesos con tu objetivo. Análisis educativo — no constituye recomendación ni instrucción de inversión.</div></div>'
     :'<div class="cb"><div style="text-align:center;padding:24px;color:var(--text3)">'+
       '<div style="font-size:32px;margin-bottom:8px">✅</div>'+
@@ -10983,7 +10651,7 @@ function renderDisclaimer(){
   // pantallas estrechas envolvia a 3-4 lineas y tapaba el contenido. Ahora es
   // una sola linea truncada con 'Ver aviso', y el texto integro se muestra al
   // hacer clic. Asi la altura es predecible y .main puede reservar el hueco.
-  d.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">⚠ <strong>No es un bróker</strong> · análisis educativo, no asesoría financiera · precios con ~15 min de retraso</span>'+
+  d.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">⚠ <strong>No es un bróker</strong> · análisis educativo, no asesoría financiera · cada precio muestra su hora y su retraso</span>'+
     '<button onclick="toggleDisclaimer()" style="flex-shrink:0;background:none;border:1px solid rgba(180,83,9,.3);border-radius:4px;color:inherit;font:inherit;font-size:11px;padding:2px 8px;cursor:pointer;margin-left:8px">Ver aviso</button>';
   document.body.appendChild(d);
 }
@@ -10998,7 +10666,7 @@ function toggleDisclaimer(){
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
-    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance (~15 min de retraso) \u00b7 Fundamentos: Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
+    '<p style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance y CoinGecko (con retraso variable; cada precio muestra su hora) \u00b7 Fundamentos: Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
     '<div style="display:flex;gap:14px"><a href="/terms.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">T\u00e9rminos \u2192</a><a href="/privacy.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Privacidad \u2192</a></div>'+
     '</div></div>';
 }

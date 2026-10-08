@@ -2,51 +2,6 @@
   "outputDirectory": ".",
   "redirects": [
     {
-      "source": "/app",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/app/(.*)",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/faq",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/faq.html",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/perfil-inversor",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/perfil-inversor.html",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/estado-mercado",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/estado-mercado.html",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/docs/(.*)",
-      "destination": "/",
-      "permanent": false
-    },
-    {
       "source": "/_pausa",
       "destination": "/",
       "permanent": false
@@ -64,13 +19,26 @@
   ],
   "rewrites": [
     {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
       "source": "/landing",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/app",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/app/(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
