@@ -25,7 +25,7 @@ nada** (ver arriba, pausa de producto).
 
 **Limitación de esta auditoría**: no hay MCP de Supabase ni credenciales en este repo (no
 existe `.env`, está gitignoreado). El análisis se basa en los `.sql` sueltos en la raíz de
-este repo y en `02 - FinanceOS/releases/v1.2/financeos-app/*.sql` +
+este repo y en `01 - Maxnova Luci Global/02 - MOY IQ/05 - Producto/financeos-app/*.sql` +
 `financeos-app/supabase/migrations/`. Esto puede estar desactualizado respecto a lo que
 hay realmente en producción — verificar contra el dashboard de Supabase antes de asumir.
 
@@ -83,7 +83,7 @@ Ambos productos definen una tabla `licenses` **con esquemas incompatibles** y un
   columna `key` (texto plano único), `stripe_session_id`, `customer_email`,
   `stripe_amount`, `activations`. Función `validate_license(p_key text)` hace
   `select * from licenses where key = p_key`.
-- **MOY IQ** — `02 - FinanceOS/releases/v1.2/financeos-app/supabase-licenses.sql`
+- **MOY IQ** — `01 - Maxnova Luci Global/02 - MOY IQ/05 - Producto/financeos-app/supabase-licenses.sql`
   (líneas 1-50+, evolucionada con migraciones hasta el 2026-09-15 en
   `financeos-app/supabase/migrations/`): PK `key_hash text` (hash SHA-256, nunca la
   clave en claro), columnas `status`, `expires_at`, `stripe_subscription_id`. Función
