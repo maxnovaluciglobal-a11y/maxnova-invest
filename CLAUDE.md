@@ -1,10 +1,11 @@
 # CLAUDE.md
 
 Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest** de
-MAXNOVA & Luci LLC — `invest.moyiq.app` / `invest.financeospro.com`). Sin usuarios reales
-ni revenue al 13-sep-2026 — **en pausa de inversión de producto** (ver memoria
-`financeos_moy_iq_invest_pausa_decision_20260912`). No proponer features/backend nuevos
-sin pedido explícito de Walter; fixes de consistencia sí están habilitados.
+MAXNOVA & Luci LLC — `invest.moyiq.app` / `invest.financeospro.com`). Pausado el
+12-sep-2026 (0 usuarios, 0 revenue) y **relanzado como beta pública gratuita** (rama
+`relaunch/v2`, oct-2026; plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).
+Cobro pausado hasta el disparador del plan. No proponer features/backend nuevos sin pedido
+explícito de Walter; fixes de consistencia sí están habilitados.
 
 ## Qué es
 
@@ -112,13 +113,37 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
-- **Modo pausa (T06, oct-2026):** `index.html` es una página de pausa con lista de espera
-  (RPC `register_invest_lead`, `p_fuente='waitlist'`). La landing completa y `faq`/
-  `perfil-inversor`/`estado-mercado` están en `_pausa/` (excluido con `.vercelignore` y
-  redirigido a `/`). `/app`, `/app/*` y `/docs/*` redirigen a `/` (307 temporal). El cron de
-  `/api/trial-emails-cron` se quitó de `vercel.json`; ese endpoint, `create-checkout`,
-  `billing-portal` y `stripe-webhook` devuelven 410 `invest_paused` (bloque al inicio del
-  handler, el código original sigue abajo). Para reactivar: revertir los commits `ux(T06)`.
+- **Relanzamiento v2 · beta pública gratuita (oct-2026, reemplaza el modo pausa T06):**
+  - `index.html` es la landing de la beta (hero Navy, cuerpo Papel-000). `faq`,
+    `perfil-inversor` y `estado-mercado` volvieron a la raíz; `_pausa/` queda como archivo
+    (bloqueado por `.vercelignore` y redirect). `/app` vuelve a servirse (rewrite) con
+    `X-Robots-Tag: noindex`; las páginas públicas ya no llevan noindex.
+  - `app/index.html`: `INVEST_BETA=true` → `planOf()` devuelve `PLANS.beta` (todo
+    desbloqueado) sin importar `profiles.plan`; no hay trial, upgrade ni portal de pago.
+  - **Prohibido volver a mostrar** notas agregadas por activo (score 0-100), señales
+    BUY/SELL/Acumular/Reducir, niveles de entrada/objetivo, consenso de analistas,
+    "tiempo real" o "~15 min" fijos (T18). Cada indicador se muestra con rango y lectura
+    (`app/lib/readings.js`, con tests) y cada precio con su frescura real
+    (`quoteFreshness`, a partir de `marketTime` que devuelven `api/quote.js` y
+    `api/crypto.js`). Riesgo: `computeRiskAtStop` / `concentrationAlternative` en
+    `app/lib/risk.js` (límite 25 %).
+  - Sentimiento (Fear & Greed compuesto) y Radar (Health Score + IA no conectada) están
+    fuera de la navegación; su código sigue en el archivo como código muerto.
+  - Cobro: `create-checkout`, `billing-portal` y `trial-emails-cron` devuelven 410
+    `billing_paused`. `stripe-webhook` **verifica la firma y responde 200**
+    `{received:true, ignored:"billing_paused"}` (`BILLING_PAUSED=true`): el endpoint
+    `invest-web-subscriptions` de la cuenta Stripe compartida sigue activo y un 410
+    lo haría acumular fallos hasta deshabilitarse. El cron de trial sigue fuera de
+    `vercel.json`.
+  - Email a la lista de espera: borrador en `docs/relaunch-email.md` (no publicado:
+    `*.md` está en `.vercelignore`).
+  - `api/delete-account.js` borra **solo datos de Invest** (holdings, watchlist,
+    consents, trial_emails, profiles). Nunca el `auth.users`: es compartido con MOY IQ;
+    la baja de la cuenta se pide por `support@moyiq.app`.
+  - Leads del quiz: `perfil-inversor.html` manda `p_consent_marketing`, que requiere la
+    migración `financeos-app/supabase/migrations/20261009000100_*` aplicada antes del push.
+  - `og-invest.png` se genera desde `tools/og/og-invest.html` (headless Chrome; `tools/`
+    no se despliega). Términos con ley de Florida y el bloque de empresa de moyiq.app.
 - Sin Supabase no hay login — es punto único de falla marcado como "Alto" sin plan B en
   `RUNBOOK.md`.
 - Antes de push: `node -e "new Function(<script de index.html>)"` para validar sintaxis

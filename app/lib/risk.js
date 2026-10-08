@@ -83,7 +83,64 @@
     };
   }
 
+  // Relanzamiento v2 (T18): limite de concentracion por posicion. Es una
+  // referencia por defecto que la UI muestra como "tu limite": no es una
+  // recomendacion, la persona puede ignorarlo.
+  var DEFAULT_CONCENTRATION_LIMIT = 0.25; // 25 % del capital o del portafolio
+
+  // "Riesgo al stop": cuanto se pierde si el precio toca el stop, por posicion
+  // y en total. portfolio: [{t, sh, cur, stop?}]. capital: base para el %.
+  // Devuelve {rows:[{t, value, weight, stop, stopIsDefault, riskAtStop,
+  // riskPctCapital, overLimit}], totalValue, totalRisk, totalRiskPct}.
+  function computeRiskAtStop(portfolio, capital, limit) {
+    limit = limit == null ? DEFAULT_CONCENTRATION_LIMIT : limit;
+    var list = portfolio || [];
+    var totalValue = list.reduce(function (s, h) { return s + (h.sh || 0) * (h.cur || 0); }, 0);
+    var base = capital > 0 ? capital : totalValue;
+    var totalRisk = 0;
+    var rows = list.map(function (h) {
+      var value = (h.sh || 0) * (h.cur || 0);
+      var ownStop = h.stop && h.stop > 0 && h.stop < h.cur;
+      var stop = ownStop ? h.stop : h.cur * (1 - DEFAULT_STOP_PCT);
+      var risk = Math.max(0, (h.cur - stop) * (h.sh || 0));
+      totalRisk += risk;
+      var weight = totalValue > 0 ? value / totalValue : 0;
+      return {
+        t: h.t,
+        value: value,
+        weight: weight,
+        stop: stop,
+        stopIsDefault: !ownStop,
+        riskAtStop: risk,
+        riskPctCapital: base > 0 ? risk / base : 0,
+        overLimit: weight > limit,
+      };
+    });
+    return {
+      rows: rows,
+      totalValue: totalValue,
+      totalRisk: totalRisk,
+      totalRiskPct: base > 0 ? totalRisk / base : 0,
+      limit: limit,
+    };
+  }
+
+  // Calculadora: si la posicion supera el limite de concentracion sobre el
+  // capital, devuelve cuantas unidades enteras caben dentro del limite y el
+  // peso resultante. Null si no lo supera.
+  function concentrationAlternative(price, units, capital, limit) {
+    limit = limit == null ? DEFAULT_CONCENTRATION_LIMIT : limit;
+    if (!(price > 0) || !(capital > 0)) return null;
+    var weight = (price * units) / capital;
+    if (weight <= limit) return null;
+    var maxUnits = Math.floor((capital * limit) / price);
+    return { weight: weight, maxUnits: maxUnits, weightAtMax: (maxUnits * price) / capital, limit: limit };
+  }
+
   var api = {
+    DEFAULT_CONCENTRATION_LIMIT: DEFAULT_CONCENTRATION_LIMIT,
+    computeRiskAtStop: computeRiskAtStop,
+    concentrationAlternative: concentrationAlternative,
     DEFAULT_STOP_PCT: DEFAULT_STOP_PCT,
     DEFAULT_TARGET_PCT: DEFAULT_TARGET_PCT,
     computeRiskRows: computeRiskRows,
@@ -98,5 +155,8 @@
     root.computePositionSize = computePositionSize;
     root.RISK_DEFAULT_STOP_PCT = DEFAULT_STOP_PCT;
     root.RISK_DEFAULT_TARGET_PCT = DEFAULT_TARGET_PCT;
+    root.computeRiskAtStop = computeRiskAtStop;
+    root.concentrationAlternative = concentrationAlternative;
+    root.RISK_CONCENTRATION_LIMIT = DEFAULT_CONCENTRATION_LIMIT;
   }
 })(typeof window !== "undefined" ? window : globalThis);

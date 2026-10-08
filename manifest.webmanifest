@@ -1,20 +1,16 @@
 {
   "name": "MOY IQ Invest",
   "short_name": "Invest",
-  "description": "MOY IQ Invest está en pausa.",
+  "description": "Herramienta educativa para seguir tu portafolio, calcular cuánto arriesgas por operación y leer indicadores técnicos explicados en español. Datos de fuentes gratuitas, con posible retraso.",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0d1117",
-  "theme_color": "#0d1117",
+  "background_color": "#14213D",
+  "theme_color": "#14213D",
   "lang": "es",
-  "categories": [
-    "finance",
-    "business",
-    "productivity"
-  ],
+  "categories": ["finance", "business", "productivity"],
   "icons": [
     {
       "src": "/icon-192.png",

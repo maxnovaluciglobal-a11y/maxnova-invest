@@ -1,6 +1,8 @@
-# Invest en pausa (T06): no publicar la landing archivada ni docs internas.
+# No publicar la landing archivada de la pausa (_pausa/), documentación interna
+# (*.md, incluido CLAUDE.md y docs/relaunch-email.md), migraciones ni tests.
 # vercel.json además redirige /_pausa/* y *.md a / por si este archivo no aplica.
 _pausa/
 *.md
 supabase/
 test/
+tools/

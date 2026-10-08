@@ -118,6 +118,8 @@ export default async function handler(req) {
         low52: 0,
         currency: 'USD',
         fetchedAt: Date.now(),
+        // Hora del precio según CoinGecko (cripto opera 24/7: sin sesión).
+        marketTime: typeof c.last_updated_at === 'number' ? c.last_updated_at * 1000 : null,
         source: 'coingecko',
       };
     });
