@@ -2007,6 +2007,7 @@ div:has(>.dtab), div:has(>.rtab) {
 .cap-ask-f .inp { width:160px; min-height:44px; }
 .cap-ask-f .btn-big { min-height:44px; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.risk-stop .inp { width:110px; min-height:44px; padding:6px 8px; }
 </style>
 </head>
 <body>
@@ -6635,6 +6636,18 @@ function renderRisk(){
   }
   renderRiskBody();
 }
+async function riskSetStop(id,val){
+  var h=S.portfolio.find(function(x){return x.id===id;});
+  if(!h) return;
+  var v=parseFloat(val);
+  var prev=h.stop;
+  h.stop=v>0?v:null;
+  if(S.demoMode){ renderMain(); return; }
+  var ok=await sbUpdateHolding(h);
+  if(ok===false){ h.stop=prev; showToast('No se pudo guardar el stop. Revisa tu conexión.','error'); }
+  else showToast(h.stop?'Stop de '+h.t+' guardado':'Stop de '+h.t+' quitado');
+  renderMain();
+}
 function riskTabs(){
   return '<button class="btn" onclick="setPage(\'pb\')">'+icon('calc')+' Calculadora</button>';
 }
@@ -6646,22 +6659,34 @@ function renderRiskBody(){
   var cap=S.capital>0?S.capital:0;
   var regla=riskRulePct();
   var limite=riskConcentrationLimit();
-  var port=S.portfolio.map(function(h){return {t:h.t,sh:h.sh,cur:getLivePrice(h.t)||h.cur||h.cost,stop:h.stop};});
-  var rs=computeRiskAtStop(port,cap,limite);
+  var port=S.portfolio.map(function(h){return {id:h.id,t:h.t,sh:h.sh,cur:getLivePrice(h.t)||h.cur||h.cost,stop:h.stop};});
+  // I03: con la columna stop disponible no se inventa nada: sin stop = "sin stop".
+  var realStops=HOLDINGS_STOP===true;
+  var rs=computeRiskAtStop(port,cap,limite,{estimateMissing:!realStops});
   var sizing=computeRiskRows(port,cap,regla/100);
   var sizeByT={}; sizing.rows.forEach(function(r){sizeByT[r.t]=r;});
   var sobre=rs.rows.filter(function(r){return r.overLimit;});
   var mayor=rs.rows.slice().sort(function(a,b){return b.weight-a.weight;})[0];
 
-  var tableRows=rs.rows.map(function(r){
+  var tableRows=rs.rows.map(function(r,i){
     var sz=sizeByT[r.t]||{};
+    var hid=port[i].id;
+    var stopCell;
+    if(realStops){
+      stopCell='<td class="risk-stop"><label class="sr-only" for="rs-'+hid+'">Stop de '+esc(r.t)+'</label>'+
+        '<input id="rs-'+hid+'" class="inp num" type="number" inputmode="decimal" min="0" step="0.01" placeholder="sin stop" value="'+(r.stop!=null?(+r.stop.toFixed(2)):'')+'" onclick="event.stopPropagation()" onkeydown="event.stopPropagation();if(event.key===\'Enter\')this.blur()" onchange="riskSetStop('+hid+',this.value)"/></td>';
+    } else {
+      stopCell='<td class="num" title="Sin stop propio: se usa −8 % como estimación">'+fmtUSD(r.stop)+' <span class="calc-est">estimación</span></td>';
+    }
+    var riskCell=r.noStop
+      ?'<td class="num" style="color:var(--text2)">sin stop</td>'
+      :'<td class="num" style="color:var(--neg)">'+fmtUSD(-r.riskAtStop,0)+' <span style="font-size:12px;color:var(--text2)">· '+fmtPctN(r.riskPctCapital*100,1)+'</span></td>';
     return '<tr class="trow" role="button" tabindex="0" onclick="openDrawer(\''+esc(r.t)+'\','+(sz.cur||0)+')">'+
-      '<td style="font-weight:600;color:var(--bright)">'+esc(r.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace">$'+fmtD(sz.cur||0)+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace" title="'+(r.stopIsDefault?'Sin stop propio: se usa −8 % como referencia':'Tu stop')+'">$'+fmtD(r.stop)+(r.stopIsDefault?' <span style="font-size:11px;color:var(--text3)">ref.</span>':'')+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--neg)">−'+D(r.riskAtStop)+' <span style="font-size:11px;color:var(--text3)">· '+(r.riskPctCapital*100).toFixed(1)+' %</span></td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace">'+(r.overLimit?'<b style="color:var(--amber)">! ':'')+(r.weight*100).toFixed(0)+' %'+(r.overLimit?'</b>':'')+'</td>'+
-      '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(sz.ps||0)+'</td>'+
+      '<td style="font-weight:600;color:var(--bright)">'+esc(r.t)+'</td>'+
+      '<td class="col-sec num">'+fmtUSD(sz.cur||0)+'</td>'+
+      stopCell+riskCell+
+      '<td class="num">'+(r.overLimit?'<b style="color:var(--amber)">! ':'')+fmtPctN(r.weight*100,0)+(r.overLimit?'</b>':'')+'</td>'+
+      '<td class="col-sec num">'+(r.noStop?'—':fmtUSD(sz.ps||0,0))+'</td>'+
       '</tr>';
   }).join("");
 
@@ -6682,16 +6707,17 @@ function renderRiskBody(){
     '<div class="krow">'+
     kpi("Capital",cap>0?D(cap):'Sin definir',cap>0?'':'<a href="#" onclick="setPage(\'settings\');return false">Definir</a>',"n")+
     kpi("Tu regla",fmtPctN(regla),cap>0?D(cap*regla/100)+" por operación":"del capital, por operación","n")+
-    kpi("Riesgo al stop",rs.rows.length?'−'+D(rs.totalRisk):'—',rs.rows.length?(rs.totalRiskPct*100).toFixed(1)+(cap>0?' % del capital':' % del portafolio')+' si todos los stops se activan':'',"r")+
+    kpi("Riesgo al stop",rs.rows.length?fmtUSD(-rs.totalRisk,0):'—',rs.rows.length?(rs.totalRiskPct*100).toFixed(1)+(cap>0?' % del capital':' % del portafolio')+(realStops?(rs.noStopCount?' · '+rs.noStopCount+(rs.noStopCount===1?' posición sin stop':' posiciones sin stop'):''):' · estimado con −8 %'):'',"r")+
     kpi("Mayor peso",mayor?esc(mayor.t):'—',mayor?(mayor.weight*100).toFixed(0)+' % del portafolio':'',mayor&&mayor.overLimit?"a":"n")+
     '</div>'+
     '<div class="resp2" style="display:grid;grid-template-columns:1fr 268px;gap:16px;align-items:start">'+
     '<div>'+
     '<div class="st"><div class="stbar"></div>Riesgo al stop por posición</div>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th title="Tu stop o, si no cargaste uno, −8 % como referencia">Stop</th><th title="Pérdida si el precio toca el stop, en dinero y % de tu capital">Riesgo al stop</th><th title="Peso en el portafolio">Peso</th><th class="col-sec" title="Tamaño de posición con tu regla de riesgo">Con tu regla</th></tr></thead><tbody>'+
+    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Precio</th><th title="Tu stop por posición">Stop</th><th title="Pérdida si el precio toca el stop, en dinero y % de tu capital">Riesgo al stop</th><th title="Peso en el portafolio">Peso</th><th class="col-sec" title="Tamaño de posición con tu regla de riesgo">Con tu regla</th></tr></thead><tbody>'+
     (tableRows||'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:18px">Sin posiciones. Agrégalas en Seguir · Portafolio.</td></tr>')+
     '</tbody></table></div>'+
-    '<div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">"Con tu regla": cuánto ocuparía la posición si arriesgaras '+regla+' % de tu capital hasta ese stop. Los stops marcados "ref." usan −8 % porque la posición no tiene uno propio.</div>'+
+    '<div style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.6">"Con tu regla": cuánto ocuparía la posición si arriesgaras '+fmtPctN(regla)+' de tu capital hasta ese stop. '+
+    (realStops?'Escribe el stop de cada posición en la tabla: se guarda en tu cuenta. Las posiciones sin stop no suman al total.':'Mientras no se pueda guardar un stop por posición, se usa −8 % bajo el precio como estimación.')+'</div>'+
     '</div>'+
     '<div>'+concHtml+'</div>'+
     '</div>'+
@@ -7284,6 +7310,11 @@ function mPos(mr){
     '<input id="ps" class="inp ifu" type="number" placeholder="10" value="'+(pos.sh||"")+'" min="0.001" step="0.001"/>'+
     '<label class="fl" for="pc">Precio de entrada</label>'+
     '<input id="pc" class="inp ifu" type="number" placeholder="185.00" value="'+(pos.cost||"")+'" min="0.01" step="0.01"/>'+
+    (HOLDINGS_STOP!==false
+      ?'<label class="fl" for="pstop">Stop (opcional)</label>'+
+       '<input id="pstop" class="inp ifu" type="number" inputmode="decimal" placeholder="Precio donde saldrías" value="'+(pos.stop||"")+'" min="0.01" step="0.01"/>'+
+       '<div class="calc-hint" style="margin:-4px 0 10px">Si lo dejas vacío, la posición queda “sin stop” en Riesgo. Como referencia, −8 % bajo la entrada.</div>'
+      :'')+
     '<label class="fl" for="pcur">Precio actual</label>'+
     '<input id="pcur" class="inp ifu" type="number" placeholder="196.50" value="'+(pos.cur||"")+'" min="0.01" step="0.01"/>'+
     '<button class="btn-big" style="width:100%;margin-top:12px" onclick="savePos('+(ed&&S.editPos?S.editPos.id:-1)+')">'+(ed?"Guardar cambios":"Agregar")+'</button>'+
@@ -7296,19 +7327,22 @@ async function savePos(id){
   var sh=parseFloat(document.getElementById("ps").value||"");
   var cost=parseFloat(document.getElementById("pc").value||"");
   var cur=parseFloat(document.getElementById("pcur").value||"");
+  var stopEl=document.getElementById("pstop");
+  var stop=stopEl?parseFloat(stopEl.value||""):NaN;
+  stop=stop>0?stop:null;
   var err=document.getElementById("perr");
   if(!t){err.style.display="block";err.textContent="Ticker requerido";return;}
   if(!sh||sh<=0){err.style.display="block";err.textContent="Shares inválido";return;}
   if(!cost||cost<=0){err.style.display="block";err.textContent="Precio de entrada inválido";return;}
   if(!cur||cur<=0){err.style.display="block";err.textContent="Precio actual inválido";return;}
   if(id===-1){
-    var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur};
+    var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur,stop:stop};
     S.portfolio.push(h);
     sbAddHolding(h).then(function(realId){if(realId){h.id=realId;persist();}}).catch(function(){});
   } else {
     var idx=S.portfolio.findIndex(function(p){return p.id===id;});
     if(idx>=0){
-      S.portfolio[idx]=Object.assign({},S.portfolio[idx],{type:type,sh:sh,cost:cost,cur:cur});
+      S.portfolio[idx]=Object.assign({},S.portfolio[idx],{type:type,sh:sh,cost:cost,cur:cur},stopEl?{stop:stop}:{});
       sbUpdateHolding(S.portfolio[idx]);
     }
   }
@@ -10798,8 +10832,20 @@ try{ sb=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){ console.error("S
 
 // Map a DB holding row -> in-memory portfolio item shape {id,t,type,sh,cost,note}
 function rowToHolding(r){
-  return {id:r.id, t:r.ticker, type:r.asset_type, sh:Number(r.shares), cost:Number(r.avg_cost), note:r.note||""};
+  return {id:r.id, t:r.ticker, type:r.asset_type, sh:Number(r.shares), cost:Number(r.avg_cost), note:r.note||"",
+    stop:(r.stop!=null&&Number(r.stop)>0)?Number(r.stop):null};
 }
+// I03 · ¿Existe portfolio_holdings.stop? null = sin comprobar. Si la migración
+// 20261011000000 todavía no se aplicó, la app sigue con la estimación −8 %.
+var HOLDINGS_STOP=null;
+async function detectHoldingsStop(rows){
+  if(rows&&rows.length){ HOLDINGS_STOP=Object.prototype.hasOwnProperty.call(rows[0],'stop'); return; }
+  try{
+    var r=await withTimeout(sb.from('portfolio_holdings').select('stop').limit(1),6000);
+    HOLDINGS_STOP=!(r&&r.error);
+  }catch(e){ HOLDINGS_STOP=false; }
+}
+function _isStopColumnError(err){ return !!err&&/stop/i.test(String(err.message||''))&&/column|schema/i.test(String(err.message||'')+String(err.code||'')); }
 
 // ── CONSENT FUNCTIONS (F1-07) ─────────────────────────────────
 // Activas en producción, invocadas en cada login/signup vía
@@ -10989,6 +11035,7 @@ async function _sbLoadUserDataImpl(authUser){
       8000
     );
     var holdings=(holdRes.data||[]).map(rowToHolding);
+    await detectHoldingsStop(holdRes.data||[]);
 
     var wlRes=await withTimeout(
       sb.from("watchlist").select("ticker").eq("user_id",authUser.id),
@@ -11300,19 +11347,28 @@ function persist(){
 async function sbAddHolding(h){
   if(S.demoMode) return h.id; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return h.id;
-  var res=await sb.from("portfolio_holdings").insert({
-    user_id:S.user.id, ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""
-  }).select().single();
+  var row={user_id:S.user.id, ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""};
+  if(HOLDINGS_STOP===true) row.stop=(h.stop>0?h.stop:null);
+  var res=await sb.from("portfolio_holdings").insert(row).select().single();
+  if(res.error&&row.stop!==undefined&&_isStopColumnError(res.error)){
+    HOLDINGS_STOP=false; delete row.stop;
+    res=await sb.from("portfolio_holdings").insert(row).select().single();
+  }
   if(res.error){ console.error("sbAddHolding failed",res.error); return null; }
   return res.data.id;
 }
 async function sbUpdateHolding(h){
   if(S.demoMode) return; // el ejemplo nunca escribe en Supabase
   if(!S.user||!S.user.id) return;
-  var res=await sb.from("portfolio_holdings").update({
-    ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""
-  }).eq("id",h.id).eq("user_id",S.user.id);
-  if(res.error) console.error("sbUpdateHolding failed",res.error);
+  var upd={ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""};
+  if(HOLDINGS_STOP===true) upd.stop=(h.stop>0?h.stop:null);
+  var res=await sb.from("portfolio_holdings").update(upd).eq("id",h.id).eq("user_id",S.user.id);
+  if(res.error&&upd.stop!==undefined&&_isStopColumnError(res.error)){
+    HOLDINGS_STOP=false; delete upd.stop;
+    res=await sb.from("portfolio_holdings").update(upd).eq("id",h.id).eq("user_id",S.user.id);
+  }
+  if(res.error){ console.error("sbUpdateHolding failed",res.error); return false; }
+  return true;
 }
 async function sbDeleteHolding(id){
   if(S.demoMode) return; // el ejemplo nunca escribe en Supabase

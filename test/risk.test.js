@@ -133,3 +133,33 @@ describe("concentrationAlternative", () => {
     expect(concentrationAlternative(100, 10, 10000)).toBeNull();
   });
 });
+
+describe("computeRiskAtStop con stop por posición (I03)", () => {
+  const port = [
+    { t: "AAPL", sh: 16, cur: 234.12, stop: 222 },
+    { t: "MSFT", sh: 12, cur: 498.7 },
+    { t: "NVDA", sh: 20, cur: 178.3, stop: null },
+  ];
+  it("sin estimación: las filas sin stop no suman y se cuentan", async () => {
+    const { computeRiskAtStop } = await import("../app/lib/risk.js");
+    const r = computeRiskAtStop(port, 10000, 0.25, { estimateMissing: false });
+    expect(r.noStopCount).toBe(2);
+    expect(r.totalRisk).toBeCloseTo(16 * (234.12 - 222));
+    expect(r.rows[1].noStop).toBe(true);
+    expect(r.rows[1].riskAtStop).toBeNull();
+    expect(r.rows[0].stopIsDefault).toBe(false);
+  });
+  it("con estimación (columna ausente): −8 % marcado como referencia", async () => {
+    const { computeRiskAtStop, DEFAULT_STOP_PCT } = await import("../app/lib/risk.js");
+    const r = computeRiskAtStop(port, 10000, 0.25);
+    expect(r.noStopCount).toBe(0);
+    expect(r.rows[1].stopIsDefault).toBe(true);
+    expect(r.rows[1].stop).toBeCloseTo(498.7 * (1 - DEFAULT_STOP_PCT));
+  });
+  it("un stop sobre el precio actual no genera pérdida al stop", async () => {
+    const { computeRiskAtStop } = await import("../app/lib/risk.js");
+    const r = computeRiskAtStop([{ t: "X", sh: 10, cur: 100, stop: 105 }], 1000, 0.25, { estimateMissing: false });
+    expect(r.rows[0].riskAtStop).toBe(0);
+    expect(r.rows[0].stopIsDefault).toBe(false);
+  });
+});

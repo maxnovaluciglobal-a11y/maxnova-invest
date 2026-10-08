@@ -90,27 +90,43 @@
 
   // "Riesgo al stop": cuanto se pierde si el precio toca el stop, por posicion
   // y en total. portfolio: [{t, sh, cur, stop?}]. capital: base para el %.
-  // Devuelve {rows:[{t, value, weight, stop, stopIsDefault, riskAtStop,
-  // riskPctCapital, overLimit}], totalValue, totalRisk, totalRiskPct}.
-  function computeRiskAtStop(portfolio, capital, limit) {
+  // opts.estimateMissing (default true): sin stop propio se estima con -8 %
+  // y la fila se marca stopIsDefault. Con estimateMissing=false (I03: la
+  // columna stop existe), la fila queda "sin stop": riskAtStop null, no suma
+  // al total y cuenta en noStopCount.
+  // Devuelve {rows:[{t, value, weight, stop, stopIsDefault, noStop,
+  // riskAtStop, riskPctCapital, overLimit}], totalValue, totalRisk,
+  // totalRiskPct, noStopCount, limit}.
+  function computeRiskAtStop(portfolio, capital, limit, opts) {
     limit = limit == null ? DEFAULT_CONCENTRATION_LIMIT : limit;
+    var estimate = !(opts && opts.estimateMissing === false);
     var list = portfolio || [];
     var totalValue = list.reduce(function (s, h) { return s + (h.sh || 0) * (h.cur || 0); }, 0);
     var base = capital > 0 ? capital : totalValue;
     var totalRisk = 0;
+    var noStopCount = 0;
     var rows = list.map(function (h) {
       var value = (h.sh || 0) * (h.cur || 0);
-      var ownStop = h.stop && h.stop > 0 && h.stop < h.cur;
+      var weight = totalValue > 0 ? value / totalValue : 0;
+      // En modo estimacion se mantiene la regla anterior: un stop sobre el
+      // precio se ignora. Con stops reales (I03) se respeta y la perdida es 0.
+      var ownStop = h.stop != null && h.stop > 0 && (!estimate || h.stop < h.cur);
+      if (!ownStop && !estimate) {
+        noStopCount++;
+        return { t: h.t, value: value, weight: weight, stop: null, stopIsDefault: false, noStop: true,
+          riskAtStop: null, riskPctCapital: null, overLimit: weight > limit };
+      }
       var stop = ownStop ? h.stop : h.cur * (1 - DEFAULT_STOP_PCT);
+      // Un stop por encima del precio actual ya no tiene perdida pendiente: 0.
       var risk = Math.max(0, (h.cur - stop) * (h.sh || 0));
       totalRisk += risk;
-      var weight = totalValue > 0 ? value / totalValue : 0;
       return {
         t: h.t,
         value: value,
         weight: weight,
         stop: stop,
         stopIsDefault: !ownStop,
+        noStop: false,
         riskAtStop: risk,
         riskPctCapital: base > 0 ? risk / base : 0,
         overLimit: weight > limit,
@@ -121,6 +137,7 @@
       totalValue: totalValue,
       totalRisk: totalRisk,
       totalRiskPct: base > 0 ? totalRisk / base : 0,
+      noStopCount: noStopCount,
       limit: limit,
     };
   }
