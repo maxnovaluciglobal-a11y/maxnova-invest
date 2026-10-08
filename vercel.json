@@ -1,22 +1,83 @@
 {
   "outputDirectory": ".",
-  "crons": [
+  "redirects": [
     {
-      "path": "/api/trial-emails-cron",
-      "schedule": "0 14 * * *"
+      "source": "/app",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/app/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/faq",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/faq.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/perfil-inversor",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/perfil-inversor.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/estado-mercado",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/estado-mercado.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/docs/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/_pausa",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/_pausa/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/(.*)\\.md",
+      "destination": "/",
+      "permanent": false
     }
   ],
   "rewrites": [
-    {
-      "source": "/app",
-      "destination": "/app/index.html"
-    },
     {
       "source": "/landing",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
     {
       "source": "/sw.js",
       "headers": [
@@ -68,7 +129,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://us-assets.i.posthog.com https://eu-assets.i.posthog.com; connect-src 'self' https://*.supabase.co https://query1.finance.yahoo.com https://query2.finance.yahoo.com https://mindicador.cl https://financialmodelingprep.com https://api.allorigins.win https://corsproxy.io https://us.i.posthog.com https://eu.i.posthog.com; font-src https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; frame-ancestors 'none'; base-uri 'self'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://us-assets.i.posthog.com https://eu-assets.i.posthog.com; connect-src 'self' https://*.supabase.co https://query1.finance.yahoo.com https://query2.finance.yahoo.com https://mindicador.cl https://financialmodelingprep.com https://api.allorigins.win https://corsproxy.io https://us.i.posthog.com https://eu.i.posthog.com; font-src 'self' https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; frame-ancestors 'none'; base-uri 'self'"
         },
         {
           "key": "Permissions-Policy",

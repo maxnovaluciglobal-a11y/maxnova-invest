@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /app
+Disallow: /_pausa/
 
 # AI crawlers — explicitly allowed for GEO (Generative Engine Optimization)
 User-agent: GPTBot

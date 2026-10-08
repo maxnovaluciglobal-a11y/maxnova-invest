@@ -26,6 +26,11 @@ const json = (data, status, req) =>
   });
 
 export default async function handler(req) {
+  // Invest en pausa desde 2026-09-12 (D4). Quitar este bloque para reactivar.
+  return new Response(JSON.stringify({ error: 'invest_paused' }), {
+    status: 410,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
   const c = cors(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: c });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405, req);
