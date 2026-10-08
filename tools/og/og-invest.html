@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- Fuente de og-invest.png (1200×630). Regenerar desde la raíz del repo:
+       python3 -m http.server 8791 &
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+         --hide-scrollbars --window-size=1200,630 --screenshot=og-invest.png \
+         http://localhost:8791/tools/og/og-invest.html
+     tools/ no se despliega (.vercelignore). Ejemplo ilustrativo: no son datos reales. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/fonts.css">
+<style>
+  :root{--navy:#14213D;--navy-700:#1F2E50;--laton:#B8863B;--accent-dark:#CC9A52;--papel:#F1EEE6;--navy-200:#B9C0CF;--pos:#74C2A3}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  body{background:var(--navy);color:var(--papel);font-family:'IBM Plex Sans',sans-serif;display:grid;grid-template-columns:1fr 470px;gap:56px;align-items:center;padding:0 72px}
+  .lockup{display:flex;align-items:center;gap:12px;font-family:'Instrument Sans',sans-serif;font-weight:700;font-size:34px;letter-spacing:.08em}
+  .lockup svg{width:46px;height:46px;color:var(--papel)}
+  .iq{background:var(--laton);color:var(--navy);padding:2px 8px;border-radius:4px;font-size:26px}
+  .sfx{font-weight:500;letter-spacing:.02em;color:var(--papel)}
+  .badge{display:inline-block;margin-top:38px;border:1.5px solid var(--accent-dark);color:var(--accent-dark);font-family:'IBM Plex Mono',monospace;font-size:20px;padding:7px 14px;border-radius:6px}
+  h1{font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:52px;line-height:1.08;letter-spacing:-.01em;margin-top:22px}
+  h1 em{font-style:normal;color:var(--accent-dark)}
+  .note{margin-top:22px;font-size:19px;color:var(--navy-200)}
+  .card{background:var(--navy-700);border:1px solid rgba(241,238,230,.16);border-radius:12px;padding:26px 28px}
+  .eyebrow{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--navy-200)}
+  .eyebrow .ex{border:1px solid rgba(241,238,230,.3);border-radius:4px;padding:2px 8px}
+  .tk{margin-top:18px;font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--navy-200)}
+  .tk b{color:var(--papel);font-size:24px;margin-right:8px}
+  .px{display:flex;align-items:baseline;gap:14px;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+  .px .v{font-size:44px;font-weight:500;color:var(--papel)}
+  .px .c{font-size:20px;color:var(--pos)}
+  .fresh{margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--navy-200)}
+  .ind{margin-top:22px;padding-top:18px;border-top:1px solid rgba(241,238,230,.16)}
+  .ind .row{display:flex;justify-content:space-between;font-size:20px;font-weight:600}
+  .ind .row span:last-child{font-family:'IBM Plex Mono',monospace}
+  .bar{position:relative;height:8px;border-radius:4px;background:rgba(241,238,230,.14);margin:14px 0 6px}
+  .bar .z{position:absolute;left:30%;width:40%;top:0;bottom:0;background:rgba(241,238,230,.22);border-radius:4px}
+  .bar .m{position:absolute;left:58%;top:-5px;width:3px;height:18px;background:var(--accent-dark);border-radius:2px}
+  .scale{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--navy-200)}
+  .read{margin-top:12px;font-size:17px;color:var(--navy-200);line-height:1.45}
+</style>
+</head>
+<body>
+  <div>
+    <div class="lockup">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M 28.79 71.21 A 30 30 0 1 1 71.21 71.21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
+        <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
+      </svg>
+      MOY<span class="iq">IQ</span><span class="sfx">Invest</span>
+    </div>
+    <div class="badge">Beta pública gratuita</div>
+    <h1>Entiende tu portafolio antes de mover <em>un peso.</em></h1>
+    <p class="note">Herramienta educativa. No somos bróker ni te decimos qué comprar.</p>
+  </div>
+  <div class="card">
+    <div class="eyebrow"><span class="ex">Ejemplo ilustrativo</span><span>◷ Retraso 15 min · 14:32</span></div>
+    <div class="tk"><b>AAPL</b>Apple Inc.</div>
+    <div class="px"><span class="v">US$ 234,12</span><span class="c">▲ +1,8 %</span></div>
+    <div class="ind">
+      <div class="row"><span>RSI (14)</span><span>58</span></div>
+      <div class="bar"><div class="z"></div><div class="m"></div></div>
+      <div class="scale"><span>0</span><span>30</span><span>70</span><span>100</span></div>
+      <p class="read">Zona neutral (30–70): ni sobrecomprado ni sobrevendido.</p>
+    </div>
+  </div>
+</body>
+</html>
