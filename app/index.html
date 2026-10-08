@@ -1909,6 +1909,14 @@ div:has(>.dtab), div:has(>.rtab) {
   }
   .spin, .spin-sm { animation: none !important; }
 }
+
+/* ── AUDITORIA UX oct-2026 (I01-I13) ─────────────────────────────────
+   Piezas nuevas: cifras en Plex Mono, prosa en Plex Sans, radios <= 12px. */
+.num { font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; }
+.cap-mark { color:var(--laton-700); font-weight:700; }
+.cap-empty { padding:28px 20px; border:1px dashed var(--border2); border-radius:var(--r-md); text-align:center; }
+.cap-empty-t { font-size:15px; font-weight:600; color:var(--bright); margin-bottom:6px; }
+.cap-empty-d { font-size:13px; color:var(--text2); line-height:1.6; max-width:460px; margin:0 auto 14px; }
 </style>
 </head>
 <body>
@@ -2238,7 +2246,7 @@ const S={
   screenerResults:[],
   // ── PLAN DE CAPITAL ──
   capitalPlan:{
-    monthly:1000,
+    monthly:0,
     tickers:null
   },
   capitalResults:null, capitalLoading:false,
@@ -7229,15 +7237,16 @@ var COMO_CALCULA={
   },
   escalera:{
     titulo:'\u00bfC\u00f3mo se reparte el aporte por medias?',
-    intro:'El aporte mensual se divide en tramos seg\u00fan qu\u00e9 tan por debajo de sus medias m\u00f3viles est\u00e1 cada activo. Comprar m\u00e1s cuando el precio est\u00e1 bajo su media es la l\u00f3gica del promediado por costo (DCA).',
+    intro:'El monto que escribes se divide entre tus tickers seg\u00fan el porcentaje que les asignas. Dentro de cada ticker, ese monto se parte en cuatro tramos, uno por media m\u00f3vil. T\u00fa eliges c\u00f3mo se reparten los tramos.',
     rows:[
-      {factor:'SMA20',pts:'tramo corto',desc:'Media de 20 d\u00edas: reacciona r\u00e1pido. Si el precio est\u00e1 por debajo, se activa este tramo. Pesa menos en perfiles de horizonte largo.'},
-      {factor:'SMA50',pts:'tramo medio',desc:'Media de 50 d\u00edas: tendencia intermedia.'},
-      {factor:'SMA100',pts:'tramo largo',desc:'Media de 100 d\u00edas.'},
-      {factor:'SMA200',pts:'tramo base',desc:'Media de 200 d\u00edas: la tendencia de fondo. Concentra la mitad del tramo en horizontes largos, porque un precio bajo su SMA200 es la se\u00f1al de descuento m\u00e1s conservadora.'},
-      {factor:'RSI 30\u201345',pts:'zona activa',desc:'El tramo solo se activa si el RSI est\u00e1 en 30\u201345: sobreventa moderada. Evita aportar de m\u00e1s cuando el activo ya viene muy comprado.'}
+      {factor:'SMA20',pts:'media corta',desc:'Promedio de los \u00faltimos 20 cierres. Reacciona r\u00e1pido a los cambios de precio.'},
+      {factor:'SMA50',pts:'media intermedia',desc:'Promedio de los \u00faltimos 50 cierres.'},
+      {factor:'SMA100',pts:'media larga',desc:'Promedio de los \u00faltimos 100 cierres.'},
+      {factor:'SMA200',pts:'media de fondo',desc:'Promedio de los \u00faltimos 200 cierres. Describe la tendencia de largo plazo.'},
+      {factor:'Marca (\u00b7)',pts:'dato',desc:'Indica que el precio de hoy est\u00e1 en o bajo esa media. Es una descripci\u00f3n del precio, no una se\u00f1al.'},
+      {factor:'RSI',pts:'dato',desc:'Se muestra como referencia del movimiento reciente (0 a 100). No cambia el reparto.'}
     ],
-    nota:'El reparto por medias es un marco de c\u00e1lculo, no una instrucci\u00f3n de compra. La decisi\u00f3n de asignar capital es exclusiva del usuario.'
+    nota:'Es un marco de c\u00e1lculo con datos que t\u00fa defines, no una instrucci\u00f3n de compra ni una recomendaci\u00f3n. La decisi\u00f3n de invertir es tuya.'
   }
 };
 function abrirComoCalcula(key){ S.comoCalculaKey=key; openModal('como-calcula'); }
@@ -9999,39 +10008,33 @@ function renderDivs(){
       '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace">Presiona "Cargar dividendos" para obtener datos reales</div></div>');
 }
 
-// ── PLAN DE CAPITAL (Pro) ────────────────────────────────────────
-// Guía educativa de distribución de capital mensual por ETF, con escalera de
-// tramos según distancia a SMA20/50/100/200 y condición de RSI. Referencial.
-// La escalera era fija e identica para todo usuario, aunque el wizard de perfil
-// lleva capturando 'horizon' desde siempre sin que nadie lo leyera. Ahora el
-// reparto depende del horizonte declarado: es aritmetica de distribucion, no
-// consejo. Horizonte corto reparte parejo entre las cuatro medias; horizonte
-// largo concentra la mitad en la SMA200.
+// ── PLAN DE CAPITAL ──────────────────────────────────────────────
+// Calculadora de aportes: reparte un monto entre los tickers que elige la
+// persona y, dentro de cada ticker, en tramos según la distancia del precio a
+// sus medias móviles (SMA20/50/100/200). Es aritmética de distribución sobre
+// datos que la persona define; no hay cestas por perfil ni montos "sugeridos"
+// (decisión D2 de la auditoría UX de oct-2026). El reparto de los tramos lo
+// elige la persona en la misma pantalla.
 var CAP_LADDERS={
   short: [{sma:20,pct:0.25},{sma:50,pct:0.25},{sma:100,pct:0.25},{sma:200,pct:0.25}],
   mid:   [{sma:20,pct:0.15},{sma:50,pct:0.20},{sma:100,pct:0.25},{sma:200,pct:0.40}],
   long:  [{sma:20,pct:0.10},{sma:50,pct:0.15},{sma:100,pct:0.25},{sma:200,pct:0.50}]
 };
-function capLadder(){
-  var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-  var h=(pf&&pf.horizon)||'long';
-  var base=CAP_LADDERS[h]||CAP_LADDERS.long;
-  return base.map(function(t){return {sma:t.sma, pct:t.pct, label:'SMA'+t.sma};});
+var CAP_LADDER_LABELS={short:'Parejo entre las cuatro medias',mid:'Más peso en las medias largas',long:'Mitad en la SMA200'};
+function capLadderKey(){
+  var k=S.capitalPlan&&S.capitalPlan.ladder;
+  if(!k){ try{ k=localStorage.getItem(_capKey()+'_l'); }catch(e){} }
+  return CAP_LADDERS[k]?k:'short';
 }
-// Se conserva el nombre para no romper referencias existentes.
-var CAP_LADDER=capLadder();
-// Carga la cesta de ejemplo del perfil en el plan. Editable despues: solo
-// rellena los valores de partida para que la herramienta tenga con que calcular.
-function capUsarCesta(json){
-  try{
-    var cesta=JSON.parse(json);
-    S.capitalPlan.tickers=cesta.map(function(c){return {t:c[0], pct:c[1]};});
-    var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-    if(pf&&pf.monthly&&parseFloat(pf.monthly)>0) S.capitalPlan.monthly=parseFloat(pf.monthly);
-    _capSave();
-    showToast('Punto de partida cargado — edítalo a tu gusto');
-    loadCapitalData();
-  }catch(e){ showToast('No se pudo cargar el punto de partida','error'); }
+function capSetLadder(k){
+  if(!CAP_LADDERS[k]) return;
+  S.capitalPlan.ladder=k;
+  try{ localStorage.setItem(_capKey()+'_l',k); }catch(e){}
+  renderCapital();
+}
+function capLadder(){
+  var base=CAP_LADDERS[capLadderKey()];
+  return base.map(function(t){return {sma:t.sma, pct:t.pct, label:'SMA'+t.sma};});
 }
 function _smaLast(closes,n){ if(closes.length<n) return null; var arr=TI.sma(closes,n); for(var i=arr.length-1;i>=0;i--){ if(arr[i]!=null) return arr[i]; } return null; }
 
@@ -10045,11 +10048,6 @@ function _capLoad(){
   try{
     var m=localStorage.getItem(_capKey()+'_m');
     if(m&&parseFloat(m)>0) S.capitalPlan.monthly=parseFloat(m);
-    else {
-      // sin valor guardado, se toma el del perfil antes que el 1000 fijo
-      var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-      if(pf&&pf.monthly&&parseFloat(pf.monthly)>0) S.capitalPlan.monthly=parseFloat(pf.monthly);
-    }
     var raw=localStorage.getItem(_capKey());
     if(raw){ S.capitalPlan.tickers=JSON.parse(raw); return; }
   }catch(e){}
@@ -10195,106 +10193,55 @@ function renderCapital(){
         '<td style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(etfMonthly)+'</td>'+
         '<td colspan="6" style="color:var(--text3);font-size:11px">Sin datos disponibles</td></tr>';
     }
-    var rsi=r.rsi, rsiOk=rsi>=30&&rsi<=45;
-    var rsiColor=rsiOk?'var(--grn)':(rsi<30?'var(--amber)':'var(--text3)');
-    var reached=0;
+    var rsi=r.rsi;
     var tramos=capLadder().map(function(t){
       var smaV=r.smas[t.sma];
       var amt=etfMonthly*t.pct;
-      var active=smaV!=null&&r.price<=smaV;
-      if(active) reached+=amt;
+      var below=smaV!=null&&r.price<=smaV;
       var cell=smaV!=null?('$'+fmt(amt)):'—';
-      var titleTxt=t.label+(smaV!=null?(' = $'+fmtD(smaV)+(active?' · alcanzado':' · pendiente')):'');
-      return '<td class="col-sec" style="font-family:\'IBM Plex Mono\',monospace;text-align:right;color:'+(active?'var(--grn)':'var(--text3)')+';font-weight:'+(active?'700':'400')+';background:'+(active?'rgba(61,190,122,.08)':'transparent')+'" title="'+titleTxt+'">'+(active?'✓ ':'')+cell+'</td>';
+      var titleTxt=t.label+(smaV!=null?(' = $'+fmtD(smaV)+(below?' · precio en o bajo la media':' · precio sobre la media')):'');
+      return '<td class="col-sec num" style="text-align:right;color:'+(below?'var(--bright)':'var(--text3)')+';font-weight:'+(below?'600':'400')+'" title="'+titleTxt+'">'+cell+(below?' <span class="cap-mark" aria-label="precio en o bajo la media">·</span>':'')+'</td>';
     }).join('');
-    var suggested=rsiOk?reached:0;
     return '<tr class="trow">'+
-      '<td style="font-weight:700;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(row.t)+'\','+r.price+')">'+esc(row.t)+' <span style="font-size:11px;color:var(--text3)">↗</span></td>'+
-      '<td class="col-sec" style="color:var(--text3);font-size:11px">'+esc(row.name)+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace">'+row.pct+'%</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace">$'+fmt(etfMonthly)+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+rsiColor+'" title="'+(rsiOk?'En zona favorable 30-45':'Fuera de zona 30-45')+'">'+(rsi!=null?rsi.toFixed(0):'—')+'</td>'+
+      '<td style="font-weight:700;color:var(--bright);cursor:pointer" role="button" tabindex="0" onclick="openDrawer(\''+esc(row.t)+'\','+r.price+')">'+esc(row.t)+'</td>'+
+      '<td class="col-sec" style="color:var(--text3);font-size:12px">'+esc(row.name)+'</td>'+
+      '<td class="num">'+row.pct+' %</td>'+
+      '<td class="num">$'+fmt(etfMonthly)+'</td>'+
+      '<td class="num" style="color:var(--text2)">'+(rsi!=null?rsi.toFixed(0):'—')+'</td>'+
       tramos+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;text-align:right;font-weight:700;color:'+(suggested>0?'var(--grn)':'var(--text3)')+'">$'+fmt(suggested)+'</td>'+
       '</tr>';
   }
 
   var tableHtml='';
   if(!tickers.length){
-    // Antes: pantalla en blanco con 'Agrega tickers arriba'. Ahora se ofrece un
-    // punto de partida derivado del perfil declarado, o la creacion del perfil
-    // si aun no existe. La cesta es EDITABLE y se enuncia como ejemplo de
-    // referencia, no como seleccion recomendada: el proyecto prohibe lenguaje
-    // de asesoria financiera.
-    var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-    if(!pf){
-      tableHtml='<div style="text-align:center;padding:34px 20px;border:1px dashed var(--border2);border-radius:var(--r-lg)">'+
-        '<div style="font-size:14px;font-weight:600;color:var(--bright);margin-bottom:6px">Aún no tienes un punto de partida</div>'+
-        '<div style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6;max-width:440px;margin-left:auto;margin-right:auto">'+
-        'Si respondes cuatro preguntas sobre tu tolerancia, horizonte y aporte mensual, la herramienta puede cargar una cesta de ejemplo y un aporte base con los que empezar a calcular.</div>'+
-        '<button class="btn-big" onclick="showRiskProfile(function(){renderCapital();})">Crear mi perfil de inversor →</button>'+
-        '</div>';
-    } else {
-      var cestas={
-        '1':[['BIL',40],['BND',30],['VYM',20],['GLD',10]],
-        '2':[['BND',30],['SCHD',30],['VTI',30],['GLD',10]],
-        '3':[['VTI',45],['VXUS',20],['BND',20],['GLD',15]],
-        '4':[['VTI',40],['QQQ',30],['VXUS',20],['GLD',10]],
-        '5':[['QQQ',45],['VTI',35],['VXUS',20]]
-      };
-      var notas={
-        '1':'Declaraste baja tolerancia a fluctuaciones. El ejemplo reparte el cálculo entre renta fija e índices amplios, y distribuye los tramos de forma pareja entre las cuatro medias.',
-        '2':'Declaraste tolerancia limitada a fluctuaciones. El ejemplo combina renta fija con índices amplios y concentra los tramos en las medias más largas.',
-        '3':'Declaraste tolerancia intermedia. El ejemplo se apoya en índices amplios diversificados, con los tramos repartidos a lo largo de las cuatro medias.',
-        '4':'Declaraste tolerancia alta a fluctuaciones. El ejemplo concentra el cálculo en índices de renta variable y carga los tramos hacia las medias más largas.',
-        '5':'Declaraste la máxima tolerancia a fluctuaciones. El ejemplo usa exclusivamente índices de renta variable y concentra la mitad del tramo en la SMA200.'
-      };
-      var cesta=cestas[String(pf.risk)]||cestas['3'];
-      var hz={short:'menos de 2 años',mid:'2 a 7 años',long:'más de 7 años'}[pf.horizon]||'más de 7 años';
-      var rep={short:'de forma pareja entre las cuatro medias',mid:'con mayor peso en las medias largas',long:'concentrando la mitad en la SMA200'}[pf.horizon]||'concentrando la mitad en la SMA200';
-      tableHtml='<div style="padding:20px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card2)">'+
-        '<div style="font-size:13px;font-weight:700;color:var(--bright);margin-bottom:8px">Punto de partida según tus respuestas</div>'+
-        '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:14px">'+
-        'Esta cesta y estos porcentajes son un <b>ejemplo de referencia</b> construido a partir del perfil que declaraste, únicamente para que la herramienta tenga valores con los que calcular. '+
-        'No es una recomendación ni una selección de activos sugerida para ti. Edita, elimina o reemplaza cualquier línea antes de calcular.</div>'+
-        '<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;line-height:1.6;margin-bottom:14px">'+
-        esc(notas[String(pf.risk)]||notas['3'])+'<br>'+
-        'Con horizonte declarado de <b>'+hz+'</b>, la escalera reparte los tramos '+rep+'.'+
-        '</div>'+
-        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">'+
-        cesta.map(function(c){return '<span class="wtag" style="cursor:default">'+c[0]+' '+c[1]+'%</span>';}).join('')+
-        '</div>'+
-        '<button class="btn-big" onclick="capUsarCesta('+JSON.stringify(JSON.stringify(cesta))+')">Cargar este punto de partida</button>'+
-        '</div>';
-    }
+    // Sin cestas por perfil (D2): la persona elige sus propios tickers.
+    tableHtml='<div class="cap-empty">'+
+      '<div class="cap-empty-t">Elige los tickers de tu plan</div>'+
+      '<div class="cap-empty-d">Escribe arriba cada ticker y el porcentaje del aporte que quieres asignarle. '+
+      (S.portfolio&&S.portfolio.length?'También puedes partir de las posiciones que ya tienes.':'La herramienta solo calcula: no elige activos por ti.')+'</div>'+
+      (S.portfolio&&S.portfolio.length?'<button class="btn" onclick="capImportFromPortfolio(false)">Usar mis posiciones</button>':'')+
+      '</div>';
   } else if(results&&results.length){
-    var totalSuggested=results.reduce(function(s,r){
-      if(r.error||!(r.rsi>=30&&r.rsi<=45)) return s;
-      var em=monthly*(r.row.pct/100); var reached=0;
-      capLadder().forEach(function(t){var sv=r.smas[t.sma]; if(sv!=null&&r.price<=sv) reached+=em*t.pct;});
-      return s+reached;
-    },0);
+    var lad=capLadder();
     tableHtml='<div class="tw"><table class="fos-table"><thead><tr>'+
-      '<th>Ticker</th><th class="col-sec">Nombre</th><th>%</th><th>$/mes</th><th>RSI</th>'+
-      '<th class="col-sec" style="text-align:right">SMA20·10%</th><th class="col-sec" style="text-align:right">SMA50·15%</th><th class="col-sec" style="text-align:right">SMA100·25%</th><th class="col-sec" style="text-align:right">SMA200·50%</th>'+
-      '<th style="text-align:right">Sugerido hoy</th>'+
+      '<th>Ticker</th><th class="col-sec">Nombre</th><th>%</th><th>Monto</th><th title="Índice de fuerza relativa de 14 días, solo como dato">RSI</th>'+
+      lad.map(function(t){return '<th class="col-sec" style="text-align:right">'+t.label+' · '+Math.round(t.pct*100)+' %</th>';}).join('')+
       '</tr></thead><tbody>'+
       results.map(etfRow).join('')+
       '<tr style="border-top:2px solid var(--border)">'+
-      '<td colspan="9" style="font-weight:700;color:var(--bright)">Total — $'+fmt(monthly)+'/mes</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;text-align:right;font-weight:700;color:var(--grn)">$'+fmt(totalSuggested)+'</td></tr>'+
+      '<td colspan="'+(5+lad.length)+'" style="font-weight:700;color:var(--bright)">Total del aporte: $'+fmt(monthly)+'</td></tr>'+
       '</tbody></table></div>';
   }
 
   document.getElementById('main').innerHTML=
     '<div class="fos-module-header"><div><div class="fos-module-crumb">Decidir · Plan de Capital</div><h1 class="fos-module-title">Plan de Capital</h1>'+
-    '<div class="fos-module-sub">Distribución referencial del capital mensual según condiciones de mercado (SMA + RSI)</div></div>'+'<button onclick="abrirComoCalcula(\'escalera\')" style="background:none;border:1px solid var(--border);border-radius:var(--r-md);color:var(--blue);font-size:11px;cursor:pointer;padding:5px 10px;font-family:\'IBM Plex Mono\',monospace;align-self:flex-start">\u00bfC\u00f3mo se reparte? \u2192</button></div>'+
+    '<div class="fos-module-sub">Calculadora de aportes: reparte un monto entre los tickers que eliges, en tramos por media móvil</div></div>'+'<button onclick="abrirComoCalcula(\'escalera\')" style="background:none;border:1px solid var(--border);border-radius:var(--r-md);color:var(--blue);font-size:11px;cursor:pointer;padding:5px 10px;font-family:\'IBM Plex Mono\',monospace;align-self:flex-start">\u00bfC\u00f3mo se reparte? \u2192</button></div>'+
 
     '<div class="fos-card" style="padding:var(--sp-8);margin-bottom:16px">'+
     // Fila 1: capital mensual + calcular
     '<div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px">'+
-    '<div><div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:5px">Capital mensual (USD)</div>'+
-    '<input type="number" id="cap-monthly" value="'+monthly+'" min="0" step="50" style="width:150px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:16px;font-weight:700;padding:8px 12px;outline:none">'+
+    '<div><div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:5px">Aporte del mes (USD)</div>'+
+    '<input type="number" id="cap-monthly" value="'+(monthly>0?monthly:'')+'" placeholder="Monto" min="0" step="50" style="width:150px;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--bright);font-family:\'IBM Plex Mono\',monospace;font-size:16px;font-weight:700;padding:8px 12px;outline:none">'+
     // Atajo para repartir un monto que ya se tiene, en vez del aporte periodico.
     // No cambia el calculo: solo rellena el importe. La escalera SMA/RSI opera
     // igual sobre el numero que haya en el campo.
@@ -10305,6 +10252,10 @@ function renderCapital(){
     '<div style="display:inline-flex;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);padding:2px">'+
     ['mensual','quincenal','semanal'].map(function(c){var a=cadencia===c;return '<button onclick="S.capitalPlan.cadencia=\''+c+'\';renderCapital()" aria-pressed="'+a+'" style="padding:6px 12px;border:none;border-radius:var(--r-sm);font-family:\'IBM Plex Mono\',monospace;font-size:11px;cursor:pointer;text-transform:capitalize;background:'+(a?'var(--grn-bg)':'transparent')+';color:'+(a?'var(--grn)':'var(--text3)')+';font-weight:'+(a?'700':'400')+'">'+c+'</button>';}).join('')+'</div></div>'+
     '</div>'+
+    '<div style="margin-bottom:14px"><div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:5px">Reparto de los tramos</div>'+
+    '<div role="group" aria-label="Reparto de los tramos" style="display:inline-flex;flex-wrap:wrap;background:var(--card3);border:1px solid var(--border);border-radius:var(--r-md);padding:2px">'+
+    ['short','mid','long'].map(function(k){var a=capLadderKey()===k;return '<button onclick="capSetLadder(\''+k+'\')" aria-pressed="'+a+'" style="min-height:36px;padding:6px 12px;border:none;border-radius:var(--r-sm);font-size:12px;cursor:pointer;background:'+(a?'var(--card)':'transparent')+';color:'+(a?'var(--bright)':'var(--text3)')+';font-weight:'+(a?'700':'400')+'">'+CAP_LADDER_LABELS[k]+'</button>';}).join('')+
+    '</div></div>'+
     (cadencia!=='mensual'?'<div style="font-size:11px;color:var(--text2);font-family:\'IBM Plex Mono\',monospace;margin-bottom:14px">\u2248 $'+fmt(Math.round(porAporte))+' por aporte '+cadencia+'. Repartir el aporte en tramos m\u00e1s frecuentes es una t\u00e9cnica de promediado (DCA); no altera el c\u00e1lculo de tramos por media m\u00f3vil.</div>':'')+
     // Fila 2: editor de tickers
     '<div style="border-top:1px solid var(--border);padding-top:12px">'+
@@ -10319,9 +10270,8 @@ function renderCapital(){
     '</div>'+
 
     (results&&results.length?'<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);margin-bottom:6px">'+
-      '<span><span style="color:var(--grn)">✓ verde</span> = precio ≤ SMA (tramo activo)</span>'+
-      '<span><span style="color:var(--grn)">RSI 30-45</span> = zona de entrada favorable</span>'+
-      '<span>"Sugerido hoy" = tramos activos con RSI favorable</span>'+
+      '<span>Cada tramo es la parte del monto asignada a esa media.</span>'+
+      '<span>Un punto (·) marca que el precio de hoy está en o bajo esa media. Es un dato, no una indicación de compra.</span>'+
       '</div>':'')+
 
     (results?tableHtml:
@@ -10331,8 +10281,8 @@ function renderCapital(){
       '</div>'))+
 
     '<div style="margin-top:20px;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-md);font-size:11px;font-family:\'IBM Plex Mono\',monospace;color:var(--text3);line-height:1.8">'+
-    '<b style="color:var(--text2)">⚠ Guía educativa de distribución de capital.</b> '+
-    'Los tramos por SMA y la condición de RSI son referencias técnicas educativas, no instrucciones de compra ni recomendación de inversión. La decisión de asignar capital es exclusiva del usuario. Datos con posible retraso.'+
+    '<b style="color:var(--text2)">Herramienta educativa de cálculo.</b> '+
+    'Los tickers, los porcentajes y el reparto de los tramos los defines tú. Los tramos por media móvil y el RSI se muestran como datos, no como instrucciones de compra ni recomendación de inversión. Datos con posible retraso.'+
     '</div>';
 }
 
@@ -10344,8 +10294,8 @@ var REBAL={targets:{}};
 // asi que el "objetivo" nunca sobrevivia a cerrar la pestana. Y se inicializaba
 // desde los pesos ACTUALES, con lo que el objetivo siempre coincidia con la
 // realidad y el rebalanceo jamas señalaba desvio: se auto-justificaba.
-// Ahora persiste por usuario y, si no hay nada guardado, arranca desde la cesta
-// de referencia del perfil declarado.
+// Ahora persiste por usuario y, si no hay nada guardado, arranca desde los pesos
+// actuales y la persona los ajusta (sin cestas por perfil).
 function _rebalKey(){ return 'rebal_tg_'+(S.user&&S.user.id||'demo'); }
 function rebalSaveTargets(){
   try{ localStorage.setItem(_rebalKey(),JSON.stringify(REBAL.targets)); }catch(e){}
@@ -10356,19 +10306,6 @@ function rebalLoadTargets(){
     if(raw){ REBAL.targets=JSON.parse(raw)||{}; return true; }
   }catch(e){}
   return false;
-}
-// Cesta de referencia por perfil, la misma que ofrece Plan de Capital.
-function cestaDePerfil(){
-  var pf=(typeof perfilInversor==='function')?perfilInversor():null;
-  if(!pf) return null;
-  var cestas={
-    '1':[['BIL',40],['BND',30],['VYM',20],['GLD',10]],
-    '2':[['BND',30],['SCHD',30],['VTI',30],['GLD',10]],
-    '3':[['VTI',45],['VXUS',20],['BND',20],['GLD',15]],
-    '4':[['VTI',40],['QQQ',30],['VXUS',20],['GLD',10]],
-    '5':[['QQQ',45],['VTI',35],['VXUS',20]]
-  };
-  return cestas[String(pf.risk)]||cestas['3'];
 }
 // Reparto del aporte mensual segun DESVIO respecto al objetivo: se aporta a lo
 // que esta por debajo, en proporcion a cuanto le falta. Rebalancear comprando
@@ -10400,19 +10337,12 @@ function renderRebal(){
   var port=S.portfolio;
   var totM=port.reduce(function(s,h){return s+h.sh*(getLivePrice(h.t)||h.cur||0);},0);
 
-  // Primero se intenta recuperar lo guardado. Si no hay nada, el objetivo sale
-  // de la cesta del perfil para los tickers que coincidan; el resto cae al peso
-  // actual como ultimo recurso. Antes TODO arrancaba del peso actual, con lo que
-  // objetivo y realidad siempre coincidian y el desvio era siempre cero.
+  // Primero se intenta recuperar lo guardado. Si no hay nada, el objetivo
+  // arranca en el peso actual y la persona lo mueve: sin cestas por perfil (D2).
   if(!Object.keys(REBAL.targets).length) rebalLoadTargets();
-  var cesta=(typeof cestaDePerfil==='function')?cestaDePerfil():null;
-  var mapaCesta={};
-  if(cesta) cesta.forEach(function(c){ mapaCesta[c[0]]=c[1]; });
   port.forEach(function(h){
     if(REBAL.targets[h.t]===undefined){
-      REBAL.targets[h.t]= (mapaCesta[h.t]!=null)
-        ? mapaCesta[h.t]
-        : Math.round(h.sh*(getLivePrice(h.t)||h.cur||0)/(totM||1)*100);
+      REBAL.targets[h.t]=Math.round(h.sh*(getLivePrice(h.t)||h.cur||0)/(totM||1)*100);
     }
   });
 
