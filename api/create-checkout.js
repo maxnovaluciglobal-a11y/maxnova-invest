@@ -23,8 +23,8 @@ const json = (data, status = 200, req) =>
   });
 
 export default async function handler(req) {
-  // Invest en pausa desde 2026-09-12 (D4). Quitar este bloque para reactivar.
-  return new Response(JSON.stringify({ error: 'invest_paused' }), {
+  // Cobro pausado: Invest relanza como beta gratuita (relaunch v2, oct-2026). Quitar este bloque cuando vuelva el cobro.
+  return new Response(JSON.stringify({ error: 'billing_paused' }), {
     status: 410,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });

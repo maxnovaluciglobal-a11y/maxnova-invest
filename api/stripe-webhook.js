@@ -65,12 +65,16 @@ async function verifyStripeSignature(payload, sigHeader, secret) {
   return diff === 0;
 }
 
+// Relanzamiento v2 (oct-2026): Invest vuelve como beta pública GRATUITA y el
+// cobro sigue pausado. El endpoint `invest-web-subscriptions` de la cuenta de
+// Stripe compartida sigue ACTIVO y no se puede reconfigurar desde acá: si este
+// handler devolviera 410, Stripe acumularía fallos y terminaría deshabilitando
+// el webhook. Por eso, con el cobro pausado, se verifica la firma igual que
+// siempre y se responde 200 sin tocar Supabase. Para volver a cobrar: poner
+// BILLING_PAUSED en false (y reactivar create-checkout / billing-portal).
+const BILLING_PAUSED = true;
+
 export default async function handler(req) {
-  // Invest en pausa desde 2026-09-12 (D4). Quitar este bloque para reactivar.
-  return new Response(JSON.stringify({ error: 'invest_paused' }), {
-    status: 410,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-  });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   const rawBody = await req.text();
@@ -79,6 +83,13 @@ export default async function handler(req) {
   if (!STRIPE_WEBHOOK_SECRET) return json({ error: 'Webhook secret not configured' }, 500);
   const valid = await verifyStripeSignature(rawBody, sig, STRIPE_WEBHOOK_SECRET);
   if (!valid) return json({ error: 'Invalid signature' }, 401);
+
+  if (BILLING_PAUSED) {
+    return new Response(JSON.stringify({ received: true, ignored: 'billing_paused' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  }
 
   let event;
   try { event = JSON.parse(rawBody); } catch { return json({ error: 'Invalid JSON' }, 400); }
