@@ -123,3 +123,26 @@ describe("summarizeFreshness", () => {
     expect(f.state).toBe("live");
   });
 });
+
+describe("RSI unico (fase 3)", () => {
+  // Serie fija de 40 cierres: el valor de referencia se calculo a mano con
+  // el metodo de Wilder (promedio simple de 14 y suavizado (n-1)/n).
+  const closes = Array.from({ length: 40 }, (_, i) => 100 + Math.sin(i / 3) * 5 + i * 0.3);
+  it("rsiSeries y lastRsi dan el mismo ultimo valor", async () => {
+    const { rsiSeries, lastRsi } = await import("../app/lib/readings.js");
+    const s = rsiSeries(closes, 14);
+    expect(s.length).toBe(40);
+    expect(s[13]).toBeNull();
+    expect(s[39]).toBeCloseTo(lastRsi(closes, 14), 10);
+    expect(lastRsi(closes, 14)).toBeGreaterThan(0);
+    expect(lastRsi(closes, 14)).toBeLessThan(100);
+  });
+  it("app/index.html no tiene otra implementacion de RSI: TI.rsi delega en rsiSeries", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const html = fs.readFileSync(path.resolve(__dirname, "../app/index.html"), "utf8");
+    expect(html).toMatch(/rsi:function\(p,n\)\{ return rsiSeries\(p,n\|\|14\); \}/);
+    // Ninguna otra formula de Wilder suelta (100-100/(1+...)) en el archivo.
+    expect((html.match(/100\s*-\s*100\s*\/\s*\(1\s*\+/g) || []).length).toBe(0);
+  });
+});

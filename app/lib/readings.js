@@ -64,6 +64,38 @@
     return { key: "mid", label: "Zona neutral", reading: "Entre 30 y 70: ni sobrecomprado ni sobrevendido." };
   }
 
+  // ── RSI (14) de Wilder: la UNICA implementacion de la app ─────────
+  // Fase 3 (oct-2026): AAPL mostraba 50 / 62,9 / 67 segun la pantalla porque
+  // cada una calculaba sobre una serie distinta (2 meses, 3 meses, 1 año).
+  // Ahora TI.rsi delega aqui y todas las vistas usan la misma serie diaria
+  // de un año. Devuelve un arreglo del mismo largo que closes: los primeros
+  // n valores son null (antes 50, un dato inventado).
+  function rsiSeries(closes, n) {
+    n = n || 14;
+    var p = closes || [];
+    var out = p.map(function () { return null; });
+    if (p.length < n + 1) return out;
+    var ag = 0, al = 0;
+    for (var i = 1; i <= n; i++) {
+      var d = p[i] - p[i - 1];
+      if (d > 0) ag += d; else al -= d;
+    }
+    ag /= n; al /= n;
+    out[n] = al === 0 ? 100 : 100 - 100 / (1 + ag / al);
+    for (var j = n + 1; j < p.length; j++) {
+      var dd = p[j] - p[j - 1];
+      ag = (ag * (n - 1) + (dd > 0 ? dd : 0)) / n;
+      al = (al * (n - 1) + (dd < 0 ? -dd : 0)) / n;
+      out[j] = al === 0 ? 100 : 100 - 100 / (1 + ag / al);
+    }
+    return out;
+  }
+  function lastRsi(closes, n) {
+    var a = rsiSeries(closes, n);
+    for (var i = a.length - 1; i >= 0; i--) if (isNum(a[i])) return a[i];
+    return null;
+  }
+
   // ── Lecturas por indicador ────────────────────────────────────────
   // input: {last, rsi, s50, s200, macdHist, macdPrev, volRatio, priceUp,
   //         high52, atr}
@@ -242,6 +274,8 @@
     classifyTrend: classifyTrend,
     trendLabel: trendLabel,
     rsiZone: rsiZone,
+    rsiSeries: rsiSeries,
+    lastRsi: lastRsi,
     buildReadings: buildReadings,
     quoteFreshness: quoteFreshness,
     summarizeFreshness: summarizeFreshness,
@@ -252,6 +286,8 @@
     root.classifyTrend = classifyTrend;
     root.trendLabel = trendLabel;
     root.rsiZone = rsiZone;
+    root.rsiSeries = rsiSeries;
+    root.lastRsi = lastRsi;
     root.buildReadings = buildReadings;
     root.quoteFreshness = quoteFreshness;
     root.summarizeFreshness = summarizeFreshness;
