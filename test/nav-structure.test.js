@@ -29,6 +29,11 @@ describe('estructura de navegacion', () => {
     }
   });
 
+  it('Riesgo ya no es una pestaña: vive dentro de Posiciones (fase 2)', () => {
+    expect(destBlock).not.toContain("label:'Riesgo'");
+    expect(shell).toContain("risk:'port'");
+  });
+
   it('los rotulos viejos ya no son rotulos de navegacion', () => {
     for (const old of ['Investigar', 'Analizar', 'Decidir', 'Seguir', 'Panorama']) {
       expect(destBlock).not.toContain(old);
