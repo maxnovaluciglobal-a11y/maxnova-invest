@@ -1789,6 +1789,13 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 .fos-table tbody tr:last-child td, .fos-table tbody tr:last-child th { border-bottom: 1px solid var(--border) !important; }
 .live-badge { font-family: 'IBM Plex Sans', system-ui, sans-serif !important; }
 .live-badge .num { font-family: 'IBM Plex Mono', monospace; }
+
+.mkt-figs { margin-top: 4px; }
+.peso-c { text-align: right; }
+.peso-w { display: block; text-align: right; max-width: none; margin-top: 2px; }
+.cmp-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; flex-shrink: 0; }
+:root { --cmp2: #6F8FB3; --cmp3: #8A8676; --cmp4: #3E5A78; }
+[data-theme="dark"] { --cmp2: #89A6C2; --cmp3: #9C9784; --cmp4: #C7D3E0; }
 </style>
 </head>
 <body>
@@ -2951,8 +2958,8 @@ function readingsHtml(readings,compact){
   return '<dl class="rd-list">'+readings.map(function(r){
     return '<div class="rd-row">'+
       '<dt class="rd-lbl">'+esc(r.label)+(compact?'':'<span class="rd-rng">'+esc(r.range)+'</span>')+'</dt>'+
-      '<dd class="rd-val" style="color:'+(tone[r.tone]||'var(--text)')+'">'+esc(r.value)+'</dd>'+
-      '<dd class="rd-txt">'+esc(r.reading)+'</dd>'+
+      '<dd class="rd-val" style="color:'+(tone[r.tone]||'var(--text)')+'">'+esc(r.value).replace(/ %/g,'\u202f%')+'</dd>'+
+      '<dd class="rd-txt">'+esc(r.reading).replace(/(\d) %/g,'$1\u202f%')+'</dd>'+
     '</div>';
   }).join('')+'</dl>';
 }
@@ -2981,7 +2988,7 @@ function liveBadge(){
   var cls=f.state==='offline'?'live-badge error':(f.state==='live'?'live-badge':'live-badge loading');
   var ico=f.state==='offline'?icon('warning','ico-inline'):icon('clock','ico-inline');
   var lbl=String(f.label||''), tm=/(\d{1,2}:\d{2})/.exec(lbl), mn=/(\d+)\s*min/.exec(lbl);
-  var short=tm?(tm[1]+(mn?' · '+mn[1]+' min':'')):lbl;
+  var short=tm?((mn?'Retraso '+mn[1]+' min · ':'')+tm[1]):lbl;
   return '<div class="'+cls+'" role="status" aria-live="polite" title="Fuente: Yahoo Finance (acciones y ETF) y CoinGecko (cripto). La hora es la del último precio informado por la fuente." style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--r-sm);font-size:12px">'+
     ico+'<span class="lb-full">'+numWrap(esc(lbl))+'</span><span class="lb-short" aria-hidden="true">'+numWrap(esc(short))+'</span></div>';
 }
@@ -4242,8 +4249,8 @@ function renderSettings(){
       '<p class="set-p">Es el único lugar donde se definen. Los usan Posiciones, Hoy y la Calculadora. Son tus números: Invest no los propone ni se conecta a ningún bróker.</p>'+
       '<form class="set-grid" id="set-rule" novalidate onsubmit="event.preventDefault();saveRuleSettings()">'+
       field('set-capital','Capital de referencia (USD)','type="number" inputmode="decimal" min="0" step="any" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'"','Se guarda en tu cuenta.')+
-      field('set-risk','Riesgo por operación (% del capital)','type="number" inputmode="decimal" min="0.1" max="10" step="0.25" value="'+riskRulePct()+'"','Cuánto aceptas perder si una posición toca su stop. De 0,1 % a 10 %.')+
-      field('set-limit','Límite de concentración (%)','type="number" inputmode="decimal" min="5" max="100" step="1" value="'+Math.round(riskConcentrationLimit()*100)+'"','Peso máximo de una posición, de 5 % a 100 %. Se guarda en este dispositivo.')+
+      field('set-risk','Riesgo por operación (% del capital)','type="number" inputmode="decimal" min="0.1" max="10" step="0.25" value="'+riskRulePct()+'"','Cuánto aceptas perder si una posición toca su stop. De 0,1 % a 10 %.')+
+      field('set-limit','Límite de concentración (%)','type="number" inputmode="decimal" min="5" max="100" step="1" value="'+Math.round(riskConcentrationLimit()*100)+'"','Peso máximo de una posición, de 5 % a 100 %. Se guarda en este dispositivo.')+
       '<div class="set-save"><button type="submit" class="btn-big">Guardar</button><span id="set-rule-ok" class="li-word" role="status"></span></div>'+
       '</form>')+
     sec('apariencia','Apariencia',
@@ -4400,9 +4407,9 @@ function renderWelcome(){
     '<div class="wv3-score-card" style="padding:12px 14px">'+
       '<div class="wv3-score-head"><span class="wv3-score-ticker">AAPL · ejemplo</span><span class="badge buy">Sobre sus medias</span></div>'+
       readingsHtml([
-        {label:'Media de 50 días',value:'+4,6 %',range:'',reading:'Por encima de su promedio de 50 días: el movimiento de los últimos meses sigue al alza.',tone:'pos'},
+        {label:'Media de 50 días',value:'+4,6 %',range:'',reading:'Por encima de su promedio de 50 días: el movimiento de los últimos meses sigue al alza.',tone:'pos'},
         {label:'RSI (14)',value:'58',range:'',reading:'Entre 30 y 70: ni sobrecomprado ni sobrevendido.',tone:'neu'},
-        {label:'Volumen',value:'−18 %',range:'',reading:'El movimiento de hoy tiene poca participación.',tone:'neu'}
+        {label:'Volumen',value:'−18 %',range:'',reading:'El movimiento de hoy tiene poca participación.',tone:'neu'}
       ],true)+
     '</div>'+
     '<div class="wv3-scores-note">Lectura de datos históricos. No es una recomendación ni una predicción.</div>'+
@@ -4704,7 +4711,7 @@ function dashRiskCard(rs,lim,real){
     '<ul class="hoy-risk-l">'+
     (real
       ?'<li>'+(rs.noStopCount?rs.noStopCount+(rs.noStopCount===1?' posición sin stop: no se cuenta en este total':' posiciones sin stop: no se cuentan en este total'):'Todas tus posiciones tienen stop')+'</li>'
-      :'<li>Sin stops guardados: se estima con −8 % bajo el precio de cada posición</li>')+
+      :'<li>Sin stops guardados: se estima con −8 % bajo el precio de cada posición</li>')+
     (top?'<li>Mayor peso: <b>'+esc(top.t)+'</b> con <span class="num">'+fmtPctN(top.weight*100,0)+'</span>'+
       (top.overLimit?' '+warnTag('Supera tu límite de '+fmtPctN(lim*100,0)):' · tu límite es '+fmtPctN(lim*100,0))+'</li>':'')+
     '</ul></section>';
@@ -4727,7 +4734,7 @@ function dashTopPositions(port,rs,totM){
         '<span class="port-sub">'+esc(name?name+' · ':'')+portTypeLabel(h.type)+'</span></td>'+
       '<td class="num">'+money(val,0)+'</td>'+
       '<td class="num '+(pnl>=0?'pos':'neg')+'">'+money(pnl,0,true)+'<span class="port-sub num">'+(ret>=0?'+':'')+pct(ret)+'</span></td>'+
-      '<td class="num">'+fmtPctN(w*100,0)+(r&&r.overLimit?'<span class="port-sub">'+warnTag('Supera tu límite')+'</span>':'')+'</td>'+
+      '<td class="num peso-c">'+fmtPctN(w*100,0)+(r&&r.overLimit?'<span class="port-sub peso-w">'+warnTag('Supera tu límite')+'</span>':'')+'</td>'+
       '<td>'+riskTxt(r)+'</td></tr>';
   }).join('');
   var table='<div class="tw port-tw"><table class="fos-table port-table hoy-table"><thead><tr>'+
@@ -4755,7 +4762,7 @@ function dashAllocBar(port,totals){
   var col={'Acciones':'var(--grn)','ETF':'var(--laton)','Cripto':'var(--blue)','Otros':'var(--text3)'};
   var keys=Object.keys(by).sort(function(a,b){return by[b]-by[a];});
   return '<div class="m10-alloc"><div class="m10-h">Asignación por tipo</div>'+
-    '<div class="m10-bar" role="img" aria-label="'+keys.map(function(k){return k+' '+Math.round(by[k]/tot*100)+' %';}).join(', ')+'">'+
+    '<div class="m10-bar" role="img" aria-label="'+keys.map(function(k){return k+' '+Math.round(by[k]/tot*100)+' %';}).join(', ')+'">'+
     keys.map(function(k){return '<span style="width:'+(by[k]/tot*100).toFixed(2)+'%;background:'+col[k]+'"></span>';}).join('')+'</div>'+
     '<ul class="m10-legend">'+keys.map(function(k){return '<li><i style="background:'+col[k]+'"></i>'+k+' <span class="num">'+fmtPctN(by[k]/tot*100,0)+'</span></li>';}).join('')+'</ul></div>';
 }
@@ -5021,7 +5028,7 @@ function renderPort(){
     ?fmtPctN(rs.totalRiskPct*100,1)+(cap>0?' del capital':' del portafolio')+
       (realStops
         ?(rs.noStopCount?' · '+rs.noStopCount+(rs.noStopCount===1?' posición sin stop, no suma':' posiciones sin stop, no suman'):'')
-        :' · estimado con −8 % bajo el precio')
+        :' · estimado con −8 % bajo el precio')
     :'';
   var pc=totP>=0?'pos':'neg';
   var band=heroFig({aria:'Resumen del portafolio',label:'Riesgo al stop',cls:rs.totalRisk>0?'neg':'',value:(rs.totalRisk>0?money(-rs.totalRisk,0):money(0,0)),sub:numWrap(riskSub),
@@ -5034,7 +5041,7 @@ function renderPort(){
   // ── Filas ──
   var rsByT={}; rs.rows.forEach(function(r){rsByT[r.t]=r;});
   function stopInput(h,r,idp){
-    if(!realStops) return '<span class="num" title="No se puede guardar un stop por posición: se estima con −8 %">'+money(r.stop)+'</span> <span class="calc-est">estimación</span>';
+    if(!realStops) return '<span class="num" title="No se puede guardar un stop por posición: se estima con −8 %">'+money(r.stop)+'</span> <span class="calc-est">estimación</span>';
     var v=h.stop>0?(+(h.stop*rate).toFixed(USER_CURRENCY==='USD'||USER_CURRENCY==='PEN'||USER_CURRENCY==='MXN'?2:0)):'';
     return '<label class="sr-only" for="'+idp+h.id+'">Stop de '+esc(h.t)+' en '+USER_CURRENCY+'</label>'+
       '<input id="'+idp+h.id+'" class="inp num port-stop" type="number" inputmode="decimal" min="0" step="any" placeholder="sin stop" value="'+v+'"'+
@@ -5069,7 +5076,7 @@ function renderPort(){
   var totRow='<tr class="tot"><td>Total</td><td></td><td></td><td></td><td></td>'+
     '<td class="num">'+money(totM,0)+'</td>'+
     '<td class="num '+(totP>=0?'pos':'neg')+'">'+money(totP,0,true)+'<span class="port-sub num">'+(totP>=0?'+':'')+pct(totP/(totC||1))+'</span></td>'+
-    '<td class="num">100 %</td><td></td><td class="num neg">'+(rs.totalRisk>0?money(-rs.totalRisk,0):'—')+'</td><td></td></tr>';
+    '<td class="num">100 %</td><td></td><td class="num neg">'+(rs.totalRisk>0?money(-rs.totalRisk,0):'—')+'</td><td></td></tr>';
   var table='<div class="tw port-tw"><table id="tbl-port" class="fos-table port-table"><thead><tr>'+
     '<th>Activo</th><th>Unidades</th><th>Entrada</th>'+sortTh('port','price','Precio')+sortTh('port','chg','Hoy')+sortTh('port','val','Valor')+
     sortTh('port','pnl','Resultado')+sortTh('port','w','Peso')+'<th title="Tu stop por posición. Se guarda en tu cuenta.">Stop</th>'+sortTh('port','risk','Riesgo al stop','Pérdida si el precio toca tu stop')+
@@ -5120,7 +5127,7 @@ function renderPort(){
     toolbar+
     table+stack+
     (realStops?'<p class="port-muted">Escribe el stop de cada posición: se guarda en tu cuenta. Las posiciones sin stop no suman al riesgo total. Son cálculos con tus datos, no instrucciones de compra o venta.</p>'
-              :'<p class="port-muted">Por ahora no se puede guardar un stop por posición: el riesgo se estima con −8 % bajo el precio. Son cálculos con tus datos, no instrucciones de compra o venta.</p>')+
+              :'<p class="port-muted">Por ahora no se puede guardar un stop por posición: el riesgo se estima con −8 % bajo el precio. Son cálculos con tus datos, no instrucciones de compra o venta.</p>')+
     portDiversificacion(port)+
     '</div>';
   if(PORT.divOpen) portLoadCorr();
@@ -5138,8 +5145,8 @@ function updateCap(v){
 function saveRuleSettings(){
   var fields=[
     ['set-capital',function(v){return v>0;},'Escribe un capital mayor que 0.'],
-    ['set-risk',function(v){return v>=0.1&&v<=10;},'El riesgo por operación va de 0,1 % a 10 %.'],
-    ['set-limit',function(v){return v>=5&&v<=100;},'El límite de concentración va de 5 % a 100 %.']
+    ['set-risk',function(v){return v>=0.1&&v<=10;},'El riesgo por operación va de 0,1 % a 10 %.'],
+    ['set-limit',function(v){return v>=5&&v<=100;},'El límite de concentración va de 5 % a 100 %.']
   ];
   var vals={}, firstBad=null;
   var ok=document.getElementById('set-rule-ok'); if(ok) ok.innerHTML='';
@@ -5536,7 +5543,7 @@ function mktFmtValue(sym,p){
 // Cambio en puntos porcentuales ya calculados (changePct en %, no fracción).
 function mktChg(p){
   if(p==null||!isFinite(p)) return '<span class="port-muted">—</span>';
-  return '<span class="num '+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'−')+fmtD(Math.abs(p))+' %</span>';
+  return '<span class="num '+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'−')+fmtD(Math.abs(p))+' %</span>';
 }
 function mktTime(ts){ return new Date(ts).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}); }
 
@@ -5598,20 +5605,20 @@ function mktCtxHtml(c){
       '<p class="mkt-key-l"><span><i class="mkt-key k-px"></i>SPY</span><span><i class="mkt-key k-ma"></i>Media de 200 días</span><span>Último año, cierres diarios</span></p>'+
       '<p id="spy-mini-fallback" class="port-muted" hidden>No se pudo dibujar el gráfico de SPY.</p>':'')+
     '</div>';
-  // Volatilidad (VIX): valor y su zona en palabra; elevada o extrema con ícono.
+  // Volatilidad, amplitud y SPY frente a su media: una línea de cifras sobre
+  // el fondo (mismo patrón que la línea secundaria de heroFig), sin recuadro.
   var vixOk=v&&v.vix!=null;
   var vixZone=vixOk?((v.regime==='elevated'||v.regime==='crisis')?warnTag(v.label):esc(v.label)):'sin dato';
-  var vixCell='<div class="pband-c"><div class="pband-l">Volatilidad (VIX)</div><div class="pband-v num">'+(vixOk?fmt1(v.vix):'—')+'</div>'+
-    '<div class="pband-s">'+vixZone+(vixOk?' · bajo 15 es baja, sobre 25 es elevada':'')+'</div></div>';
   var bOk=b&&b.pct!=null;
-  var bCell='<div class="pband-c"><div class="pband-l">Amplitud del S&amp;P 500</div><div class="pband-v num">'+(bOk?fmtPctN(b.pct,0):'—')+'</div>'+
-    '<div class="pband-s">'+(bOk?'de sus acciones sobre su media de 200 días · '+(b.warning?warnTag(b.label):esc(b.label)):'sin dato')+'</div>'+
-    (bOk&&b.warning?'<div class="pband-s">'+esc(b.warning)+'</div>':'')+'</div>';
   var p200=hasR&&r.pct200!=null?r.pct200*100:null;
-  var sCell='<div class="pband-c"><div class="pband-l">SPY frente a su media de 200 días</div>'+
-    '<div class="pband-v num'+(p200==null?'':(p200>=0?' pos':' neg'))+'">'+(p200==null?'—':(p200>=0?'+':'')+fmtPctN(p200,1))+'</div>'+
-    '<div class="pband-s">'+(p200==null?'sin dato':(p200>=0?'sobre':'bajo')+' la media · SPY <span class="num">'+fmtUSD(r.spy)+'</span>, media <span class="num">'+fmtUSD(r.sma200)+'</span>')+'</div></div>';
-  return '<div class="mkt-ctx">'+reg+'<section class="pband pband-3" aria-label="Volatilidad, amplitud y tendencia del S&amp;P 500">'+vixCell+bCell+sCell+'</section></div>';
+  var figs=[
+    ['Volatilidad (VIX)','<b class="num">'+(vixOk?fmt1(v.vix):'—')+'</b> <span>'+vixZone+(vixOk?' · bajo <span class="num">15</span> es baja, sobre <span class="num">25</span> es elevada':'')+'</span>'],
+    ['Amplitud del S&amp;P 500','<b class="num">'+(bOk?fmtPctN(b.pct,0):'—')+'</b> <span>'+(bOk?'de sus acciones sobre su media de 200 días · '+(b.warning?warnTag(b.label):esc(b.label)):'sin dato')+'</span>'],
+    ['SPY frente a su media de 200 días','<b class="num'+(p200==null?'':(p200>=0?' pos':' neg'))+'">'+(p200==null?'—':(p200>=0?'+':'')+fmtPctN(p200,1))+'</b> <span>'+(p200==null?'sin dato':(p200>=0?'sobre':'bajo')+' la media · SPY <span class="num">'+fmtUSD(r.spy)+'</span>, media <span class="num">'+fmtUSD(r.sma200)+'</span>')+'</span>']
+  ];
+  return '<div class="mkt-ctx">'+reg+'<div class="hero-row mkt-figs" role="group" aria-label="Volatilidad, amplitud y tendencia del S&amp;P 500">'+
+    figs.map(function(f){ return '<span class="hero-it"><span class="hero-k">'+f[0]+'</span> '+f[1]+'</span>'; }).join('')+'</div>'+
+    (bOk&&b.warning?'<p class="port-muted">'+esc(b.warning)+'</p>':'')+'</div>';
 }
 
 // Índices y materias primas: la cinta que antes vivía arriba, como tabla.
@@ -5952,7 +5959,7 @@ function mPos(mr){
     (HOLDINGS_STOP!==false
       ?'<label class="fl" for="pstop">Stop (opcional)</label>'+
        '<input id="pstop" class="inp ifu" type="number" inputmode="decimal" placeholder="Precio donde saldrías" value="'+(pos.stop||"")+'" min="0.01" step="0.01"/>'+
-       '<div class="calc-hint" style="margin:-4px 0 10px">Si lo dejas vacío, la posición queda “sin stop” en Riesgo. Como referencia, −8 % bajo la entrada.</div>'
+       '<div class="calc-hint" style="margin:-4px 0 10px">Si lo dejas vacío, la posición queda “sin stop” en Riesgo. Como referencia, −8 % bajo la entrada.</div>'
       :'')+
     // I10: el precio actual lo trae la app (posAutofillPrice); no se pide a mano.
     '<input id="pcur" type="hidden" value="'+(pos.cur||"")+'"/>'+
@@ -6101,7 +6108,7 @@ var COMO_CALCULA={
       {factor:'Media de 50 días',desc:'Promedio de los últimos 50 cierres, unos dos meses y medio. Suaviza los movimientos de corto plazo.'},
       {factor:'Media de 100 días',desc:'Promedio de los últimos 100 cierres, unos cinco meses.'},
       {factor:'Media de 200 días',desc:'Promedio de los últimos 200 cierres, cerca de un año de mercado. Es la referencia de tendencia larga más usada.'},
-      {factor:'Reparto de los tramos',desc:'"Parejo" asigna 25 % a cada media. "Más peso en las medias largas" va de 15 % a 40 %. "Mitad en la media de 200 días" pone el 50 % en esa media.'},
+      {factor:'Reparto de los tramos',desc:'"Parejo" asigna 25 % a cada media. "Más peso en las medias largas" va de 15 % a 40 %. "Mitad en la media de 200 días" pone el 50 % en esa media.'},
       {factor:'El punto (·)',desc:'Marca que el precio de hoy está en o bajo esa media. Es un dato del momento, no una indicación de compra.'}
     ],
     nota:'Los tickers, los porcentajes y el reparto los eliges tú. La herramienta solo hace la cuenta con datos históricos.'
@@ -6206,7 +6213,7 @@ function drawerMinePane(ticker,own,cur){
   var totV=S.portfolio.reduce(function(a,h){return a+h.sh*((LIVE[h.t]&&LIVE[h.t].price)||h.cur||h.cost);},0);
   var weight=totV>0?value/totV:0;
   var lim=riskConcentrationLimit();
-  var riskTxt=stop?fmtUSD(-Math.max(0,(px-stop)*sh),0):(HOLDINGS_STOP===true?'sin stop':fmtUSD(-px*RISK_DEFAULT_STOP_PCT*sh,0)+' <span class="calc-est">estimación −8 %</span>');
+  var riskTxt=stop?fmtUSD(-Math.max(0,(px-stop)*sh),0):(HOLDINGS_STOP===true?'sin stop':fmtUSD(-px*RISK_DEFAULT_STOP_PCT*sh,0)+' <span class="calc-est">estimación −8 %</span>');
   var h0=own[0];
   return '<dl class="calc-facts drw-mine">'+
     '<div><dt>Unidades</dt><dd class="num">'+fmtUnits(sh)+'</dd></div>'+
@@ -6473,7 +6480,7 @@ function drawerFundPane(ticker,cur,lq){
   if(lq&&lq.high52>lq.low52){
     var p52=Math.max(0,Math.min(100,(cur-lq.low52)/(lq.high52-lq.low52)*100));
     r52='<h3 class="port-h3">Rango de 52 semanas</h3><div class="d52"><span class="num">'+fmtUSD(lq.low52)+'</span><span class="li-range wide"><i style="left:'+p52.toFixed(0)+'%"></i></span><span class="num">'+fmtUSD(lq.high52)+'</span></div>'+
-      '<p class="port-muted">El precio está en el '+p52.toFixed(0)+' % del rango entre el mínimo y el máximo del último año.</p>';
+      '<p class="port-muted">El precio está en el '+p52.toFixed(0)+' % del rango entre el mínimo y el máximo del último año.</p>';
   }
   return (tags?'<div class="dh-tags">'+tags+'</div>':'')+
     (f.description?'<p class="drw-desc">'+esc(f.description)+'</p>':'')+
@@ -6715,7 +6722,7 @@ function renderPBBody(){
     _pbField('pb-ticker','Ticker','style="text-transform:uppercase" placeholder="AAPL" maxlength="15" autocomplete="off" value="'+esc(PB.ticker)+'" onchange="PB.ticker=this.value.toUpperCase().trim();pbFetchPrice()"')+
     _pbField('pb-price','Entrada (USD)','type="number" inputmode="decimal" step="0.01" min="0" placeholder="234,12" value="'+(PB.price||'')+'" oninput="PB.price=parseFloat(this.value)||0;pbCalc()"')+
     _pbField('pb-stop','Stop (USD)','type="number" inputmode="decimal" step="0.01" min="0" placeholder="'+(est?'Sin stop: se estima '+est:'Precio donde saldrías')+'" value="'+(PB.stop||'')+'" oninput="PB.stop=parseFloat(this.value)||0;pbCalc()"',
-      'Si lo dejas vacío se usa −8 % bajo la entrada, como estimación.')+
+      'Si lo dejas vacío se usa −8 % bajo la entrada, como estimación.')+
     _pbField('pb-capital','Capital (USD)','type="number" inputmode="decimal" step="any" min="0" placeholder="Tu capital" value="'+(PB.capital||'')+'" oninput="PB.capital=parseFloat(this.value)||0;pbCalc()"')+
     _pbField('pb-risk','Tu regla: % del capital','type="number" inputmode="decimal" step="0.25" min="0.1" max="10" value="'+(PB.risk||'')+'" oninput="PB.risk=parseFloat(this.value)||0;pbCalc()"')+
     '</div>'+
@@ -6779,7 +6786,7 @@ function pbCalc(){
       value:c.units>0?fmtUnits(c.units)+'<span class="hero-u">'+unitWord+'</span>':'<span class="hero-u hero-u0">No alcanza para una unidad entera</span>',
       row:[['Exposición','<b class="num">'+fmtUSD(c.exposure,0)+'</b> <span><span class="num">'+fmtPctN(c.exposurePct*100,0)+'</span> del capital</span>'],
            ['Si toca el stop','<b class="num neg">'+fmtUSD(-c.lossAtStop,0)+'</b> <span><span class="num">'+fmtPctN(c.lossPct*100,1)+'</span> del capital</span>'],
-           ['Stop','<b class="num">'+fmtUSD(c.stop)+'</b> <span>'+(c.stopIsEstimate?'estimación: <span class="num">−8 %</span> bajo la entrada':'el que escribiste')+'</span>']]})+
+           ['Stop','<b class="num">'+fmtUSD(c.stop)+'</b> <span>'+(c.stopIsEstimate?'estimación: <span class="num">−8 %</span> bajo la entrada':'el que escribiste')+'</span>']]})+
     concHtml+
     (c.units>0?'<div class="hoy-sec"><div class="hoy-sec-h"><h2 class="port-h2">Escenarios en múltiplos de R</h2><span class="port-muted">R es lo que arriesgas por unidad: entrada − stop = '+fmtUSD(c.perUnitRisk)+'</span></div>'+
       '<div class="tw"><table class="fos-table port-table calc-r"><thead><tr><th scope="col">Escenario</th><th scope="col">Precio</th><th scope="col">Resultado</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>':'')+
@@ -7125,12 +7132,12 @@ function renderComp(){
   document.getElementById('main').innerHTML=renderCompSection();
 }
 function renderCompSection(){
-  var colors=["var(--bright)","var(--blue)","var(--bright)","var(--blue)"]; var dashes=['','','6,3','2,3'];
+  var colors=["var(--bright)","var(--cmp2)","var(--cmp3)","var(--cmp4)"]; var dashes=['','','6,3','2,3'];
   var hasData=COMP.tickers.length&&COMP.tickers.every(function(t){return COMP.data[t];});
 
   var chips='<ul class="cmp-tk">'+COMP.tickers.map(function(t,i){
     var lq=LIVE[t];
-    return '<li>'+'<i class="cmp-line" style="border-top:2px '+(dashes[i]?'dashed':'solid')+' '+colors[i]+'"></i>'+'<button type="button" class="port-tk" onclick="navOpenTicker(\''+esc(t)+'\')">'+esc(t)+'</button>'+
+    return '<li>'+'<i class="cmp-sw" style="background:'+colors[i]+'"></i>'+'<button type="button" class="port-tk" onclick="navOpenTicker(\''+esc(t)+'\')">'+esc(t)+'</button>'+
       '<span class="num">'+(lq&&lq.price?fmtUSD(lq.price):'')+'</span>'+chgCell(lq)+
       (COMP.tickers.length>2?'<button type="button" class="btn port-ib" onclick="compRemove('+i+')" aria-label="Quitar '+esc(t)+' de la comparación">'+icon('close')+'</button>':'')+'</li>';
   }).join('')+'</ul>'+
@@ -7173,7 +7180,7 @@ function renderCompSection(){
     var step=rng>80?20:rng>40?10:5;
     for(var v=Math.ceil(minY/step)*step; v<=maxY; v+=step){
       var y=yS(v).toFixed(1);
-      grid+="<line x1='0' y1='"+y+"' x2='"+(W-70)+"' y2='"+y+"' stroke='var(--border"+(v===0?"3":"")+")' stroke-width='1'/><text x='"+(W-66)+"' y='"+(+y+3)+"' fill='var(--text2)' font-size='10' font-family='IBM Plex Mono,monospace'>"+(v>0?'+':'')+v+" %</text>";
+      grid+="<line x1='0' y1='"+y+"' x2='"+(W-70)+"' y2='"+y+"' stroke='var(--border"+(v===0?"3":"")+")' stroke-width='1'/><text x='"+(W-66)+"' y='"+(+y+3)+"' fill='var(--text2)' font-size='10' font-family='IBM Plex Mono,monospace'>"+(v>0?'+':'')+v+" %</text>";
     }
     var spySvg=spy?"<polyline points='"+spy.map(function(y,i){return xS(i,spy.length).toFixed(1)+','+yS(y).toFixed(1);}).join(' ')+"' fill='none' stroke='var(--text2)' stroke-width='1.5' stroke-dasharray='5,3'/>":'';
     var lines=series.map(function(s){
@@ -7196,7 +7203,7 @@ function renderCompSection(){
       ['Punto más alto',function(s){return (s.maxR>=0?'+':'')+fmtPctN(s.maxR,1);}],
       ['Punto más bajo',function(s){return (s.minR>=0?'+':'')+fmtPctN(s.minR,1);}]
     ];
-    stats='<div class="tw"><table class="fos-table port-table"><thead><tr><th>Medida</th>'+st.map(function(s){return '<th><i class="cmp-line" style="border-top:2px '+(s.dash?'dashed':'solid')+' '+s.color+'"></i>'+esc(s.t)+'</th>';}).join('')+'</tr></thead><tbody>'+
+    stats='<div class="tw"><table class="fos-table port-table"><thead><tr><th>Medida</th>'+st.map(function(s){return '<th><i class="cmp-sw" style="background:'+s.color+'"></i>'+esc(s.t)+'</th>';}).join('')+'</tr></thead><tbody>'+
       M.map(function(m){return '<tr><td>'+m[0]+'</td>'+st.map(function(s){return '<td class="num">'+m[1](s)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>'+
       '<p class="port-muted">Índice de Sharpe: rendimiento diario promedio dividido por su volatilidad, anualizado. Mide cuánto rindió por cada unidad de variación; no anticipa el futuro.</p>';
     // Correlacion: solo pares distintos (antes incluia el activo consigo mismo).
@@ -7209,16 +7216,16 @@ function renderCompSection(){
     if(pares.length) stats+='<h3 class="port-h3">Correlación de los rendimientos diarios</h3><div class="tw"><table class="fos-table port-table"><thead><tr><th>Par</th><th>Correlación</th><th>Lectura</th></tr></thead><tbody>'+pares.join('')+'</tbody></table></div>'+
       '<p class="port-muted">1 es igual, 0 es independiente, −1 es opuesto.</p>';
   }
-  var legend='<div class="cmp-legend">'+COMP.tickers.map(function(t,i){return '<span>'+'<i class="cmp-line" style="border-top:2px '+(dashes[i]?'dashed':'solid')+' '+colors[i]+'"></i>'+esc(t)+'</span>';}).join('')+
+  var legend='<div class="cmp-legend">'+COMP.tickers.map(function(t,i){return '<span>'+'<i class="cmp-sw" style="background:'+colors[i]+'"></i>'+esc(t)+'</span>';}).join('')+
     (COMP.tickers.indexOf('SPY')<0?'<button type="button" class="tab'+(COMP.showSPY?' act':'')+'" aria-pressed="'+!!COMP.showSPY+'" onclick="COMP.showSPY=!COMP.showSPY;renderComp()"><i class="cmp-dash"></i>Referencia: SPY</button>':'')+'</div>';
 
-  return '<div class="fos-module-header"><div><div class="fos-module-sub">Cómo rindieron hasta cuatro activos en el mismo período, partiendo de 0 %.</div></div></div>'+
+  return '<div class="fos-module-header"><div><div class="fos-module-sub">Cómo rindieron hasta cuatro activos en el mismo período, partiendo de 0 %.</div></div></div>'+
     '<div class="port-wrap pv"><div class="cmp-grid"><div class="cmp-side">'+
       '<h2 class="port-h3">Activos</h2>'+chips+
       '<h2 class="port-h3">Período</h2>'+periods+
       '<h2 class="port-h3">Pares rápidos</h2>'+sugs+
     '</div><div class="cmp-main">'+
-      '<h2 class="port-h2">Rendimiento (base 0 %)</h2>'+legend+
+      '<h2 class="port-h2">Rendimiento (base 0 %)</h2>'+legend+
       '<div class="cmp-chart">'+chart+'</div>'+stats+
       (COMP.synthetic&&COMP.synthetic.length?'<p class="port-note"><span>Sin histórico real para '+COMP.synthetic.map(esc).join(', ')+': su línea es ilustrativa, no son precios reales.</span></p>':'')+
     '</div></div></div>';
@@ -7577,7 +7584,7 @@ function renderCapital(){
       '<button type="button" class="linkbtn" onclick="abrirComoCalcula(\'escalera\')">¿Cómo se reparte?</button></div>'+
       '<p class="port-muted">Cada tramo es la parte del monto asignada a esa media. Un punto (·) marca que el precio de hoy está en o bajo esa media: es un dato, no una indicación de compra.</p>'+
       '<div class="tw port-tw"><table class="fos-table port-table cap-table"><thead><tr><th>Ticker</th><th>%</th><th>Monto</th><th title="Índice de fuerza relativa de 14 días, solo como dato">RSI</th>'+
-      lad.map(function(t){return '<th>'+t.label.replace('Media de ','Media ')+' · '+Math.round(t.pct*100)+' %</th>';}).join('')+
+      lad.map(function(t){return '<th>'+t.label.replace('Media de ','Media ')+' · '+Math.round(t.pct*100)+' %</th>';}).join('')+
       '</tr></thead><tbody>'+results.map(etfRow).join('')+'</tbody>'+
       '<tfoot><tr class="tot"><td>Total</td><td></td><td class="num">'+fmtUSD(monthly,0)+'</td><td colspan="'+(1+lad.length)+'"></td></tr></tfoot></table></div>'+capStack(results,monthly,lad)+'</section>';
   } else if(tickers.length&&!loading){
@@ -7607,7 +7614,7 @@ function capSetCadencia(c){ S.capitalPlan.cadencia=c; renderCapital(); }
 function capSumHtml(){
   var tk=S.capitalPlan.tickers||[]; if(!tk.length) return '';
   var tot=tk.reduce(function(a,x){return a+(+x.pct||0);},0);
-  return Math.abs(tot-100)<0.5?'<span class="li-word">'+icon('check','ico-inline')+'Suman 100 %</span>':warnTag('Suman '+fmtPctN(tot,1)+': deben sumar 100 %');
+  return Math.abs(tot-100)<0.5?'<span class="li-word">'+icon('check','ico-inline')+'Suman 100 %</span>':warnTag('Suman '+fmtPctN(tot,1)+': deben sumar 100 %');
 }
 function capSumUpdate(){ var el=document.getElementById('cap-sum'); if(el) el.innerHTML=capSumHtml(); }
 
@@ -7691,7 +7698,7 @@ function rebalTradesHtml(){
   var port=rebalPort();
   var sum=rebalSum();
   if(Math.abs(sum-100)>0.5){
-    return '<div class="rb-wait" role="status"><b>Tus objetivos suman '+fmtPctN(sum,0)+'.</b> Ajústalos hasta llegar a 100 % '+
+    return '<div class="rb-wait" role="status"><b>Tus objetivos suman '+fmtPctN(sum,0)+'.</b> Ajústalos hasta llegar a 100 % '+
       (sum>100?'(te sobran '+fmtPctN(sum-100,0)+')':'(te faltan '+fmtPctN(100-sum,0)+')')+' para ver los ajustes.</div>';
   }
   var calc=computeRebalanceTrades(port,REBAL.targets,getLivePrice,{wholeUnits:function(t){var h=port.find(function(x){return x.t===t;});return !(h&&portIsCrypto(h));}});
@@ -7730,7 +7737,7 @@ function renderRebal(){
     '<div class="rb-grid"><div>'+
       '<h2 class="port-h2">Tus objetivos</h2>'+
       '<div class="tw"><table class="fos-table rb-table"><thead><tr><th>Activo</th><th>Peso actual</th><th>Objetivo</th><th>Diferencia</th></tr></thead><tbody>'+rows+'</tbody>'+
-      '<tfoot><tr class="tot"><td>Suma</td><td class="num">100 %</td><td class="num" id="rb-sum" aria-live="polite"></td><td></td></tr></tfoot></table></div>'+
+      '<tfoot><tr class="tot"><td>Suma</td><td class="num">100 %</td><td class="num" id="rb-sum" aria-live="polite"></td><td></td></tr></tfoot></table></div>'+
       '<button type="button" class="btn" onclick="rebalReset()">Volver a los pesos actuales</button>'+
     '</div><div>'+
       '<h2 class="port-h2">Ajustes para llegar</h2>'+

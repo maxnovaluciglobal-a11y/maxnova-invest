@@ -24,7 +24,7 @@ describe('Lista y ficha (fase 3)', () => {
   it('Comparar en español, sin "head-to-head" ni ticker "NEW" vacío', () => {
     const c = between('function renderCompSection(){', 'async function compLoad(){');
     expect(c).not.toMatch(/head-to-head|Benchmark|Performance|Sharpe ratio/);
-    expect(c).toContain('Rendimiento (base 0 %)');
+    expect(c).toMatch(/Rendimiento \(base 0[ \u202f]%\)/);
     expect(c).toContain('Referencia: SPY');
     expect(between('function compAddTicker(){', '\n}\n')).not.toContain('"NEW"');
   });
