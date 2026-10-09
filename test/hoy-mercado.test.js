@@ -13,8 +13,9 @@ const fnBody = (name) => {
 
 describe('Hoy', () => {
   const dash = fnBody('renderDash');
-  it('existe y usa la banda de resumen de Posiciones', () => {
-    expect(dash).toContain('class="pband"');
+  it('existe y lleva la cifra protagonista compartida (valor), sin la celda Posiciones', () => {
+    expect(dash).toContain('heroFig(');
+    expect(dash).not.toContain('>Posiciones<');
     expect(dash).toContain('dashRiskCard(');
     expect(dash).toContain('dashFocoCard(');
     expect(dash).toContain('dashTopPositions(');
@@ -35,6 +36,25 @@ describe('Hoy', () => {
     expect(go).toContain("setPage('capital')");
     expect(go).toContain('loadCapitalData()');
     expect(go).not.toContain('showToast');
+  });
+});
+
+describe('Cifra protagonista y tabla única (revisión de cierre)', () => {
+  it('Posiciones lidera con el riesgo al stop y la Calculadora con las unidades', () => {
+    expect(fnBody('renderPort')).toMatch(/heroFig\(\{aria:'Resumen del portafolio',label:'Riesgo al stop'/);
+    expect(fnBody('pbCalc')).toContain('heroFig(');
+  });
+  it('las tablas no van en recuadro y las columnas numéricas se alinean a la derecha', () => {
+    expect(html).toMatch(/\.tw, \.pv \.tw \{ border: none !important/);
+    expect(html).toContain('function tableTidy(');
+  });
+  it('Latón fuera de los gráficos', () => {
+    expect(fnBody('renderLWCharts')).not.toContain('latonC,');
+    expect(fnBody('renderCompSection')).not.toMatch(/--amber|#8E6CC4/);
+  });
+  it('el porcentaje usa espacio fino sin corte', () => {
+    expect(html).toContain("+'\\u202f%'");
+    expect(html).not.toContain("\\u00a0%");
   });
 });
 

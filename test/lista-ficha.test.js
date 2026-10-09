@@ -7,11 +7,10 @@ const html = readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 const between = (a, b) => html.slice(html.indexOf(a), html.indexOf(b, html.indexOf(a)));
 
 describe('Lista y ficha (fase 3)', () => {
-  it('Descubrir: una sola fila de presets con texto, sin banderas emoji', () => {
+  it('Descubrir: una sola fila de 6 presets con texto, sin banderas emoji', () => {
     const presets = between('var SCR_PRESETS=[', '];');
-    for (const l of ['EE. UU. tecnología', 'ETF amplios', 'Dividendos', 'Sectores', 'Renta fija y oro', 'LatAm ADR', 'Brasil', 'México', 'Chile', 'Universo de ejemplo']) {
-      expect(presets).toContain(`'${l}'`);
-    }
+    const labels = [...presets.matchAll(/\['[a-z]+','([^']+)'/g)].map(m => m[1]);
+    expect(labels).toEqual(['EE. UU.', 'ETF', 'LatAm ADR', 'Brasil', 'México', 'Chile']);
     expect(presets).not.toMatch(/[\u{1F1E6}-\u{1F1FF}]/u);
   });
   it('Descubrir no permite corridas simultaneas', () => {
