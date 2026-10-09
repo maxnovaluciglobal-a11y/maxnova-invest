@@ -5,3 +5,4 @@ node_modules/
 .impeccable/hook.cache.json
 .vercel
 supabase/.temp/
+.impeccable/

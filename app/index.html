@@ -283,21 +283,6 @@ body {
   line-height: 1.12;
   margin:0 0 4px;
 }
-.sub-txt {
-  font-size: 13px;
-  color: var(--text2);
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  margin:0;
-  line-height: 1.5;
-}
-.ph-right {
-  display: flex;
-  align-items: center;
-  gap:8px;
-  flex-wrap: wrap;
-  flex-shrink: 0;
-  padding-top:4px;
-}
 
 /* ── PAGE BODY ── */
 
@@ -365,9 +350,6 @@ body {
   gap:8px;
   margin-bottom:14px;
  font-size:15px; font-weight:600; color:var(--bright);}
-.stbar {
-  flex-shrink: 0;
- display:none;}
 
 /* ── TABLE ── */
 .tw {
@@ -718,7 +700,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-left{display:flex;flex-direction:column;gap:22px;max-width:560px}
 .wv3-right{display:flex;flex-direction:column;align-items:center}
 .wv3-badge{display:inline-flex;align-items:center;gap:8px;background:var(--grn-bg);border:1px solid var(--grn-lt);border-radius:var(--r-xl);padding:4px 12px;align-self:flex-start}
-.wv3-badge span{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--grn);letter-spacing:.5px}
+.wv3-badge span{font-size:11px;color:var(--grn);}
 .wv3-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0}
 .wv3-h1{font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--bright);letter-spacing:-.03em;line-height:1.15;margin:0}
 .wv3-sub{font-size:15px;color:var(--text2);line-height:1.7;max-width:480px;margin:0}
@@ -727,20 +709,20 @@ tr:last-child td { border-bottom: none; }
 .wv3-ctx-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px}
 .wv3-ctx-ttl{font-size:11px;color:var(--text3);margin-bottom:6px}
 .wv3-ctx-val{font-size:14px;font-weight:700;font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:6px}
-.wv3-ctx-hint{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);margin-top:2px}
+.wv3-ctx-hint{font-size:11px;color:var(--text3);margin-top:2px}
 
 .wv3-score-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px}
 .wv3-score-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .wv3-score-ticker{font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--bright)}
 
-.wv3-scores-note{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);margin-top:6px}
+.wv3-scores-note{font-size:11px;color:var(--text3);margin-top:6px}
 .wv3-feats{display:flex;flex-direction:column;gap:12px}
 .wv3-feat{display:flex;align-items:flex-start;gap:10px}
 .wv3-feat-icon{flex-shrink:0;margin-top:2px;color:var(--grn);display:flex}
 .wv3-feat-icon .ico{width:18px;height:18px}
 .wv3-feat-title{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:2px}
 .wv3-feat-desc{font-size:12px;color:var(--text2);line-height:1.5}
-.wv3-disc{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);line-height:1.7}
+.wv3-disc{font-size:11px;color:var(--text3);line-height:1.7;display:flex;gap:6px;align-items:flex-start}
 .wv3-auth-card{background:var(--card);border:0.5px solid var(--border2);border-radius:var(--r-xl);padding:28px 28px 24px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.35)}
 .wv3-auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .wv3-auth-icon{width:34px;height:34px;border-radius:var(--r-md);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -762,7 +744,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-field-wrap input:focus-visible{border-color:var(--grn);box-shadow:0 0 0 3px var(--grn-bg)}
 .wv3-field-wrap input::placeholder{color:var(--text3)}
 /* padding ampliado para alcanzar el area tactil minima sin cambiar el tamano visual */
-.wv3-eye-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);padding:14px 10px;line-height:1;min-height:44px;display:flex;align-items:center}
+.wv3-eye-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:11px;color:var(--text3);padding:14px 10px;line-height:1;min-height:44px;display:flex;align-items:center}
 .wv3-eye-btn:hover{color:var(--text)}
 .wv3-forgot{text-align:right;margin-top:4px}
 .wv3-forgot a{font-size:11px;color:var(--grn);text-decoration:none}
@@ -771,7 +753,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-submit:hover{opacity:.9;transform:translateY(-1px)}
 .wv3-submit:active{transform:scale(.98)}
 .wv3-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.wv3-err{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--red);display:none;line-height:1.5}
+.wv3-err{font-size:11px;color:var(--red);display:none;line-height:1.5}
 .wv3-legal{font-size:11px;color:var(--text3);text-align:center;line-height:1.6}
 .wv3-legal a{color:var(--grn);text-decoration:none;cursor:pointer}
 .wv3-legal a:hover{text-decoration:underline}
@@ -779,9 +761,12 @@ tr:last-child td { border-bottom: none; }
 .wv3-check-row input[type=checkbox]{margin-top:1px;width:18px;height:18px;accent-color:var(--grn);flex-shrink:0;cursor:pointer}
 .wv3-check-txt{font-size:12px;color:var(--text2);line-height:1.5}
 .wv3-check-txt a{color:var(--grn);text-decoration:none;cursor:pointer}
-.wv3-pricing{margin-top:14px;text-align:center;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3);line-height:1.9}
+.wv3-pricing{margin-top:14px;font-size:12px;color:var(--text2);line-height:1.9}
+.wv3-ctx-val .trend-tag{font-family:'IBM Plex Sans',system-ui,sans-serif}
+.wv3-pricing > div{display:flex;align-items:center;justify-content:center;gap:6px}
+.wv3-pricing .ico,.wv3-disc .ico{width:14px;height:14px;flex-shrink:0}
 .wv3-pricing .wv3-grn{color:var(--grn)}
-.wv3-footer{padding:10px 24px;text-align:center;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text3)}
+.wv3-footer{padding:10px 24px;text-align:center;font-size:11px;color:var(--text3)}
 
 /* ── DARK MODE TOGGLE ── */
 
@@ -835,7 +820,7 @@ tr:last-child td { border-bottom: none; }
   /* headers de módulo: que el botón/acción baje de línea en vez de desbordar */
   .fos-module-header { flex-wrap: wrap; gap:8px; }
   /* ph-right: wrap on small screens so buttons don't overflow */
-  .ph-right { flex-wrap: wrap; gap:6px; }
+  
   /* btn-big full width inside modals and locked banners */
   .modal .btn-big, .modal-box .btn-big { width: 100%; }
 }
@@ -860,7 +845,7 @@ tr:last-child td { border-bottom: none; }
 @media print {
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   body{background:#fff!important;color:#1a1a1a!important;font-size:10pt!important}
-  .sb,.ph-right,.dov,.drw{display:none!important}
+  .sb, .dov, .drw {display:none!important}
   .main{margin:0!important}
   .cb{break-inside:avoid;page-break-inside:avoid;border:0.5pt solid #ddd!important;border-radius:5pt!important}
   
@@ -1002,7 +987,7 @@ tr:last-child td { border-bottom: none; }
   
   /* ph wraps instead of overflowing */
   .ph { flex-wrap: wrap; gap:8px; }
-  .ph-right { width: 100%; justify-content: flex-start; }
+  
 }
 
 /* ── AREA TACTIL ─────────────────────────────────────────────────
@@ -1503,7 +1488,7 @@ body:not(.no-auth) .pagehead { display:block; }
 
 /* Dividendos */
 .dv-bars { display: flex; align-items: flex-end; gap: 4px; min-height: 140px; padding: 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--r-md); overflow-x: auto; }
-.dv-bar { flex: 1; min-width: 36px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
+.dv-bar { flex: 1; min-width: 22px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
 .dv-bar i { display: block; width: 100%; max-width: 40px; background: var(--grn); border-radius: 3px 3px 0 0; opacity: .85; }
 .dv-bar .num { font-size: 10px; min-height: 13px; }
 
@@ -1568,6 +1553,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .cmp-tk li .num { margin-left: auto; font-size: 12px; }
 .cmp-add { display: flex; gap: 6px; }
 .cmp-add .inp { flex: 1; min-width: 0; min-height: 40px; text-transform: uppercase; }
+.cmp-add .inp::placeholder, .cap-add .inp::placeholder, #pb-ticker::placeholder { text-transform: none; }
 .cmp-sug { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .cmp-sug .btn { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; text-align: left; }
 .cmp-sug b { font-size: 12px; color: var(--bright); }
@@ -1730,6 +1716,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .cc-list dd, .sc-list dd { margin: 0; font-size: 13px; color: var(--text2); line-height: 1.5; }
 .sc-list > div { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
 kbd { display: inline-block; padding: 2px 7px; background: var(--card2); border: 1px solid var(--border2); border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--bright); }
+@media (max-width: 639px) { .pv .fos-table th { white-space: normal; } .pv .fos-table:not(.port-table) th, .pv .fos-table:not(.port-table) td { padding: 8px 6px; } }
 </style>
 </head>
 <body>
@@ -1935,7 +1922,9 @@ const fmt=n=>(n||0).toLocaleString(LOC,{minimumFractionDigits:0,maximumFractionD
 const fmtD=n=>n!=null?(+n).toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2}):"—";
 const pct=n=>{var v=(n||0)*100;return (v<0?"\u2212":"")+Math.abs(v).toLocaleString(LOC,{minimumFractionDigits:1,maximumFractionDigits:1})+"\u00a0%";};
 const D=n=>{var v=Math.round(n||0);return (v<0?"\u2212":"")+"$"+fmt(Math.abs(v));};
-const fmtM=n=>!n?"—":n>=1e12?"$"+(n/1e12).toFixed(2)+"T":n>=1e9?"$"+(n/1e9).toFixed(2)+"B":"$"+fmt(n);
+// Montos grandes en palabras (escala larga del español: 1 billón = 10^12).
+const _n2=v=>(+v).toLocaleString(LOC,{minimumFractionDigits:0,maximumFractionDigits:2});
+const fmtM=n=>!n?"—":n>=1e12?"$"+_n2(n/1e12)+" billones":n>=1e9?"$"+_n2(n/1e9)+" mil millones":n>=1e6?"$"+_n2(n/1e6)+" millones":"$"+fmt(n);
 // ── TU REGLA (I12) ── % de riesgo por operación y límite de concentración.
 // Se guardan en este navegador (no hay columnas en profiles para esto).
 function _ruleKey(){ return 'inv_rule_'+(S.user&&S.user.id||'demo'); }
@@ -2643,6 +2632,7 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
       width:mainEl.clientWidth||mainEl.offsetWidth||300,
       height:210,
       layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,attributionLogo:false},
+      localization:{locale:LOC,priceFormatter:function(p){return fmtD(p);}},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
       crosshair:{mode:LW.CrosshairMode.Normal},
       timeScale:{timeVisible:false,borderColor:axisC},
@@ -2692,6 +2682,7 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
       width:volEl.clientWidth||volEl.offsetWidth||300,
       height:60,
       layout:{background:{type:'solid',color:bgColor},textColor:textColor,attributionLogo:false},
+      localization:{locale:LOC,priceFormatter:function(v){return v>=1e6?(v/1e6).toLocaleString(LOC,{maximumFractionDigits:1})+' M':v>=1e3?(v/1e3).toLocaleString(LOC,{maximumFractionDigits:0})+' mil':fmt(v);}},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
       timeScale:{timeVisible:false,borderColor:axisC},
       rightPriceScale:{borderColor:axisC},
@@ -2699,7 +2690,7 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
     });
     var volChart=_lwChartVol;
     var volSeries=volChart.addHistogramSeries({
-      color:volUp,priceFormat:{type:'volume'},priceScaleId:'',
+      color:volUp,priceFormat:{type:'custom',minMove:1,formatter:function(v){return v>=1e6?(v/1e6).toLocaleString(LOC,{maximumFractionDigits:1})+' M':v>=1e3?(v/1e3).toLocaleString(LOC,{maximumFractionDigits:0})+' mil':fmt(v);}},priceScaleId:'',
     });
     volSeries.setData(bars.map(function(d){return {time:d.ts,value:d.vol||0,color:d.close>=d.open?volUp:volDn};}));
     volChart.timeScale().fitContent();
@@ -2870,8 +2861,6 @@ function statusDot(emoji,size){
   var color=({pos:'var(--pos)',neg:'var(--neg)',warn:'var(--amber)',info:'var(--blue)',muted:'var(--text3)'})[emoji]||'var(--text3)';
   return '<span style="display:inline-block;width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+color+';box-shadow:0 0 0 4px color-mix(in srgb,'+color+' 18%,transparent);vertical-align:middle;flex-shrink:0"></span>';
 }
-// Tendencia frente a las medias de 50 y 200 dias (no es una recomendacion).
-function sigLabel(sig){ return trendLabel(sig); }
 // Lecturas por indicador (T18): valor, rango y una frase. compact = sin rango.
 function readingsHtml(readings,compact){
   if(!readings||!readings.length) return '<div style="font-size:11px;color:var(--text3)">Sin historia suficiente para calcular indicadores.</div>';
@@ -2897,18 +2886,6 @@ function timeAgo(ts){
 function sbar(rsi){
   if(rsi==null||!isFinite(rsi)) return '';
   return '<span class="sbar" title="RSI '+Math.round(rsi)+' en escala 0–100"><span class="sf" style="width:'+Math.max(2,Math.min(100,rsi))+'%;background:var(--text3)"></span></span>';
-}
-// ── Page header helper — breadcrumb + big title + optional right slot ──
-function _ph(crumb,title,sub,right,tag){
-  tag=tag||'h1';
-  return '<div class="ph">'+
-    '<div>'+
-    '<div class="ph-crumb">'+crumb+'</div>'+
-    '<'+tag+'>'+title+'</'+tag+'>'+
-    (sub?'<p class="sub-txt">'+sub+'</p>':'')+
-    '</div>'+
-    (right?'<div class="ph-right">'+right+'</div>':'')+
-    '</div>';
 }
 function planOf(){ if(INVEST_BETA) return PLANS.beta; return S.user?(PLANS[S.user.plan]||PLANS.free):PLANS.free; }
 function liveBadge(){
@@ -2951,7 +2928,7 @@ function updateLivePricesInDOM(){
       var q=LIVE[t];
       // LIVE usa changePct como FRACCIÓN (0.0234 = 2.34%) → ×100
       var v=(q.changePct||0)*100;
-      el.textContent=(v>=0?'+':'')+v.toFixed(2)+'%';
+      el.textContent=(v>=0?'+':'')+fmtPctN(v,2);
       el.style.color=v>=0?'var(--pos)':'var(--neg)';
     }
   });
@@ -4072,13 +4049,22 @@ function renderScreenerSection(){
         '<td class="port-asset"><button type="button" class="port-tk" onclick="event.stopPropagation();openDrawer(\''+esc(s.ticker)+'\','+s.last+')">'+esc(s.ticker)+'</button><span class="port-sub">'+esc(TICKER_NAMES[s.ticker]||'')+'</span></td>'+
         '<td class="num port-strong">'+fmtUSD(s.last)+'</td>'+
         '<td>'+trendTag(s.trend)+'</td><td>'+rsiTxt(s.rsi)+'</td>'+
-        '<td class="num '+(d200==null?'':d200>=0?'pos':'neg')+'">'+(d200==null?'—':(d200>=0?'+':'\u2212')+Math.abs(d200*100).toFixed(1)+'\u00a0%')+'</td>'+
+        '<td class="num '+(d200==null?'':d200>=0?'pos':'neg')+'">'+(d200==null?'—':(d200>=0?'+':'')+fmtPctN(d200*100,1))+'</td>'+
         '<td>'+macdTxt(s.macdHist,s.macdPrev)+'</td>'+
         '<td>'+(seguido?'<span class="li-word">'+icon('check','ico-inline')+' Siguiendo</span>':'<button type="button" class="btn scr-follow" onclick="event.stopPropagation();scrRowFollow(\''+esc(s.ticker)+'\')">'+icon('plus')+' Seguir</button>')+'</td></tr>';
     }).join('')||'<tr><td colspan="7" class="port-muted" style="padding:20px;text-align:center">Ningún resultado cumple los filtros.</td></tr>';
+    var stk='<ul class="port-stack">'+filt.map(function(s){
+      var d200=s.s200v?(s.last-s.s200v)/s.s200v:null;
+      var seguido=navWatchTickers().indexOf(s.ticker)>=0;
+      return '<li class="ps-row"><button type="button" class="ps-main" onclick="openDrawer(\''+esc(s.ticker)+'\','+s.last+')" aria-label="Abrir la ficha de '+esc(s.ticker)+'">'+
+        '<span class="ps-l1"><span class="ps-t">'+esc(s.ticker)+'</span><span class="num">'+fmtUSD(s.last)+'</span>'+trendTag(s.trend)+'</span>'+
+        '<span class="ps-l2"><span>RSI '+rsiTxt(s.rsi)+'</span><span>Frente a 200 días <b class="num">'+(d200==null?'—':(d200>=0?'+':'')+fmtPctN(d200*100,1))+'</b></span><span>MACD '+macdTxt(s.macdHist,s.macdPrev)+'</span></span></button>'+
+        (seguido?'<span class="li-word">'+icon('check','ico-inline')+' Siguiendo</span>':'<button type="button" class="btn scr-follow" onclick="scrRowFollow(\''+esc(s.ticker)+'\')" aria-label="Seguir '+esc(s.ticker)+'">'+icon('plus')+' Seguir</button>')+'</li>';
+    }).join('')+'</ul>';
+    if(!filt.length) stk='';
     out='<div class="scr-meta"><span>'+filt.length+(filt.length===1?' resultado':' resultados')+' de '+ok.length+' analizados'+(running?' · analizando '+(S.screenerTotal-results.length)+' más…':'')+'</span>'+
       '<button type="button" class="btn" onclick="exportScreenerCSV()">'+icon('download')+' Exportar CSV</button></div>'+
-      '<div class="tw"><table class="fos-table port-table"><thead><tr><th>Activo</th><th>Precio</th><th>Tendencia</th><th>RSI</th><th title="Distancia a la media de 200 días">Frente a 200 días</th><th>MACD</th><th><span class="sr-only">Seguir</span></th></tr></thead><tbody>'+trs+'</tbody></table></div>'+
+      '<div class="tw port-tw"><table class="fos-table port-table"><thead><tr><th>Activo</th><th>Precio</th><th>Tendencia</th><th>RSI</th><th title="Distancia a la media de 200 días">Frente a 200 días</th><th>MACD</th><th><span class="sr-only">Seguir</span></th></tr></thead><tbody>'+trs+'</tbody></table></div>'+stk+
       (errs.length?'<p class="port-muted">Sin datos: '+errs.map(function(e){return esc(e.ticker)+' ('+esc(e.reason||'sin datos')+')';}).join(', ')+'</p>':'');
   }
   return '<div class="fos-module-header"><div><div class="fos-module-sub">Filtra activos por tendencia y RSI. Lecturas de datos históricos, no recomendaciones.</div></div></div>'+
@@ -4302,7 +4288,7 @@ function renderWelcome(){
     '</div>'+
     // Features
     '<div class="wv3-feats">'+
-    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('decision')+'</span><div><div class="wv3-feat-title">Motor de Análisis</div><div class="wv3-feat-desc">Contexto de mercado y cada indicador con su rango y su lectura.</div></div></div>'+
+    '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('decision')+'</span><div><div class="wv3-feat-title">Indicadores con su lectura</div><div class="wv3-feat-desc">Contexto de mercado y cada indicador con su rango y una frase que explica qué significa.</div></div></div>'+
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('risk')+'</span><div><div class="wv3-feat-title">Con tu regla de riesgo</div><div class="wv3-feat-desc">Tamaño de posición, riesgo al stop y límite de concentración.</div></div></div>'+
     '<div class="wv3-feat"><span class="wv3-feat-icon">'+icon('port')+'</span><div><div class="wv3-feat-title">Portafolio y buscador</div><div class="wv3-feat-desc">Resultado de tus posiciones, lista de seguimiento y filtro por indicador.</div></div></div>'+
     '</div>'+
@@ -4324,20 +4310,20 @@ function renderWelcome(){
     '<svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.9l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>'+
     'Continuar con Google'+
     '</button>'+
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--text3)">o con email</span><div style="flex:1;height:1px;background:var(--border)"></div></div>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:11px;color:var(--text3)">o con tu correo</span><div style="flex:1;height:1px;background:var(--border)"></div></div>'+
     // Panel login
     '<div id="wv3-panel-login" class="wv3-panel show">'+
-    '<div><label class="wv3-field-label" for="le">EMAIL</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" required onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
-    '<div><label class="wv3-field-label" for="lp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" required minlength="6" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">ver</button></div><div class="wv3-forgot"><button type="button" class="linklike" style="background:none;border:none;color:var(--grn);text-decoration:underline;cursor:pointer;font:inherit;padding:0" onclick="wv3ForgotPwd()">¿Olvidaste tu contraseña?</button></div></div>'+
+    '<div><label class="wv3-field-label" for="le">Correo</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@correo.com" autocomplete="email" required onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
+    '<div><label class="wv3-field-label" for="lp">Contraseña</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" required minlength="6" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">ver</button></div><div class="wv3-forgot"><button type="button" class="linklike" style="background:none;border:none;color:var(--grn);text-decoration:underline;cursor:pointer;font:inherit;padding:0" onclick="wv3ForgotPwd()">¿Olvidaste tu contraseña?</button></div></div>'+
     '<div id="lerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="lbtn" class="wv3-submit" onclick="doLogin()">Entrar</button>'+
     '<div class="wv3-legal">Al acceder aceptas nuestros <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>.</div>'+
     '</div>'+
     // Panel register
     '<div id="wv3-panel-reg" class="wv3-panel">'+
-    '<div><label class="wv3-field-label" for="rn">NOMBRE</label><div class="wv3-field-wrap"><input id="rn" type="text" enterkeyhint="next" autocapitalize="words" placeholder="Tu nombre" autocomplete="name"/></div></div>'+
-    '<div><label class="wv3-field-label" for="re">EMAIL</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@email.com" autocomplete="email" required/></div></div>'+
-    '<div><label class="wv3-field-label" for="rp">CONTRASEÑA</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
+    '<div><label class="wv3-field-label" for="rn">Nombre</label><div class="wv3-field-wrap"><input id="rn" type="text" enterkeyhint="next" autocapitalize="words" placeholder="Tu nombre" autocomplete="name"/></div></div>'+
+    '<div><label class="wv3-field-label" for="re">Correo</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@correo.com" autocomplete="email" required/></div></div>'+
+    '<div><label class="wv3-field-label" for="rp">Contraseña</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
     // I02: las tres casillas son los tres consentimientos que pide el gate.
     // Se registran al crear la cuenta para que el gate no se repita al entrar.
     '<label class="wv3-check-row"><input id="rdisc-tc" type="checkbox" required/><span class="wv3-check-txt">Acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a>.</span></label>'+
@@ -4360,11 +4346,9 @@ function renderWelcome(){
       var spyEl=document.getElementById('wlc-spy');
       if(spyEl&&regime){
         var lbl=regime.regime==='risk_on'?'Alcista':regime.regime==='risk_off'?'Bajista':'En transición';
-        var col=regime.color||'var(--text2)';
-        var dot=regime.regime==='risk_on'?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grn);margin-right:4px;vertical-align:middle"></span>':'';
-        var hint=regime.spy?'SPY $'+regime.spy.toFixed(2):'SPY sobre SMA200';
+        var hint=regime.spy?'SPY '+fmtUSD(regime.spy):'';
         spyEl.innerHTML='<div class="wv3-ctx-ttl" title="Si el S&amp;P 500 (SPY) está sobre o bajo su media de 200 días">Tendencia del S&amp;P 500</div>'+
-          '<div class="wv3-ctx-val" style="color:'+col+'">'+dot+lbl+'</div>'+
+          '<div class="wv3-ctx-val">'+(regime.spy!=null?regimeTag(regime):esc(lbl))+'</div>'+
           '<div class="wv3-ctx-hint">'+hint+'</div>';
       }
     }catch(e){}
@@ -4373,7 +4357,7 @@ function renderWelcome(){
       var vixEl=document.getElementById('wlc-vix');
       if(vixEl&&vix&&vix.vix){
         vixEl.innerHTML='<div class="wv3-ctx-ttl" title="Índice de volatilidad: qué tan nervioso está el mercado. Más alto significa más movimiento esperado">Volatilidad (VIX)</div>'+
-          '<div class="wv3-ctx-val" style="color:'+vix.color+'">'+vix.vix.toFixed(1)+'</div>'+
+          '<div class="wv3-ctx-val">'+fmt1(vix.vix)+'</div>'+
           '<div class="wv3-ctx-hint">'+vix.label+'</div>';
       }
     }catch(e){}
@@ -5096,6 +5080,7 @@ function movStats(sells){
 function movCell(l,v,s,cls){
   return '<div class="pband-c"><div class="pband-l">'+l+'</div><div class="pband-v num'+(cls?' '+cls:'')+'">'+v+'</div>'+(s?'<div class="pband-s">'+s+'</div>':'')+'</div>';
 }
+function mvDate(d){ if(!d) return '—'; var x=new Date(d+'T12:00:00'); return isNaN(x)?esc(d):x.toLocaleDateString(LOC,{day:'numeric',month:'short',year:'numeric'}); }
 function renderBitacora(){
   loadTrades();loadAlerts();
   var all=S.trades;
@@ -5174,9 +5159,15 @@ function renderBitacora(){
     (S.tradeFilter.ticker!=='ALL'||S.tradeFilter.type!=='ALL'?'<button type="button" class="linkbtn" onclick="S.tradeFilter={ticker:\'ALL\',type:\'ALL\'};renderBitacora()">Quitar filtros</button>':'')+
     '</div>';
 
+  var opStack=trades.length?'<ul class="port-stack">'+trades.map(function(t){
+    return '<li class="ps-row"><div class="ps-main" style="cursor:default">'+
+      '<span class="ps-l1"><span class="ps-t">'+(typeLabel[t.type]||esc(t.type))+(t.ticker?' · '+esc(t.ticker):'')+'</span><span class="num">'+fmtUSD(t.amount)+'</span>'+(t.pnl!=null?'<span class="num '+(t.pnl>0?'pos':t.pnl<0?'neg':'')+'">'+(t.pnl>0?'+':'')+fmtUSD(t.pnl)+'</span>':'')+'</span>'+
+      '<span class="ps-l2"><span>'+mvDate(t.date)+'</span>'+(t.qty?'<span><b class="num">'+fmtUnits(t.qty)+'</b> u. a <b class="num">'+fmtUSD(t.price)+'</b></span>':'')+(t.note?'<span>'+esc(t.note)+'</span>':'')+'</span></div>'+
+      '<button type="button" class="btn btn-r port-ib" onclick="deleteTrade('+t.id+')" aria-label="Eliminar operación del '+esc(t.date||'')+'">'+icon('trash')+'</button></li>';
+  }).join('')+'</ul>':'';
   var rows=trades.length?trades.map(function(t){
     return '<tr>'+
-      '<td class="num">'+esc(t.date||'')+'</td>'+
+      '<td class="num">'+mvDate(t.date)+'</td>'+
       '<td>'+(t.ticker?'<button type="button" class="port-tk" onclick="navOpenTicker(\''+esc(t.ticker)+'\')">'+esc(t.ticker)+'</button>':'—')+'</td>'+
       '<td>'+(typeLabel[t.type]||esc(t.type))+'</td>'+
       '<td class="num col-sec">'+(t.price?fmtUSD(t.price):'—')+'</td>'+
@@ -5218,7 +5209,7 @@ function renderBitacora(){
     '<div class="port-wrap pv">'+
     band+actions+perf+
     '<h2 class="port-h2">Operaciones</h2>'+filters+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Fecha</th><th>Activo</th><th>Tipo</th><th class="col-sec">Precio</th><th class="col-sec">Unidades</th><th>Monto</th><th class="col-sec">RSI</th><th>Resultado</th><th class="col-sec">Nota</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="tw port-tw"><table class="fos-table"><thead><tr><th>Fecha</th><th>Activo</th><th>Tipo</th><th class="col-sec">Precio</th><th class="col-sec">Unidades</th><th>Monto</th><th class="col-sec">RSI</th><th>Resultado</th><th class="col-sec">Nota</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody>'+rows+'</tbody></table></div>'+opStack+
     ((divsHtml||costHtml)?'<div class="'+(divsHtml&&costHtml?'grid2':'')+'">'+divsHtml+costHtml+'</div>':'')+
     '</div>';
 }
@@ -6147,11 +6138,7 @@ function renderCorrelationMatrix(port){
   var loaded=tickers.every(function(t){return dHistCache[t+'_60']&&dHistCache[t+'_60'].length>5;});
 
   if(!loaded){
-    return '<div class="cb">'+
-      '<div class="st"><div class="stbar"></div>Correlación de portafolio</div>'+
-      '<p style="font-size:11px;color:var(--text3);margin:0 0 10px">Cómo se movieron juntos los precios de tus posiciones en los últimos dos meses.</p>'+
-      '<button class="btn" onclick="loadCorrData()">'+icon('volume')+' Calcular matriz de correlación</button>'+
-      '</div>';
+    return '<p class="port-muted">Falta la historia de precios. <button type="button" class="linkbtn" onclick="loadCorrData()">Calcular la correlación</button></p>';
   }
 
   var closes={};
@@ -7087,11 +7074,11 @@ function renderCompSection(){
         maxR:Math.max.apply(null,s.pts.map(function(p){return p.y;})),minR:Math.min.apply(null,s.pts.map(function(p){return p.y;})),rets:rets};
     });
     var M=[
-      ['Rendimiento del período',function(s){return '<span class="'+(s.ret>=0?'pos':'neg')+'">'+(s.ret>=0?'+':'−')+Math.abs(s.ret).toFixed(1)+' %</span>';}],
-      ['Volatilidad diaria',function(s){return s.vol.toFixed(2)+' %';}],
+      ['Rendimiento del período',function(s){return '<span class="'+(s.ret>=0?'pos':'neg')+'">'+(s.ret>=0?'+':'')+fmtPctN(s.ret,1)+'</span>';}],
+      ['Volatilidad diaria',function(s){return fmtPctN(s.vol,2);}],
       ['Índice de Sharpe',function(s){return s.sharpe.toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2});}],
-      ['Punto más alto',function(s){return (s.maxR>=0?'+':'−')+Math.abs(s.maxR).toFixed(1)+' %';}],
-      ['Punto más bajo',function(s){return (s.minR>=0?'+':'−')+Math.abs(s.minR).toFixed(1)+' %';}]
+      ['Punto más alto',function(s){return (s.maxR>=0?'+':'')+fmtPctN(s.maxR,1);}],
+      ['Punto más bajo',function(s){return (s.minR>=0?'+':'')+fmtPctN(s.minR,1);}]
     ];
     stats='<div class="tw"><table class="fos-table port-table"><thead><tr><th>Medida</th>'+st.map(function(s){return '<th><i class="cmp-dot" style="background:'+s.color+'"></i>'+esc(s.t)+'</th>';}).join('')+'</tr></thead><tbody>'+
       M.map(function(m){return '<tr><td>'+m[0]+'</td>'+st.map(function(s){return '<td class="num">'+m[1](s)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>'+
@@ -7254,7 +7241,7 @@ function renderDivs(){
     '<h2 class="port-h2">Próximos 12 meses</h2>'+bars+
     '<p class="port-muted">La frecuencia se asume trimestral cuando la fuente no la informa. Es una proyección con el último rendimiento conocido: las empresas pueden cambiar o suspender sus dividendos.</p>'+
     '<h2 class="port-h2">Por posición</h2>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th class="col-sec">Unidades</th><th>Por acción al año</th><th>Ingreso anual</th><th>Rendimiento</th><th class="col-sec">Frecuencia</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+
+    '<div class="tw port-tw"><table class="fos-table port-table"><thead><tr><th>Activo</th><th class="col-sec">Unidades</th><th>Por acción al año</th><th>Ingreso anual</th><th>Rendimiento</th><th class="col-sec">Frecuencia</th></tr></thead><tbody>'+tableRows+'</tbody></table></div>'+'<ul class="port-stack">'+divRows.map(function(r){return '<li class="ps-row"><button type="button" class="ps-main" onclick="navOpenTicker(\''+esc(r.t)+'\')"><span class="ps-l1"><span class="ps-t">'+esc(r.t)+'</span><span class="num pos">'+fmtUSD(r.annualIncome)+' al año</span></span><span class="ps-l2"><span>'+fmtUnits(r.sh)+' unidades</span><span>Por acción <b class="num">'+fmtUSD(r.annualRate)+'</b></span><span>Rendimiento <b class="num">'+fmtPctN(r.yld*100,2)+'</b></span><span>'+r.freqLabel+'</span></span></button></li>';}).join('')+'</ul>'+
     '</div>';
 }
 
@@ -7473,10 +7460,10 @@ function renderCapital(){
     resSec='<section class="hoy-sec" aria-labelledby="cap-res-h"><div class="hoy-sec-h"><h2 class="port-h2" id="cap-res-h">Reparto de '+fmtUSD(monthly,0)+'</h2>'+
       '<button type="button" class="linkbtn" onclick="abrirComoCalcula(\'escalera\')">¿Cómo se reparte?</button></div>'+
       '<p class="port-muted">Cada tramo es la parte del monto asignada a esa media. Un punto (·) marca que el precio de hoy está en o bajo esa media: es un dato, no una indicación de compra.</p>'+
-      '<div class="tw"><table class="fos-table port-table cap-table"><thead><tr><th>Ticker</th><th>%</th><th>Monto</th><th title="Índice de fuerza relativa de 14 días, solo como dato">RSI</th>'+
+      '<div class="tw port-tw"><table class="fos-table port-table cap-table"><thead><tr><th>Ticker</th><th>%</th><th>Monto</th><th title="Índice de fuerza relativa de 14 días, solo como dato">RSI</th>'+
       lad.map(function(t){return '<th>'+t.label.replace('Media de ','Media ')+' · '+Math.round(t.pct*100)+' %</th>';}).join('')+
       '</tr></thead><tbody>'+results.map(etfRow).join('')+'</tbody>'+
-      '<tfoot><tr class="tot"><td>Total</td><td></td><td class="num">'+fmtUSD(monthly,0)+'</td><td colspan="'+(1+lad.length)+'"></td></tr></tfoot></table></div></section>';
+      '<tfoot><tr class="tot"><td>Total</td><td></td><td class="num">'+fmtUSD(monthly,0)+'</td><td colspan="'+(1+lad.length)+'"></td></tr></tfoot></table></div>'+capStack(results,monthly,lad)+'</section>';
   } else if(tickers.length&&!loading){
     resSec='<p class="hoy-txt">Escribe el monto y toca "Calcular el reparto" para ver cuánto va a cada ticker y a cada tramo. <button type="button" class="linkbtn" onclick="abrirComoCalcula(\'escalera\')">¿Cómo se reparte?</button></p>';
   }
@@ -7486,6 +7473,19 @@ function renderCapital(){
     '<div class="port-wrap pv cap">'+form+tkSec+resSec+
     '<p class="port-muted">Herramienta educativa de cálculo. Los tickers, los porcentajes y el reparto de los tramos los defines tú. Las medias y el RSI se muestran como datos, no como instrucciones de compra ni recomendación de inversión. Datos con posible retraso.</p>'+
     '</div>';
+}
+// Aportes por debajo de 1024 px: filas apiladas con cada tramo en su línea.
+function capStack(results,monthly,lad){
+  return '<ul class="port-stack cap-stack">'+results.map(function(r){
+    var row=r.row, amt=monthly*(row.pct/100);
+    var l2=r.error?'<span>Sin historia suficiente para calcular</span>':lad.map(function(t){
+      var smaV=r.smas[t.sma], below=smaV!=null&&r.price<=smaV;
+      return '<span>'+t.label.replace('Media de ','Media ')+' <b class="num">'+(smaV!=null?fmtUSD(amt*t.pct,0):'—')+'</b>'+(below?' <span class="cap-mark" aria-label="precio en o bajo la media">·</span>':'')+'</span>';
+    }).join('');
+    return '<li class="ps-row"><div class="ps-main" style="cursor:default">'+
+      '<span class="ps-l1"><button type="button" class="port-tk ps-t" onclick="navOpenTicker(\''+esc(row.t)+'\')">'+esc(row.t)+'</button><span class="num">'+fmtPctN(row.pct,0)+'</span><span class="num">'+fmtUSD(amt,0)+'</span>'+(r.error?'':'<span>RSI <b class="num">'+(r.rsi!=null?Math.round(r.rsi):'—')+'</b></span>')+'</span>'+
+      '<span class="ps-l2">'+l2+'</span></div></li>';
+  }).join('')+'<li class="ps-row"><div class="ps-main" style="cursor:default"><span class="ps-l1"><span class="ps-t">Total</span><span class="num">'+fmtUSD(monthly,0)+'</span></span></div></li></ul>';
 }
 function capSetCadencia(c){ S.capitalPlan.cadencia=c; renderCapital(); }
 function capSumHtml(){
