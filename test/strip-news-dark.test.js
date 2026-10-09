@@ -71,3 +71,46 @@ describe('matriz de correlación', () => {
     expect(c).toContain('var(--blue)');
   });
 });
+
+describe('tanda Hoy, Aportes y tema (oct-2026)', () => {
+  const darkBlock = css.slice(css.indexOf('[data-theme="dark"] {\n  --grn:'), css.indexOf('/* ── RESET'));
+  it('rojo de pérdida AA en oscuro y familia Navy', () => {
+    expect(darkBlock).toContain('--neg:       #D4735F;');
+    expect(darkBlock).toContain('--red:       #D4735F;');
+    expect(darkBlock).toContain('--bg:        #0E1628;');
+    expect(darkBlock).toContain('--card:      #14213D;');
+    expect(darkBlock).toContain('--card2:     #1A2A4A;');
+    expect(darkBlock).not.toContain('#C96856');
+  });
+  it('botón de tema en la franja, con aria-pressed, entre frescura y cuenta', () => {
+    const tb = fn('renderTopbar');
+    const iFresh = tb.indexOf('tb-fresh'), iTheme = tb.indexOf('id="tb-theme"'), iAcct = tb.indexOf('class="acct"');
+    expect(iTheme).toBeGreaterThan(iFresh);
+    expect(iAcct).toBeGreaterThan(iTheme);
+    expect(tb).toMatch(/aria-label="Tema oscuro" aria-pressed=/);
+    expect(fn('updateThemeBtn')).toContain("setAttribute('aria-pressed'");
+  });
+  it('sin elección guardada sigue al sistema y escucha sus cambios', () => {
+    expect(fn('applyTheme')).toMatch(/t\?t==='dark':themeSystemDark\(\)/);
+    expect(fn('initTheme')).toContain("prefers-color-scheme: dark");
+    expect(fn('initTheme')).toContain('if(!themeStored())');
+    expect(fn('setThemeMode')).toContain("removeItem('mv_theme')");
+    expect(fn('themeChanged')).toContain('renderDrawerBody()');
+    expect(fn('applyTheme')).toContain('meta-theme');
+  });
+  it('Hoy en una fila solo desde 1200 px', () => {
+    expect(css).toMatch(/@media \(min-width: 1200px\) \{\s*\.hoy-top \{ grid-template-columns: minmax\(0, 1\.3fr\) minmax\(0, 1fr\) minmax\(0, 1fr\);/);
+    expect(css).not.toMatch(/\.hoy-top \{ display: grid; grid-template-columns: minmax\(0, 1\.3fr\)/);
+    expect(fn('renderDash')).toContain('<div class="hoy-top">');
+  });
+  it('Aportes: un solo formulario con el monto, los tickers y Calcular', () => {
+    const cap = fn('renderCapital');
+    expect((cap.match(/'<form /g) || []).length).toBe(1);
+    const f = cap.slice(cap.indexOf("'<form "), cap.indexOf("'</form>'"));
+    expect(f).toContain('id="cap-monthly"');
+    expect(f).toContain('cap-tks');
+    expect(f).toContain('Calcular el reparto');
+    expect(f).toContain('type="submit"');
+    expect(f).toContain('<details class="capx-opt"');
+  });
+});
