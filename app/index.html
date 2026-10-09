@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.webmanifest"/>
-<meta name="theme-color" content="#0d1117"/>
+<meta name="theme-color" content="#14213D"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -275,7 +275,7 @@ body {
      familia/tamano al moverse entre modulos. El h2 es para _ph() llamado con
      tag:'h2' — secciones que viven dentro de una pagina mas grande con su
      propio h1 (ej. Screener/Comparador dentro de Investigar), mismo look. */
-  font-family: 'Instrument Sans', Georgia, sans-serif;
+  font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif;
   font-size: 27px;
   font-weight: 600;
   color: var(--bright);
@@ -478,7 +478,7 @@ tr:last-child td { border-bottom: none; }
   color: var(--grn);
   border: 0.5px solid var(--grn-lt);
 }
-.live-badge.loading { background: var(--amber-bg); color: var(--amber); border-color: #fde68a; }
+.live-badge.loading { background: var(--amber-bg); color: var(--amber); border-color: transparent; }
 .live-badge.error   { background: var(--red-bg);   color: var(--red);   border-color: var(--red-lt); }
 
 @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -884,7 +884,7 @@ tr:last-child td { border-bottom: none; }
 /* Igual que .fos-module-crumb (10px MAYUSCULA con letter-spacing): antes el
    breadcrumb del dashboard era 11px minuscula y no matcheaba al resto. */
 .dash-page-breadcrumb { font-size: 11px; color: var(--text3); margin-bottom:var(--sp-3); }
-.dash-page-title { font-family: 'Instrument Sans', Georgia, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0; line-height: 1.12; letter-spacing: -.01em; }
+.dash-page-title { font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0; line-height: 1.12; letter-spacing: -.01em; }
 
 /* .dash-quick/.dash-quick-b (4 accesos rapidos Motor/Indicadores/Riesgo/
    Screener a la altura del titulo) se eliminaron el 13-sep-2026 junto con su
@@ -900,7 +900,7 @@ tr:last-child td { border-bottom: none; }
 /* Serif display SOLO en el titulo de modulo. El contraste serif-title /
    sans-body / mono-datos es lo que da jerarquia de tres niveles y evita que la
    app lea como "dashboard tecnico". Instrument Sans ya es fuente de marca (la landing). */
-.fos-module-title { font-family: 'Instrument Sans', Georgia, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0 0 var(--sp-3); line-height: 1.12; letter-spacing: -.01em; }
+.fos-module-title { font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0 0 var(--sp-3); line-height: 1.12; letter-spacing: -.01em; }
 .fos-module-title em { font-style: italic; }
 .fos-module-crumb { font-size: 11px; color: var(--text3); margin-bottom:var(--sp-3); }
 .fos-module-sub { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: var(--text2); margin:0; line-height: 1.5; }
@@ -1302,7 +1302,7 @@ body:not(.no-auth) .topbar {
 .pagehead { display:none; }
 body:not(.no-auth) .pagehead { display:block; }
 .pagehead-in { max-width:var(--content-max); margin:0 auto; padding:24px var(--content-px) 0; }
-.pg-title { margin:0; font-family:'Instrument Sans', Georgia, sans-serif; font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.01em; color:var(--bright); }
+.pg-title { margin:0; font-family:'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.01em; color:var(--bright); }
 .pagehead:not(.has-tabs) .pagehead-in { padding-bottom:4px; }
 /* Un solo componente de pestañas: .ptab para destinos y .tab para filtros
    internos (Tendencia, periodos del Comparador), que eran botones sin estilo. */
@@ -1337,7 +1337,7 @@ body:not(.no-auth) .pagehead { display:block; }
   }
   body:not(.no-auth) .appcol { padding-bottom:calc(var(--mbar-h) + env(safe-area-inset-bottom, 0px)); }
   /* Movil: titulo del destino en la franja, buscador a pantalla completa. */
-  .tb-dest { display:block; flex:1; min-width:0; font-family:'Instrument Sans', Georgia, sans-serif; font-size:20px; font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tb-dest { display:block; flex:1; min-width:0; font-family:'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size:20px; font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .gs { display:none; }
   .tb-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:none; border-radius:var(--r-md); background:transparent; color:var(--bright); cursor:pointer; flex-shrink:0; }
   .tb-icon .ico { width:20px; height:20px; }
@@ -7096,7 +7096,7 @@ function installPWA(){
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:420px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
-    '<h2 style="margin:0;font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:18px">Instalar la app</h2>'+
+    '<h2 style="margin:0;font-family:\'Instrument Sans\',\'IBM Plex Sans\',system-ui,sans-serif;font-weight:600;font-size:18px">Instalar la app</h2>'+
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0">'+pasos+'</p>'+
@@ -7901,7 +7901,7 @@ function toggleDisclaimer(){
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:520px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
-    '<h2 style="margin:0;font-family:\'Instrument Sans\',Georgia,serif;font-weight:600;font-size:18px">Aviso importante</h2>'+
+    '<h2 style="margin:0;font-family:\'Instrument Sans\',\'IBM Plex Sans\',system-ui,sans-serif;font-weight:600;font-size:18px">Aviso importante</h2>'+
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
