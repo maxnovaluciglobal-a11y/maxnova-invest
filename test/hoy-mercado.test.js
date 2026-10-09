@@ -1,0 +1,87 @@
+// Reestructura v3, fase 4: Hoy y Mercado. Lee app/index.html.
+import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const html = readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
+const fnBody = (name) => {
+  const a = html.indexOf('function ' + name + '(');
+  if (a < 0) return '';
+  const b = html.indexOf('\nfunction ', a + 10);
+  return html.slice(a, b);
+};
+
+describe('Hoy', () => {
+  const dash = fnBody('renderDash');
+  it('existe y lleva la cifra protagonista compartida (valor), sin la celda Posiciones', () => {
+    expect(dash).toContain('heroFig(');
+    expect(dash).not.toContain('>Posiciones<');
+    expect(dash).toContain('dashRiskCard(');
+    expect(dash).toContain('dashFocoCard(');
+    expect(dash).toContain('dashTopPositions(');
+    expect(dash).toContain('dashAporteCard()');
+  });
+  it('ya no lleva noticias, índices, mini-lista ni asignación', () => {
+    for (const s of ['mercadoHoyBody', 'indicesCard', 'moversCard', 'dashWatchCard', 'dashAllocBar', 'resp2']) {
+      expect(dash).not.toContain(s);
+    }
+  });
+  it('"Mayores movimientos" desapareció de la app', () => {
+    expect(html).not.toContain('Mayores movimientos');
+    expect(html).not.toMatch(/function moversCard|function indicesCard|function dashWatchCard/);
+  });
+  it('Repartir valida en línea y calcula el reparto al llegar a Aportes', () => {
+    const go = fnBody('aporteGo');
+    expect(go).toContain('aporte-err');
+    expect(go).toContain("setPage('capital')");
+    expect(go).toContain('loadCapitalData()');
+    expect(go).not.toContain('showToast');
+  });
+});
+
+describe('Cifra protagonista y tabla única (revisión de cierre)', () => {
+  it('Posiciones lidera con el riesgo al stop y la Calculadora con las unidades', () => {
+    expect(fnBody('renderPort')).toMatch(/heroFig\(\{aria:'Resumen del portafolio',label:'Riesgo al stop'/);
+    expect(fnBody('pbCalc')).toContain('heroFig(');
+  });
+  it('las tablas no van en recuadro y las columnas numéricas se alinean a la derecha', () => {
+    expect(html).toMatch(/\.tw, \.pv \.tw \{ border: none !important/);
+    expect(html).toContain('function tableTidy(');
+  });
+  it('Latón fuera de los gráficos', () => {
+    expect(fnBody('renderLWCharts')).not.toContain('latonC,');
+    expect(fnBody('renderCompSection')).not.toMatch(/--amber|#8E6CC4/);
+  });
+  it('el porcentaje usa espacio fino sin corte', () => {
+    expect(html).toContain("+'\\u202f%'");
+    expect(html).not.toContain("\\u00a0%");
+  });
+});
+
+describe('Mercado', () => {
+  const mk = fnBody('renderMercado');
+  it('ya no delega en el motor viejo', () => {
+    expect(mk).not.toContain('renderDecisionEngineBody');
+    expect(mk).toContain('mktIndicesHtml()');
+    expect(mk).toContain('mktNewsHtml()');
+  });
+  it('los índices de la cinta vienen en español', () => {
+    for (const n of ['S&P 500', 'Dow 30', 'Nasdaq', 'Russell 2000', 'Petróleo (WTI)', 'Oro', 'Plata', 'Euro/dólar', 'Bono EE. UU. 10 años', 'Bitcoin']) {
+      expect(html).toContain(`'${n}']`);
+    }
+    expect(html).not.toMatch(/'Crude Oil'|'10-Yr Bond'|'Russell 2K'/);
+  });
+  it('no muestra el tono adivinado del titular (se leía como señal)', () => {
+    expect(html).not.toMatch(/newsImpactLabel|NEWS_IMPACT|impLabel/);
+    expect(fnBody('mktNewsHtml')).not.toMatch(/\.impact/);
+  });
+  it('las categorías de noticias están en español', () => {
+    for (const c of ['Reserva Federal', 'Resultados', 'Geopolítica', 'Macro', 'IA y tecnología']) expect(html).toContain(`'${c}']`);
+    expect(fnBody('mktNewsHtml')).not.toMatch(/Bullish|Bearish|BREAKING|favicons/);
+  });
+  it('sin SMA200 ni "VIX Normal" en los rótulos nuevos', () => {
+    const ctx = fnBody('mktCtxHtml');
+    expect(ctx).not.toMatch(/SMA200|SMA50/);
+    expect(html).not.toContain("'VIX Normal'");
+  });
+});
