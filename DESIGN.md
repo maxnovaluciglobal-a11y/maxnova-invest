@@ -19,14 +19,16 @@ colors:
   rail-fg: "rgba(241,238,230,0.76)"
   rail-pos: "#8FD0B4"
   rail-neg: "#F0A493"
-  dark-bg: "#12161F"
-  dark-surface: "#181D29"
-  dark-raised: "#1D2331"
+  dark-bg: "#0E1628"
+  dark-surface: "#14213D"
+  dark-raised: "#1A2A4A"
+  dark-raised-2: "#213357"
+  dark-raised-3: "#2A3E66"
   dark-ink-body: "#C7C2B2"
   dark-ink-muted: "#9C9784"
   laton-dark: "#CC9A52"
   pos-dark: "#74C2A3"
-  neg-dark: "#C96856"
+  neg-dark: "#D4735F"
   warn-dark: "#E0975A"
 typography:
   display:
@@ -198,7 +200,9 @@ A warm paper-and-ink palette with one brass accent and a strictly semantic green
 - **Gain Green** (pos / pos-dark), **Loss Red** (neg / neg-dark), **Caution Amber** (warn / warn-dark): result and state only, always paired with an icon or a word.
 
 ### Dark theme: two levels
-Dark has exactly two levels. **Ground** `#12161F` (`--bg`) for the content column and the top strip. **Surface** `#181D29` (`--card`, `--side-bg`) for everything that sits apart from the content: the sidebar rail, the asset sheet, menus, popovers, the search list, modals, the mobile tab bar and the few boxed panels. Surfaces are separated from the ground by a hairline (Papel at 18%), never by a third tone or a shadow on the page. The rail is no longer Navy in dark; the light theme keeps the Navy rail on Papel.
+Dark comes from the Navy family and has exactly two levels. **Ground** `#0E1628` (`--bg`, dark-bg) for the content column and the top strip. **Surface** `#14213D` (`--card`, `--bg2`, `--side-bg`, dark-surface: the brand Navy) for everything that sits apart from the content: the sidebar rail, the asset sheet, menus, popovers, the search list, modals, the mobile tab bar and the few boxed panels. Surfaces are separated from the ground by a hairline (Papel at 18%), never by a shadow on the page. `--card2` `#1A2A4A`, `--card3` `#213357` and `--card4` `#2A3E66` are raised states only (hover, tracks, chips, skeletons), not a third level of layout. Loss red in dark is `#D4735F` (AA: 5.51 on ground, 4.88 on surface). The sheet backdrop in dark is near-black at 60%. The light theme keeps the Navy rail on Papel.
+
+**Theme control.** A 40×40 icon button in the top strip (44×44 on touch), between freshness and account: moon in light, sun in dark, `aria-pressed`, borderless at rest. It sets light or dark explicitly. Ajustes › Apariencia offers Claro, Oscuro and Sistema; with Sistema (no saved choice) the app follows `prefers-color-scheme` and its changes. Changing theme redraws content and the open sheet so charts take the new colors, and updates `theme-color`.
 
 ### Named Rules
 **The Latón Two-Jobs Rule.** Latón marks exactly two things: the primary action and where you are (active rail chip, active page-tab underline, active mobile-tab bar). Chart lines, links and decoration use Slate Blue or Navy instead.
@@ -289,6 +293,12 @@ Restrained and solid; brass only where the screen's main action lives.
 - **Page tabs:** 44px, 14px/500 muted; current tab Navy 600 with a 3px Latón underline sitting on the 18% hairline.
 - **Mobile tab bar:** five equal tabs, 22px icon over a 12px label; current tab Navy 600 with a 3px Latón bar at the top edge.
 - **Global search:** 40px field with a search icon and a "/" key hint; results in a floating list of 44px rows (ticker, name, type).
+
+### Hoy layout
+From 1200px: one row with the hero (1.3fr) and the two blocks "Tu riesgo hoy" and "Para revisar hoy" (1fr each), each block separated by a vertical hairline on its left, titles 14px/600 on a shared baseline. 1024–1199px: hero full width, blocks in two columns with top rules. Under 1024px: stacked, with the risk figure inline at 22px and 20px gaps.
+
+### Aportes block
+One block "Monto y reparto" and one form. From 1024px: left (1fr) the amount and folded options whose summary always shows the current cadence and tranche split; right (1.4fr) "Tickers y porcentajes" as hairline rows in two columns with a live "Suman 100 %" status, Agregar and "Partir de". Below, after a hairline, the Latón "Calcular el reparto" and its inline error. Under 1024px the same order in one column with the button full width.
 
 ### Market strip
 A thin static strip (36px desktop, 44px touch) of the ten Mercado instruments: Spanish short name in Sans muted, value in Mono, day change in Mono pos/neg with sign, and a 48×16 sparkline. It never moves by itself: if it does not fit it scrolls by hand with scroll-snap, an edge fade and no visible scrollbar on desktop. Every item is a button to Mercado. One quiet freshness note at the end ("Con retraso de la fuente · hh:mm"). Fixed height, skeleton sparklines while history loads (one request per symbol per session), so nothing shifts.

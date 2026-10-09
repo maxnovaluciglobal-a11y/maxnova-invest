@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.webmanifest"/>
-<meta name="theme-color" content="#14213D"/>
+<meta name="theme-color" content="#14213D" id="meta-theme"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -175,8 +175,9 @@ input, select, textarea { font-size: 16px; }
   --laton:      #CC9A52;
   --laton-700:  #E3C592;
 
-  --red:       #C96856;
-  --red-bg:    rgba(201,104,86,0.16);
+  /* Rojo de pérdida en oscuro: AA sobre el fondo (5,51) y la superficie (4,88). */
+  --red:       #D4735F;
+  --red-bg:    rgba(212,115,95,0.16);
   --red-lt:    #4A2A22;
 
   --amber:     #E0975A;
@@ -184,7 +185,7 @@ input, select, textarea { font-size: 16px; }
 
   /* Semantica de resultado en oscuro — verde único positivo/éxito. */
   --pos:       #74C2A3;
-  --neg:       #C96856;
+  --neg:       #D4735F;
 
   /* Aliases dark mode */
   --green:     #74C2A3;
@@ -195,12 +196,15 @@ input, select, textarea { font-size: 16px; }
   --blue:      #89A6C2;
   --blue-bg:   rgba(137,166,194,0.16);
 
-  --bg:        #12161F;
-  --bg2:       #181D29;
-  --card:      #181D29;
-  --card2:     #1D2331;
-  --card3:     #242B3B;
-  --card4:     #2D3547;
+  /* Oscuro desde la familia Navy, en dos niveles: fondo #0E1628 y una
+     superficie (#14213D) para barra lateral, ficha, menús y paneles, separada
+     por una línea fina. card2-4 son estados elevados (hover, pistas, barras). */
+  --bg:        #0E1628;
+  --bg2:       #14213D;
+  --card:      #14213D;
+  --card2:     #1A2A4A;
+  --card3:     #213357;
+  --card4:     #2A3E66;
 
   --text:      #C7C2B2;
   --text2:     #9C9784;
@@ -1333,6 +1337,11 @@ body:not(.no-auth) .topbar {
 .gs-s { font-size:12px; color:var(--text3); white-space:nowrap; }
 .gs-empty { padding:10px; font-size:13px; color:var(--text2); }
 .tb-fresh { margin-left:auto; white-space:nowrap; }
+/* Botón de tema: sin borde en reposo, ícono de línea de 20 px. */
+.tb-theme { display:flex; align-items:center; justify-content:center; width:40px; height:40px; flex-shrink:0; padding:0; border:1px solid transparent; border-radius:var(--r-md); background:transparent; color:var(--text2); cursor:pointer; }
+.tb-theme .ico { width:20px; height:20px; }
+.tb-theme:hover { color:var(--bright); background:var(--grn-bg); border-color:var(--border2); }
+@media (max-width: 1023px) { .tb-theme { width:44px; height:44px; color:var(--bright); } }
 .tb-icon { display:none; }
 .acct { position:relative; flex-shrink:0; }
 .acct-btn {
@@ -1433,6 +1442,7 @@ body:not(.no-auth) .pagehead { display:block; }
 }
 /* La ficha del activo (hoja inferior en movil) va por encima de la barra. */
 .dov { z-index:200; backdrop-filter:none; background:rgba(13,23,48,.38); }
+[data-theme="dark"] .dov { background:rgba(4,8,18,.6); }
 .drw { z-index:210; }
 
 /* ── PORTAFOLIO · fase 2 (Posiciones, Movimientos, Dividendos, Objetivos) ── */
@@ -1698,6 +1708,35 @@ body:not(.no-auth) .pagehead { display:block; }
 .hoy-table th:first-child, .hoy-table td:first-child { width: 40%; }
 .hoy-ctx { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 0; padding-top: 14px; border-top: 1px solid var(--border2); font-size: 13px; color: var(--text2); }
 .hoy-ctx b { color: var(--bright); font-weight: 600; }
+/* Hoy (variante A validada con prototipos, oct-2026). */
+.hoy-top { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 1024px) {
+  .hoy-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; }
+  .hoy-top > .hero { grid-column: 1 / -1; }
+}
+@media (min-width: 1200px) {
+  .hoy-top { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0; align-items: stretch; }
+  .hoy-top > .hero { grid-column: auto; padding-right: 28px; }
+  .hoy-top > .hero .hero-v { font-size: clamp(40px, 3.6vw, 54px); }
+  .hoy-top > .hoy-sec { border-top: none; padding: 4px 0 0 24px; border-left: 1px solid var(--border2); gap: 8px; }
+  .hoy-top > .hoy-sec + .hoy-sec { margin-left: 24px; }
+  .hoy-top .hoy-sec-h { min-height: 0; align-items: baseline; }
+  .hoy-top .hoy-sec-h .port-h2 { font-size: 14px; }
+  .hoy-top .hoy-sec-h { align-items: flex-start; }
+  .hoy-top .hoy-sec-h .linkbtn { min-height: 0; padding-top: 0; padding-bottom: 0; line-height: 1.3; }
+  .hoy-top .hoy-risk-l { padding-left: 16px; line-height: 1.55; }
+  .hoy-top .hero-row { gap: 4px 24px; }
+}
+/* Hoy en el móvil: mismo orden, más compacto. */
+@media (max-width: 1023px) {
+  .port-wrap.hoy { gap: 20px; }
+  .hoy .hoy-sec-h { min-height: 0; }
+  .hoy .hoy-risk-v { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .hoy .hoy-risk-v .num { font-size: 22px; }
+  .hoy .hoy-risk-l { line-height: 1.5; }
+  .hoy .hoy-rev { gap: 4px; }
+  .hoy .hero-row { flex-direction: row; gap: 4px 18px; }
+}
 .hoy-ctx .linkbtn { margin-left: auto; }
 @media (max-width: 639px) { .hoy-ctx .linkbtn { margin-left: 0; } }
 .m10-aporte { margin: 0; }
@@ -1767,6 +1806,44 @@ body:not(.no-auth) .pagehead { display:block; }
 .cap-tk .inp { width: 64px; min-height: 36px; padding: 4px 6px; }
 .cap-add { display: flex; flex-wrap: wrap; gap: 8px; }
 .cap-add .inp { width: 120px; min-height: 40px; }
+/* Aportes: un solo bloque "Monto y reparto". */
+.capx { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.capx-l, .capx-r { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.capx-l .calc-field { margin: 0; width: 100%; max-width: 280px; }
+.capx-l .calc-field .linkbtn { font-size: 12px; margin-top: 4px; }
+details.capx-opt > summary { cursor: pointer; min-height: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13px; color: var(--text2); list-style: none; }
+details.capx-opt > summary::-webkit-details-marker { display: none; }
+details.capx-opt > summary b { color: var(--bright); font-weight: 600; }
+details.capx-opt[open] > summary { margin-bottom: 8px; }
+details.capx-opt .cap-ctl + .cap-ctl { margin-top: 12px; }
+.capx-how { margin: 0; font-size: 13px; }
+.capx-h { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: var(--bright); }
+.capx-h #cap-sum { margin-left: auto; font-weight: 400; font-size: 12px; }
+.capx .cap-tks { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+.capx .cap-tk { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 0; background: none; border: none; border-bottom: 1px solid var(--border); border-radius: 0; }
+.capx .cap-tk .cap-tk-t { flex: 1; }
+.capx .cap-tk-p { display: inline-flex; align-items: center; gap: 4px; }
+.capx .cap-rm { width: 32px; height: 32px; }
+.capx-src { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+.capx-src .btn { min-height: 32px; }
+.capx-go { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.capx-go .btn-big { width: auto; padding: 0 24px; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; }
+.capx-go .field-err { margin: 0; }
+@media (min-width: 1024px) {
+  .capx { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px 40px; }
+  .capx .cap-tks { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  .capx-go { grid-column: 1 / -1; }
+}
+@media (max-width: 1023px) {
+  .capx-go .btn-big { flex: 1 1 100%; justify-content: center; }
+  .capx-l .calc-field { max-width: none; }
+}
+/* Táctil (o pantalla de móvil): campos de 44 px y 16 px de letra (sin zoom en iOS). */
+@media (pointer: coarse), (max-width: 1023px) {
+  .capx .cap-tk .inp, .capx-l .inp, .capx .cap-add .inp { min-height: 44px; font-size: 16px; }
+  .capx .cap-rm { width: 44px; height: 44px; }
+  .capx-src .btn, .capx .cap-add .btn, .capx-how .linkbtn { min-height: 44px; }
+}
 .cap-add .inp[type=number] { width: 80px; }
 .cap-add .btn { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
 .cap-table th:not(:first-child), .cap-table td:not(:first-child) { text-align: right; }
@@ -3456,6 +3533,7 @@ function renderTopbar(){
       '</div>'+
       '<span class="live-badge-wrap tb-fresh"></span>'+
       '<button type="button" class="tb-icon tb-search" onclick="gsOpenMobile()" aria-label="Buscar ticker o empresa">'+icon('screener')+'</button>'+
+      '<button type="button" class="tb-theme" id="tb-theme" onclick="toggleTheme()" aria-label="Tema oscuro" aria-pressed="false"></button>'+
       '<div class="acct">'+
         '<button type="button" class="acct-btn" id="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" onclick="acctToggle()"></button>'+
         '<div class="acct-menu" id="acct-menu" role="menu" aria-labelledby="acct-btn" hidden onkeydown="acctKey(event)"></div>'+
@@ -3464,6 +3542,7 @@ function renderTopbar(){
   var t=document.getElementById('tb-dest'); if(t) t.textContent=destTitle(S.page);
   var b=document.getElementById('acct-btn');
   if(b){ b.textContent=navInitials(); b.setAttribute('aria-label','Cuenta de '+(S.user.email||'usuario')); }
+  updateThemeBtn();
   updateLiveBadge();
 }
 
@@ -4398,10 +4477,11 @@ function renderSettings(){
       '<div class="set-save"><button type="submit" class="btn-big">Guardar</button><span id="set-rule-ok" class="li-word" role="status"></span></div>'+
       '</form>')+
     sec('apariencia','Apariencia',
-      row('Tema','Claro u oscuro, para esta app en este dispositivo.',
-        '<div class="port-ccy" role="group" aria-label="Tema">'+
-        '<button type="button" aria-pressed="'+!isDark+'" class="'+(!isDark?'act':'')+'" onclick="setThemeMode(\'light\')">Claro</button>'+
-        '<button type="button" aria-pressed="'+isDark+'" class="'+(isDark?'act':'')+'" onclick="setThemeMode(\'dark\')">Oscuro</button></div>'))+
+      row('Tema','Claro, oscuro o el que use tu sistema, en este dispositivo.',
+        '<div class="port-ccy" role="group" aria-label="Tema">'+[['light','Claro'],['dark','Oscuro'],['system','Sistema']].map(function(o){
+          var on=(themeStored()||'system')===o[0];
+          return '<button type="button" aria-pressed="'+on+'" class="'+(on?'act':'')+'" onclick="setThemeMode(\''+o[0]+'\')">'+o[1]+'</button>';
+        }).join('')+'</div>'))+
     sec('app','Aplicación',
       row('Instalar la app','Un acceso directo en tu pantalla de inicio.','<button type="button" class="btn" onclick="installPWA()">'+icon('download')+' Instalar</button>'))+
     sec('datos','Tus datos',
@@ -4419,11 +4499,6 @@ function renderSettings(){
       row('Ayuda','Preguntas frecuentes y atajos de teclado.','<button type="button" class="btn" onclick="setPage(\'help\')">Abrir ayuda</button>'))+
     '<p class="port-muted">MOY IQ Invest · análisis educativo · no es asesoría financiera.</p>'+
     '</div>';
-}
-function setThemeMode(m){
-  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  if((m==='dark')!==isDark) toggleTheme();
-  if(S.page==='settings') renderMain();
 }
 
 // ── MAIN ROUTER ────────────────────────────────────────────────
@@ -4806,9 +4881,10 @@ function renderDash(){
     '<div class="port-wrap pv hoy">'+
     '<div class="mstrip-in">'+stripHtml()+'</div>'+
     seedCleanupBanner()+
-    band+
+    // Hoy, variante A: desde 1200 px el valor y los dos bloques en una fila;
+    // entre 1024 y 1199 el valor arriba y los bloques en dos columnas.
+    '<div class="hoy-top">'+band+dashRiskCard(rs,lim,real)+dashFocoCard(port)+'</div>'+
     fxExclNote(PV.excluded)+
-    '<div class="hoy-grid">'+dashRiskCard(rs,lim,real)+dashFocoCard(port)+'</div>'+
     dashTopPositions(pu,rs,T.value)+
     dashAporteCard()+
     '<p class="hoy-ctx" id="hoy-ctx" aria-live="polite">'+dashCtxHtml(DE_CACHE.regime,DE_CACHE.vix,false)+'</p>'+
@@ -7808,6 +7884,10 @@ function capAddTicker(t,pct){
   S.capitalPlan.tickers.push({t:t, pct:parseFloat(pct)||0});
   _capSave(); S.capitalResults=null; if(S.page==='capital') renderMain();
 }
+function capAddFromInputs(){
+  var t=document.getElementById('cap-add-t'), p=document.getElementById('cap-add-p');
+  capAddTicker(t?t.value:'',p?p.value:'');
+}
 function capRemoveTicker(t){
   if(!S.capitalPlan.tickers) return;
   S.capitalPlan.tickers=S.capitalPlan.tickers.filter(function(x){return x.t!==t;});
@@ -7894,36 +7974,50 @@ function renderCapital(){
       return '<button type="button" class="tab'+(on?' act':'')+'" aria-pressed="'+on+'" onclick="'+fn+'(\''+it[0]+'\')">'+it[1]+'</button>';
     }).join('')+'</div></div>';
   }
-  var form='<section class="cap-form" aria-labelledby="cap-form-h"><h2 class="port-h2" id="cap-form-h">Monto y reparto</h2>'+
-    '<form class="cap-amount" novalidate onsubmit="event.preventDefault();loadCapitalData()">'+
-      '<div class="calc-field"><label for="cap-monthly">Monto a repartir (USD)</label>'+
-      '<input id="cap-monthly" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto" value="'+(monthly>0?monthly:'')+'" aria-describedby="cap-err" oninput="capSetErr()"/>'+
-      (capDisponible>0?'<button type="button" class="linkbtn" onclick="capUsarDisponible('+capDisponible+')">Usar tu capital disponible ('+fmtUSD(capDisponible,0)+')</button>':'')+
-      '</div>'+
-      '<button type="submit" class="btn-big"'+(loading?' disabled':'')+'>'+(loading?'<span class="spin-sm"></span> Calculando…':'Calcular el reparto')+'</button>'+
-      '<p id="cap-err" class="field-err" role="alert" hidden></p>'+
-    '</form>'+
-    chips('Cadencia',[['mensual','Mensual'],['quincenal','Quincenal'],['semanal','Semanal']],cadencia,'capSetCadencia')+
-    chips('Reparto de los tramos',[['short',CAP_LADDER_LABELS.short],['mid',CAP_LADDER_LABELS.mid],['long',CAP_LADDER_LABELS.long]],capLadderKey(),'capSetLadder')+
-    (cadencia!=='mensual'&&monthly>0?'<p class="port-muted">Unos '+fmtUSD(porAporte,0)+' por aporte '+cadencia+'. Repartir el monto en aportes más frecuentes no cambia el cálculo de los tramos.</p>':'')+
-  '</section>';
-
+  // Un solo bloque "Monto y reparto" (variante validada, oct-2026): un único
+  // <form> para que Enter en el monto calcule. Izquierda: monto y opciones
+  // plegadas; derecha: tickers y porcentajes; abajo, Calcular el reparto.
+  var cadLbl={mensual:'Mensual',quincenal:'Quincenal',semanal:'Semanal'}[cadencia]||'Mensual';
   var tkRows=tickers.map(function(tk){
     return '<li class="cap-tk"><label for="cap-pct-'+esc(tk.t)+'" class="cap-tk-t">'+esc(tk.t)+'</label>'+
-      '<input id="cap-pct-'+esc(tk.t)+'" class="inp num" type="number" value="'+tk.pct+'" min="0" max="100" step="1" onchange="capUpdatePct(\''+esc(tk.t)+'\',this.value);capSumUpdate()"/><span aria-hidden="true">%</span>'+
-      '<button type="button" class="btn port-ib" onclick="capRemoveTicker(\''+esc(tk.t)+'\')" aria-label="Quitar '+esc(tk.t)+'" title="Quitar">'+icon('close')+'</button></li>';
+      '<span class="cap-tk-p"><input id="cap-pct-'+esc(tk.t)+'" class="inp num" type="number" inputmode="decimal" value="'+tk.pct+'" min="0" max="100" step="1" onchange="capUpdatePct(\''+esc(tk.t)+'\',this.value);capSumUpdate()"/><span aria-hidden="true">%</span></span>'+
+      '<button type="button" class="btn port-ib cap-rm" onclick="capRemoveTicker(\''+esc(tk.t)+'\')" aria-label="Quitar '+esc(tk.t)+'" title="Quitar">'+icon('close')+'</button></li>';
   }).join('');
-  var tkSec='<section class="hoy-sec" aria-labelledby="cap-tk-h"><div class="hoy-sec-h"><h2 class="port-h2" id="cap-tk-h">Tickers del plan</h2>'+
-      '<span id="cap-sum">'+capSumHtml()+'</span></div>'+
-    (tickers.length?'<ul class="cap-tks">'+tkRows+'</ul>':'<p class="hoy-txt">Agrega cada ticker con el porcentaje del monto que quieres asignarle. La herramienta solo calcula: no elige activos por ti.</p>')+
-    '<form class="cap-add" onsubmit="event.preventDefault();capAddTicker(document.getElementById(\'cap-add-t\').value,document.getElementById(\'cap-add-p\').value)">'+
-      '<label class="sr-only" for="cap-add-t">Ticker</label><input id="cap-add-t" class="inp" placeholder="Ticker" autocomplete="off" style="text-transform:uppercase"/>'+
-      '<label class="sr-only" for="cap-add-p">Porcentaje</label><input id="cap-add-p" class="inp num" type="number" placeholder="%" min="0" max="100" step="1"/>'+
-      '<button type="submit" class="btn">'+icon('plus')+' Agregar</button></form>'+
-    (S.portfolio&&S.portfolio.length?'<div class="port-bar"><button type="button" class="btn" onclick="capUseTargets()">Repartir según mis objetivos</button>'+
-      '<button type="button" class="btn" onclick="capImportFromPortfolio(false)">Usar mis posiciones con pesos parejos</button></div>'+
-      '<p id="cap-tg-note" class="field-err" role="status" hidden></p>':'')+
+  var form='<section class="cap-form" aria-labelledby="cap-form-h"><h2 class="port-h2" id="cap-form-h">Monto y reparto</h2>'+
+    '<form class="cap-amount capx" id="cap-f" novalidate onsubmit="event.preventDefault();loadCapitalData()">'+
+      '<div class="capx-l">'+
+        '<div class="calc-field"><label for="cap-monthly">Monto a repartir (USD)</label>'+
+        '<input id="cap-monthly" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto" value="'+(monthly>0?monthly:'')+'" aria-describedby="cap-err" oninput="capSetErr()"/>'+
+        (capDisponible>0?'<button type="button" class="linkbtn" onclick="capUsarDisponible('+capDisponible+')">Usar tu capital disponible ('+fmtUSD(capDisponible,0)+')</button>':'')+
+        '</div>'+
+        '<details class="capx-opt"'+(S.capOptOpen?' open':'')+' ontoggle="S.capOptOpen=this.open">'+
+          '<summary>Opciones: <b>'+cadLbl+'</b> · <b>'+esc(CAP_LADDER_LABELS[capLadderKey()]||'')+'</b> <span class="linkbtn">Cambiar</span></summary>'+
+          chips('Cadencia',[['mensual','Mensual'],['quincenal','Quincenal'],['semanal','Semanal']],cadencia,'capSetCadencia')+
+          chips('Reparto de los tramos',[['short',CAP_LADDER_LABELS.short],['mid',CAP_LADDER_LABELS.mid],['long',CAP_LADDER_LABELS.long]],capLadderKey(),'capSetLadder')+
+        '</details>'+
+        (cadencia!=='mensual'&&monthly>0?'<p class="port-muted">Unos '+fmtUSD(porAporte,0)+' por aporte '+cadencia+'. Repartir el monto en aportes más frecuentes no cambia el cálculo de los tramos.</p>':'')+
+        // Con el reparto a la vista, el enlace ya está en su encabezado.
+        (results&&results.length?'':'<p class="capx-how"><button type="button" class="linkbtn" onclick="abrirComoCalcula(\'escalera\')">¿Cómo se reparte?</button></p>')+
+      '</div>'+
+      '<div class="capx-r">'+
+        '<div class="capx-h"><span id="cap-tk-h">Tickers y porcentajes</span><span id="cap-sum" aria-live="polite">'+capSumHtml()+'</span></div>'+
+        (tickers.length?'<ul class="cap-tks" aria-labelledby="cap-tk-h">'+tkRows+'</ul>':'<p class="hoy-txt">Agrega cada ticker con el porcentaje del monto que quieres asignarle. La herramienta solo calcula: no elige activos por ti.</p>')+
+        // Sin <form> anidado: Enter en estos campos agrega el ticker.
+        '<div class="cap-add" role="group" aria-label="Agregar ticker">'+
+          '<label class="sr-only" for="cap-add-t">Ticker</label><input id="cap-add-t" class="inp" placeholder="Ticker" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" onkeydown="if(event.key===\'Enter\'){event.preventDefault();capAddFromInputs();}"/>'+
+          '<label class="sr-only" for="cap-add-p">Porcentaje</label><input id="cap-add-p" class="inp num" type="number" inputmode="decimal" placeholder="%" min="0" max="100" step="1" onkeydown="if(event.key===\'Enter\'){event.preventDefault();capAddFromInputs();}"/>'+
+          '<button type="button" class="btn" onclick="capAddFromInputs()">'+icon('plus')+' Agregar</button></div>'+
+        (S.portfolio&&S.portfolio.length?'<div class="capx-src"><span>Partir de:</span><button type="button" class="btn" onclick="capUseTargets()" aria-label="Partir de mis objetivos">Mis objetivos</button>'+
+          '<button type="button" class="btn" onclick="capImportFromPortfolio(false)" aria-label="Partir de mis posiciones con pesos parejos">Mis posiciones, pesos parejos</button></div>'+
+          '<p id="cap-tg-note" class="field-err" role="status" hidden></p>':'')+
+      '</div>'+
+      '<div class="capx-go">'+
+        '<button type="submit" class="btn-big"'+(loading?' disabled':'')+'>'+(loading?'<span class="spin-sm"></span> Calculando…':'Calcular el reparto')+'</button>'+
+        '<p id="cap-err" class="field-err" role="alert" hidden></p>'+
+      '</div>'+
+    '</form>'+
   '</section>';
+  var tkSec='';
 
   function etfRow(r){
     var row=r.row, amt=monthly*(row.pct/100);
@@ -7946,7 +8040,7 @@ function renderCapital(){
       '</tr></thead><tbody>'+results.map(etfRow).join('')+'</tbody>'+
       '<tfoot><tr class="tot"><td>Total</td><td></td><td class="num">'+fmtUSD(monthly,0)+'</td><td colspan="'+(1+lad.length)+'"></td></tr></tfoot></table></div>'+capStack(results,monthly,lad)+'</section>';
   } else if(tickers.length&&!loading){
-    resSec='<p class="hoy-txt">Escribe el monto y toca "Calcular el reparto" para ver cuánto va a cada ticker y a cada tramo. <button type="button" class="linkbtn" onclick="abrirComoCalcula(\'escalera\')">¿Cómo se reparte?</button></p>';
+    resSec='<p class="hoy-txt">Escribe el monto y toca "Calcular el reparto" para ver cuánto va a cada ticker y a cada tramo.</p>';
   }
 
   document.getElementById('main').innerHTML=
@@ -8221,18 +8315,55 @@ window.addEventListener('appinstalled',function(){
 });
 
 
+// Tema: 'light' | 'dark' guardados en mv_theme; sin valor = Sistema (sigue
+// prefers-color-scheme y sus cambios). El botón de la franja alterna claro y
+// oscuro explícitos; Ajustes › Apariencia ofrece además Sistema.
+function themeStored(){ try{ var t=localStorage.getItem('mv_theme'); return t==='light'||t==='dark'?t:''; }catch(e){ return ''; } }
+function themeSystemDark(){ try{ return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches); }catch(e){ return false; } }
+function themeIsDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
+function applyTheme(){
+  var t=themeStored(), dark=t?t==='dark':themeSystemDark();
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  var m=document.getElementById('meta-theme'); if(m) m.setAttribute('content',dark?'#0E1628':'#14213D');
+  return dark;
+}
+var THEME_SUN='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var THEME_MOON='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
+function updateThemeBtn(){
+  var b=document.getElementById('tb-theme'); if(!b) return;
+  var dark=themeIsDark();
+  b.setAttribute('aria-pressed',String(dark));
+  b.title=dark?'Usar tema claro':'Usar tema oscuro';
+  b.innerHTML=dark?THEME_SUN:THEME_MOON;
+}
+// Tras cambiar el tema: los gráficos toman los colores al dibujarse, así que
+// se vuelve a pintar el contenido y la ficha abierta.
+function themeChanged(){
+  try{ renderSidebar(); }catch(e){}
+  updateThemeBtn();
+  if(!S.user) return;
+  try{ renderMain(); }catch(e){}
+  var drw=document.getElementById('drw');
+  if(drw&&drw.classList.contains('open')&&dTicker){
+    try{ var q=LIVE[dTicker]; renderDrawerHead(dTicker,q&&q.price); renderDrawerBody(); }catch(e){}
+  }
+}
 function toggleTheme(){
-  var html=document.documentElement;
-  var isDark=html.getAttribute('data-theme')==='dark';
-  html.setAttribute('data-theme',isDark?'light':'dark');
-  try{localStorage.setItem('mv_theme',isDark?'light':'dark');}catch(e){}
-  renderSidebar();
+  var dark=!themeIsDark();
+  try{ localStorage.setItem('mv_theme',dark?'dark':'light'); }catch(e){}
+  applyTheme(); themeChanged();
+}
+function setThemeMode(m){
+  try{ if(m==='system') localStorage.removeItem('mv_theme'); else localStorage.setItem('mv_theme',m==='dark'?'dark':'light'); }catch(e){}
+  applyTheme(); themeChanged();
 }
 function initTheme(){
+  applyTheme();
   try{
-    var t=localStorage.getItem('mv_theme')||'light';
-    document.documentElement.setAttribute('data-theme',t);
-  }catch(e){document.documentElement.setAttribute('data-theme','light');}
+    var mq=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
+    var on=function(){ if(!themeStored()){ applyTheme(); themeChanged(); } };
+    if(mq){ if(mq.addEventListener) mq.addEventListener('change',on); else if(mq.addListener) mq.addListener(on); }
+  }catch(e){}
 }
 
 
