@@ -2183,6 +2183,72 @@ body:not(.no-auth) .pagehead { display:block; }
 .drw-fund dd { margin: 0; color: var(--bright); text-align: right; }
 @media (max-width: 480px) { .drw-fund { grid-template-columns: 1fr; } }
 .d52 { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+
+/* ── HOY y MERCADO · fase 4 ─────────────────────────────────────────── */
+.port-wrap.hoy, .port-wrap.mkt { gap: 24px; }
+.hoy-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 32px; align-items: start; }
+@media (max-width: 1023px) { .hoy-grid { grid-template-columns: minmax(0, 1fr); } }
+.hoy-sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding-top: 14px; border-top: 1px solid var(--border2); }
+.hoy-sec-h { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-height: 40px; }
+.hoy-sec-h .port-h2 { margin: 0 auto 0 0; }
+.hoy-sec-h .port-muted { order: 2; flex-basis: 100%; }
+.hoy-sec-h .btn { min-height: 40px; }
+@media (pointer: coarse) { .hoy-sec-h .btn { min-height: 44px; } }
+.hoy-txt { margin: 0; font-size: 13px; line-height: 1.55; color: var(--text); max-width: 68ch; }
+.hoy-rev { display: flex; flex-direction: column; gap: 6px; }
+.hoy-rev .li-chips .tab { margin: 0; }
+.hoy-risk-v { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.hoy-risk-v .num { font-size: 26px; font-weight: 600; line-height: 1.2; }
+.hoy-risk-v span:last-child { font-size: 13px; color: var(--text2); }
+.hoy-risk-l { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text); line-height: 1.7; }
+.hoy-risk-l b { color: var(--bright); font-weight: 600; }
+.hoy-table th:first-child, .hoy-table td:first-child { width: 40%; }
+.hoy-ctx { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 0; padding-top: 14px; border-top: 1px solid var(--border2); font-size: 13px; color: var(--text2); }
+.hoy-ctx b { color: var(--bright); font-weight: 600; }
+.hoy-ctx .linkbtn { margin-left: auto; }
+@media (max-width: 639px) { .hoy-ctx .linkbtn { margin-left: 0; } }
+.m10-aporte { margin: 0; }
+.m10-aporte .port-h2 { margin: 0 0 4px; }
+.m10-aporte-f { align-items: flex-start; }
+.field-err { flex-basis: 100%; display: flex; align-items: center; gap: 4px; margin: 0; font-size: 13px; color: var(--neg); }
+.field-err[hidden] { display: none; }
+.field-err .ico { width: 15px; height: 15px; flex-shrink: 0; }
+.inp[aria-invalid="true"] { border-color: var(--neg); }
+.first-run { margin: 8px 0 24px; padding: 0; }
+.first-run-t { font-size: 20px; font-weight: 600; }
+
+/* Mercado */
+.mkt-ctx { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.mkt-reg { padding: 16px 18px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--r-md); }
+.mkt-reg-t .trend-tag { font-size: 18px; font-weight: 600; gap: 8px; }
+.mkt-reg-t .trend-tag .ico, .mkt-reg-t .li-word .ico { width: 20px; height: 20px; }
+.mkt-reg-d { margin: 6px 0 4px; font-size: 13px; color: var(--text2); line-height: 1.55; max-width: 68ch; }
+.mkt-spark { display: block; width: 100%; height: 76px; margin-top: 10px; }
+.mkt-key-l { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 6px 0 0; font-size: 12px; color: var(--text2); }
+.mkt-key-l > span { display: inline-flex; align-items: center; gap: 6px; }
+.mkt-key { display: inline-block; width: 16px; height: 0; border-top: 2px solid var(--bright); }
+.mkt-key.k-ma, .mkt-key.k-20 { border-top-color: var(--laton); }
+.mkt-key.k-ma2 { border-top-style: dashed; }
+.mkt-key.k-bb { border-top: 1px dashed var(--border3); }
+.drw-key { margin-top: 8px; }
+.pband-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1023px) {
+  .pband-3 { grid-template-columns: 1fr 1fr; }
+  .pband-3 .pband-c:nth-child(3) { grid-column: 1 / -1; }
+}
+.mkt-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px 32px; align-items: start; }
+@media (max-width: 1023px) { .mkt-grid { grid-template-columns: minmax(0, 1fr); } }
+.mkt-table th[scope="row"] { font-weight: 500; color: var(--bright); white-space: normal; text-align: left; }
+.mkt-table td:not(:first-child), .mkt-table thead th:not(:first-child) { text-align: right; }
+.mkt-table td:last-child, .mkt-table th:last-child { padding-right: 14px; }
+.port-stack.mkt-list { display: block; }
+.mkt-list .ps-l1 .num { font-size: 13px; }
+.mkt-when { font-size: 13px; color: var(--text2); min-width: 72px; text-align: right; }
+.mkt-news { margin: 0; }
+.mkt-news li:first-child { padding-top: 4px; }
+.mkt-news a { overflow-wrap: anywhere; }
+.mkt-news-t { color: var(--bright); font-size: 14px; line-height: 1.45; }
+.mkt .li-chips .tab { margin: 0; }
 </style>
 </head>
 <body>
@@ -2445,15 +2511,6 @@ const PAGES=[
 // mostraban como actuales y se mezclaban con el feed vivo. Se retiran: la app
 // muestra SOLO noticias en vivo y un empty state honesto cuando el feed falla.
 const NEWS_DATA=[];
-const CAL_DATA=[
-  {date:"Lun 5 Mayo",event:"ISM Services PMI (Abril)",imp:"alto"},
-  {date:"Mar 6 Mayo",event:"Earnings: AMD, Palantir, Airbnb",imp:"alto"},
-  {date:"Mié 7 Mayo",event:"Earnings: Datadog, Coinbase, Trade Desk",imp:"alto"},
-  {date:"Jue 8 Mayo",event:"Jobless Claims · McDonald's, Expedia earnings",imp:"medio"},
-  {date:"Vie 9 Mayo",event:"Nonfarm Payrolls Abril — Evento macro clave",imp:"alto"},
-  {date:"20 Mayo",  event:"NVIDIA (NVDA) Earnings — Evento del mes",imp:"alto"},
-  {date:"17 Junio", event:"FOMC primer meeting con Warsh + proyecciones",imp:"alto"}
-];
 
 // ── FORMATTERS ─────────────────────────────────────────────────
 // I10: un solo locale para todas las cifras. Se toma el idioma del navegador
@@ -3208,6 +3265,12 @@ function loadLWScript(){
   return _lwLoadPromise;
 }
 
+// '#RRGGBB' (o '#RGB') → rgba con transparencia; si no es hex, lo devuelve igual.
+function hexAlpha(c,a){
+  var m=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(c||'').trim()); if(!m) return c;
+  var h=m[1].length===3?m[1].replace(/./g,'$&$&'):m[1];
+  return 'rgba('+parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)+','+a+')';
+}
 function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
   loadLWScript().then(function(){
     var LW=window.LightweightCharts;
@@ -3228,6 +3291,11 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
     var textColor=_tok('--text2','#63604F');
     var gridColor=_tok('--border','rgba(20,33,61,0.10)');
     var posC=_tok('--pos','#356E57'), negC=_tok('--neg','#A23E2E');
+    // Medias en Navy (tinta) y Latón, bandas y ejes en tinta tenue: nada de los
+    // rojo/verde/violeta por defecto de la librería. Volumen desaturado.
+    var inkC=_tok('--bright','#14213D'), latonC=_tok('--laton','#B8863B');
+    var bandC=_tok('--border3','rgba(20,33,61,0.24)'), axisC=_tok('--border2','rgba(20,33,61,0.18)');
+    var volUp=hexAlpha(posC,0.32), volDn=hexAlpha(negC,0.32);
 
     _lwChartMain=LW.createChart(mainEl,{
       width:mainEl.clientWidth||mainEl.offsetWidth||300,
@@ -3235,8 +3303,8 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
       layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,attributionLogo:false},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
       crosshair:{mode:LW.CrosshairMode.Normal},
-      timeScale:{timeVisible:false,borderColor:'rgba(255,255,255,0.07)'},
-      rightPriceScale:{borderColor:'rgba(255,255,255,0.07)'},
+      timeScale:{timeVisible:false,borderColor:axisC},
+      rightPriceScale:{borderColor:axisC},
     });
     var chart=_lwChartMain;
 
@@ -3248,18 +3316,18 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
 
     var s20Data=bars.map(function(d,i){return sma20[i]!=null?{time:d.ts,value:sma20[i]}:null;}).filter(Boolean);
     if(s20Data.length){
-      var s20s=chart.addLineSeries({color:'#f59e0b',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      var s20s=chart.addLineSeries({color:latonC,lineWidth:1.5,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
       s20s.setData(s20Data);
     }
     var s50Data=bars.map(function(d,i){return sma50[i]!=null?{time:d.ts,value:sma50[i]}:null;}).filter(Boolean);
     if(s50Data.length){
-      var s50s=chart.addLineSeries({color:'#3d8ef8',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      var s50s=chart.addLineSeries({color:inkC,lineWidth:1.5,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
       s50s.setData(s50Data);
     }
     if(sma200&&sma200.length){
       var s200Data=bars.map(function(d,i){return sma200[i]!=null?{time:d.ts,value:sma200[i]}:null;}).filter(Boolean);
       if(s200Data.length){
-        var s200s=chart.addLineSeries({color:'#a855f7',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+        var s200s=chart.addLineSeries({color:inkC,lineWidth:1.5,lineStyle:2,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
         s200s.setData(s200Data);
       }
     }
@@ -3267,11 +3335,11 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
       var bbUpData=bars.map(function(d,i){return bbArr[i]&&bbArr[i].upper!=null?{time:d.ts,value:bbArr[i].upper}:null;}).filter(Boolean);
       var bbLoData=bars.map(function(d,i){return bbArr[i]&&bbArr[i].lower!=null?{time:d.ts,value:bbArr[i].lower}:null;}).filter(Boolean);
       if(bbUpData.length){
-        var bbUs=chart.addLineSeries({color:'rgba(61,142,248,0.3)',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,lineStyle:2});
+        var bbUs=chart.addLineSeries({color:bandC,lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,lineStyle:2});
         bbUs.setData(bbUpData);
       }
       if(bbLoData.length){
-        var bbLs=chart.addLineSeries({color:'rgba(61,142,248,0.3)',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,lineStyle:2});
+        var bbLs=chart.addLineSeries({color:bandC,lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,lineStyle:2});
         bbLs.setData(bbLoData);
       }
     }
@@ -3283,15 +3351,15 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
       height:60,
       layout:{background:{type:'solid',color:bgColor},textColor:textColor,attributionLogo:false},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
-      timeScale:{timeVisible:false,borderColor:'rgba(255,255,255,0.07)'},
-      rightPriceScale:{borderColor:'rgba(255,255,255,0.07)'},
+      timeScale:{timeVisible:false,borderColor:axisC},
+      rightPriceScale:{borderColor:axisC},
       crosshair:{mode:LW.CrosshairMode.Hidden},
     });
     var volChart=_lwChartVol;
     var volSeries=volChart.addHistogramSeries({
-      color:'rgba(255,255,255,0.15)',priceFormat:{type:'volume'},priceScaleId:'',
+      color:volUp,priceFormat:{type:'volume'},priceScaleId:'',
     });
-    volSeries.setData(bars.map(function(d){return {time:d.ts,value:d.vol||0,color:d.close>=d.open?'rgba(34,197,94,0.3)':'rgba(239,68,68,0.3)'};}));
+    volSeries.setData(bars.map(function(d){return {time:d.ts,value:d.vol||0,color:d.close>=d.open?volUp:volDn};}));
     volChart.timeScale().fitContent();
 
     // Sync x-axis scroll between both charts
@@ -3394,7 +3462,7 @@ async function deleteSeededHoldings(){
 // Estado vacío de la cuenta nueva (Panorama y Portafolio): tres caminos.
 function firstRunEmpty(){
   return '<div class="first-run">'+
-    '<h1 class="first-run-t">Empieza con tu portafolio</h1>'+
+    '<h2 class="first-run-t">Empieza con tu portafolio</h2>'+
     '<p class="first-run-d">Carga lo que ya tienes para ver tu valor, cuánto arriesgas en cada posición y si alguna pesa demasiado. Nada se carga solo: tú decides qué entra.</p>'+
     '<div class="first-run-paths">'+
     '<button class="first-run-path primary" onclick="openModal(\'addpos\')"><span class="first-run-path-t">Agregar mi primera posición</span><span class="first-run-path-d">Ticker, unidades y precio de compra</span></button>'+
@@ -4248,13 +4316,13 @@ async function deGetVIX(){
     var prev=hist.length>5?hist[hist.length-6].close:v;
     var regime=v<15?'low':v<25?'normal':v<35?'elevated':'crisis';
     var sizing={low:1.0,normal:0.75,elevated:0.50,crisis:0.25}[regime];
-    var label={low:'VIX Bajo',normal:'VIX Normal',elevated:'VIX Elevado',crisis:'VIX Crisis'}[regime];
+    var label={low:'baja',normal:'normal',elevated:'elevada',crisis:'extrema'}[regime];
     var color={low:'var(--grn)',normal:'var(--blue)',elevated:'var(--amber)',crisis:'var(--red)'}[regime];
     var emoji={low:'pos',normal:'info',elevated:'warn',crisis:'neg'}[regime];
     var tip={low:'Volatilidad baja — entorno de baja incertidumbre histórica.',normal:'Volatilidad normal — nivel dentro del rango histórico promedio.',elevated:'Volatilidad alta — entorno de mayor incertidumbre de mercado.',crisis:'Volatilidad extrema — nivel históricamente muy elevado.'}[regime];
     var result={vix:v,prev:prev,regime:regime,label:label,color:color,emoji:emoji,tip:tip,sizing:sizing};
     DE_CACHE.vix=result;return result;
-  }catch(e){return{vix:null,regime:'unknown',label:'VIX N/D',color:'var(--text3)',emoji:'muted',tip:'No se pudo obtener VIX.',sizing:1.0};}
+  }catch(e){return{vix:null,regime:'unknown',label:'sin dato',color:'var(--text3)',emoji:'muted',tip:'No se pudo obtener VIX.',sizing:1.0};}
 }
 
 // Market Breadth — % S&P 500 above SMA200 via $SPXA200R
@@ -4266,12 +4334,12 @@ async function deGetBreadth(){
     var v=hist[hist.length-1].close; // value is already a percentage (0-100)
     var prev=hist.length>5?hist[hist.length-6].close:v;
     var regime=v>=70?'strong':v>=50?'neutral':v>=30?'weak':'bear';
-    var label={strong:'Amplitud Fuerte',neutral:'Amplitud Neutral',weak:'Amplitud Débil',bear:'Bear Market Breadth'}[regime];
+    var label={strong:'fuerte',neutral:'neutral',weak:'débil',bear:'muy débil'}[regime];
     var color={strong:'var(--grn)',neutral:'var(--blue)',weak:'var(--amber)',bear:'var(--red)'}[regime];
-    var warning=v<50&&v<prev?'Divergencia: SPY puede estar en "hollow rally" — solo el índice sube.':'';
+    var warning=v<50&&v<prev?'Menos de la mitad de las acciones del índice está sobre su media de 200 días, y la proporción viene bajando.':'';
     var result={pct:v,prev:prev,regime:regime,label:label,color:color,warning:warning};
     DE_CACHE.breadth=result;return result;
-  }catch(e){return{pct:null,regime:'unknown',label:'Amplitud N/D',color:'var(--text3)',warning:''};}
+  }catch(e){return{pct:null,regime:'unknown',label:'sin dato',color:'var(--text3)',warning:''};}
 }
 
 // Sector RS — performance del sector del ticker vs SPY (30 días)
@@ -4355,7 +4423,13 @@ function drawSPYMiniChart(regime){
       else if(!hasSMA200){statusEl.textContent='SMA200 no disponible — datos insuficientes.';}
       else{statusEl.textContent=closes[closes.length-1]>=regime.sma200?'SPY sobre SMA200':'SPY bajo SMA200';}
     }
-    if(!hasSMA200||!closes.length) return;
+    if(!hasSMA200||!closes.length){
+      canvas.style.display='none';
+      var lg=canvas.nextElementSibling; if(lg&&lg.classList.contains('mkt-key-l')) lg.style.display='none';
+      var fb0=document.getElementById('spy-mini-fallback');
+      if(fb0){ fb0.textContent='No hay un año de historia de SPY para dibujar su media de 200 días.'; fb0.hidden=false; }
+      return;
+    }
     // Compute full SMA200 array (only real 200-period values — no Math.min shortcut)
     var smaArr=[];
     for(var i=0;i<closes.length;i++){
@@ -4377,7 +4451,9 @@ function drawSPYMiniChart(regime){
     function xOf(i){return 1+(W-2)*(i/(closes.length-1));}
     function yOf(v){return H-4-(H-8)*((v-minP)/rng);}
     // SMA200 line
-    ctx.beginPath(); ctx.strokeStyle=regime.color||'#f59e0b'; ctx.lineWidth=1.5;
+    var _cs2=getComputedStyle(document.documentElement);
+    var _ink=(_cs2.getPropertyValue('--bright')||'').trim()||'#14213D', _lat=(_cs2.getPropertyValue('--laton')||'').trim()||'#B8863B';
+    ctx.beginPath(); ctx.strokeStyle=_lat; ctx.lineWidth=1.5;
     var firstSma=true;
     smaArr.forEach(function(v,i){
       if(v==null) return;
@@ -4385,12 +4461,12 @@ function drawSPYMiniChart(regime){
     });
     ctx.stroke();
     // SPY price line
-    ctx.beginPath(); ctx.strokeStyle='rgba(226,232,240,.85)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.strokeStyle=_ink; ctx.lineWidth=1.5;
     closes.forEach(function(v,i){if(i===0)ctx.moveTo(xOf(i),yOf(v));else ctx.lineTo(xOf(i),yOf(v));});
     ctx.stroke();
     // Current price dot
     var lx=xOf(closes.length-1),ly=yOf(closes[closes.length-1]);
-    ctx.beginPath(); ctx.arc(lx,ly,3,0,Math.PI*2); ctx.fillStyle='rgba(226,232,240,.9)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(lx,ly,3,0,Math.PI*2); ctx.fillStyle=_ink; ctx.fill();
   }catch(e){
     var fb=document.getElementById('spy-mini-fallback');
     if(fb) fb.style.display='block';
@@ -4609,7 +4685,6 @@ function analisisTabs(){
     (ANALISIS_TAB==='universo'?'Tu watchlist y tu portafolio, con contexto de mercado':'Escribe los tickers que quieras y filtra por criterio')+
     '</span></div>';
 }
-function renderMercado(){ ANALISIS_TAB='universo'; renderDecisionEngineBody('mercado'); }
 function renderDecisionEngineBody(mode){
   var isMercado=mode==='mercado';
   var main=document.getElementById('main');
@@ -5585,114 +5660,19 @@ function renderPaywall(){
     '<button class="btn-big" onclick="openModal(\'upgrade\')">'+icon('bolt')+'Ver qué incluye la beta →</button></div>';
 }
 
-// ── DASHBOARD ──────────────────────────────────────────────────
-// ── ÍNDICES ───────────────────────────────────────────────────────────────
-// Extraida de mercadoHoyBody() para poder ubicarla junto a Top Señales y
-// Portafolio en renderDash() (antes solo vivia en el rail de "Mercado hoy").
-// Los valores de partida eran cifras reales de 2024 hardcodeadas (VIX 16.8,
-// Bitcoin $97.400...). Como marketbar no devolvia VIX ni BTC, esos dos se
-// mostraban con datos de hace mas de un ano SIN ninguna marca de que eran
-// estaticos. Un dato viejo presentado como actual es peor que un hueco: ahora
-// el valor arranca vacio y solo se rellena si llega de la API.
-function indicesCard(){
-  // Antes esta tarjeta dependia por completo de que mercadoHoyBody() se
-  // renderizara despues en el mismo pase (mismo array MARKET_BAR) para
-  // disparar el fetch — si algun dia se renderiza indicesCard() sola, se
-  // quedaba en "sin dato" para siempre sin que nada la rellenara. Ahora pide
-  // los datos ella misma si hace falta (fetchMarketBar ya es idempotente:
-  // cache localStorage + createLoadGate evitan pedidos duplicados).
-  if(!MARKET_BAR.length && !barIsLoading()){
-    // Solo re-renderiza si fetchMarketBar trajo datos nuevos de verdad — si
-    // no, un cooldown activo o _USE_EDGE=false resuelven "false" en cada
-    // llamada y renderMain() se disparaba en loop apretado (bug real,
-    // reproducido corriendo la app: ver historial de este archivo).
-    fetchMarketBar().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
-  }
-  var IDX_MAP={
-    '^GSPC':  {n:'S&P 500',    v:null,c:null,up:null},
-    '^IXIC':  {n:'NASDAQ',     v:null,c:null,up:null},
-    '^DJI':   {n:'Dow 30',     v:null,c:null,up:null},
-    '^VIX':   {n:'VIX',        v:null,c:null,up:null},
-    'BTC-USD':{n:'Bitcoin USD',v:null,c:null,up:null}
-  };
-  if(MARKET_BAR.length){
-    MARKET_BAR.forEach(function(b){
-      if(!IDX_MAP[b.sym]||!isFinite(b.price)) return;
-      var isUp=(b.changePct||0)>=0;
-      var pct=(isUp?'+':'\u2212')+fmtD(Math.abs(b.changePct||0))+'\u00a0%';
-      var val=b.sym==='BTC-USD'?'$'+fmt(b.price):b.sym==='^VIX'?fmtD(b.price):b.price>=1000?fmt(b.price):fmtD(b.price);
-      IDX_MAP[b.sym]={n:IDX_MAP[b.sym].n,v:val,c:pct,up:isUp};
-    });
-  }
-  var IDXS=[IDX_MAP['^GSPC'],IDX_MAP['^IXIC'],IDX_MAP['^DJI'],IDX_MAP['^VIX'],IDX_MAP['BTC-USD']];
-  // "sin dato" antes era el unico estado posible cuando v es null, sin
-  // distinguir "todavia no llego la respuesta" de "se intento y fallo". Ahora
-  // que fetchMarketBar() reintenta solo (createLoadGate), vale la pena que la
-  // UI lo refleje: "cargando…" mientras el fetch esta en vuelo.
-  var idxPlaceholder=barIsLoading()?'cargando…':'sin dato';
-  var idxRows=IDXS.map(function(x){
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+x.n+'</span>'+
-      '<div style="display:flex;gap:8px;align-items:baseline">'+
-      '<span style="font-size:11px;color:'+(x.v?'var(--bright)':'var(--text3)')+';font-family:\'IBM Plex Mono\',monospace">'+(x.v||idxPlaceholder)+'</span>'+
-      (x.c?'<span style="font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+(x.up?'var(--pos)':'var(--neg)')+'">'+x.c+'</span>':'')+
-      '</div></div>';
-  }).join('');
-  return '<div class="fos-card" style="overflow:hidden">'+
-    '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:space-between">'+
-      '<h2 class="fos-section-label" style="margin:0">Índices</h2>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace" title="La fuente de índices no informa la hora de cada dato">Con retraso de la fuente</span>'+
-    '</div>'+
-    '<div style="padding:4px 14px 8px">'+idxRows+'</div>'+
-  '</div>';
-}
+// ── HOY (reestructura v3, fase 4) ─────────────────────────────────────
+// Responde "¿cómo voy y cuánto arriesgo?": la misma banda de resumen que
+// Posiciones, tu riesgo hoy, lo que conviene revisar, tus 5 posiciones de
+// mayor peso, el aporte del mes y una línea de contexto que lleva a Mercado.
+// Salieron de Hoy: noticias e índices (viven en Mercado), "Mayores
+// movimientos" (era una lista fija, se eliminó de la app), la mini-lista
+// (está en la barra lateral y en Lista) y la asignación (Portafolio ›
+// Posiciones › Diversificación).
 
-// ── MARKET MOVERS ────────────────────────────────────────────────────────
-// Vivia dentro de Contexto. Al consolidar Contexto en el Dashboard se extrae a
-// funcion propia en vez de duplicar el widget en dos pantallas.
-function moversCard(){
-  var MOVERS=[
-    {t:"NVDA",last:878,chg:1.4},{t:"AAPL",last:196.5,chg:3.1},
-    {t:"GOOGL",last:191,chg:5.4},{t:"TSLA",last:247,chg:2.4},
-    {t:"AMZN",last:199,chg:1.2},{t:"META",last:522,chg:-4.1}
-  ];
-  // Los precios de partida son de relleno; se sustituyen por LIVE cuando llega.
-  // Se marca cuales siguen siendo de relleno para no presentarlos como actuales.
-  var conDato=0;
-  MOVERS.forEach(function(m){
-    if(LIVE[m.t]){ m.last=LIVE[m.t].price; m.chg=(LIVE[m.t].changePct||0)*100; m.live=true; conDato++; }
-  });
-  var upd=liveUpdated?('Yahoo Finance · '+timeAgo(liveUpdated)):'Cargando…';
-  var filas=MOVERS.map(function(m){
-    var pos=m.chg>=0;
-    return '<div role="button" tabindex="0" onclick="openDrawer(\''+m.t+'\','+m.last+')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer">'+
-      '<span style="font-size:12px;font-weight:700;color:var(--bright);flex:1;font-family:\'IBM Plex Mono\',monospace">'+m.t+'</span>'+
-      (m.live
-        ? '<span style="font-size:11px;color:var(--text);font-family:\'IBM Plex Mono\',monospace;width:60px;text-align:right">'+m.last.toFixed(2)+'</span>'+
-          '<span style="font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;width:56px;text-align:right;color:'+(pos?'var(--pos)':'var(--neg)')+'">'+(pos?'+':'')+m.chg.toFixed(2)+'%</span>'
-        : '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;width:116px;text-align:right">sin dato</span>')+
-      '</div>';
-  }).join('');
-  // flex:1: es la ultima tarjeta del rail de contexto en el grid de Panorama
-  // (junto a Top Señales/Portafolio y las noticias) — sin esto, si esa fila
-  // termina mas abajo por las otras columnas, el rail queda corto y deja un
-  // hueco de fondo de pagina debajo. Con flex:1 absorbe ese sobrante.
-  return '<div class="cb" style="padding:0;overflow:hidden;flex:1">'+
-    '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--card2);display:flex;justify-content:space-between;align-items:center">'+
-      '<h2 class="fos-section-label" style="margin:0">Mayores movimientos</h2>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+(conDato?upd:'sin datos en vivo')+'</span>'+
-    '</div>'+filas+'</div>';
-}
-
-// "Foco de hoy": tarjeta decision-first al tope del dashboard. Surface, desde
-// datos REALES (ALL_SIG del motor + watchlist + portafolio), 1-2 cosas concretas
-// para revisar hoy. Solo usa señales cuando el scoring real ya corrio
-// (ALL_SIG_REAL); si no, muestra un estado de carga. Encuadre educativo: son
-// señales técnicas "para revisar", no recomendaciones de compra/venta.
+// "Para revisar hoy": desde datos reales (ALL_SIG del cálculo de lecturas +
+// lista + portafolio). Solo describe datos de lo que la persona ya tiene o
+// sigue, sin sugerir operaciones.
 function dashFocoCard(port){
-  // Relanzamiento v2: antes listaba "candidatos" con señal alcista en la
-  // watchlist (para comprar) y bajista en el portafolio (para vender). Ahora
-  // solo describe datos de lo que la persona ya sigue, sin sugerir operaciones.
   if(!ALL_SIG_REAL && !MINE_SIG_REAL){
     loadMineSigScores().catch(function(){});
   }
@@ -5708,32 +5688,28 @@ function dashFocoCard(port){
     });
   }
   function tkChips(arr,conRsi){
-    return arr.slice(0,6).map(function(s){
-      return '<button class="btn" style="font-size:11px;padding:3px 9px" onclick="openDrawer(\''+s.t+'\','+getLivePrice(s.t)+')">'+s.t+(conRsi?' · RSI '+s.rsi:'')+'</button>';
-    }).join('');
+    return '<div class="li-chips">'+arr.slice(0,6).map(function(s){
+      return '<button type="button" class="tab" onclick="openDrawer(\''+esc(s.t)+'\','+getLivePrice(s.t)+')" aria-label="Abrir la ficha de '+esc(s.t)+'">'+esc(s.t)+(conRsi?' <span class="num">RSI '+s.rsi+'</span>':'')+'</button>';
+    }).join('')+'</div>';
   }
   var rows='';
   if(!ALL_SIG_REAL&&!MINE_SIG_REAL){
-    rows='<div style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">Calculando indicadores con datos históricos…</div>';
+    rows='<p class="port-muted"><span class="spin-sm"></span> Calculando indicadores con datos históricos…</p>';
   }else if(!bajo.length && !extremos.length){
-    rows='<div style="font-size:12px;color:var(--text2);line-height:1.6">Ninguna de tus posiciones cotiza bajo sus dos medias y ningún activo que sigues tiene el RSI fuera de la zona 30–70.</div>';
+    rows='<p class="hoy-txt">Ninguna de tus posiciones cotiza bajo sus dos medias y ningún activo que sigues tiene el RSI fuera de la zona 30–70.</p>';
   }else{
     if(bajo.length){
-      rows+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:'+(extremos.length?'10px':'0')+'">'+
-        '<span style="font-size:12px;color:var(--text);font-weight:600">'+bajo.length+(bajo.length===1?' posición cotiza':' posiciones cotizan')+' bajo sus medias de 50 y 200 días</span>'+tkChips(bajo,false)+'</div>';
+      rows+='<div class="hoy-rev"><p class="hoy-txt">'+bajo.length+(bajo.length===1?' posición cotiza':' posiciones cotizan')+' bajo sus medias de 50 y 200 días</p>'+tkChips(bajo,false)+'</div>';
     }
     if(extremos.length){
-      rows+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
-        '<span style="font-size:12px;color:var(--text);font-weight:600">'+extremos.length+(extremos.length===1?' activo que sigues tiene':' activos que sigues tienen')+' el RSI fuera de 30–70</span>'+tkChips(extremos,true)+'</div>';
+      rows+='<div class="hoy-rev"><p class="hoy-txt">'+extremos.length+(extremos.length===1?' activo que sigues tiene':' activos que sigues tienen')+' el RSI fuera de 30–70</p>'+tkChips(extremos,true)+'</div>';
     }
   }
-  return '<div class="fos-card" style="padding:var(--sp-8);margin-bottom:16px">'+
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'+
-      '<h2 class="fos-section-label" style="margin:0;display:flex;align-items:center;gap:8px">'+icon('decision')+' Para revisar hoy</h2>'+
-    '</div>'+
+  return '<section class="hoy-sec" aria-labelledby="hoy-rev-h">'+
+    '<div class="hoy-sec-h"><h2 class="port-h2" id="hoy-rev-h">Para revisar hoy</h2></div>'+
     rows+
-    '<div style="margin-top:12px;font-size:12px;color:var(--text3);line-height:1.5">Datos para revisar, no instrucciones de compra o venta.</div>'+
-  '</div>';
+    '<p class="port-muted">Datos para revisar, no instrucciones de compra o venta.</p>'+
+  '</section>';
 }
 
 function renderDash(){
@@ -5742,163 +5718,53 @@ function renderDash(){
   // Precio actual: live si existe, sino el último conocido, sino el costo
   // (evita NaN/"—" mientras cargan los precios o si el fetch falla)
   port.forEach(function(h){h.cur=LIVE[h.t]?LIVE[h.t].price:(h.cur||h.cost);});
-  var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
-  var totM=port.reduce(function(s,h){return s+h.sh*h.cur;},0);
-  var pnl=totM-totC;
-  var pnlPct=totC>0?((pnl/totC)*100):0;
-  var winners=port.filter(function(h){return h.cur>h.cost;}).length;
-  var losers=port.filter(function(h){return h.cur<h.cost;}).length;
+  var main=document.getElementById('main');
 
-  // ── helpers locales ──
-  function scoreCircle(sc){
-    var cls=sc>=70?'fos-score--g':sc>=50?'fos-score--a':'fos-score--r';
-    return '<span class="fos-score '+cls+'">'+sc+'</span>';
-  }
-  function chgBadge(lqd){
-    if(!lqd||lqd.changePct==null) return '<span style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+(barIsLoading()?'cargando…':'—')+'</span>';
-    var v=(lqd.changePct||0)*100,c=v>=0?'var(--pos)':'var(--neg)',arrow=v>=0?'▲':'▼';
-    return '<span style="color:'+c+';font-family:\'IBM Plex Mono\',monospace">'+arrow+' '+(v>=0?'+':'')+v.toFixed(2)+'%</span>';
-  }
-  function fmtMoney(n){ return n==null||isNaN(n)?'—':'$'+fmtD(n); }
-
-  // ── name lookup (best-effort) ──
-  var _TN={'AAPL':'Apple Inc.','NVDA':'NVIDIA Corp.','MSFT':'Microsoft','AMZN':'Amazon.com','GOOGL':'Alphabet','META':'Meta Platforms','TSLA':'Tesla','SPY':'SPDR S&P 500','QQQ':'Invesco QQQ','VTI':'Vanguard Total','BRK.B':'Berkshire B','V':'Visa Inc.','JPM':'JPMorgan','XLK':'Tech Select','XLF':'Financial Sel.','GLD':'Gold ETF','TLT':'20yr Treasury','BTC-USD':'Bitcoin','AMD':'AMD Inc.','NFLX':'Netflix'};
-  function _tname(t){ return _TN[t]||t; }
-
-  // ── Portfolio rows ──
-  var portRows=port.slice(0,8).map(function(h){
-    var pnlH=h.sh*(h.cur-h.cost);
-    var pnlPctH=h.cost>0?((h.cur-h.cost)/h.cost*100):0;
-    var pc=pnlH>=0?'var(--pos)':'var(--neg)';
-    var lqd=LIVE[h.t];
-    var chgV=lqd?(lqd.changePct||0)*100:null;
-    var chgColor=chgV===null?'var(--text3)':chgV>=0?'var(--pos)':'var(--neg)';
-    var chgStr=chgV===null?(barIsLoading()?'cargando…':'—'):(chgV>=0?'+':'')+chgV.toFixed(2)+'%';
-    var wt=totM>0?Math.round(h.sh*h.cur/totM*100):0;
-    return '<tr role="button" tabindex="0" style="cursor:pointer" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')" onmouseenter="this.style.background=\'var(--card3)\'" onmouseleave="this.style.background=\'\'">'+
-      '<td style="font-weight:700;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(h.t)+'</td>'+
-      '<td style="color:var(--text2);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(_tname(h.t))+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--text)">'+(LIVE[h.t]&&LIVE[h.t].price?fmtMoney(LIVE[h.t].price):'<span style="color:var(--text2)">cargando…</span>')+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+chgColor+'">'+chgStr+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:'+pc+'">'+(pnlH>=0?'+':'')+fmtMoney(Math.abs(pnlH))+'</td>'+
-      '<td style="font-family:\'IBM Plex Mono\',monospace;color:var(--text3)">'+wt+'%</td>'+
-      '</tr>';
-  }).join('');
-
-  // ── Empty state (I01): portada de la cuenta nueva ──
+  // ── Estado vacío (I01): portada de la cuenta nueva ──
   if(port.length===0){
-    document.getElementById('main').innerHTML='<div class="dash-wrap">'+seedCleanupBanner()+firstRunEmpty()+'</div>';
+    main.innerHTML='<div class="port-wrap pv">'+seedCleanupBanner()+firstRunEmpty()+'</div>';
     return;
   }
 
-  // ── KPI cards ──
-  var pnlColor=pnl>=0?'var(--pos)':'var(--neg)';
-  var _kc=pnl>=0?'kpi-pos':'kpi-neg';
-
-  // I06 (M10): ¿cómo voy y cuánto arriesgo? Se retiraron "Mejor activo" y
-  // "Mejor hoy" (gamificación) y la tabla del universo de referencia.
   var T=dashTotals(port);
-  var ccy=localCcy();
-  var kpiCards=
-    kpi('Valor del portafolio',fmtUSD(T.value,0),(T.missing?T.missing+' precio'+(T.missing===1?'':'s')+' cargando':(ccy?'≈ '+fxIn(T.value,ccy):'En USD')),'n','hero')+
-    kpi('Hoy','<span style="color:'+(T.day>=0?'var(--pos)':'var(--neg)')+'">'+(T.day>=0?'+':'')+fmtUSD(T.day,0)+'</span>',(T.day>=0?'+':'')+fmtPctN(T.dayPct*100,2),T.day>=0?'g':'r')+
-    kpi('Total','<span style="color:'+pnlColor+'">'+(pnl>=0?'+':'')+fmtUSD(T.total,0)+'</span>',(T.total>=0?'+':'')+fmtPctN(T.totalPct*100,1)+' sobre lo invertido',T.total>=0?'g':'r')+
-    kpi('Posiciones',String(port.length),'<span style="color:var(--pos)">'+winners+' arriba</span> · <span style="color:var(--neg)">'+losers+' abajo</span>','n');
+  var winners=port.filter(function(h){return h.cur>h.cost;}).length;
+  var losers=port.filter(function(h){return h.cur<h.cost;}).length;
+  var lim=riskConcentrationLimit();
+  var real=HOLDINGS_STOP===true;
+  var rs=computeRiskAtStop(port.map(function(h){ return {t:h.t,sh:h.sh,cur:h.cur,stop:h.stop}; }),S.capital>0?S.capital:0,lim,{estimateMissing:!real});
 
-  var sigCard=dashWatchCard();
+  // ── Banda de resumen (mismo componente que Posiciones) ──
+  var approx;
+  if(T.missing) approx=T.missing+(T.missing===1?' precio cargando':' precios cargando');
+  else if(USER_CURRENCY==='USD'){ var lc=localCcy()||'CLP'; var fx=fxIn(T.value,lc); approx=fx?'≈ '+fx:'En USD'; }
+  else approx='≈ '+fmtUSD(T.value,0)+' USD';
+  var band='<section class="pband" aria-label="Resumen de hoy">'+
+    '<div class="pband-c pband-hero"><div class="pband-l">Valor</div><div class="pband-v num">'+money(T.value,0)+'</div><div class="pband-s num">'+approx+'</div></div>'+
+    '<div class="pband-c"><div class="pband-l">Hoy</div><div class="pband-v num '+(T.day>=0?'pos':'neg')+'">'+money(T.day,0,true)+'</div><div class="pband-s num '+(T.day>=0?'pos':'neg')+'">'+(T.day>=0?'+':'')+pct(T.dayPct)+'</div></div>'+
+    '<div class="pband-c"><div class="pband-l">Total</div><div class="pband-v num '+(T.total>=0?'pos':'neg')+'">'+money(T.total,0,true)+'</div><div class="pband-s num '+(T.total>=0?'pos':'neg')+'">'+(T.total>=0?'+':'')+pct(T.totalPct)+' sobre lo invertido</div></div>'+
+    '<div class="pband-c"><div class="pband-l">Posiciones</div><div class="pband-v num">'+port.length+'</div><div class="pband-s"><span class="pos">'+winners+' arriba</span> · <span class="neg">'+losers+' abajo</span></div></div>'+
+    '</section>';
 
-  // ── Portfolio card ──
-  // flex:1 (no solo el ancho estandar de .fos-card): es la ultima tarjeta de
-  // su columna en el grid de Panorama — sin esto, cuando la columna del medio
-  // (noticias) o la del rail terminan mas abajo, esta tarjeta se queda corta
-  // y deja un hueco de fondo de pagina antes del borde inferior de la fila.
-  // Con flex:1 absorbe ese sobrante como padding interno de la propia tarjeta.
-  var portCard=
-    '<div class="fos-card" style="flex:1">'+
-    '<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">'+
-    '<h2 class="fos-card-title">Portafolio</h2>'+
-    '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">'+port.length+' de '+(S.portfolio.length)+' posiciones</span>'+
-    '</div>'+
-    (!INVEST_BETA&&S.user.plan==='free'&&S.portfolio.length>plan.maxT?
-      '<div style="font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;padding:0 20px 10px">Mostrando '+plan.maxT+' de '+S.portfolio.length+' · <span role="button" tabindex="0" onclick="openModal(\'upgrade\')" style="cursor:pointer;text-decoration:underline">Upgrade Pro</span></div>':'')+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th>Nombre</th><th>Precio</th><th>Cambio</th><th>P&amp;L</th><th>Peso%</th></tr></thead>'+
-    '<tbody>'+portRows+'</tbody></table></div></div>';
-
-  // El banner de Régimen ya NO va full-width aqui: vive en el rail de
-  // contexto (debajo de Índices) junto a Top Señales/Portafolio, mas abajo en
-  // este mismo render. dashLoadContext() lo llena async buscando su id.
-
-  var now=new Date();
-  var pageHeader=
-    '<div class="dash-page-header">'+
-    '<div>'+
-    '<div class="dash-page-breadcrumb">Panorama</div>'+
-    '<h1 class="dash-page-title">Panorama</h1>'+
-    '</div>'+
-    // Los 4 accesos rapidos (Motor/Indicadores/Riesgo/Screener) se quitaron
-    // el 13-sep-2026 por duplicar exactamente la pestaña "Analizar" del nav
-    // principal y las pantallas naturales de Decidir/Investigar — la
-    // auditoria UX conto 5 caminos distintos al mismo Motor de Analisis y 3
-    // duplicados mas de Indicadores/Riesgo/Screener entre este toolbar y su
-    // pantalla de destino real. dash-head-right/dash-quick(-b) quedaron sin
-    // uso en ningun otro lado (grep confirmado) — se dejan las clases CSS
-    // por si se quiere reusar el patron, pero el HTML que las llenaba se
-    // elimino.
-    '<div class="dash-head-right">'+
-    '<span class="dash-fresh-m">'+liveBadge()+'</span>'+
-    '</div>'+
-    '</div>';
-
-  document.getElementById('main').innerHTML=
-    '<div class="dash-wrap">'+
-    pageHeader+
+  main.innerHTML=
+    '<div class="fos-module-header"><div><div class="fos-module-sub"><span class="fresh-m live-badge-wrap">'+liveBadge()+'</span></div></div></div>'+
+    '<div class="port-wrap pv hoy">'+
     seedCleanupBanner()+
-    '<div class="dash-hero-row">'+kpiCards+'</div>'+
-    '<div class="m10-row">'+dashRiskCard(port)+dashAllocBar(port,T)+'</div>'+
+    band+
+    '<div class="hoy-grid">'+dashRiskCard(rs,lim,real)+dashFocoCard(port)+'</div>'+
+    dashTopPositions(port,rs,T.value)+
     dashAporteCard()+
-    dashFocoCard(port)+
-    // Fila 1: Top Senales + Portafolio (mi cartera) junto al rail de contexto
-    // de mercado (Índices/Régimen/Movers) — antes el rail vivia abajo, al lado
-    // del feed de noticias; Walter pidio subirlo para verlo de un vistazo junto
-    // a sus señales y posiciones. Reusa el patron .resp2 (1fr..+rail fijo) ya
-    // establecido en el resto de la app: colapsa a 1 columna en mobile con la
-    // misma regla que ya existe (@media 768px .resp2{grid-template-columns:1fr}).
-    // align-items default (stretch, no "start"): el rail apilado (3 tarjetas)
-    // es mas alto que Top Señales/Portafolio por si solo — con "start" quedaba
-    // un hueco en blanco de ~500px por fuera de toda tarjeta bajo esas dos
-    // columnas. Con stretch, las 3 tarjetas igualan altura y el espacio extra
-    // queda DENTRO del fondo/borde de cada card, no como vacio suelto.
-    '<div class="resp2" style="display:grid;grid-template-columns:1fr 1fr 268px;gap:16px;margin-bottom:30px">'+
-      '<div style="display:flex;flex-direction:column;gap:16px">'+
-        sigCard+portCard+
-      '</div>'+
-      // El feed completo de noticias (antes una banda full-width al pie,
-      // "BANDA MERCADO HOY") se subio aca por pedido de Walter: la queria
-      // completa (con destacada, tabs de categoria, tendencias), no el
-      // resumen de 10 titulares que habia antes. mercadoHoyBody() ya trae su
-      // propio header ("Ultimas Noticias" + contador), por eso solo se envuelve
-      // en fos-card sin duplicar titulo. La tarjeta destacada dentro de la
-      // funcion se adapto (ver mas abajo) para apilarse en vertical: a este
-      // ancho de columna (~1fr, compartido con Top Senales/Portafolio y el
-      // rail de 268px) la miniatura fija de 195px al lado del texto no entraba.
-      '<div class="fos-card">'+mercadoHoyBody()+'</div>'+
-      '<div style="display:flex;flex-direction:column;gap:14px">'+
-        indicesCard()+
-        '<div id="de-regime-banner" class="fos-card" style="padding:12px 14px"><div class="dash-ctx-loading" style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">// Cargando contexto…</div></div>'+
-        moversCard()+
-      '</div>'+
-    '</div>'+
+    '<p class="hoy-ctx" id="hoy-ctx" aria-live="polite">'+dashCtxHtml(DE_CACHE.regime,DE_CACHE.vix,false)+'</p>'+
     '</div>';
 
-  // Saved indicator (invisible, keeps backward compat)
+  // Indicador de guardado (invisible, compatibilidad con persist()).
   var savedEl=document.createElement('span');
   savedEl.id='saved';savedEl.style.display='none';
-  document.getElementById('main').appendChild(savedEl);
+  main.appendChild(savedEl);
 
   dashLoadContext();
 }
 
-// ── PANORAMA M10 (I06) ──────────────────────────────────────────
+// ── HOY: piezas ──────────────────────────────────────────────────
 var _CCY_BY_REGION={CL:'CLP',MX:'MXN',CO:'COP',AR:'ARS',PE:'PEN'};
 function localCcy(){
   if(USER_CURRENCY&&USER_CURRENCY!=='USD') return USER_CURRENCY;
@@ -5907,7 +5773,7 @@ function localCcy(){
 }
 function fxIn(usd,ccy){
   var r=FX_RATES[ccy]; if(!r||!isFinite(usd)) return '';
-  return (usd<0?'\u2212':'')+(FX_SYMBOLS[ccy]||'$')+fmt(Math.round(Math.abs(usd*r)))+' '+ccy;
+  return (usd<0?'−':'')+(FX_SYMBOLS[ccy]||'$')+fmt(Math.round(Math.abs(usd*r)))+' '+ccy;
 }
 // Valor, Hoy y Total con precios en vivo. Hoy usa el cambio diario de cada
 // cotización; las posiciones sin precio todavía no suman a "Hoy".
@@ -5922,22 +5788,62 @@ function dashTotals(port){
   });
   return {value:value,cost:cost,total:value-cost,totalPct:cost>0?(value-cost)/cost:0,day:day,dayPct:(value-day)>0?day/(value-day):0,priced:priced,missing:port.length-priced};
 }
-function dashRiskCard(port){
-  var lim=riskConcentrationLimit();
-  var real=HOLDINGS_STOP===true;
-  var rows=port.map(function(h){ return {t:h.t,sh:h.sh,cur:(LIVE[h.t]&&LIVE[h.t].price)||h.cur||h.cost,stop:h.stop}; });
-  var rs=computeRiskAtStop(rows,S.capital>0?S.capital:0,lim,{estimateMissing:!real});
+// Tu riesgo hoy: total al stop, posiciones sin stop (no se cuentan) y mayor
+// peso frente a tu límite. Misma lógica que la banda de Posiciones.
+function dashRiskCard(rs,lim,real){
   var top=rs.rows.slice().sort(function(a,b){return b.weight-a.weight;})[0];
   var base=S.capital>0?'del capital':'del portafolio';
-  return '<button class="m10-risk" onclick="setPage(\'risk\')" aria-label="Tu riesgo hoy: abrir Portafolio, Posiciones">'+
-    '<div class="m10-h">Tu riesgo hoy</div>'+
-    '<div class="m10-risk-v num">'+fmtUSD(-rs.totalRisk,0)+'<span>'+fmtPctN(rs.totalRiskPct*100,1)+' '+base+' si todos los stops se activan</span></div>'+
-    '<ul class="m10-risk-l">'+
+  return '<section class="hoy-sec" aria-labelledby="hoy-risk-h">'+
+    '<div class="hoy-sec-h"><h2 class="port-h2" id="hoy-risk-h">Tu riesgo hoy</h2>'+
+      '<button type="button" class="linkbtn" onclick="setPage(\'risk\')">Ver en Posiciones</button></div>'+
+    '<p class="hoy-risk-v"><span class="num'+(rs.totalRisk>0?' neg':'')+'">'+(rs.totalRisk>0?money(-rs.totalRisk,0):money(0,0))+'</span>'+
+      '<span>'+fmtPctN(rs.totalRiskPct*100,1)+' '+base+' si todos los stops se activan</span></p>'+
+    '<ul class="hoy-risk-l">'+
     (real
       ?'<li>'+(rs.noStopCount?rs.noStopCount+(rs.noStopCount===1?' posición sin stop: no se cuenta en este total':' posiciones sin stop: no se cuentan en este total'):'Todas tus posiciones tienen stop')+'</li>'
       :'<li>Sin stops guardados: se estima con −8 % bajo el precio de cada posición</li>')+
-    (top?'<li>Mayor peso: <b>'+esc(top.t)+'</b> con '+fmtPctN(top.weight*100,0)+(top.overLimit?' · supera tu límite de '+fmtPctN(lim*100,0):'')+'</li>':'')+
-    '</ul><span class="m10-link">Ver en Posiciones</span></button>';
+    (top?'<li>Mayor peso: <b>'+esc(top.t)+'</b> con <span class="num">'+fmtPctN(top.weight*100,0)+'</span>'+
+      (top.overLimit?' '+warnTag('Supera tu límite de '+fmtPctN(lim*100,0)):' · tu límite es '+fmtPctN(lim*100,0))+'</li>':'')+
+    '</ul></section>';
+}
+// Tus 5 posiciones de mayor peso, con el sistema de filas de Posiciones:
+// tabla desde 1024 px y filas apiladas por debajo.
+function dashTopPositions(port,rs,totM){
+  var rsByT={}; rs.rows.forEach(function(r){rsByT[r.t]=r;});
+  var top=port.slice().sort(function(a,b){return b.sh*b.cur-a.sh*a.cur;}).slice(0,5);
+  function riskTxt(r){
+    if(!r||r.noStop) return '<span class="port-muted">sin stop</span>';
+    return '<span class="num neg">'+money(-r.riskAtStop,0)+'</span>'+(r.stopIsDefault?' <span class="calc-est">est.</span>':'');
+  }
+  var rows=top.map(function(h){
+    var r=rsByT[h.t]||null;
+    var val=h.sh*h.cur, pnl=h.sh*(h.cur-h.cost), ret=h.cost>0?(h.cur-h.cost)/h.cost:0, w=val/(totM||1);
+    var name=TICKER_NAMES[h.t]||'';
+    return '<tr class="trow" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')">'+
+      '<td class="port-asset"><button type="button" class="port-tk" onclick="event.stopPropagation();openDrawer(\''+esc(h.t)+'\','+h.cur+')" aria-label="Abrir la ficha de '+esc(h.t)+'">'+esc(h.t)+'</button>'+
+        '<span class="port-sub">'+esc(name?name+' · ':'')+portTypeLabel(h.type)+'</span></td>'+
+      '<td class="num">'+money(val,0)+'</td>'+
+      '<td class="num '+(pnl>=0?'pos':'neg')+'">'+money(pnl,0,true)+'<span class="port-sub num">'+(ret>=0?'+':'')+pct(ret)+'</span></td>'+
+      '<td class="num">'+fmtPctN(w*100,0)+(r&&r.overLimit?'<span class="port-sub">'+warnTag('Supera tu límite')+'</span>':'')+'</td>'+
+      '<td>'+riskTxt(r)+'</td></tr>';
+  }).join('');
+  var table='<div class="tw port-tw"><table class="fos-table port-table hoy-table"><thead><tr>'+
+    '<th>Activo</th><th>Valor</th><th>Resultado</th><th>Peso</th><th title="Pérdida si el precio toca tu stop">Riesgo al stop</th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  var stack='<ul class="port-stack">'+top.map(function(h){
+    var r=rsByT[h.t]||null;
+    var val=h.sh*h.cur, pnl=h.sh*(h.cur-h.cost), ret=h.cost>0?(h.cur-h.cost)/h.cost:0, w=val/(totM||1);
+    return '<li class="ps-row"><button type="button" class="ps-main" onclick="openDrawer(\''+esc(h.t)+'\','+h.cur+')" aria-label="Abrir la ficha de '+esc(h.t)+'">'+
+      '<span class="ps-l1"><span class="ps-t">'+esc(h.t)+'</span><span class="num">'+money(val,0)+'</span><span class="num '+(pnl>=0?'pos':'neg')+'">'+money(pnl,0,true)+' · '+(ret>=0?'+':'')+pct(ret)+'</span></span>'+
+      '<span class="ps-l2"><span>Peso <b class="num">'+fmtPctN(w*100,0)+'</b>'+(r&&r.overLimit?' '+warnTag('supera tu límite'):'')+'</span>'+
+        '<span>Riesgo '+(!r||r.noStop?'<b>sin stop</b>':'<b class="num neg">'+money(-r.riskAtStop,0)+'</b>'+(r.stopIsDefault?' est.':''))+'</span></span>'+
+      '</button></li>';
+  }).join('')+'</ul>';
+  return '<section class="hoy-sec" aria-labelledby="hoy-top-h">'+
+    '<div class="hoy-sec-h"><h2 class="port-h2" id="hoy-top-h">Tus posiciones</h2>'+
+      '<span class="port-muted">'+(port.length>5?'Las 5 de mayor peso, de '+port.length:'Ordenadas por peso')+'</span>'+
+      '<button type="button" class="btn" onclick="goDest(\'portafolio\')">Ver portafolio</button></div>'+
+    table+stack+'</section>';
 }
 function dashAllocBar(port,totals){
   var by={}; var tot=0;
@@ -5950,46 +5856,41 @@ function dashAllocBar(port,totals){
     keys.map(function(k){return '<span style="width:'+(by[k]/tot*100).toFixed(2)+'%;background:'+col[k]+'"></span>';}).join('')+'</div>'+
     '<ul class="m10-legend">'+keys.map(function(k){return '<li><i style="background:'+col[k]+'"></i>'+k+' <span class="num">'+fmtPctN(by[k]/tot*100,0)+'</span></li>';}).join('')+'</ul></div>';
 }
-function dashWatchCard(){
-  var wl=(S.watchlist||[]).slice(0,6);
-  if(!wl.length){
-    return '<div class="fos-card"><div class="fos-card-pad"><h2 class="fos-card-title">Tu lista de seguimiento</h2>'+
-      '<p class="m10-empty">Agrega los activos que quieres mirar sin tenerlos en tu portafolio.</p>'+
-      '<button class="btn" onclick="setPage(\'watch\')">Armar mi lista</button></div></div>';
-  }
-  var rows=wl.map(function(t){
-    var s=ALL_SIG.find(function(x){return x.t===t;})||{};
-    var lq=LIVE[t];
-    return '<tr role="button" tabindex="0" style="cursor:pointer" onclick="openDrawer(\''+esc(t)+'\','+(lq&&lq.price?lq.price:0)+')">'+
-      '<td style="font-weight:600;color:var(--bright)" class="num">'+esc(t)+'</td>'+
-      '<td>'+(s.sig?badge(s.sig):'<span style="color:var(--text2)">'+((MINE_SIG_REAL||ALL_SIG_REAL)?'—':'calculando…')+'</span>')+'</td>'+
-      '<td class="num">'+(lq&&lq.price?'$'+fmtD(lq.price):'<span style="color:var(--text2)">cargando…</span>')+'</td>'+
-      '<td>'+chgCell(lq)+'</td></tr>';
-  }).join('');
-  return '<div class="fos-card"><div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px">'+
-    '<h2 class="fos-card-title">Tu lista de seguimiento</h2>'+
-    '<button class="btn" onclick="setPage(\'watch\')">Ver lista</button></div>'+
-    '<div class="tw"><table class="fos-table"><thead><tr><th>Ticker</th><th title="Precio frente a sus medias de 50 y 200 días">Tendencia</th><th>Precio</th><th>Hoy</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
-}
 // Qué significa el régimen para alguien con portafolio (descriptivo, sin consejo).
 var REGIME_MEANING={
   risk_on:'Cuando el índice amplio está sobre sus medias largas, las caídas suelen ser más cortas, pero no hay garantía. Es un buen momento para revisar que cada posición tenga su stop y que ninguna pese más que tu límite.',
   risk_off:'Cuando el índice amplio está bajo sus medias largas, las caídas suelen ser más largas y frecuentes. Revisa cuánto perderías si se activan tus stops y si ese monto cabe en tu regla.',
   neutral:'El índice está entre sus medias: el mercado no muestra una dirección clara. Las lecturas de corto plazo cambian seguido; tu regla de riesgo y tus stops son los que no cambian.'
 };
+// Régimen como ícono + palabra (mismo estilo que la tendencia de Mi lista).
+function regimeTag(r){
+  if(!r||r.spy==null) return '<span class="li-word">'+icon('warning','ico-inline')+'Régimen sin datos</span>';
+  var m={risk_on:['t-up','ind'],risk_off:['t-down','trend-down'],neutral:['t-mix','sig']}[r.regime]||['t-mix','sig'];
+  return '<span class="trend-tag '+m[0]+'">'+icon(m[1],'ico-inline')+esc(r.label)+'</span>';
+}
+function fmt1(n){ return (+n).toLocaleString(LOC,{minimumFractionDigits:1,maximumFractionDigits:1}); }
+// Línea de contexto al pie de Hoy: régimen y volatilidad, enlace a Mercado.
+function dashCtxHtml(r,v,done){
+  var parts=[];
+  if(r) parts.push(regimeTag(r));
+  if(v&&v.vix) parts.push('<span>Volatilidad (VIX) <b class="num">'+fmt1(v.vix)+'</b> · '+esc(v.label)+'</span>');
+  var body=parts.length?parts.join(''):(done?'<span class="port-muted">Sin datos de contexto por ahora</span>':'<span class="port-muted">Cargando el contexto del mercado…</span>');
+  return body+'<button type="button" class="linkbtn" onclick="goDest(\'mercado\')">Ver mercado</button>';
+}
 
 // ── PUENTE CON MOY IQ (I09) ─────────────────────────────────────
 // Invest no lee los datos de MOY IQ (viven en el dispositivo de la persona).
-// La persona escribe cuánto puede aportar y va a Plan de Capital con ese
-// monto. MOY IQ puede enlazar a invest.moyiq.app/app?aporte=410.
+// La persona escribe cuánto puede aportar y va a Planificar › Aportes con ese
+// monto, que ya llega repartido. MOY IQ puede enlazar a invest.moyiq.app/app?aporte=410.
 function dashAporteCard(){
   var m=S.capitalPlan&&S.capitalPlan.monthly>0?S.capitalPlan.monthly:'';
-  return '<form class="m10-aporte" onsubmit="aporteGo(event)">'+
-    '<div><div class="m10-h">¿Cuánto puedes aportar este mes?</div>'+
-    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Lo repartes en Plan de Capital entre los tickers que elijas.</p></div>'+
+  return '<form class="m10-aporte" novalidate onsubmit="aporteGo(event)" aria-labelledby="aporte-h">'+
+    '<div><h2 class="port-h2" id="aporte-h">¿Cuánto puedes aportar este mes?</h2>'+
+    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Se reparte en Planificar › Aportes entre los tickers de tu plan.</p></div>'+
     '<div class="m10-aporte-f"><label class="sr-only" for="aporte-in">Aporte del mes en USD</label>'+
-    '<input id="aporte-in" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto (USD)" value="'+m+'"/>'+
-    '<button class="btn-big" type="submit">Repartir</button></div></form>';
+    '<input id="aporte-in" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto (USD)" value="'+m+'" aria-describedby="aporte-err" oninput="aporteClearErr()"/>'+
+    '<button class="btn-big" type="submit">Repartir</button>'+
+    '<p id="aporte-err" class="field-err" role="alert" hidden></p></div></form>';
 }
 function setAporte(v){
   v=parseFloat(v);
@@ -5999,14 +5900,29 @@ function setAporte(v){
   _capSave(); S.capitalResults=null;
   return true;
 }
+function aporteClearErr(){
+  var e=document.getElementById('aporte-err'), i=document.getElementById('aporte-in');
+  if(e&&!e.hidden){ e.hidden=true; e.innerHTML=''; }
+  if(i) i.removeAttribute('aria-invalid');
+}
+// Repartir: valida en línea, lleva a Aportes y calcula el reparto en el acto.
 function aporteGo(e){
   if(e) e.preventDefault();
-  var v=(document.getElementById('aporte-in')||{}).value;
-  if(!setAporte(v)){ showToast('Escribe un monto mayor que 0','warning'); return; }
-  track('bridge_aporte',{src:'panorama'});
+  var inp=document.getElementById('aporte-in'), err=document.getElementById('aporte-err');
+  var v=inp?inp.value:'';
+  if(!setAporte(v)){
+    if(err){
+      err.innerHTML=icon('warning','ico-inline')+(String(v).trim()===''?'Escribe cuánto puedes aportar este mes.':'El monto tiene que ser mayor que 0.');
+      err.hidden=false;
+    }
+    if(inp){ inp.setAttribute('aria-invalid','true'); inp.focus(); }
+    return;
+  }
+  track('bridge_aporte',{src:'hoy'});
   setPage('capital');
+  loadCapitalData();
 }
-// ?aporte=410 en la URL (enlace desde MOY IQ): precarga el monto y abre Plan de Capital.
+// ?aporte=410 en la URL (enlace desde MOY IQ): precarga el monto, abre Aportes y reparte.
 function applyAporteParam(){
   try{
     var qp=new URLSearchParams(window.location.search);
@@ -6015,39 +5931,15 @@ function applyAporteParam(){
     qp.delete('aporte');
     var q=qp.toString();
     history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
-    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); setPage('capital'); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
+    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
   }catch(e){}
 }
 
 function dashLoadContext(){
   Promise.all([deGetRegime().catch(function(){return null;}),deGetVIX().catch(function(){return null;})]).then(function(res){
-    var r=res[0],v=res[1];
-    var el=document.getElementById('de-regime-banner');
-    if(!el)return;
-    var rClass=r?(r.regime==='risk_on'?'fos-pill--grn':r.regime==='risk_off'?'fos-pill--red':'fos-pill--amb'):'';
-    var rLabel=r?r.label.toUpperCase():'—';
-    // Version compacta: antes vivia junto a un feed de noticias largo, donde su
-    // altura (SPY/SMA200 en $, barra VIX + escala, chips de "Señales activas")
-    // se absorbia sin problema. Ahora esta tarjeta vive en el rail junto a
-    // Top Señales/Portafolio (fila "de un vistazo") y esos extras solo
-    // duplicaban el % vs SMA200 / la pildora de régimen ya visibles arriba.
-    // El boton "→ Abrir Motor de Análisis" que cerraba esta tarjeta se quito
-    // el 13-sep-2026: era el 4to de 5 caminos redundantes al mismo lugar
-    // (Analizar -> Motor de Analisis), ya cubierto por la pestaña del nav.
-    var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h2 class="fos-section-label">Régimen de Mercado</h2>'+(r&&r.spy&&r.sma200?'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">SMA50 '+(r.spy>r.sma200?'>':'<')+' SMA200</span>':'')+'</div>';
-    if(r){
-      html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:11px;color:var(--text3)">SPY · Tendencia</span><div class="dash-regime-pill '+rClass+'" style="margin:0"><span class="fos-dot"></span>'+rLabel+'</div></div>';
-      html+='<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px">'+r.desc+'</div>';
-      if(REGIME_MEANING[r.regime]) html+='<details class="m10-meaning"><summary>¿Qué significa para mí?</summary><p>'+REGIME_MEANING[r.regime]+' Es una descripción del mercado, no una recomendación.</p></details>';
-      if(r.pct200!=null){var p200=(r.pct200*100);html+='<div style="display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-top:1px solid var(--border)"><span style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">% vs SMA200</span><span style="color:'+(p200>=0?'var(--pos)':'var(--neg)')+';font-family:\'IBM Plex Mono\',monospace">'+(p200>=0?'+':'')+p200.toFixed(1)+'%</span></div>';}
-    }
-    if(v&&v.vix){
-      var vixN=v.vix;
-      var vixC=vixN<20?'var(--grn)':vixN<30?'var(--amber)':'var(--red)';
-      html+='<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-top:1px solid var(--border)"><span style="color:var(--text3);font-family:\'IBM Plex Mono\',monospace">VIX (volatilidad)</span><span style="display:flex;align-items:center;gap:5px;font-family:\'IBM Plex Mono\',monospace;color:'+vixC+'"><span style="width:6px;height:6px;border-radius:50%;background:'+vixC+';flex-shrink:0"></span>'+vixN.toFixed(1)+' · '+v.label+'</span></div>';
-    }
-    el.innerHTML=html;
-    // Also refresh topbar pills now that data is loaded
+    var el=document.getElementById('hoy-ctx');
+    if(!el) return;
+    el.innerHTML=dashCtxHtml(res[0],res[1]&&res[1].vix?res[1]:null,true);
     renderTopbar();
   });
 }
@@ -6812,7 +6704,6 @@ function setSigF(f){S.sigFilter=f;renderMain();}
 
 // ── NEWS ───────────────────────────────────────────────────────
 var LIVE_NEWS=[];
-var _newsFetched=false;
 
 // ── MARKET BAR ─────────────────────────────────────────────────
 // _barFetched pasó de booleano "ya lo intenté" a createLoadGate() el
@@ -6823,13 +6714,14 @@ var _newsFetched=false;
 // a veces se quedaban pegados. El gate reintenta solo despues de 20s si el
 // intento anterior fallo, en vez de rendirse para siempre.
 var MARKET_BAR=[];
+var MARKET_BAR_TS=0; // hora de consulta (la fuente no informa la hora de cada simbolo)
 var _barGate=createLoadGate(20000);
 function barIsLoading(){ return _barGate.isLoading(); }
 
 // Devuelve true solo si MARKET_BAR quedo con datos nuevos (cache valida o
 // fetch exitoso) — false en cualquier otro caso (cooldown, _USE_EDGE=false,
 // fallo de red). Antes esta funcion siempre "resolvia" (nunca rechazaba al
-// caller, tragaba sus propios errores) y mercadoHoyBody() llamaba
+// caller, tragaba sus propios errores) y renderMercado() llamaba
 // renderMain() en el .then() incondicionalmente — eso recreaba el mismo
 // "render -> pedir datos -> settle casi instantaneo -> renderMain -> render
 // de nuevo" en bucle apretado cada vez que la respuesta no tenia datos
@@ -6840,7 +6732,7 @@ async function fetchMarketBar(){
   try{
     var cached=JSON.parse(localStorage.getItem('mv_market_bar')||'null');
     if(cached&&(Date.now()-cached.ts)<3*60*1000&&cached.items&&cached.items.length){
-      MARKET_BAR=cached.items;return true;
+      MARKET_BAR=cached.items;MARKET_BAR_TS=cached.ts;return true;
     }
   }catch(e){/* silent */}
   try{
@@ -6854,8 +6746,8 @@ async function fetchMarketBar(){
       if(!res.ok) throw new Error('marketbar '+res.status);
       var data=await res.json();
       if(data.items&&data.items.length){
-        MARKET_BAR=data.items;
-        localStorage.setItem('mv_market_bar',JSON.stringify({ts:Date.now(),items:MARKET_BAR}));
+        MARKET_BAR=data.items;MARKET_BAR_TS=data.fetchedAt||Date.now();
+        localStorage.setItem('mv_market_bar',JSON.stringify({ts:MARKET_BAR_TS,items:MARKET_BAR}));
       }
       return data;
     });
@@ -6868,7 +6760,7 @@ async function fetchMarketBar(){
 
 // _newsFetched: mismo fix que _barGate arriba — antes era una bandera que se
 // marcaba true tambien en el catch(e) de fallo, dejando el feed de noticias
-// (y por eso tambien MARKET_BAR, ver mercadoHoyBody) sin reintentar nunca
+// (y por eso tambien MARKET_BAR, ver renderMercado) sin reintentar nunca
 // mas tras un solo error de red.
 var _newsGate=createLoadGate(20000);
 function newsIsLoading(){ return _newsGate.isLoading(); }
@@ -6911,356 +6803,189 @@ function getNewsData(){
   return LIVE_NEWS.length?LIVE_NEWS.slice():[];
 }
 
-// ── TIMESTAMP HELPERS ──────────────────────────────────────────
-function relTime(hoursAgo){
-  if(hoursAgo<1) return 'hace '+Math.round(hoursAgo*60)+'m';
-  if(hoursAgo<24) return 'hace '+Math.round(hoursAgo)+'h';
-  if(hoursAgo<48) return 'hace 1 día';
-  return 'hace '+Math.round(hoursAgo/24)+' días';
+
+// ── MERCADO (reestructura v3, fase 4) ───────────────────────────────
+// ¿En qué contexto estoy invirtiendo? Régimen con su explicación, una banda
+// con volatilidad, amplitud y SPY frente a su media de 200 días; los índices
+// y materias primas que antes eran la cinta de arriba; los próximos
+// resultados de las empresas que tienes o sigues, y las noticias con filtros.
+// Las lecturas por activo viven en Lista › Mi lista.
+var MKT={ctx:null,earn:null};
+// Mismos 10 instrumentos que la cinta de arriba (api/marketbar), en español.
+// El VIX tiene su propia celda en la banda de contexto.
+var MKT_SYMS=[
+  ['^GSPC','S&P 500'],['^DJI','Dow 30'],['^IXIC','Nasdaq'],['^RUT','Russell 2000'],
+  ['CL=F','Petróleo (WTI)'],['GC=F','Oro'],['SI=F','Plata'],['EURUSD=X','Euro/dólar'],
+  ['^TNX','Bono EE. UU. 10 años'],['BTC-USD','Bitcoin']
+];
+function mktFmtValue(sym,p){
+  if(sym==='EURUSD=X') return (+p).toLocaleString(LOC,{minimumFractionDigits:4,maximumFractionDigits:4});
+  if(sym==='^TNX') return fmtD(p)+' %';
+  if(sym==='BTC-USD') return '$'+fmt(p);
+  if(sym==='CL=F'||sym==='GC=F'||sym==='SI=F') return '$'+fmtD(p);
+  return p>=1000?fmt(p):fmtD(p);
 }
-
-function saveNewsCache(data){
-  try{localStorage.setItem('mv_news_cache',JSON.stringify({ts:Date.now(),data:data}));}catch(e){/* silent */}
+// Cambio en puntos porcentuales ya calculados (changePct en %, no fracción).
+function mktChg(p){
+  if(p==null||!isFinite(p)) return '<span class="port-muted">—</span>';
+  return '<span class="num '+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'−')+fmtD(Math.abs(p))+' %</span>';
 }
-function loadNewsCache(){
-  try{
-    var c=localStorage.getItem('mv_news_cache');
-    if(!c) return null;
-    var p=JSON.parse(c);
-    // Valid for 2 hours
-    if(Date.now()-p.ts < 2*60*60*1000) return p.data;
-  }catch(e){/* silent */}
-  return null;
-}
+function mktTime(ts){ return new Date(ts).toLocaleTimeString(LOC,{hour:'2-digit',minute:'2-digit'}); }
 
-// Antes era renderNews() (pagina Contexto propia). Ahora Contexto vive DENTRO
-// del Dashboard como banda "Mercado hoy": esta funcion devuelve solo el cuerpo
-// (filtros + feed + indices), sin el header de pagina, para que renderDash lo
-// incruste. Sigue disparando la carga de noticias/indices en cada visita en
-// la que no hay datos y no hay un intento en curso — antes solo se disparaba
-// "en la primera visita" (banderas _newsFetched/_barFetched que quedaban en
-// true para siempre tras un fallo, ver createLoadGate arriba). Ahora
-// fetchLiveNews()/fetchMarketBar() son responsables de no repetir trabajo
-// (cache localStorage + gate con cooldown) asi que es seguro pedirselos en
-// cada render mientras no haya dato.
-function mercadoHoyBody(){
-  // Mismo criterio que indicesCard(): solo renderMain() si el fetch trajo
-  // datos nuevos — de lo contrario (cooldown, _USE_EDGE=false, fallo real)
-  // renderMain() se disparaba en loop apretado en cada settle, sin ninguna
-  // pausa real entre intentos (bug real, reproducido corriendo la app).
-  if(!LIVE_NEWS.length && !newsIsLoading()){
-    fetchLiveNews().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
+function renderMercado(){
+  var main=document.getElementById('main');
+  if(!MARKET_BAR.length&&!barIsLoading()){
+    fetchMarketBar().then(function(ok){ if(ok&&S.page==='decision') renderMain(); }).catch(function(){});
   }
-  if(!MARKET_BAR.length && !barIsLoading()){
-    fetchMarketBar().then(function(ok){ if(ok) renderMain(); }).catch(function(){});
+  if(!LIVE_NEWS.length&&!newsIsLoading()){
+    fetchLiveNews().then(function(ok){ if(ok&&S.page==='decision') renderMain(); }).catch(function(){});
   }
-  _newsFetched=true; // solo controla el copy "Cargando…" vs "Reintentando…" abajo
-  var activeNews=getNewsData();
-  var usingStaticNews=!LIVE_NEWS.length;
-  var f=S.newsFilter;
-
-  // ── Category filter tabs ──────────────────────────────────────
-  var CATS=["Todo","Fed","Earnings","Geopolítica","Macro","IA & Tech"];
-  var catTabs=CATS.map(function(c){
-    var on=f===c;
-    return '<button onclick="setNewsF(\''+c+'\')" style="padding:5px 14px;border-radius:var(--r-sm);border:1px solid '+(on?'rgba(245,158,11,.4)':'var(--border)')+';background:'+(on?'rgba(245,158,11,.1)':'transparent')+';color:'+(on?'var(--amber)':'var(--text3)')+';font-size:11px;font-weight:'+(on?'700':'500')+';cursor:pointer;font-family:\'IBM Plex Mono\',monospace;transition:.15s">'+c+'</button>';
-  }).join(' ');
-
-  // ── Helpers para thumbnails ──────────────────────────────────
-  function newsDomain(link){
-    try{return new URL(link).hostname.replace('www.','');}catch(e){return '';}
-  }
-  function newsFavicon(link,sz){
-    var d=newsDomain(link);
-    return d?'https://www.google.com/s2/favicons?domain='+d+'&sz='+(sz||32):'';
-  }
-  var catEmoji={Fed:'bank',Earnings:'sig',Geopolítica:'macro',Macro:'ind','IA & Tech':'robot'};
-  var catGrad={
-    Fed:'linear-gradient(160deg,#1a0a2e,#2d1060)',
-    Earnings:'linear-gradient(160deg,#0a2218,#0f3320)',
-    Geopolítica:'linear-gradient(160deg,#2a0a0a,#3d1010)',
-    Macro:'linear-gradient(160deg,#0a1628,#0e2244)',
-    'IA & Tech':'linear-gradient(160deg,#1a1200,#2d2000)'
-  };
-
-  // ── Tag + impact styles ───────────────────────────────────────
-  var tagSt={
-    Fed:'background:rgba(139,92,246,.12);color:#a78bfa',
-    Earnings:'background:rgba(38,166,91,.12);color:var(--grn)',
-    Geopolítica:'background:rgba(232,65,66,.12);color:var(--red)',
-    Macro:'background:rgba(61,142,248,.12);color:var(--blue)',
-    'IA & Tech':'background:rgba(247,147,26,.12);color:var(--amber)'
-  };
-  var impCol={bullish:'var(--grn)',bearish:'var(--red)',neutral:'var(--amber)',critical:'#a78bfa'};
-  var impLabel={bullish:icon('bull')+' Bullish',bearish:icon('bear')+' Bearish',neutral:icon('sig')+' Análisis',critical:icon('alert')+' Crítico'};
-  var impBg={bullish:'rgba(38,166,91,.1)',bearish:'rgba(232,65,66,.1)',neutral:'rgba(247,147,26,.1)',critical:'rgba(139,92,246,.1)'};
-  var sparkPts={bullish:'0,35 16,28 32,20 48,12 64,6',bearish:'0,8 16,14 32,22 48,30 64,38',neutral:'0,22 16,18 32,28 48,20 64,15',critical:'0,30 16,20 32,25 48,10 64,5'};
-
-  // ── Breaking news items ───────────────────────────────────────
-  var breakingItems=activeNews.filter(function(n){return n.breaking;});
-
-  // ── Filtered list ─────────────────────────────────────────────
-  var filtered=f==='Todo'?activeNews:activeNews.filter(function(n){return n.cat===f;});
-  var featItem=filtered[0];
-  var listItems=filtered.slice(1);
-
-  // ── Breaking banner ───────────────────────────────────────────
-  var breakingBanner='';
-  if(breakingItems.length>0){
-    var bItems=breakingItems.map(function(n){
-      return '<span role="button" tabindex="0" onclick="setNewsF(\''+n.cat+'\')" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:3px 0;border-right:1px solid rgba(255,255,255,.1);padding-right:16px;margin-right:12px;flex-shrink:0" onmouseover="this.style.opacity=\'.8\'" onmouseout="this.style.opacity=\'1\'">'+
-        '<span style="font-size:11px;font-weight:600;color:var(--bright);font-family:\'IBM Plex Mono\',monospace">'+esc(n.title.substring(0,55))+'...</span>'+
-        '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(n.hoursAgo)+'</span>'+
-        '</span>';
-    }).join('');
-    breakingBanner=
-      '<div style="background:var(--red);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;display:flex;align-items:stretch">'+
-      '<div style="background:rgba(0,0,0,.3);padding:8px 14px;display:flex;align-items:center;flex-shrink:0">'+
-      '<span style="font-size:11px;font-weight:700;color:var(--bright);letter-spacing:1.5px;font-family:\'IBM Plex Mono\',monospace">BREAKING</span>'+
+  main.innerHTML=
+    '<div class="fos-module-header"><div><div class="fos-module-sub">El contexto en el que inviertes: régimen, volatilidad, índices, resultados de empresas y noticias. Datos con el retraso de la fuente.</div></div></div>'+
+    '<div class="port-wrap pv mkt">'+
+      '<section class="hoy-sec" aria-labelledby="mkt-ctx-h"><div class="hoy-sec-h"><h2 class="port-h2" id="mkt-ctx-h">Contexto del mercado</h2></div>'+
+        '<div id="mkt-ctx-b">'+mktCtxHtml(MKT.ctx)+'</div></section>'+
+      '<div class="mkt-grid">'+
+        '<section class="hoy-sec" aria-labelledby="mkt-idx-h">'+mktIndicesHtml()+'</section>'+
+        '<section class="hoy-sec" aria-labelledby="mkt-earn-h" id="mkt-earn">'+mktEarnHtml()+'</section>'+
       '</div>'+
-      '<div style="flex:1;overflow:hidden;padding:8px 14px;display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none">'+
-      bItems+
-      '</div></div>';
-  }
-
-  // ── Featured card ─────────────────────────────────────────────
-  var featCard='';
-  if(featItem){
-    var fts=tagSt[featItem.cat]||'background:var(--card2);color:var(--text)';
-    var sparkCol=impCol[featItem.impact]||'var(--amber)';
-    var pts=sparkPts[featItem.impact]||sparkPts.neutral;
-    featCard=
-      // display:column (no row): la tarjeta destacada vive ahora en la
-      // columna angosta del Panorama (~1fr junto a Top Señales/Portafolio y
-      // el rail de 268px) — miniatura+texto lado a lado con 195px fijos no
-      // entraba, se apila miniatura arriba/texto abajo.
-      '<div role="button" tabindex="0" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:10px;display:flex;flex-direction:column;cursor:pointer;transition:.15s" '+(featItem.link?'onclick="window.open(\''+featItem.link+'\',\'_blank\',\'noopener\')"':'')+' onmouseover="this.style.borderColor=\'rgba(247,147,26,.3)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
-      // Thumbnail: imagen real si existe, sino gradiente+emoji+favicon
-      (function(){
-        var grad=catGrad[featItem.cat]||'linear-gradient(160deg,#091428,#0e2244)';
-        var emoji=icon(catEmoji[featItem.cat]||'news','ico-lg');
-        var fav=newsFavicon(featItem.link||'',32);
-        var realImg=featItem.image||null;
-        if(realImg){
-          // Real photo from Yahoo Finance — show it with dark overlay for text legibility
-          return '<div style="width:100%;height:140px;flex-shrink:0;position:relative;overflow:hidden;background:#0a0e17">'+
-            '<img src="'+realImg+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block" '+
-              'onerror="this.parentElement.style.background=\''+grad+'\';this.remove()">'+
-            // gradient overlay so breaking badge is readable
-            '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35) 0%,transparent 50%,rgba(0,0,0,.25) 100%)"></div>'+
-            (featItem.breaking?'<div style="position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:1px;font-family:\'IBM Plex Mono\',monospace">BREAKING</div>':'')+
-            // source favicon chip bottom-right
-            (fav?'<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);border-radius:var(--r-sm);padding:3px 6px;display:flex;align-items:center;gap:5px">'+
-              '<img src="'+fav+'" style="width:12px;height:12px;object-fit:contain" onerror="this.parentElement.style.display=\'none\'">'+
-              '<span style="font-size:11px;color:rgba(255,255,255,.7);font-family:\'IBM Plex Mono\',monospace">'+esc(featItem.source)+'</span>'+
-            '</div>':'')+
-          '</div>';
-        }
-        // Fallback: category gradient + emoji + favicon
-        return '<div style="width:100%;height:140px;flex-shrink:0;background:'+grad+';position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
-          '<div style="width:52px;height:52px;opacity:.85;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));color:#fff">'+emoji.replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
-          (fav?'<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:var(--r-sm);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;overflow:hidden">'+
-            '<img src="'+fav+'" style="width:18px;height:18px;object-fit:contain" onerror="this.parentElement.style.display=\'none\'">'+
-          '</div>':'')+
-          (featItem.breaking?'<div style="position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:1px;font-family:\'IBM Plex Mono\',monospace">BREAKING</div>':'')+
-          '<div style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to top,rgba(0,0,0,.3),transparent)"></div>'+
-          '<svg viewBox="0 0 195 50" style="position:absolute;bottom:0;left:0;width:100%;height:50px;opacity:.4">'+
-            '<polyline points="'+pts+'" fill="none" stroke="'+sparkCol+'" stroke-width="1.5" stroke-linecap="round"/>'+
-          '</svg>'+
-        '</div>';
-      })()+
-      // Body
-      '<div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:space-between">'+
-      '<div>'+
-      '<span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:2px 7px;border-radius:3px;margin-bottom:8px;display:inline-block;font-family:\'IBM Plex Mono\',monospace;'+fts+'">'+featItem.cat+'</span>'+
-      '<div style="font-size:14px;font-weight:700;color:var(--bright);line-height:1.35;margin-bottom:6px;letter-spacing:-.1px">'+esc(featItem.title)+'</div>'+
-      '<div style="font-size:11px;color:var(--text2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(featItem.body)+'</div>'+
-      '</div>'+
-      '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px">'+
-      '<span style="font-size:11px;font-weight:600;color:var(--text2);font-family:\'IBM Plex Mono\',monospace">'+esc(featItem.source)+'</span>'+
-      '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block"></span>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(featItem.hoursAgo)+'</span>'+
-      '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;background:'+impBg[featItem.impact]+';color:'+impCol[featItem.impact]+'">'+impLabel[featItem.impact]+'</span>'+
-      '<div style="margin-left:auto;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace">'+icon('idea')+' '+featItem.key.substring(0,52)+'...</div>'+
-      '</div></div></div>';
-  }
-
-  // ── News list items ───────────────────────────────────────────
-  var newsListHtml=listItems.map(function(n,i){
-    var ts=tagSt[n.cat]||'background:var(--card2);color:var(--text)';
-    var sc=impCol[n.impact]||'var(--amber)';
-    var pts2=sparkPts[n.impact]||sparkPts.neutral;
-    var isFirst=i===0, isLast=i===listItems.length-1;
-    var radius=isFirst?'8px 8px 0 0':isLast?'0 0 8px 8px':'0';
-    var thumb=n.image?
-      '<div style="width:72px;height:52px;border-radius:var(--r-sm);flex-shrink:0;overflow:hidden;position:relative;background:var(--card2)">'+
-        '<img src="'+n.image+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display=\'none\'">'+
-        (n.breaking?'<div style="position:absolute;top:3px;left:3px;background:var(--red);color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.5px;font-family:\'IBM Plex Mono\',monospace">LIVE</div>':'')+
-      '</div>':
-      '<div style="width:72px;height:52px;border-radius:var(--r-sm);flex-shrink:0;background:'+(catGrad[n.cat]||'var(--card2)')+';overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">'+
-        '<div style="width:28px;height:28px;opacity:.8">'+icon(catEmoji[n.cat]||'news','ico-lg').replace('class="ico ico-lg"','class="ico ico-lg" style="width:100%;height:100%"')+'</div>'+
-        (n.breaking?'<div style="position:absolute;top:3px;left:3px;background:var(--red);color:#fff;font-size:6px;font-weight:700;padding:1px 4px;border-radius:2px;letter-spacing:.5px;font-family:\'IBM Plex Mono\',monospace">LIVE</div>':'')+
-      '</div>';
-    return '<div role="button" tabindex="0" style="background:var(--card);border:1px solid var(--border);border-bottom:'+(isLast?'1px solid var(--border)':'none')+';padding:11px 14px;cursor:pointer;transition:.15s;display:flex;gap:12px;align-items:flex-start;border-radius:'+radius+'" '+(n.link?'onclick="window.open(\''+esc(safeLink(n.link))+'\',\'_blank\',\'noopener\')"':'')+' onmouseover="this.style.background=\'rgba(247,147,26,.04)\';this.style.borderColor=\'rgba(247,147,26,.2)\'" onmouseout="this.style.background=\'var(--card)\';this.style.borderColor=\'var(--border)\'">'+
-      thumb+
-      // Content
-      '<div style="flex:1;min-width:0">'+
-      '<div style="font-size:12px;font-weight:600;color:var(--bright);line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(n.title)+'</div>'+
-      '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-      '<span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:1px 6px;border-radius:3px;font-family:\'IBM Plex Mono\',monospace;'+ts+'">'+n.cat+'</span>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+esc(n.source)+'</span>'+
-      '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block"></span>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace">'+relTime(n.hoursAgo)+'</span>'+
-      '<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;font-family:\'IBM Plex Mono\',monospace;color:'+impCol[n.impact]+'">'+impLabel[n.impact]+'</span>'+
-      '</div></div></div>';
-  }).join('');
-
-  // Mayores movimientos se movio al Dashboard (funcion moversCard): Contexto se
-  // consolida alli y no tiene sentido mantener dos copias del mismo widget.
-  // El widget de Indices (IDX_MAP/idxRows) tambien vivia aca duplicado con
-  // indicesCard() pero ya no se usaba en el HTML devuelto por esta funcion
-  // (dead code de un refactor anterior, el comentario de mas abajo ya decia
-  // "Indices/Regimen/Movers ya no comparten esta franja") — eliminado el
-  // 13-sep-2026 al ordenar la carga de datos de esta pantalla.
-
-  // ── Economic Calendar ─────────────────────────────────────────
-  var calItems=CAL_DATA.map(function(c){
-    var isHot=c.imp==='alto';
-    var stars='';
-    for(var i=0;i<3;i++){stars+='<div style="width:5px;height:5px;border-radius:50%;background:'+(i<(isHot?3:2)?'var(--red)':'var(--card3)')+';display:inline-block;margin-right:1px"></div>';}
-    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid var(--border)">'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;width:26px;flex-shrink:0">'+c.date.split(' ')[0]+'</span>'+
-      '<span style="font-size:13px;width:18px;text-align:center;flex-shrink:0">🇺🇸</span>'+
-      '<span style="flex:1;font-size:11px;color:'+(isHot?'var(--amber)':'var(--text)')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:'+(isHot?'600':'400')+'">'+c.event+'</span>'+
-      '<div style="display:flex;gap:2px;flex-shrink:0">'+stars+'</div>'+
-      '</div>';
-  }).join('');
-
-  // ── Offline fallback notice ───────────────────────────────────
-  var cached=loadNewsCache();
-  var offlineNotice='';
-  if(!navigator.onLine&&cached){
-    offlineNotice='<div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--amber);font-family:\'IBM Plex Mono\',monospace;display:flex;align-items:center;gap:6px">'+icon('signal')+'Sin conexión — mostrando datos cacheados de '+new Date(cached.savedAt||Date.now()).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})+'</div>';
-  }
-  // Save to cache for offline use
-  saveNewsCache({savedAt:Date.now()});
-  // I06: solo se informa cuando hay titulares reales (antes decía "actualizado ahora mismo" con 0 artículos).
-  var newsUpdStr=LIVE_NEWS.length?'<div style="margin-top:8px;padding:6px 10px;border-top:1px solid var(--border);font-size:12px;color:var(--text2)">'+LIVE_NEWS.length+' titulares de la fuente</div>':'';
-
-  // ── Ticker strip (Yahoo Finance style) ───────────────────────
-  // Placeholders SOLO de estructura (simbolo+label). SIN precios ni cambios:
-  // price/change/changePct van null a proposito para renderizar "—" en vez de
-  // inventar niveles de indice. La cinta muestra los nombres pero nunca cifras
-  // fabricadas como si fueran en vivo. Se reemplazan al llegar MARKET_BAR.
-  var STATIC_STRIPS=[
-    {sym:'^GSPC',label:'S&P 500',   price:null,change:null,changePct:null,spark:null},
-    {sym:'^DJI', label:'Dow 30',    price:null,change:null,changePct:null,spark:null},
-    {sym:'^IXIC',label:'Nasdaq',    price:null,change:null,changePct:null,spark:null},
-    {sym:'^RUT', label:'Russell 2K',price:null,change:null,changePct:null,spark:null},
-    {sym:'CL=F', label:'Crude Oil', price:null,change:null,changePct:null,spark:null},
-    {sym:'GC=F', label:'Gold',      price:null,change:null,changePct:null,spark:null},
-    {sym:'SI=F', label:'Silver',    price:null,change:null,changePct:null,spark:null},
-    {sym:'EURUSD=X',label:'EUR/USD',price:null,change:null,changePct:null,spark:null},
-    {sym:'^TNX', label:'10-Yr Bond',price:null,change:null,changePct:null,spark:null},
-    {sym:'BTC-USD',label:'Bitcoin', price:null,change:null,changePct:null,spark:null},
-    {sym:'^VIX', label:'VIX',       price:null,change:null,changePct:null,spark:null},
-  ];
-  var barItems=MARKET_BAR.length?MARKET_BAR:STATIC_STRIPS;
-
-  function fmtBarPrice(sym,price){
-    if(!price&&price!==0) return '—';
-    if(sym==='EURUSD=X') return price.toFixed(4);
-    if(sym==='^TNX') return price.toFixed(2)+'%';
-    if(sym==='BTC-USD') return '$'+Number(price).toLocaleString('en-US',{maximumFractionDigits:0});
-    if(price>=10000) return Number(price).toLocaleString('en-US',{maximumFractionDigits:0});
-    if(price>=100)   return Number(price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-    return Number(price).toFixed(2);
-  }
-  function fmtBarChg(change,changePct){
-    if(change===null||change===undefined) return '';
-    var sign=change>=0?'+':'';
-    return sign+(typeof changePct==='number'?changePct.toFixed(2)+'%':change.toFixed(2));
-  }
-  function miniSpark(pts,isUp){
-    if(!pts||pts.length<2) return '';
-    var w=64,h=20;
-    var valid=pts.filter(function(v){return v!==null&&v!==undefined;});
-    if(valid.length<2) return '';
-    var mn=Math.min.apply(null,valid),mx=Math.max.apply(null,valid),rng=mx-mn||1;
-    var coords=valid.map(function(v,i){
-      return (i/(valid.length-1)*w).toFixed(1)+','+(h-(v-mn)/rng*h).toFixed(1);
-    }).join(' ');
-    var col=isUp?'#00b050':'#ff4444';
-    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block;margin-top:2px"><polyline points="'+coords+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
-  }
-
-  var tickerStrip=barItems.map(function(t){
-    var isUp=(t.changePct!==null&&t.changePct!==undefined)?t.changePct>=0:(t.change||0)>=0;
-    var col=isUp?'#00b050':'#ff4444';
-    var spark=miniSpark(t.spark,isUp);
-    return '<div style="display:flex;align-items:center;gap:10px;flex-shrink:0;padding:0 14px;border-right:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background .12s;height:52px" onmouseover="this.style.background=\'rgba(255,255,255,.05)\'" onmouseout="this.style.background=\'transparent\'">'+
-      // Text block: label / price / change stacked
-      '<div style="display:flex;flex-direction:column;gap:1px">'+
-        '<div style="font-size:11px;font-weight:400;color:#8b92a5;font-family:\'IBM Plex Mono\',monospace;white-space:nowrap;letter-spacing:.2px">'+t.label+'</div>'+
-        '<div style="font-size:13px;font-weight:600;color:#e8ecf0;font-family:\'IBM Plex Mono\',monospace;white-space:nowrap;letter-spacing:-.3px">'+fmtBarPrice(t.sym,t.price)+'</div>'+
-        '<div style="font-size:11px;font-weight:500;color:'+col+';font-family:\'IBM Plex Mono\',monospace;white-space:nowrap">'+fmtBarChg(t.change,t.changePct)+'</div>'+
-      '</div>'+
-      // Sparkline to the right
-      (spark?'<div style="flex-shrink:0">'+spark+'</div>':'')+
+      '<section class="hoy-sec" aria-labelledby="mkt-news-h">'+mktNewsHtml()+'</section>'+
+      '<p class="mkt-to-list">Las lecturas de cada activo que sigues están en tu lista. '+
+        '<button type="button" class="btn" onclick="setPage(\'watch\')">Ver lecturas de tu lista</button></p>'+
     '</div>';
-  }).join('');
-
-  // ── Assemble ──────────────────────────────────────────────────
-  return ''+
-    // La tira de mercado vivia aqui: ahora es la banda global del topbar y se
-    // ve en todas las pantallas, asi que duplicarla en Contexto sobraba.
-    offlineNotice+
-    breakingBanner+
-
-    // ── FILTROS INTEGRADOS ──
-    '<div style="padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border)">'+
-      '<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">'+
-        '<span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-family:\'IBM Plex Mono\',monospace;margin-right:4px">Categoría:</span>'+
-        catTabs+
-      '</div>'+
-      '<div style="height:16px;width:1px;background:var(--border);flex-shrink:0;display:none" class="cat-divider"></div>'+
-
-    '</div>'+
-
-    // ── FEED ──
-    // Índices/Régimen/Movers ya no comparten esta franja: se subieron al rail
-    // junto a Top Señales/Portafolio (ver renderDash). El feed de noticias
-    // vive ahora en la columna del medio de esa misma fila (ver renderDash) —
-    // la lista de articulos scrollea dentro de un alto maximo para que las 3
-    // columnas terminen a la misma altura en vez de que esta se estire mucho
-    // mas que Top Señales/Portafolio y el rail de Indices/Regimen/Movers.
-    '<div style="padding:16px 20px">'+
-
-    // feed header (fuera del area con scroll: siempre visible)
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
-      '<div class="fos-section-label">'+
-        (f==='Todo'?'Últimas Noticias':'Noticias — '+f)+
-      '</div>'+
-      '<span style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:2px 7px">'+filtered.length+' artículos</span>'+
-    '</div>'+
-    '<div style="max-height:560px;overflow-y:auto">'+
-    (filtered.length===0
-      ?'<div style="text-align:center;color:var(--text3);padding:48px 20px;font-family:\'IBM Plex Mono\',monospace;font-size:11px">'+(f!=='Todo'?'Sin noticias en la categoría “'+esc(f)+'”.':(_newsFetched?'Sin titulares en vivo ahora mismo. Reintentando…':'Cargando titulares…'))+'</div>'
-      :featCard+'<div style="margin-top:10px">'+newsListHtml+'</div>')+
-    '</div>'+
-    '</div>'+
-    // El indice de sentimiento se retira de Contexto: se repite identico en la
-    // pagina Sentimiento dentro de Analisis. Se conserva la marca de ultima
-    // actualizacion de los datos.
-    newsUpdStr;
+  if(MKT.ctx) drawSPYMiniChart(MKT.ctx.r);
+  mktLoad();
 }
-// El indice de sentimiento se muestra en dos sitios: como seccion de Contexto
-// y como pagina propia. Se extrae aqui para no duplicar 36 lineas de logica.
+function mktLoad(){
+  Promise.all([deGetRegime().catch(function(){return null;}),deGetVIX().catch(function(){return null;}),deGetBreadth().catch(function(){return null;})]).then(function(res){
+    MKT.ctx={r:res[0],v:res[1],b:res[2]};
+    var el=document.getElementById('mkt-ctx-b'); if(!el) return;
+    el.innerHTML=mktCtxHtml(MKT.ctx);
+    drawSPYMiniChart(MKT.ctx.r);
+  });
+  var tickers=[];
+  (S.watchlist||[]).forEach(function(w){var tk=typeof w==='string'?w:(w&&w.ticker);if(tk&&tickers.indexOf(tk)<0)tickers.push(tk);});
+  (S.portfolio||[]).forEach(function(p){if(tickers.indexOf(p.t)<0)tickers.push(p.t);});
+  var defaults=!tickers.length;
+  if(defaults) tickers=['AAPL','NVDA','MSFT','AMZN','GOOGL','META'];
+  var key=tickers.join(',');
+  if(MKT.earn&&MKT.earn.key===key) return;
+  Promise.all(tickers.map(function(t){return deGetEarnings(t).catch(function(){return null;});})).then(function(list){
+    var items=list.filter(function(e){return e&&e.daysAway>=-2&&e.daysAway<=45;}).sort(function(a,b){return a.daysAway-b.daysAway;});
+    MKT.earn={key:key,defaults:defaults,items:items};
+    var el=document.getElementById('mkt-earn'); if(el) el.innerHTML=mktEarnHtml();
+  });
+}
 
-// La pagina de Sentimiento la sirve renderSentimentWidget() (dial, historico de
-// 14 dias, distribucion y top-6). El indice de sentimiento se retiro de Contexto
-// y del Dashboard por duplicar esa pagina; sentimentSection() y
-// renderSentimentCompact() se eliminaron por quedar sin uso.
+// Contexto: régimen (ícono + palabra) con "¿Qué significa para mí?" y una
+// banda con volatilidad, amplitud y SPY frente a su media de 200 días.
+function mktCtxHtml(c){
+  if(!c) return '<p class="port-muted"><span class="spin-sm"></span> Cargando régimen, volatilidad y amplitud…</p>';
+  var r=c.r, v=c.v, b=c.b, hasR=!!(r&&r.spy!=null);
+  var reg='<div class="mkt-reg">'+
+    '<div class="mkt-reg-t">'+regimeTag(r)+'</div>'+
+    '<p class="mkt-reg-d">'+(hasR?esc(r.desc):'No se pudo cargar la historia de SPY para calcular el régimen.')+'</p>'+
+    (hasR&&REGIME_MEANING[r.regime]?'<details class="m10-meaning"><summary>¿Qué significa para mí?</summary><p>'+REGIME_MEANING[r.regime]+' Es una descripción del mercado, no una recomendación.</p></details>':'')+
+    (hasR?'<canvas id="spy-mini-chart" class="mkt-spark" role="img" aria-label="SPY y su media de 200 días en el último año"></canvas>'+
+      '<p class="mkt-key-l"><span><i class="mkt-key k-px"></i>SPY</span><span><i class="mkt-key k-ma"></i>Media de 200 días</span><span>Último año, cierres diarios</span></p>'+
+      '<p id="spy-mini-fallback" class="port-muted" hidden>No se pudo dibujar el gráfico de SPY.</p>':'')+
+    '</div>';
+  // Volatilidad (VIX): valor y su zona en palabra; elevada o extrema con ícono.
+  var vixOk=v&&v.vix!=null;
+  var vixZone=vixOk?((v.regime==='elevated'||v.regime==='crisis')?warnTag(v.label):esc(v.label)):'sin dato';
+  var vixCell='<div class="pband-c"><div class="pband-l">Volatilidad (VIX)</div><div class="pband-v num">'+(vixOk?fmt1(v.vix):'—')+'</div>'+
+    '<div class="pband-s">'+vixZone+(vixOk?' · bajo 15 es baja, sobre 25 es elevada':'')+'</div></div>';
+  var bOk=b&&b.pct!=null;
+  var bCell='<div class="pband-c"><div class="pband-l">Amplitud del S&amp;P 500</div><div class="pband-v num">'+(bOk?fmtPctN(b.pct,0):'—')+'</div>'+
+    '<div class="pband-s">'+(bOk?'de sus acciones sobre su media de 200 días · '+(b.warning?warnTag(b.label):esc(b.label)):'sin dato')+'</div>'+
+    (bOk&&b.warning?'<div class="pband-s">'+esc(b.warning)+'</div>':'')+'</div>';
+  var p200=hasR&&r.pct200!=null?r.pct200*100:null;
+  var sCell='<div class="pband-c"><div class="pband-l">SPY frente a su media de 200 días</div>'+
+    '<div class="pband-v num'+(p200==null?'':(p200>=0?' pos':' neg'))+'">'+(p200==null?'—':(p200>=0?'+':'')+fmtPctN(p200,1))+'</div>'+
+    '<div class="pband-s">'+(p200==null?'sin dato':(p200>=0?'sobre':'bajo')+' la media · SPY <span class="num">'+fmtUSD(r.spy)+'</span>, media <span class="num">'+fmtUSD(r.sma200)+'</span>')+'</div></div>';
+  return '<div class="mkt-ctx">'+reg+'<section class="pband pband-3" aria-label="Volatilidad, amplitud y tendencia del S&amp;P 500">'+vixCell+bCell+sCell+'</section></div>';
+}
+
+// Índices y materias primas: la cinta que antes vivía arriba, como tabla.
+// La fuente no informa la hora de cada símbolo: se dice la hora de consulta.
+function mktIndicesHtml(){
+  var loading=barIsLoading();
+  var fresh=MARKET_BAR.length
+    ?'Con el retraso de la fuente · consultado a las '+mktTime(MARKET_BAR_TS||Date.now())
+    :(loading?'Cargando…':'La fuente no respondió. Se vuelve a intentar en unos segundos.');
+  var rows=MKT_SYMS.map(function(d){
+    var b=MARKET_BAR.find(function(x){return x.sym===d[0];});
+    var ok=b&&isFinite(b.price)&&b.price>0;
+    return '<tr><th scope="row">'+d[1]+'</th>'+
+      '<td class="num">'+(ok?mktFmtValue(d[0],b.price):'<span class="port-muted">'+(loading?'cargando…':'sin dato')+'</span>')+'</td>'+
+      '<td>'+(ok?mktChg(b.changePct):'<span class="port-muted">—</span>')+'</td></tr>';
+  }).join('');
+  return '<div class="hoy-sec-h"><h2 class="port-h2" id="mkt-idx-h">Índices y materias primas</h2></div>'+
+    '<p class="port-muted">'+fresh+'</p>'+
+    '<div class="tw"><table class="fos-table port-table mkt-table"><thead><tr><th>Instrumento</th><th>Valor</th><th>Hoy</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+// Próximos resultados: de las empresas que tienes o sigues (o de referencia si
+// todavía no hay ninguna), en los próximos 45 días.
+function mktEarnHtml(){
+  var head='<div class="hoy-sec-h"><h2 class="port-h2" id="mkt-earn-h">Próximos resultados de empresas</h2></div>';
+  var e=MKT.earn;
+  if(!e) return head+'<p class="port-muted"><span class="spin-sm"></span> Buscando las fechas de resultados…</p>';
+  var note=e.defaults?'<p class="port-muted">Todavía no tienes ni sigues activos: se muestran empresas de referencia.</p>':'<p class="port-muted">De las empresas que tienes o sigues, en los próximos 45 días.</p>';
+  if(!e.items.length) return head+note+'<p class="hoy-txt">Ninguna publica resultados en los próximos 45 días, según la fuente.</p>';
+  var wl=navWatchTickers();
+  var rows=e.items.slice(0,10).map(function(x){
+    var d=x.daysAway;
+    var when=d<0?'hace '+Math.abs(d)+(d===-1?' día':' días'):d===0?'hoy':d===1?'mañana':'en '+d+' días';
+    var mine=S.portfolio.some(function(h){return h.t===x.ticker;})?'En tu portafolio':(wl.indexOf(x.ticker)>=0?'En tu lista':'');
+    return '<li class="ps-row"><button type="button" class="ps-main" onclick="navOpenTicker(\''+esc(x.ticker)+'\')" aria-label="Abrir la ficha de '+esc(x.ticker)+'">'+
+      '<span class="ps-l1"><span class="ps-t">'+esc(x.ticker)+'</span><span class="num">'+esc(x.dateStr)+'</span><span class="mkt-when">'+when+'</span></span>'+
+      '<span class="ps-l2"><span>'+esc(TICKER_NAMES[x.ticker]||'')+'</span>'+(mine?'<span>'+mine+'</span>':'')+'</span></button></li>';
+  }).join('');
+  return head+note+'<ul class="port-stack mkt-list">'+rows+'</ul>';
+}
+
+// ── Noticias ──
+// Categorías que asigna api/news (cat) y su nombre en español.
+var NEWS_CATS=[['Todo','Todo'],['Fed','Reserva Federal'],['Earnings','Resultados'],['Geopolítica','Geopolítica'],['Macro','Macro'],['IA & Tech','IA y tecnología']];
+// Tono que adivina api/news por palabras del titular. Solo se muestran los
+// valores conocidos; uno nuevo o desconocido (p. ej. 'medio') no muestra nada.
+var NEWS_IMPACT={bullish:'tono positivo',bearish:'tono negativo',critical:'urgente'};
+function newsImpactLabel(imp){ return Object.prototype.hasOwnProperty.call(NEWS_IMPACT,imp)?NEWS_IMPACT[imp]:''; }
+function newsCatLabel(c){ var f=NEWS_CATS.find(function(x){return x[0]===c;}); return f?f[1]:(c?String(c):''); }
+function newsAgo(h){
+  if(h==null||!isFinite(h)) return '';
+  if(h<1) return 'hace menos de 1 hora';
+  if(h<24) return 'hace '+Math.round(h)+(Math.round(h)===1?' hora':' horas');
+  var d=Math.round(h/24); return 'hace '+d+(d===1?' día':' días');
+}
+function mktNewsHtml(){
+  var all=getNewsData();
+  var f=NEWS_CATS.some(function(c){return c[0]===S.newsFilter;})?S.newsFilter:'Todo';
+  var counts={}; all.forEach(function(n){counts[n.cat]=(counts[n.cat]||0)+1;});
+  var shown=f==='Todo'?all:all.filter(function(n){return n.cat===f;});
+  var head='<div class="hoy-sec-h"><h2 class="port-h2" id="mkt-news-h">Noticias</h2>'+
+    (all.length?'<span class="port-muted">'+all.length+' titulares de la fuente</span>':'')+'</div>';
+  if(!all.length){
+    return head+'<p class="hoy-txt">'+(newsIsLoading()?'<span class="spin-sm"></span> Cargando titulares…':'La fuente no devolvió titulares en este momento. Se vuelve a intentar cuando vuelvas a esta página.')+'</p>';
+  }
+  var chips='<div class="li-chips" role="group" aria-label="Filtrar noticias por categoría">'+NEWS_CATS.map(function(c){
+    var n=c[0]==='Todo'?all.length:(counts[c[0]]||0), on=f===c[0];
+    return '<button type="button" class="tab'+(on?' act':'')+'" aria-pressed="'+on+'" onclick="setNewsF(\''+c[0]+'\')">'+c[1]+' <span class="num">'+n+'</span></button>';
+  }).join('')+'</div>';
+  if(!shown.length){
+    return head+chips+'<p class="hoy-txt">Ninguno de los titulares es de '+esc(newsCatLabel(f))+'. <button type="button" class="linkbtn" onclick="setNewsF(\'Todo\')">Ver todos</button></p>';
+  }
+  var rows=shown.slice(0,30).map(function(n){
+    var link=safeLink(n.link);
+    var title=esc(n.title||'');
+    var meta=[esc(n.source||''),newsAgo(n.hoursAgo),f==='Todo'?esc(newsCatLabel(n.cat)):'',newsImpactLabel(n.impact)].filter(Boolean).join(' · ');
+    return '<li>'+(link&&link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener">'+title+'</a>':'<span class="mkt-news-t">'+title+'</span>')+
+      (meta?'<span>'+meta+'</span>':'')+'</li>';
+  }).join('');
+  return head+chips+'<ul class="drw-news mkt-news">'+rows+'</ul>'+
+    '<p class="port-muted">Titulares de la fuente en su idioma original. Abren en la página de cada medio.</p>';
+}
 
 function setNewsF(f){S.newsFilter=f;renderMain();}
 
@@ -8563,7 +8288,7 @@ function drwRsiSvg(vals){
     '<rect x="0" y="'+y(70)+'" width="'+W+'" height="'+(y(30)-y(70))+'" fill="var(--grn-bg)"/>'+
     '<line x1="0" x2="'+W+'" y1="'+y(70)+'" y2="'+y(70)+'" stroke="var(--border3)" stroke-dasharray="4,3"/>'+
     '<line x1="0" x2="'+W+'" y1="'+y(30)+'" y2="'+y(30)+'" stroke="var(--border3)" stroke-dasharray="4,3"/>'+
-    '<polyline points="'+pts+'" fill="none" stroke="var(--blue)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>';
+    '<polyline points="'+pts+'" fill="none" stroke="var(--bright)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>';
 }
 function drwMacdSvg(h){
   var W=400,H=70,n=h.length;
@@ -8643,7 +8368,8 @@ function renderDrawerBody(){
       '<div id="lw-chart-vol" style="height:56px;width:100%"></div>'+
       (dShowRSI?'<div class="drw-sub"><div class="drw-sub-h"><span>RSI (14)</span><span class="num">'+(rsiNow!=null?rsiNow.toFixed(0):'—')+' · '+esc(rsiZone(rsiNow).label.toLowerCase())+'</span></div>'+drwRsiSvg(sl(rsiA))+'<div class="drw-sub-s"><span>La franja marca la zona neutral, entre 30 y 70</span></div></div>':'')+
       (dShowMACD?'<div class="drw-sub"><div class="drw-sub-h"><span>MACD (12, 26, 9) · histograma</span><span>'+(macd.hist[macd.hist.length-1]>=0?'Sobre cero':'Bajo cero')+'</span></div>'+drwMacdSvg(sl(macd.hist))+'</div>':'')+
-      '<p class="drw-attr">Velas diarias con medias de 20, 50 y 200 días y bandas de Bollinger. Gráfico: TradingView Lightweight Charts. Precios con el retraso de la fuente.</p></div>';
+      '<p class="mkt-key-l drw-key"><span><i class="mkt-key k-20"></i>Media de 20 días</span><span><i class="mkt-key k-px"></i>50 días</span><span><i class="mkt-key k-ma2"></i>200 días</span><span><i class="mkt-key k-bb"></i>Bandas de Bollinger</span></p>'+
+      '<p class="drw-attr">Velas diarias. Gráfico: TradingView Lightweight Charts. Precios con el retraso de la fuente.</p></div>';
   }
   var ranges='<div class="drw-ctl"><div class="li-chips" role="group" aria-label="Rango del gráfico">'+DRW_RANGES.map(function(r){
     return '<button type="button" class="tab'+(dRange===r[0]?' act':'')+'" aria-pressed="'+(dRange===r[0])+'" onclick="setDRange('+r[0]+')">'+r[1]+'</button>';
