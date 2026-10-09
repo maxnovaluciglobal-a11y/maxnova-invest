@@ -163,7 +163,7 @@ Structure comes from lines, not boxes. A Navy rail holds the five destinations a
 The system rejects the category default of a dashboard of cards with a market tape and news feed, scores, and buy or sell signals. It never uses pill shapes or Google-hosted fonts.
 
 **Key Characteristics:**
-- Papel ground, Navy ink, Navy sidebar rail; light and dark themes from the same token names.
+- Papel ground, Navy ink, Navy sidebar rail in light; in dark, two levels: ground and one surface tone. Light and dark themes from the same token names.
 - Latón appears only on the primary action and the current-destination marker.
 - IBM Plex Sans for words, IBM Plex Mono only for figures; Instrument Sans for page titles (shared MOY IQ wordmark face).
 - One hero figure per screen, set in mono at 54px.
@@ -175,7 +175,7 @@ The system rejects the category default of a dashboard of cards with a market ta
 A warm paper-and-ink palette with one brass accent and a strictly semantic green, red and amber.
 
 ### Primary
-- **Ledger Navy** (navy): the ink of the system. Page titles, strong figures, focus outline, active tab text, the desktop rail background in both themes, and the text on every Latón surface. In dark theme the "primary ink" role flips to Papel while the rail stays Navy.
+- **Ledger Navy** (navy): the ink of the system. Page titles, strong figures, focus outline, active tab text, the desktop rail background in light theme, and the text on every Latón surface. In dark theme the "primary ink" role flips to Papel and the rail moves to the dark surface tone (see Dark theme).
 - **Deep Navy** (navy-deep): overlay scrims (`rgba(13,23,48,.38)` behind the asset sheet) and pressed depth.
 
 ### Secondary
@@ -196,6 +196,9 @@ A warm paper-and-ink palette with one brass accent and a strictly semantic green
 
 ### Semantic
 - **Gain Green** (pos / pos-dark), **Loss Red** (neg / neg-dark), **Caution Amber** (warn / warn-dark): result and state only, always paired with an icon or a word.
+
+### Dark theme: two levels
+Dark has exactly two levels. **Ground** `#12161F` (`--bg`) for the content column and the top strip. **Surface** `#181D29` (`--card`, `--side-bg`) for everything that sits apart from the content: the sidebar rail, the asset sheet, menus, popovers, the search list, modals, the mobile tab bar and the few boxed panels. Surfaces are separated from the ground by a hairline (Papel at 18%), never by a third tone or a shadow on the page. The rail is no longer Navy in dark; the light theme keeps the Navy rail on Papel.
 
 ### Named Rules
 **The Latón Two-Jobs Rule.** Latón marks exactly two things: the primary action and where you are (active rail chip, active page-tab underline, active mobile-tab bar). Chart lines, links and decoration use Slate Blue or Navy instead.
@@ -230,8 +233,8 @@ A warm paper-and-ink palette with one brass accent and a strictly semantic green
 
 Two shells around one content column (max 1200px, side padding 24px; 16px below 1024px).
 
-- **Desktop (1024px and up):** a sticky Navy rail at 232px (64px collapsed, icons only) on the left: brand, five destinations, a hairline, the "Tu lista" mini-list (ticker, price, change on a 1fr/auto/62px grid, then a freshness line), and a footer with Finanzas and Contraer. To its right a sticky 60px top strip (global ticker search up to 440px wide, freshness chip, account button), then the page head (title plus one row of page tabs), then content.
-- **Below 1024px:** the rail disappears; a fixed 60px bottom bar carries the same five destinations (plus safe-area inset). The top strip holds the destination title, a search icon that opens full-width search, and the account button, with freshness on a second line (strip height 82px). Page tabs bleed edge to edge and scroll horizontally with a fade mask while more remain.
+- **Desktop (1024px and up):** a sticky rail (Navy in light, surface tone in dark) at 232px (64px collapsed, icons only) on the left: brand, five destinations, a hairline, the "Tu lista" mini-list (ticker, price, change on a 1fr/auto/62px grid, then a freshness line), and a footer with Finanzas and Contraer. To its right a sticky 60px top strip (global ticker search up to 440px wide, freshness chip, account button), then the market strip (36px, every destination), then the page head (title plus one row of page tabs), then content.
+- **Below 1024px:** the rail disappears; a fixed 60px bottom bar carries the same five destinations (plus safe-area inset). The top strip holds the destination title, a search icon that opens full-width search, and the account button, with freshness on a second line (strip height 82px). The market strip shows only at the top of Hoy and Mercado content (44px, swipeable). Page tabs bleed edge to edge and scroll horizontally with a fade mask while more remain.
 - **Sections** are separated by a top hairline and 14px padding, not by cards. Two-up section grids (Hoy, Mercado) use 24px row and 32px column gaps and collapse to one column below 1024px.
 - **Tables become stacked rows below 1024px:** each position is a two-line row (ticker, value and result; then weight, stop and risk) with its action at the right, separated by hairlines.
 - **Rhythm:** a 2px-based spacing scale; the most used steps are 8, 12, 14, 16 and 24px.
@@ -286,6 +289,18 @@ Restrained and solid; brass only where the screen's main action lives.
 - **Page tabs:** 44px, 14px/500 muted; current tab Navy 600 with a 3px Latón underline sitting on the 18% hairline.
 - **Mobile tab bar:** five equal tabs, 22px icon over a 12px label; current tab Navy 600 with a 3px Latón bar at the top edge.
 - **Global search:** 40px field with a search icon and a "/" key hint; results in a floating list of 44px rows (ticker, name, type).
+
+### Market strip
+A thin static strip (36px desktop, 44px touch) of the ten Mercado instruments: Spanish short name in Sans muted, value in Mono, day change in Mono pos/neg with sign, and a 48×16 sparkline. It never moves by itself: if it does not fit it scrolls by hand with scroll-snap, an edge fade and no visible scrollbar on desktop. Every item is a button to Mercado. One quiet freshness note at the end ("Con retraso de la fuente · hh:mm"). Fixed height, skeleton sparklines while history loads (one request per symbol per session), so nothing shifts.
+
+### Sparkline
+A 1.4px polyline with no fill, axis or animation. Green if the period went up (last close over first), red if it went down. 48×16 in the strip, 72×20 in the Mercado table ("Último mes").
+
+### News row
+Title (link) and a muted meta line on the left; on the right an optional 72×54 thumbnail (64×48 under 768px), 8px radius, `object-fit: cover`, lazy, `referrerpolicy="no-referrer"`, empty `alt`. No image means no placeholder; a broken image is removed.
+
+### Correlation matrix
+One Navy/slate intensity scale (Slate Blue mixed into the surface): darker means the two assets moved more together. Every cell shows its number; the legend pairs an icon with words. Never red, amber or green: those belong to results and risk.
 
 ### Hero Figure (signature)
 The one number a screen is about. Label in Plex Sans 14px muted, the value in Plex Mono 54px Navy (Loss Red when negative), an optional subline in 14px muted, then one row of subordinate key-value pairs above a top hairline (for example Hoy and Total with their change).
