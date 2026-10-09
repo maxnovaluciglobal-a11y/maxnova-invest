@@ -51,14 +51,9 @@ describe('Mercado', () => {
     }
     expect(html).not.toMatch(/'Crude Oil'|'10-Yr Bond'|'Russell 2K'/);
   });
-  it('el tono de una noticia tiene respaldo para valores desconocidos', () => {
-    const NEWS_IMPACT = { bullish: 'tono positivo', bearish: 'tono negativo', critical: 'urgente' };
-    // eslint-disable-next-line no-new-func
-    const f = new Function('NEWS_IMPACT', fnBody('newsImpactLabel') + '\nreturn newsImpactLabel;')(NEWS_IMPACT);
-    expect(f('medio')).toBe('');
-    expect(f(undefined)).toBe('');
-    expect(f('bearish')).toBe('tono negativo');
-    expect(html).not.toMatch(/impLabel\[/);
+  it('no muestra el tono adivinado del titular (se leía como señal)', () => {
+    expect(html).not.toMatch(/newsImpactLabel|NEWS_IMPACT|impLabel/);
+    expect(fnBody('mktNewsHtml')).not.toMatch(/\.impact/);
   });
   it('las categorías de noticias están en español', () => {
     for (const c of ['Reserva Federal', 'Resultados', 'Geopolítica', 'Macro', 'IA y tecnología']) expect(html).toContain(`'${c}']`);
