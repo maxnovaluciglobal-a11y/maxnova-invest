@@ -147,7 +147,6 @@ input, select, textarea { font-size: 16px; }
      eso no es un refactor, es un rediseno. Con base 2 se elimina la
      arbitrariedad real (los 32 valores impares) sin tocar la composicion. */
   --suite-h: 0px;    /* la franja de suite se elimino; se conserva el token porque .sb y #topbar lo descuentan */
-  --topbar-h: 60px;  /* alto de la banda de mercado (#topbar, fixed): el nav superior lo reserva */
   --sp-1:  2px;
   --sp-2:  4px;
   --sp-3:  6px;
@@ -237,104 +236,18 @@ body {
 }
 
 /* ── LAYOUT ── */
-.app { padding-top: var(--suite-h); display:flex; min-height: 100vh; min-height: 100dvh; }
-
-/* Pre-auth: hide sidebar + topbar so welcome screen is full-width */
-body.no-auth .sb { display: none !important; }
-body.no-auth #topbar { display: none !important; }
-body.no-auth .main { margin-left:0 !important; margin-top:0 !important; }
-/* El tab bar mobile y el boton hamburguesa son navegacion de la app autenticada:
-   sin esto, tocar un tab en la pantalla de login lo ilumina y no hace nada. */
-body.no-auth #mob-tab-bar { display: none !important; }
-body.no-auth #mobile-header { display: none !important; }
-
-/* ── SIDEBAR ── */
-.sb {
-  width: var(--sb-w);
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: var(--suite-h); left: 0;
-  height: calc(100vh - var(--suite-h)); height: calc(100dvh - var(--suite-h));
-  overflow-y: auto;
-  z-index: 100;
-}
-
-.logo {
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap:10px;
-  padding:0 14px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.logo-icon {
-  width: 34px; height: 34px;
-  /* Sin fondo: el logo trae el suyo. Antes pintaba un cuadro solido detras y
-     una sombra rgba(34,197,94) — el verde viejo, que ya no es color de marca. */
-  border-radius:var(--r-md); overflow:hidden;
-  display: flex; align-items:center; justify-content:center;
-  flex-shrink: 0;
-}
-.logo-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--bright);
-  line-height: 1;
-}
-.logo-name-invest { color: var(--grn); font-weight: 700; }
-
-.sb-section { padding:0 10px; margin-bottom:4px; }
-.sb-section-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text3);
-  padding:18px 4px 8px;
-  display: block;
-}
-
-
-.sb-footer {
-  margin-top:auto;
-  padding:12px;
-  border-top: 0.5px solid var(--border);
-}
-.sb-user {
-  display: flex; align-items: center; gap:8px;
-  padding:8px 6px;
-  border-radius: var(--r-sm);
-}
-.sb-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--grn-bg);
-  border: 1.5px solid var(--grn-lt);
-  display: flex; align-items:center; justify-content:center;
-  font-size: 11px; font-weight: 600;
-  color: var(--grn);
-  flex-shrink: 0;
-}
-.sb-user-name { font-size: 11px; font-weight: 600; color: var(--bright); }
-.sb-user-plan {
-  font-size: 11px;
-  color: var(--text3);
-  font-family: 'IBM Plex Mono', monospace;
-}
+/* Marco de la app (reestructura v3): barra lateral + columna de contenido.
+   Las reglas viven en "APP SHELL" al final de esta hoja. */
 
 /* ── MAIN CONTENT ── */
 .main {
-  margin-left:var(--sb-w);
   flex: 1;
-  min-height: 100vh; min-height: 100dvh;
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(30px + var(--sp-4));   /* alto de la franja de aviso fija */
+  position: relative;
 }
 
 /* ── PAGE HEADER ── */
@@ -348,7 +261,7 @@ body.no-auth #mobile-header { display: none !important; }
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding:24px 28px 20px;
+  padding:16px var(--content-px) 12px;
   gap:16px;
   flex-wrap: wrap;
 }
@@ -936,25 +849,6 @@ tr:last-child td { border-bottom: none; }
   padding:14px 16px;
   box-shadow: var(--shadow-sm);
 }
-/* ── DISCLAIMER LEGAL ── */
-.disclaimer-bar {
-  position: fixed;
-  bottom: env(safe-area-inset-bottom, 0px);
-  left: var(--sb-w);
-  right: 0;
-  z-index: 200;
-  height: 30px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  background: var(--amber-bg);
-  border-top: 0.5px solid rgba(180,83,9,.15);
-  padding: 0 28px;
-  font-size: 11px;
-  color: var(--amber);
-  font-family: 'IBM Plex Mono', monospace;
-}
-
 /* ── ALERT SAAS GRID ── */
 .mgrid {
   display: grid;
@@ -1291,16 +1185,6 @@ tr:last-child td { border-bottom: none; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  :root { --sb-w: 0px; }
-  .sb {
-    transform: translateX(-220px);
-    transition: transform .25s cubic-bezier(.4,0,.2,1);
-    width: 220px;
-    z-index: 400;
-  }
-  .sb.mobile-open { transform: translateX(0); }
-  /* En movil se apilan: barra de tabs (56px) + franja de aviso (30px). */
-  .main { margin-left:0; padding-bottom:calc(60px + 16px + env(safe-area-inset-bottom, 0px)); }
   .ph { padding:14px 16px 12px; }
   .page-body { padding:16px; }
   .g2, .g3 { grid-template-columns: 1fr; }
@@ -1323,209 +1207,17 @@ tr:last-child td { border-bottom: none; }
   .fos-card { overflow-x: auto; }
   /* headers de módulo: que el botón/acción baje de línea en vez de desbordar */
   .fos-module-header { flex-wrap: wrap; gap:8px; }
-  .hbg-btn { display:flex!important; }
-  .sb-backdrop { display:block; }
-  #mobile-header { display: flex!important; }
-  /* I08: en móvil la franja fija tapaba la última fila; el aviso va al pie del contenido (.legal-foot). */
-  .disclaimer-bar { display: none !important; }
-  .legal-foot { display: block; }
-  #mob-tab-bar { display: flex!important; }
   /* ph-right: wrap on small screens so buttons don't overflow */
   .ph-right { flex-wrap: wrap; gap:6px; }
   /* btn-big full width inside modals and locked banners */
   .modal .btn-big, .modal-box .btn-big { width: 100%; }
-  /* suite nav: tighten padding */
-  body > div:first-child { padding:6px 12px !important; }
-  body > div:first-child a:first-child { display: none; }
 }
-#mob-tab-bar {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(60px + env(safe-area-inset-bottom, 0px));
-  padding-bottom:env(safe-area-inset-bottom, 0px);
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  z-index: 350;
-  align-items: stretch;
-}
-.mob-tab {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap:4px; flex: 1; cursor: pointer; padding:0;
-  color: var(--text2); font-size: 12px; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 500;
-  min-height: 44px;
-  border: none; background: transparent; transition: color .15s;
-  -webkit-tap-highlight-color: transparent;
-  position: relative;
-}
-.mob-tab.act { color: var(--grn); }
-.mob-tab.act::before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--grn);
-}
-.mob-tab svg { width: 20px; height: 20px; }
-@media (min-width: 769px) {
-  #mobile-header { display: none!important; }
-  #topbar {
-    display: flex!important;
-    align-items: center;
-    position: fixed;
-    top: var(--suite-h);
-    left: var(--sb-w);
-    right: 0;
-    height: 52px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding:0 20px;
-    gap:10px;
-    z-index: 50;
-  }
-  /* Ya no reserva el hueco de las bandas fijas: ahora lo hace #mainnav, que va
-     encima de .main dentro de la misma columna. Mantenerlo aqui lo contaba dos
-     veces y dejaba 86px muertos entre el nav y la cabecera del modulo. */
-  .main { margin-top: 0; }
-}
-#topbar { display: none; }
-/* La banda de mercado crece con --topbar-h y centra su contenido: antes su alto
-   lo fijaba solo el contenido (~52px) y dejaba un hueco bajo la reserva. */
-body:not(.no-auth) #topbar { min-height: var(--topbar-h); box-sizing: border-box; }
-/* Banda de mercado: scroll horizontal sin barra visible — es una franja de 52px
-   y una scrollbar nativa se comeria un tercio de su alto. */
-.mkt-strip { scrollbar-width: none; -ms-overflow-style: none; }
-.mkt-strip::-webkit-scrollbar { display: none; }
-/* ── Navegacion superior (sustituye al sidebar) ── */
-#mainnav { display:none; }
-/* #topbar (la banda de mercado) es position:fixed a top:34px con 52px de alto y
-   z-index 50, asi que esta fuera del flujo y tapaba la primera fila del nav.
-   El nav reserva esa altura y se fija justo debajo. */
-body:not(.no-auth) #mainnav {
-  display:block; position:sticky; top:calc(var(--suite-h) + var(--topbar-h)); z-index:40;
-  margin-top:var(--topbar-h);
-  background:var(--bg); border-bottom:1px solid var(--border);
-}
-/* Movil: el nav de grupos deja de ocupar la pantalla permanentemente (competia
-   con el tab bar inferior) y pasa a ser un drawer lateral, como en cualquier
-   app instalada. Se abre con el boton hamburguesa — antes controlaba un
-   sidebar (#sb) que ya no se muestra nunca (display:none!important mas
-   abajo), asi que tocarlo oscurecia la pantalla sin mostrar nada. */
-@media (max-width: 768px) {
-  body:not(.no-auth) #mainnav {
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    width: min(300px, 84vw);
-    height: 100dvh;
-    margin-top: 0;
-    z-index: 401;
-    box-shadow: var(--shadow-md);
-    overflow-y: auto;
-    transform: translateX(-101%);
-    transition: transform .22s ease;
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  body:not(.no-auth) #mainnav.mobile-open { transform: translateX(0); }
-  #mainnav .mn-row { flex-direction: column; align-items: stretch; padding: 16px; gap: var(--sp-4); }
-  #mainnav .mn-items { flex-direction: column; }
-  #mainnav .mn-sub { flex-direction: column; align-items: stretch; padding: 0 16px 16px; }
-}
-.mn-row { display:flex; align-items:center; gap:var(--sp-6); padding:var(--sp-5) 28px; }
-.mn-brand { display:flex; align-items:center; gap:var(--sp-4); font-size:13px; color:var(--text2); flex-shrink:0; }
-.mn-brand b { color:var(--bright); font-weight:600; }
-.mn-brand-i {
-  width:26px; height:26px; border-radius:var(--r-sm); overflow:hidden;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.mn-items { display:flex; gap:var(--sp-1); flex:1; flex-wrap:wrap; }
-.mn-item {
-  background:none; border:none; cursor:pointer; padding:var(--sp-4) var(--sp-6);
-  border-radius:var(--r-sm); font-family:inherit; font-size:13px; color:var(--text2);
-  white-space:nowrap; transition:background .15s, color .15s;
-}
-.mn-item:hover { background:var(--card2); color:var(--bright); }
-.mn-item.act { color:var(--bright); font-weight:600; background:var(--grn-bg); }
-.mn-cfg { flex-shrink:0; font-size:15px; }
 /* Dos columnas para pares de cajas (Escenarios / R:R en Riesgo). Se usaba
    class="grid2" sin ninguna regla, asi que las cajas caian apiladas a lo ancho;
    el usuario lo veia como scroll innecesario. Colapsa a 1 columna en el media
    query de <=900px. */
 .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
 
-/* Enlace de vuelta a la suite, junto al engranaje: agrupa "salir de la app" y
-   "configuracion", que es donde el usuario los busca. */
-.mn-suite { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.4px; text-decoration:none; }
-/* En movil se queda solo la flecha: ocultar el enlace entero dejaria la vuelta
-   a la suite sin ningun acceso, que era justo lo que daba la franja eliminada. */
-@media (max-width: 760px){ .mn-suite span { display:none; } }
-/* Segunda fila: destinos secundarios del grupo activo, con el mismo lenguaje
-   visual que los accesos rapidos del Dashboard (pastilla con borde e icono) y
-   alineados a la derecha. Solo aparece cuando el grupo tiene mas de un destino. */
-.mn-sub { display:flex; gap:var(--sp-2); padding:0 28px var(--sp-4); flex-wrap:wrap;
-          align-items:center; justify-content:flex-end; }
-.mn-sub-lbl { margin-right:auto; font-family:'IBM Plex Mono',monospace; font-size:11px;
-              letter-spacing:1px; text-transform:uppercase; color:var(--text3); }
-.mn-subitem {
-  display:inline-flex; align-items:center; gap:var(--sp-3);
-  background:var(--card); border:1px solid var(--border); border-radius:var(--r-md);
-  padding:6px 12px; cursor:pointer; font-family:inherit; font-size:11px; color:var(--text2);
-  white-space:nowrap; transition:border-color .15s, color .15s;
-}
-.mn-subitem:hover { border-color:var(--grn-lt); color:var(--bright); }
-.mn-subitem.act { color:var(--bright); border-color:var(--grn-lt); background:var(--grn-bg); font-weight:600; }
-.mn-subitem svg { width:14px; height:14px; color:var(--grn); flex-shrink:0; }
-@media (max-width: 760px){
-  /* Solo iconos: con varias etiquetas la fila se parte en pantallas estrechas. */
-  .mn-subitem > span:not(.fos-pro-badge) { display:none; }
-  .mn-subitem { padding:6px 9px; }
-  .mn-sub { padding:0 16px var(--sp-3); }
-}
-/* El sidebar deja de existir en escritorio: su ancho reservado pasa a 0 y el
-   contenido gana los 256px. En movil ya no se mostraba (hay #mob-tab-bar). */
-.sb { display:none !important; }
-@media (max-width: 900px) {
-  .mn-row { padding:var(--sp-4) 16px; gap:var(--sp-4); }
-  .mn-brand span:not(.mn-brand-i) { display:none; }
-  .mn-sub { padding:0 16px var(--sp-3); }
-}
-.tb-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--bright);
-  display: flex;
-  align-items: center;
-  gap:8px;
-}
-.hbg-btn {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius:var(--r-md);
-  cursor: pointer;
-  font-size: 18px;
-  color: var(--text);
-  flex-shrink: 0;
-  position: relative;
-}
-/* Area de toque real de 44x44 (visual se mantiene en 36x36). */
-.hbg-btn::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-}
-.sb-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 399;
-}
-.main { position: relative; }
 
 /* ── TOAST NOTIFICATIONS ── */
 #toast-container { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom, 0px)); right:calc(24px + env(safe-area-inset-right, 0px)); z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
@@ -1550,44 +1242,6 @@ body:not(.no-auth) #mainnav {
 }
 
 
-/* ── NAV BUTTONS (nb) — sidebar navigation ── */
-.nb {
-  display: flex;
-  align-items: center;
-  gap:10px;
-  height: 42px;
-  padding:0 12px 0 10px;
-  border-radius:var(--r-md);
-  border: none;
-  border-left: 2px solid transparent;
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  font-size: 13px;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: 500;
-  transition: background .12s, color .12s;
-  margin-bottom:2px;
-}
-.nb:hover { background: var(--card3); color: var(--bright); }
-.nb.act {
-  background: var(--grn-bg);
-  color: var(--grn);
-  font-weight: 600;
-  border-left-color: var(--grn);
-}
-.nb.lk { opacity: .5; cursor: not-allowed; }
-.nb.lk:hover { background: transparent; color: var(--text2); }
-.nb-icon {
-  width: 16px;
-  text-align: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-.nb-label { flex: 1; }
-
 /* Iconos de linea. stroke:currentColor hace que hereden el color del estado
    (normal / hover / activo) y del tema sin necesidad de variantes. */
 .ico {
@@ -1601,7 +1255,6 @@ body:not(.no-auth) #mainnav {
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.nb-icon .ico { margin:0 auto; }
 .ico-lg { width: 22px; height: 22px; }
 .ico-xl { width: 40px; height: 40px; }
 /* Para icon() insertado en medio de texto corrido (listas de señales unidas por
@@ -1755,7 +1408,10 @@ body:not(.no-auth) #mainnav {
    via .wv3-wrap; sin excluirla, sumaba 28px de este selector genérico a los
    24px propios y en mobile el contenido quedaba mas ancho que la pantalla
    (52px de margen izquierdo, 13px de scroll horizontal fantasma). */
-#main > div:not(.ph):not(.fos-module-header):not(.wv3-outer) { padding:20px 28px; }
+/* Reestructura v3: margen lateral en vez de relleno, para que las tablas y
+   tarjetas que son hijas directas de #main no toquen el borde de la ventana
+   (antes el relleno quedaba DENTRO de su borde). */
+#main > div:not(.ph):not(.fos-module-header):not(.wv3-outer) { padding-top:16px; padding-bottom:16px; margin-left:var(--content-px); margin-right:var(--content-px); min-width:0; }
 
 /* ── DRAWER INNER COMPONENTS ── */
 .sigb {
@@ -2013,8 +1669,11 @@ div:has(>.dtab), div:has(>.rtab) {
 #main a:not([class]) { color:var(--blue); text-underline-offset:2px; }
 .toast-ico { display:inline-flex; width:16px; height:16px; margin-right:6px; vertical-align:-3px; }
 .toast-ico .ico { width:100%; height:100%; }
-.legal-foot { display:none; margin:28px 0 8px; padding-top:12px; border-top:1px solid var(--border); font-size:12px; color:var(--text2); line-height:1.55; }
-.legal-foot button { background:none; border:none; padding:0 0 0 4px; color:var(--blue); text-decoration:underline; font:inherit; cursor:pointer; min-height:32px; }
+/* Aviso legal: una linea al final del contenido (ver renderDisclaimer). */
+.legal-foot { width:100%; max-width:var(--content-max); margin:0 auto; padding:16px var(--content-px) 24px; font-size:12px; color:var(--text2); line-height:1.55; }
+.legal-foot p { margin:0; padding-top:12px; border-top:1px solid var(--border); }
+.legal-foot button { background:none; border:none; padding:0 0 0 6px; color:var(--blue); text-decoration:underline; font:inherit; cursor:pointer; min-height:32px; }
+body.no-auth .legal-foot { display:none; }
 @media (max-width:768px){
   #tbl-port td .btn { min-width:44px; min-height:44px; padding:0 10px !important; }
   .fos-table td .btn, .fos-table td .btn-r { min-height:44px; min-width:44px; }
@@ -2075,6 +1734,223 @@ div:has(>.dtab), div:has(>.rtab) {
 .m10-aporte-f { display:flex; gap:8px; flex-wrap:wrap; }
 .m10-aporte-f .inp { width:150px; min-height:44px; }
 .m10-aporte-f .btn-big { min-height:44px; }
+
+/* ── APP SHELL · reestructura v3 (09-oct-2026) ─────────────────────────
+   5 destinos en 2 niveles. Escritorio (>= 1024 px): barra lateral Navy de
+   232 px (64 px contraida) + franja superior con buscador, frescura y cuenta
+   + cabecera de pagina con titulo y una fila de pestañas. Movil y tableta
+   (< 1024 px): barra inferior con los mismos 5 destinos. */
+:root {
+  --side-w: 232px;
+  --side-wc: 64px;
+  --side-bg: #14213D;
+  --side-fg: rgba(241,238,230,.76);
+  --side-fg-strong: #FAF8F2;
+  --side-line: rgba(241,238,230,.12);
+  --side-hover: rgba(241,238,230,.07);
+  --side-act: rgba(184,134,59,.18);
+  --side-mark: #B8863B;
+  --side-pos: #8FD0B4;
+  --side-neg: #F0A493;
+  --content-max: 1200px;
+  --content-px: 24px;
+  --topbar-h: 60px;
+  --mbar-h: 60px;
+}
+[data-theme="dark"] {
+  --side-bg: var(--bg2);
+  --side-line: var(--border);
+  --side-act: rgba(204,154,82,.16);
+  --side-mark: #CC9A52;
+}
+@media (max-width: 1023px) { :root { --content-px: 16px; } }
+
+.skip-link { position:absolute; left:8px; top:-48px; z-index:1000; padding:10px 14px; background:var(--card); color:var(--bright); border:1px solid var(--border2); border-radius:var(--r-sm); font-size:13px; text-decoration:none; }
+.skip-link:focus { top:8px; }
+body.no-auth .skip-link { display:none; }
+
+.app { display:flex; min-height:100vh; min-height:100dvh; }
+.appcol { flex:1; min-width:0; display:flex; flex-direction:column; }
+
+/* Barra lateral */
+.side { display:none; }
+@media (min-width: 1024px) {
+  body:not(.no-auth) .side {
+    display:flex; flex-direction:column; flex-shrink:0;
+    position:sticky; top:0; height:100vh; height:100dvh;
+    width:var(--side-w); padding:12px 12px 10px;
+    background:var(--side-bg); color:var(--side-fg);
+    border-right:1px solid var(--side-line);
+    overflow-y:auto; overflow-x:hidden; z-index:60;
+    scrollbar-width:thin;
+  }
+  body.side-collapsed:not(.no-auth) .side { width:var(--side-wc); padding-left:8px; padding-right:8px; }
+}
+.side :focus-visible { outline-color: var(--side-mark) !important; }
+.side-brand { display:flex; align-items:center; gap:10px; min-height:44px; padding:0 8px 8px; color:var(--side-fg-strong); font-size:14px; white-space:nowrap; }
+.side-brand img { width:28px; height:28px; border-radius:var(--r-sm); flex-shrink:0; display:block; }
+.side-brand b { font-weight:600; color:var(--side-mark); }
+.side-nav, .side-tk { list-style:none; margin:0; padding:0; }
+.side-nav { display:flex; flex-direction:column; gap:2px; padding-bottom:12px; }
+.side-item {
+  position:relative; display:flex; align-items:center; gap:12px; width:100%;
+  min-height:44px; padding:0 12px; border:none; border-radius:var(--r-sm);
+  background:transparent; color:var(--side-fg); font:inherit; font-size:14px; font-weight:500;
+  text-align:left; text-decoration:none; cursor:pointer; white-space:nowrap;
+  transition:background .15s, color .15s;
+}
+.side-item .ico { width:20px; height:20px; }
+.side-item:hover { background:var(--side-hover); color:var(--side-fg-strong); }
+/* Destino actual: chip Latón de fondo + icono Latón + negrita (sin franja lateral). */
+.side-item.act { background:var(--side-act); color:var(--side-fg-strong); font-weight:600; box-shadow:inset 0 0 0 1px rgba(184,134,59,.35); }
+.side-item.act .ico { color:var(--side-mark); }
+.side-list { border-top:1px solid var(--side-line); padding:14px 0 8px; }
+.side-h { margin:0 0 6px; padding:0 12px; font-size:12px; font-weight:600; color:var(--side-fg); letter-spacing:.2px; }
+.side-tk-row {
+  display:grid; grid-template-columns:minmax(0,1fr) auto 62px; align-items:center; gap:8px; width:100%;
+  min-height:36px; padding:0 12px; border:none; border-radius:var(--r-sm); background:transparent;
+  color:var(--side-fg); font:inherit; font-size:12px; text-align:left; cursor:pointer;
+}
+.side-tk-row:hover { background:var(--side-hover); color:var(--side-fg-strong); }
+.side-tk-t { font-weight:600; color:var(--side-fg-strong); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.side-tk-p, .side-tk-c { font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+.side-tk-c.pos { color:var(--side-pos); }
+.side-tk-c.neg { color:var(--side-neg); }
+.side-empty { margin:0; padding:4px 12px 8px; font-size:12px; line-height:1.5; color:var(--side-fg); }
+.side-more { display:block; width:100%; min-height:36px; margin-top:4px; padding:0 12px; border:none; background:transparent; color:var(--side-mark); font:inherit; font-size:12px; font-weight:600; text-align:left; cursor:pointer; border-radius:var(--r-sm); }
+.side-more:hover { background:var(--side-hover); }
+.side-foot { margin-top:auto; border-top:1px solid var(--side-line); padding-top:8px; display:flex; flex-direction:column; gap:2px; }
+.side-foot .side-item { font-size:13px; }
+.side-chev { transition:transform .2s cubic-bezier(.23,1,.32,1); }
+body.side-collapsed .side-chev { transform:rotate(180deg); }
+body.side-collapsed .side-lbl, body.side-collapsed .side-list { display:none; }
+body.side-collapsed .side-brand { justify-content:center; padding-left:0; padding-right:0; }
+body.side-collapsed .side-item { justify-content:center; padding:0; }
+
+/* Franja superior */
+.topbar { display:none; }
+body:not(.no-auth) .topbar {
+  display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50;
+  min-height:var(--topbar-h); padding:8px var(--content-px);
+  background:var(--bg); border-bottom:1px solid var(--border);
+}
+.topbar input { -webkit-user-select:text; user-select:text; }
+.tb-dest { display:none; }
+.gs { position:relative; flex:1; max-width:440px; display:flex; align-items:center; }
+.gs-ico { position:absolute; left:12px; color:var(--text3); pointer-events:none; display:flex; }
+.gs-in {
+  width:100%; height:40px; padding:0 40px 0 38px; border:1px solid var(--border2); border-radius:var(--r-md);
+  background:var(--card); color:var(--bright); font:inherit; font-size:14px; outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+.gs-in::placeholder { color:var(--text3); }
+.gs-in:focus { border-color:var(--bright); box-shadow:0 0 0 3px var(--grn-bg); }
+.gs-kbd { position:absolute; right:10px; padding:1px 7px; border:1px solid var(--border2); border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text3); pointer-events:none; }
+.gs-in:focus ~ .gs-kbd { display:none; }
+.gs-close { display:none; }
+.gs-list {
+  position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:80; margin:0; padding:6px; list-style:none;
+  background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); box-shadow:var(--shadow-lg);
+  max-height:min(420px, 70vh); overflow-y:auto;
+}
+.gs-opt { display:grid; grid-template-columns:72px minmax(0,1fr) auto; align-items:center; gap:10px; min-height:44px; padding:0 10px; border-radius:var(--r-sm); cursor:pointer; color:var(--text); font-size:13px; }
+.gs-opt:hover, .gs-opt.on { background:var(--grn-bg); }
+.gs-t { font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gs-n { color:var(--text2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gs-s { font-size:12px; color:var(--text3); white-space:nowrap; }
+.gs-empty { padding:10px; font-size:13px; color:var(--text2); }
+.tb-fresh { margin-left:auto; white-space:nowrap; }
+.tb-icon { display:none; }
+.acct { position:relative; flex-shrink:0; }
+.acct-btn {
+  width:40px; height:40px; border-radius:var(--r-md); border:1px solid var(--border2); background:var(--card);
+  color:var(--bright); font:inherit; font-size:13px; font-weight:600; letter-spacing:.3px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:border-color .15s, background .15s;
+}
+.acct-btn:hover, .acct-btn[aria-expanded="true"] { border-color:var(--bright); background:var(--card2); }
+.acct-menu {
+  position:absolute; right:0; top:calc(100% + 6px); z-index:80; min-width:232px; padding:6px;
+  background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); box-shadow:var(--shadow-lg);
+}
+.acct-who { padding:8px 10px 10px; font-size:12px; color:var(--text2); border-bottom:1px solid var(--border); margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.acct-it { display:flex; align-items:center; gap:10px; width:100%; min-height:44px; padding:0 10px; border:none; border-radius:var(--r-sm); background:transparent; color:var(--text); font:inherit; font-size:14px; text-align:left; text-decoration:none; cursor:pointer; }
+.acct-it .ico { color:var(--text2); }
+.acct-it:hover, .acct-it:focus-visible { background:var(--grn-bg); color:var(--bright); }
+.acct-sep { height:1px; margin:6px 4px; background:var(--border); }
+
+/* Cabecera de pagina + pestañas */
+.pagehead { display:none; }
+body:not(.no-auth) .pagehead { display:block; }
+.pagehead-in { max-width:var(--content-max); margin:0 auto; padding:24px var(--content-px) 0; }
+.pg-title { margin:0; font-family:'Instrument Sans', Georgia, sans-serif; font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.01em; color:var(--bright); }
+.pagehead:not(.has-tabs) .pagehead-in { padding-bottom:4px; }
+/* Un solo componente de pestañas: .ptab para destinos y .tab para filtros
+   internos (Tendencia, periodos del Comparador), que eran botones sin estilo. */
+.ptabs { display:flex; gap:4px; margin-top:16px; border-bottom:1px solid var(--border2); overflow-x:auto; scrollbar-width:none; }
+.ptabs::-webkit-scrollbar { display:none; }
+.ptab, .tab {
+  position:relative; flex-shrink:0; border:none; background:transparent; cursor:pointer;
+  font:inherit; color:var(--text2); white-space:nowrap; transition:color .15s, background .15s;
+}
+.ptab { min-height:44px; padding:0 14px; font-size:14px; font-weight:500; }
+.ptab:hover { color:var(--bright); }
+.ptab.act { color:var(--bright); font-weight:600; }
+.ptab.act::after { content:''; position:absolute; left:10px; right:10px; bottom:-1px; height:3px; border-radius:2px 2px 0 0; background:var(--laton); }
+.tab {
+  min-height:32px; padding:0 12px; margin:0 4px 4px 0; font-size:12px; font-weight:500;
+  border:1px solid var(--border2); border-radius:var(--r-sm); background:var(--card);
+}
+.tab:hover { color:var(--bright); border-color:var(--border3); }
+.tab.act { color:var(--bright); font-weight:600; background:var(--grn-bg); border-color:var(--bright); }
+@media (pointer: coarse) { .tab { min-height:44px; } }
+
+.ph-empty { display:none !important; }
+.mkt-to-list { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0 0; font-size:13px; color:var(--text2); }
+
+/* Barra inferior */
+#mob-tab-bar { display:none; }
+@media (max-width: 1023px) {
+  body:not(.no-auth) #mob-tab-bar {
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:150;
+    height:calc(var(--mbar-h) + env(safe-area-inset-bottom, 0px)); padding-bottom:env(safe-area-inset-bottom, 0px);
+    background:var(--bg2); border-top:1px solid var(--border);
+  }
+  body:not(.no-auth) .appcol { padding-bottom:calc(var(--mbar-h) + env(safe-area-inset-bottom, 0px)); }
+  /* Movil: titulo del destino en la franja, buscador a pantalla completa. */
+  .tb-dest { display:block; flex:1; min-width:0; font-family:'Instrument Sans', Georgia, sans-serif; font-size:20px; font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gs { display:none; }
+  .tb-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:none; border-radius:var(--r-md); background:transparent; color:var(--bright); cursor:pointer; flex-shrink:0; }
+  .tb-icon .ico { width:20px; height:20px; }
+  .tb-fresh { margin-left:0; }
+  .acct-btn { width:44px; height:44px; }
+  .topbar.gs-open .gs { display:flex; position:absolute; inset:0; max-width:none; padding:8px 8px 8px var(--content-px); background:var(--bg); gap:4px; z-index:5; }
+  .topbar.gs-open .gs-ico { left:calc(var(--content-px) + 12px); top:50%; transform:translateY(-50%); }
+  .topbar.gs-open .gs-in { height:44px; }
+  .topbar.gs-open .gs-kbd { display:none; }
+  .topbar.gs-open .gs-close { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; border:none; background:transparent; color:var(--bright); cursor:pointer; border-radius:var(--r-md); }
+  .topbar.gs-open .gs-list { position:fixed; top:calc(var(--topbar-h) + 4px); left:8px; right:8px; max-height:calc(100dvh - var(--topbar-h) - var(--mbar-h) - 24px); }
+  .pagehead-in { padding-top:12px; }
+  .pg-title { position:absolute; width:1px; height:1px; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+  .ptabs { margin-top:0; margin-left:calc(var(--content-px) * -1); margin-right:calc(var(--content-px) * -1); padding:0 calc(var(--content-px) - 8px); }
+  .pagehead:not(.has-tabs) .pagehead-in { padding:0; }
+}
+@media (max-width: 639px) { .tb-fresh { display:none; } }
+.mob-tab {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  min-width:0; min-height:44px; padding:0 2px; border:none; background:transparent; cursor:pointer; position:relative;
+  color:var(--text2); font:inherit; font-size:12px; font-weight:500; -webkit-tap-highlight-color:transparent;
+  transition:color .15s;
+}
+.mob-tab .ico { width:22px; height:22px; }
+.mob-tab span { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mob-tab.act { color:var(--bright); font-weight:600; }
+.mob-tab.act::before { content:''; position:absolute; top:0; left:22%; right:22%; height:3px; border-radius:0 0 2px 2px; background:var(--laton); }
+@media (max-width: 1023px) {
+  body:not(.no-auth) #toast-container { bottom:calc(var(--mbar-h) + 16px + env(safe-area-inset-bottom, 0px)); }
+}
+/* La ficha del activo (hoja inferior en movil) va por encima de la barra. */
+.dov { z-index:200; }
+.drw { z-index:210; }
 </style>
 </head>
 <body>
@@ -2175,29 +2051,18 @@ div:has(>.dtab), div:has(>.rtab) {
 <!-- La franja de suite ocupaba 34px fijos en todas las pantallas para un solo
      enlace. El enlace se movio junto al engranaje del nav; "Invest" era
      redundante con la marca de la barra. -->
-<div role="button" tabindex="0" class="sb-backdrop" id="sb-backdrop" onclick="toggleMobileMenu(false)"></div>
+<a class="skip-link" href="#main">Saltar al contenido</a>
 <div class="app">
-  <nav class="sb" id="sb"></nav>
-  <div id="topbar"></div>
-  <div style="display:flex;flex-direction:column;flex:1;min-width:0">
-    <!-- La navegacion va DENTRO de la columna de contenido: .app es un flex row,
-         y como hermano directo el nav se colocaba al lado del contenido en vez
-         de encima, partiendo la pantalla en dos. -->
-    <nav id="mainnav"></nav>
-    <!-- El hamburguesa vuelve, pero apuntando a #mainnav (drawer) en vez del
-         viejo #sb muerto: antes el nav de grupos quedaba fijo y a la vista en
-         movil todo el tiempo, compitiendo con el tab bar inferior por el mismo
-         espacio. Ahora se abre bajo demanda, como el resto de la navegacion
-         secundaria de una app instalada. -->
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg)" id="mobile-header">
-      <button type="button" class="hbg-btn" onclick="toggleMobileMenu()" aria-label="Abrir menú" aria-haspopup="true">
-        <svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
-      </button>
-      <span id="mobile-page-label" style="font-size:13px;font-weight:600;color:var(--bright);letter-spacing:.2px"></span>
-    </div>
-    <main class="main" id="main" style="flex:1;padding:0"></main>
+  <nav class="side" id="sb" aria-label="Navegación principal"></nav>
+  <div class="appcol">
+    <header class="topbar" id="topbar"></header>
+    <div class="pagehead" id="pagehead"></div>
+    <main class="main" id="main"></main>
+    <footer class="legal-foot" id="legal-foot"></footer>
   </div>
 </div>
+<!-- Barra inferior movil (< 1024 px): la pinta renderMobBar() con los 5 destinos. -->
+<nav id="mob-tab-bar" aria-label="Navegación principal"></nav>
 <div id="mroot"></div>
 <div id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="dov" id="dov" onclick="closeDrawer()"></div>
@@ -2321,25 +2186,25 @@ const ALL_SIG=["NVDA","AAPL","XLK","SPY","V","AMZN","VTI","MSFT","QQQ","GOOGL","
 // directo, no p.icon) — se deja consistente para que un uso futuro no reintroduzca emoji.
 const PAGES=[
   {id:"news",     icon:"news",label:"Contexto"},
-  {id:"dash",     icon:"dash", label:"Panorama"},
+  {id:"dash",     icon:"dash", label:"Hoy"},
   {id:"port",     icon:"port",label:"Portafolio"},
-  {id:"watch",    icon:"watch",label:"Lista de seguimiento"},
+  {id:"watch",    icon:"watch",label:"Mi lista"},
   {id:"sig",      icon:"sig",label:"Tendencia"},
   {id:"pb",       icon:"pb",label:"Calculadora",pro:true},
-  {id:"comp",     icon:"comp",label:"Comparador"},
+  {id:"comp",     icon:"comp",label:"Comparar"},
   {id:"sentiment",icon:"sentiment",label:"Sentimiento"},
   {id:"radar",    icon:"radar",label:"Radar Financiero"},
-  {id:"decision", icon:"decision",label:"Motor de Análisis",pro:true},
+  {id:"decision", icon:"decision",label:"Mercado",pro:true},
   {id:"ind",      icon:"ind",label:"Indicadores",pro:true},
   {id:"risk",     icon:"risk",label:"Riesgo",pro:true},
   {id:"back",     icon:"back",label:"Probar estrategia",pro:true},
-  {id:"screener", icon:"screener",label:"Buscador",pro:true},
-  {id:"capital",  icon:"capital",label:"Plan de Capital",pro:true},
+  {id:"screener", icon:"screener",label:"Descubrir",pro:true},
+  {id:"capital",  icon:"capital",label:"Aportes",pro:true},
   {id:"divs",     icon:"divs",label:"Dividendos"},
-  {id:"rebal",    icon:"rebal",label:"Rebalanceo"},
+  {id:"rebal",    icon:"rebal",label:"Objetivos"},
   {id:"alert",    icon:"alert",label:"Alertas"},
-  {id:"bitacora", icon:"bitacora",label:"Bitácora"},
-  {id:"settings", icon:"settings",label:"Configuración"},
+  {id:"bitacora", icon:"bitacora",label:"Movimientos"},
+  {id:"settings", icon:"settings",label:"Ajustes"},
   {id:"help",     icon:"help",label:"Ayuda"}
 ];
 // Antes aqui habia titulares hardcodeados (Fed/Warsh/Iran/NVDA...) que se
@@ -3498,6 +3363,8 @@ function freshTag(ticker){
 }
 function updateLiveBadge(){
   document.querySelectorAll('.live-badge-wrap').forEach(function(el){el.innerHTML=liveBadge();});
+  // La mini-lista de la barra lateral usa los mismos precios LIVE.
+  if(typeof renderSideList==='function') renderSideList();
 }
 function updateLivePricesInDOM(){
   // Update price cells in place without full page re-render
@@ -3626,73 +3493,458 @@ function showToast(msg,type,undoFn){
 }
 function render(){renderSidebar();renderTopbar();renderMainNav();renderMain();renderModal();renderDisclaimer();}
 
-// ── NAVEGACION SUPERIOR ──────────────────────────────────────────────────
-// Sustituye al sidebar de 256px (17.8% del ancho a 1440px). El sidebar listaba
-// 20 destinos planos, que es lo que impedia llevarlos arriba: 20 items no caben
-// en horizontal. Se consolidan en 7 grupos y los destinos absorbidos pasan a una
-// segunda fila que solo aparece cuando el grupo activo tiene mas de uno.
-// Ningun modulo se reescribe: cambia la navegacion, no las paginas.
-// Agrupada por el VIAJE DE DECISION del inversor, no por tipo de dato: cada
-// grupo responde una pregunta distinta (¿cómo estoy? → ¿qué miro? → ¿qué dice
-// el análisis? → ¿cuánto pongo? → ¿cómo va lo mío?). Fuente unica de la nav:
-// el sidebar quedo obsoleto. 'radar' (salud financiera personal) sale de
-// Análisis a su propio grupo Planificación; screener/comp dejan de estar en un
-// "Explorar" separado y entran a Investigar junto a la watchlist.
-var NAV_C=[
-  {id:'panorama',  label:'Panorama',      pages:['dash']},
-  {id:'investigar',label:'Investigar',    pages:['watch','screener','comp']},
-  {id:'analizar',  label:'Analizar',      pages:['decision','sig','ind']},
-  {id:'decidir',   label:'Decidir',       pages:['risk','pb','capital','back']},
-  {id:'seguir',    label:'Seguir',        pages:['port','bitacora','divs','rebal','alert']}
-  // 'sentiment' (indice compuesto tipo Fear & Greed) y 'radar' (Health Score
-  // 0-100 + IA no conectada) se retiraron en el relanzamiento v2 (T18): eran
-  // notas agregadas y promesas sin respaldo. Sus rutas caen en Analizar.
+// ── NAV SHELL ────────────────────────────────────────────────────────────
+// Reestructura v3 (decidida por Walter el 09-oct-2026, doc 10-REESTRUCTURA):
+// 5 destinos en 2 niveles (destino → pestaña) en vez de grupos por verbo.
+// S.page sigue siendo el id de la hoja ('port', 'watch', 'pb'...): asi cada
+// chequeo S.page==='...' del resto del archivo sigue valiendo. DEST solo dice
+// en que destino y pestaña vive cada hoja; PAGE_ALIAS traduce los ids viejos
+// y los nombres nuevos ('lista', 'portafolio/riesgo') a una hoja.
+var DEST=[
+  {id:'hoy',        label:'Hoy',        icon:'dash',  tabs:[{slug:'',page:'dash'}]},
+  {id:'portafolio', label:'Portafolio', icon:'port',  tabs:[
+    {slug:'posiciones',  label:'Posiciones',  page:'port'},
+    // Temporal: en la fase 2 Riesgo se funde dentro de Posiciones.
+    {slug:'riesgo',      label:'Riesgo',      page:'risk'},
+    {slug:'movimientos', label:'Movimientos', page:'bitacora'},
+    {slug:'dividendos',  label:'Dividendos',  page:'divs'},
+    {slug:'objetivos',   label:'Objetivos',   page:'rebal'}]},
+  {id:'lista',      label:'Lista',      icon:'watch', tabs:[
+    {slug:'mi-lista',  label:'Mi lista',  page:'watch'},
+    {slug:'alertas',   label:'Alertas',   page:'alert'},
+    {slug:'descubrir', label:'Descubrir', page:'screener'},
+    {slug:'comparar',  label:'Comparar',  page:'comp'}]},
+  {id:'planificar', label:'Planificar', icon:'calc',  tabs:[
+    {slug:'calculadora', label:'Calculadora', page:'pb'},
+    {slug:'aportes',     label:'Aportes',     page:'capital'}]},
+  {id:'mercado',    label:'Mercado',    icon:'globe', tabs:[{slug:'',page:'decision'}]}
 ];
-function navGrupoDe(pageId){
-  for(var i=0;i<NAV_C.length;i++) if(NAV_C[i].pages.indexOf(pageId)>=0) return NAV_C[i];
-  return null;
+// Fuera de los 5 destinos: se llega desde el menu de la cuenta.
+var DEST_ACCOUNT={settings:{id:'ajustes',label:'Ajustes'},help:{id:'ayuda',label:'Ayuda'}};
+var PAGE_ALIAS={
+  // ids retirados de la navegacion (su codigo sigue en el archivo hasta la fase 5)
+  news:'dash', back:'bitacora', sig:'watch', ind:'watch', sentiment:'decision', radar:'decision',
+  // nombres nuevos
+  hoy:'dash', portafolio:'port', lista:'watch', planificar:'pb', mercado:'decision', ajustes:'settings', ayuda:'help'
+};
+function resolvePage(p){
+  p=String(p||'dash');
+  if(p.indexOf('/')>0){
+    var parts=p.split('/'), d=DEST.find(function(x){return x.id===parts[0];});
+    var tb=d&&d.tabs.find(function(t){return t.slug===parts[1];});
+    if(tb) return tb.page;
+    p=parts[0];
+  }
+  if(PAGE_ALIAS[p]) return PAGE_ALIAS[p];
+  for(var i=0;i<DEST.length;i++) for(var j=0;j<DEST[i].tabs.length;j++) if(DEST[i].tabs[j].page===p) return p;
+  if(DEST_ACCOUNT[p]) return p;
+  return 'dash';
 }
-function renderMainNav(){
-  var el=document.getElementById('mainnav');
+// {dest, tab} de una hoja; dest es null para Ajustes y Ayuda.
+function destOf(page){
+  for(var i=0;i<DEST.length;i++){
+    var tb=DEST[i].tabs.find(function(t){return t.page===page;});
+    if(tb) return {dest:DEST[i],tab:tb};
+  }
+  return {dest:null,tab:null,account:DEST_ACCOUNT[page]||null};
+}
+function destTitle(page){
+  var d=destOf(page);
+  return d.dest?d.dest.label:(d.account?d.account.label:'');
+}
+function goDest(id){
+  var d=DEST.find(function(x){return x.id===id;});
+  if(d) setPage(d.tabs[0].page);
+}
+
+// Nombres para el buscador. Solo empresas que la app ya mostraba.
+var TICKER_NAMES={
+  AAPL:'Apple',MSFT:'Microsoft',NVDA:'NVIDIA',AMZN:'Amazon',GOOGL:'Alphabet',META:'Meta Platforms',TSLA:'Tesla',
+  AMD:'AMD',INTC:'Intel',ORCL:'Oracle',NFLX:'Netflix',V:'Visa',MA:'Mastercard',JPM:'JPMorgan',WMT:'Walmart',
+  JNJ:'Johnson & Johnson',UNH:'UnitedHealth',PG:'Procter & Gamble',HD:'Home Depot',DIS:'Disney',NKE:'Nike',
+  'BRK-B':'Berkshire Hathaway B',SPY:'SPDR S&P 500',QQQ:'Invesco QQQ',VTI:'Vanguard Total Stock Market',
+  IVV:'iShares Core S&P 500',DIA:'SPDR Dow Jones',IWM:'iShares Russell 2000',GLD:'SPDR Gold',TLT:'iShares 20+ Year Treasury',
+  XLK:'Technology Select Sector',XLF:'Financial Select Sector',XLV:'Health Care Select Sector',XLE:'Energy Select Sector',
+  XLI:'Industrial Select Sector',VXUS:'Vanguard Total International',MELI:'MercadoLibre',BABA:'Alibaba',PBR:'Petrobras',
+  VALE:'Vale',ITUB:'Itaú Unibanco',SQM:'SQM','BTC-USD':'Bitcoin','ETH-USD':'Ethereum'
+};
+// Tickers de los presets de Descubrir (mismos que renderScreenerSection).
+var SCREENER_PRESET_TICKERS=('AAPL MSFT NVDA GOOGL META AMZN TSLA AMD INTC ORCL SPY QQQ IWM GLD TLT XLK XLF XLV XLE XLI '+
+  'BABA MELI PBR VALE CX BBD ITUB BRFS ERJ LTM AMXL WALMEX ITUB BBDC4.SA VALE3.SA PETR4.SA ABEV3.SA B3SA3.SA WEGE3.SA '+
+  'AMXL.MX WALMEX.MX FEMSA.MX GFINBURO.MX CEMEX.MX BIMBOA.MX SQM BCI.CL FALABELLA.CL COPEC.CL ENELCHILE.CL CCU.CL CMPC.CL').split(' ');
+
+function navWatchTickers(){
+  return (S.watchlist||[]).map(function(w){return typeof w==='string'?w:(w&&w.ticker);}).filter(Boolean);
+}
+
+// ── Barra lateral (escritorio ≥ 1024 px) ──
+var SIDE_KEY='inv_side_collapsed';
+function sideIsCollapsed(){
+  try{ var v=localStorage.getItem(SIDE_KEY); if(v==='1') return true; if(v==='0') return false; }catch(e){}
+  return window.innerWidth<1280; // entre 1024 y 1279 arranca contraida
+}
+function sideApplyCollapsed(){
+  var c=sideIsCollapsed();
+  document.body.classList.toggle('side-collapsed',c);
+  var b=document.getElementById('side-toggle');
+  if(b){ b.setAttribute('aria-expanded',String(!c)); var l=c?'Expandir barra lateral':'Contraer barra lateral'; b.setAttribute('aria-label',l); b.title=l; }
+}
+function sideToggle(){
+  var c=!document.body.classList.contains('side-collapsed');
+  try{ localStorage.setItem(SIDE_KEY,c?'1':'0'); }catch(e){}
+  sideApplyCollapsed();
+}
+function sideHtml(){
+  var items=DEST.map(function(d,i){
+    return '<li><button type="button" class="side-item" data-dest="'+d.id+'" onclick="goDest(\''+d.id+'\')" title="'+d.label+' (Alt+'+(i+1)+')">'+
+      icon(d.icon)+'<span class="side-lbl">'+d.label+'</span></button></li>';
+  }).join('');
+  return '<div class="side-brand"><img src="/icon-192.png" alt="" width="28" height="28"/><span class="side-lbl">MOY IQ <b>Invest</b></span></div>'+
+    '<ul class="side-nav">'+items+'</ul>'+
+    '<section class="side-list" aria-labelledby="side-list-h">'+
+      '<h2 class="side-h" id="side-list-h">Tu lista</h2>'+
+      '<div id="side-list-body"></div>'+
+    '</section>'+
+    '<div class="side-foot">'+
+      '<a class="side-item" href="https://app.moyiq.app" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">'+icon('link')+'<span class="side-lbl">Finanzas ↗</span></a>'+
+      '<button type="button" class="side-item" id="side-toggle" onclick="sideToggle()" aria-controls="sb">'+
+        '<svg class="ico side-chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>'+
+        '<span class="side-lbl">Contraer</span></button>'+
+    '</div>';
+}
+function renderSidebar(){
+  // Ademas de pintar la barra, alterna body.no-auth: sin sesion no hay barra,
+  // ni franja superior, ni barra inferior (la pantalla de acceso va a lo ancho).
+  var sb=document.getElementById('sb');
+  if(!S.user){ if(sb) sb.innerHTML=''; document.body.classList.add('no-auth'); return; }
+  document.body.classList.remove('no-auth');
+  if(!sb) return;
+  if(!sb.querySelector('.side-nav')) sb.innerHTML=sideHtml();
+  sideApplyCollapsed();
+  sideSync();
+}
+function sideSync(){
+  var sb=document.getElementById('sb'); if(!sb||!S.user) return;
+  var cur=destOf(S.page).dest;
+  sb.querySelectorAll('.side-item[data-dest]').forEach(function(b){
+    var on=!!cur&&b.getAttribute('data-dest')===cur.id;
+    b.classList.toggle('act',on);
+    if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
+  });
+  renderSideList();
+}
+// "Tu lista" en miniatura: precio y variacion del dia con los mismos datos
+// LIVE de la app. Se repinta al refrescar precios (updateLiveBadge) y al
+// cambiar la lista (renderMain).
+function renderSideList(){
+  var el=document.getElementById('side-list-body'); if(!el||!S.user) return;
+  var wl=navWatchTickers();
+  if(!wl.length){ el.innerHTML='<p class="side-empty">Sigue un activo desde el buscador</p>'; return; }
+  var MAX=8;
+  el.innerHTML='<ul class="side-tk">'+wl.slice(0,MAX).map(function(t){
+    var q=LIVE[t];
+    var price=q&&isFinite(q.price)?fmtD(q.price):'—';
+    var chg='—', cls='';
+    if(q&&q.changePct!=null&&isFinite(q.changePct)){
+      var p=q.changePct*100; cls=p>=0?' pos':' neg';
+      chg=(p>=0?'+':'−')+fmtD(Math.abs(p))+' %';
+    }
+    var aria=t+', precio '+price+(cls?', hoy '+chg:'');
+    return '<li><button type="button" class="side-tk-row" onclick="navOpenTicker(\''+esc(t)+'\')" aria-label="'+esc(aria)+'">'+
+      '<span class="side-tk-t">'+esc(t)+'</span><span class="side-tk-p">'+price+'</span><span class="side-tk-c'+cls+'">'+chg+'</span></button></li>';
+  }).join('')+'</ul>'+
+  (wl.length>MAX?'<button type="button" class="side-more" onclick="setPage(\'watch\')">Ver toda la lista ('+wl.length+')</button>'
+                :'<button type="button" class="side-more" onclick="setPage(\'watch\')">Ver toda la lista</button>');
+}
+function navOpenTicker(t){
+  t=String(t||'').toUpperCase().trim(); if(!t) return;
+  var q=LIVE[t];
+  openDrawer(t,q&&q.price>0?q.price:undefined);
+}
+
+// ── Franja superior: buscador global, frescura y cuenta ──
+function navInitials(){
+  var u=S.user||{};
+  var base=(u.name&&String(u.name).trim())||String(u.email||'U').split('@')[0];
+  var parts=base.split(/[\s._-]+/).filter(Boolean);
+  var ini=parts.length>1?(parts[0][0]+parts[1][0]):base.slice(0,2);
+  return (ini||'U').toUpperCase();
+}
+function renderTopbar(){
+  var el=document.getElementById('topbar');
   if(!el) return;
   if(!S.user){ el.innerHTML=''; return; }
-  var plan=S.user?planOf():null;
-  var activo=navGrupoDe(S.page);
+  if(!el.querySelector('.gs')){
+    el.innerHTML=
+      '<span class="tb-dest" id="tb-dest" aria-hidden="true"></span>'+
+      '<div class="gs" id="gs" role="search">'+
+        '<label class="sr-only" for="gs-in">Buscar ticker o empresa</label>'+
+        '<span class="gs-ico" aria-hidden="true">'+icon('screener')+'</span>'+
+        '<input id="gs-in" type="text" class="gs-in" placeholder="Buscar ticker o empresa" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go"'+
+          ' role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="gs-list"'+
+          ' oninput="gsInput()" onfocus="gsInput()" onkeydown="gsKey(event)" onblur="gsBlur()"/>'+
+        '<kbd class="gs-kbd" aria-hidden="true">/</kbd>'+
+        '<button type="button" class="gs-close" onclick="gsCloseMobile()" aria-label="Cerrar búsqueda">'+icon('close')+'</button>'+
+        '<ul class="gs-list" id="gs-list" role="listbox" aria-label="Sugerencias" hidden></ul>'+
+      '</div>'+
+      '<span class="live-badge-wrap tb-fresh"></span>'+
+      '<button type="button" class="tb-icon tb-search" onclick="gsOpenMobile()" aria-label="Buscar ticker o empresa">'+icon('screener')+'</button>'+
+      '<div class="acct">'+
+        '<button type="button" class="acct-btn" id="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" onclick="acctToggle()"></button>'+
+        '<div class="acct-menu" id="acct-menu" role="menu" aria-labelledby="acct-btn" hidden onkeydown="acctKey(event)"></div>'+
+      '</div>';
+  }
+  var t=document.getElementById('tb-dest'); if(t) t.textContent=destTitle(S.page);
+  var b=document.getElementById('acct-btn');
+  if(b){ b.textContent=navInitials(); b.setAttribute('aria-label','Cuenta de '+(S.user.email||'usuario')); }
+  updateLiveBadge();
+}
 
-  var fila1=NAV_C.map(function(g){
-    var act=(activo&&activo.id===g.id)?' act':'';
-    return '<button class="mn-item'+act+'" onclick="setPage(\''+g.pages[0]+'\')">'+g.label+'</button>';
+// Buscador: tickers del portafolio, de la lista, del universo de referencia,
+// de los presets de Descubrir y los nombres conocidos. Acepta cualquier ticker
+// escrito aunque no este en la lista.
+var GS={items:[],idx:-1};
+function gsUniverse(){
+  var out=[], seen={};
+  function add(t,src){
+    t=String(t||'').toUpperCase().trim(); if(!t||seen[t]) return;
+    seen[t]=1; out.push({t:t,name:TICKER_NAMES[t]||'',src:src||''});
+  }
+  (S.portfolio||[]).forEach(function(h){add(h.t,'En tu portafolio');});
+  navWatchTickers().forEach(function(t){add(t,'En tu lista');});
+  ALL_SIG.forEach(function(x){add(x.t);});
+  SCREENER_PRESET_TICKERS.forEach(function(t){add(t);});
+  Object.keys(TICKER_NAMES).forEach(function(t){add(t);});
+  return out;
+}
+function gsMatches(q){
+  var all=gsUniverse();
+  q=String(q||'').trim();
+  if(!q) return all.filter(function(x){return x.src;}).slice(0,8);
+  var Q=q.toUpperCase(), ql=q.toLowerCase();
+  var a=[],b=[],c=[];
+  all.forEach(function(x){
+    if(x.t===Q||x.t.indexOf(Q)===0) a.push(x);
+    else if(x.t.indexOf(Q)>0) b.push(x);
+    else if(x.name&&x.name.toLowerCase().indexOf(ql)>=0) c.push(x);
+  });
+  var res=a.concat(b,c).slice(0,7);
+  // Cualquier ticker escrito se puede abrir: va al final si hay coincidencias.
+  if(/^[A-Z0-9.\-=^]{1,12}$/.test(Q)&&!res.some(function(x){return x.t===Q;})) res.push({t:Q,name:'',src:'',typed:true});
+  return res;
+}
+function gsInput(){
+  var inp=document.getElementById('gs-in'); if(!inp) return;
+  GS.items=gsMatches(inp.value); GS.idx=GS.items.length&&inp.value.trim()?0:-1;
+  gsPaint();
+}
+function gsPaint(){
+  var list=document.getElementById('gs-list'), inp=document.getElementById('gs-in');
+  if(!list||!inp) return;
+  if(!GS.items.length){
+    var q=inp.value.trim();
+    list.innerHTML=q?'':'<li class="gs-empty" role="presentation">Escribe un ticker, por ejemplo AAPL o SPY</li>';
+    list.hidden=!!q;
+    inp.setAttribute('aria-expanded',String(!list.hidden)); inp.removeAttribute('aria-activedescendant');
+    return;
+  }
+  list.innerHTML=GS.items.map(function(x,i){
+    var on=i===GS.idx;
+    return '<li role="option" id="gs-opt-'+i+'" class="gs-opt'+(on?' on':'')+'" aria-selected="'+on+'" onmousedown="event.preventDefault()" onclick="gsPick('+i+')">'+
+      '<span class="gs-t">'+esc(x.t)+'</span>'+
+      '<span class="gs-n">'+(x.typed?'Abrir la ficha de '+esc(x.t):esc(x.name||''))+'</span>'+
+      (x.src?'<span class="gs-s">'+esc(x.src)+'</span>':'')+'</li>';
   }).join('');
+  list.hidden=false;
+  inp.setAttribute('aria-expanded','true');
+  if(GS.idx>=0) inp.setAttribute('aria-activedescendant','gs-opt-'+GS.idx); else inp.removeAttribute('aria-activedescendant');
+}
+function gsClose(){
+  var list=document.getElementById('gs-list'), inp=document.getElementById('gs-in');
+  if(list){ list.hidden=true; list.innerHTML=''; }
+  if(inp){ inp.setAttribute('aria-expanded','false'); inp.removeAttribute('aria-activedescendant'); }
+  GS.items=[]; GS.idx=-1;
+}
+function gsBlur(){ setTimeout(function(){ var a=document.activeElement; if(!a||!a.closest||!a.closest('#gs')) { gsClose(); } },120); }
+function gsPick(i){
+  var x=GS.items[i]; if(!x) return;
+  gsGo(x.t);
+}
+function gsGo(t){
+  t=String(t||'').toUpperCase().trim(); if(!t) return;
+  var inp=document.getElementById('gs-in');
+  if(inp){ inp.value=''; inp.blur(); }
+  gsClose(); gsCloseMobile();
+  navOpenTicker(t);
+}
+function gsKey(e){
+  var inp=e.target;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    if(!GS.items.length) return;
+    e.preventDefault();
+    var n=GS.items.length;
+    GS.idx=e.key==='ArrowDown'?(GS.idx+1)%n:(GS.idx<=0?n-1:GS.idx-1);
+    gsPaint();
+  } else if(e.key==='Enter'){
+    e.preventDefault();
+    if(GS.idx>=0&&GS.items[GS.idx]) gsPick(GS.idx);
+    else if(inp.value.trim()) gsGo(inp.value);
+  } else if(e.key==='Escape'){
+    e.stopPropagation();
+    if(inp.value){ inp.value=''; gsInput(); }
+    else { gsClose(); gsCloseMobile(); inp.blur(); }
+  }
+}
+function gsFocus(){
+  if(window.innerWidth<1024){ gsOpenMobile(); return; }
+  var inp=document.getElementById('gs-in'); if(inp){ inp.focus(); inp.select(); }
+}
+function gsOpenMobile(){
+  var tb=document.getElementById('topbar'); if(!tb) return;
+  tb.classList.add('gs-open');
+  var inp=document.getElementById('gs-in'); if(inp) setTimeout(function(){ inp.focus(); },0);
+}
+function gsCloseMobile(){
+  var tb=document.getElementById('topbar'); if(!tb||!tb.classList.contains('gs-open')) return;
+  tb.classList.remove('gs-open');
+  gsClose();
+  var b=tb.querySelector('.tb-search'); if(b&&window.innerWidth<1024) b.focus();
+}
 
-  // Segunda fila: solo si el grupo activo agrupa mas de un destino. Sin esto,
-  // los 13 destinos absorbidos quedarian inalcanzables.
-  var fila2='';
-  if(activo&&activo.pages.length>1){
-    // La categoria principal es la entrada y ya esta en la fila de arriba: aqui
-    // solo bajan sus destinos secundarios, para no repetirla en las dos filas.
-    var subs=activo.pages.slice(1);
-    fila2='<div class="mn-sub">'+
-      '<span class="mn-sub-lbl">'+activo.label+'</span>'+
-      subs.map(function(id){
-        var p=PAGES.find(function(x){return x.id===id;});
-        if(!p) return '';
-        var bloqueado=!!(plan&&plan.locked&&plan.locked.indexOf(id)>=0);
-        var act=S.page===id?' act':'';
-        var accion=bloqueado?"openModal('upgrade')":'setPage(\''+id+'\')';
-        return '<button class="mn-subitem'+act+'" onclick="'+accion+'">'+
-          (icon(id)||'')+'<span>'+p.label+'</span>'+
-          (bloqueado?'<span class="fos-pro-badge">PRO</span>':'')+'</button>';
+// Menu de la cuenta
+function acctItems(){
+  return [
+    {lbl:'Ajustes', ico:'settings', act:"acctGo('settings')"},
+    {lbl:'Ayuda', ico:'help', act:"acctGo('help')"},
+    {lbl:'Atajos de teclado', ico:'bolt', act:"acctClose();showShortcuts()"},
+    {lbl:'Aviso legal', ico:'shield', act:"acctClose();toggleDisclaimer()"},
+    {lbl:'Finanzas ↗', ico:'link', href:'https://app.moyiq.app'},
+    {lbl:'Cerrar sesión', ico:'user', act:"acctClose();logout()", sep:true}
+  ];
+}
+function acctToggle(force){
+  var m=document.getElementById('acct-menu'), b=document.getElementById('acct-btn'); if(!m||!b) return;
+  var open=typeof force==='boolean'?force:m.hidden;
+  if(open){
+    m.innerHTML='<div class="acct-who" role="presentation">'+esc((S.user&&S.user.email)||'')+'</div>'+
+      acctItems().map(function(it){
+        var inner=icon(it.ico)+'<span>'+it.lbl+'</span>';
+        return (it.sep?'<div class="acct-sep" role="separator"></div>':'')+
+          (it.href?'<a role="menuitem" tabindex="-1" class="acct-it" href="'+it.href+'" target="_blank" rel="noopener" onclick="acctClose()">'+inner+'</a>'
+                  :'<button type="button" role="menuitem" tabindex="-1" class="acct-it" onclick="'+it.act+'">'+inner+'</button>');
+      }).join('');
+    m.hidden=false; b.setAttribute('aria-expanded','true');
+    var first=m.querySelector('[role=menuitem]'); if(first) first.focus();
+  } else {
+    m.hidden=true; b.setAttribute('aria-expanded','false');
+  }
+}
+function acctClose(focusBtn){
+  var m=document.getElementById('acct-menu'); if(!m||m.hidden) return;
+  acctToggle(false);
+  if(focusBtn){ var b=document.getElementById('acct-btn'); if(b) b.focus(); }
+}
+function acctGo(p){ acctClose(); setPage(p); }
+function acctKey(e){
+  var its=Array.prototype.slice.call(document.querySelectorAll('#acct-menu [role=menuitem]'));
+  var i=its.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'){ e.preventDefault(); its[(i+1)%its.length].focus(); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); its[(i<=0?its.length:i)-1].focus(); }
+  else if(e.key==='Home'){ e.preventDefault(); its[0].focus(); }
+  else if(e.key==='End'){ e.preventDefault(); its[its.length-1].focus(); }
+  else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); acctClose(true); }
+  else if(e.key==='Tab'){ acctClose(); }
+}
+document.addEventListener('click',function(e){
+  var a=document.querySelector('.acct');
+  if(a&&!a.contains(e.target)) acctClose();
+  var tb=document.getElementById('topbar');
+  if(tb&&tb.classList.contains('gs-open')&&!tb.contains(e.target)) gsCloseMobile();
+});
+
+// ── Cabecera de pagina: titulo del destino + una sola fila de pestañas ──
+function renderMainNav(){
+  var el=document.getElementById('pagehead');
+  if(!el) return;
+  if(!S.user){ el.innerHTML=''; renderMobBar(); return; }
+  var d=destOf(S.page);
+  var title=destTitle(S.page);
+  var tabs='';
+  if(d.dest&&d.dest.tabs.length>1){
+    tabs='<div class="ptabs" role="tablist" aria-label="Secciones de '+d.dest.label+'" onkeydown="ptabKey(event)">'+
+      d.dest.tabs.map(function(t){
+        var on=t.page===S.page;
+        return '<button type="button" role="tab" class="ptab'+(on?' act':'')+'" id="ptab-'+t.page+'" aria-selected="'+on+'" aria-controls="main" tabindex="'+(on?'0':'-1')+'" onclick="setPage(\''+t.page+'\')">'+t.label+'</button>';
       }).join('')+'</div>';
   }
-
-  el.innerHTML='<div class="mn-row">'+
-    '<div class="mn-brand"><span class="mn-brand-i"><img src="/icon-192.png" alt="" width="26" height="26" style="display:block;width:100%;height:100%;object-fit:contain"/></span><span>MOY IQ <b>Invest</b></span></div>'+
-    '<div class="mn-items">'+fila1+'</div>'+
-    // I09: puente con MOY IQ (finanzas personales, misma cuenta). Abre la app, no lee sus datos.
-    '<a class="mn-item mn-cfg mn-suite" href="https://app.moyiq.app" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">Finanzas<span> ↗</span></a>'+
-    '<button class="mn-item mn-cfg" onclick="setPage(\'settings\')" aria-label="Configuración">'+icon('settings')+'<span class="mn-cfg-lbl">Configuración</span></button>'+
-    '</div>'+fila2;
+  el.innerHTML='<div class="pagehead-in"><h1 class="pg-title">'+title+'</h1>'+tabs+'</div>';
+  el.classList.toggle('has-tabs',!!tabs);
+  renderMobBar();
 }
+function ptabKey(e){
+  var keys=['ArrowLeft','ArrowRight','Home','End'];
+  if(keys.indexOf(e.key)<0) return;
+  var tabs=Array.prototype.slice.call(document.querySelectorAll('#pagehead .ptab'));
+  var i=tabs.indexOf(document.activeElement); if(i<0) return;
+  e.preventDefault();
+  var n=e.key==='ArrowRight'?(i+1)%tabs.length:e.key==='ArrowLeft'?(i-1+tabs.length)%tabs.length:e.key==='Home'?0:tabs.length-1;
+  var page=tabs[n].id.replace('ptab-','');
+  setPage(page);
+  var nt=document.getElementById('ptab-'+page); if(nt) nt.focus();
+}
+// Barra inferior (< 1024 px): los mismos 5 destinos con los mismos nombres.
+function renderMobBar(){
+  var bar=document.getElementById('mob-tab-bar'); if(!bar) return;
+  if(!S.user){ bar.innerHTML=''; return; }
+  var cur=destOf(S.page).dest;
+  bar.innerHTML=DEST.map(function(d){
+    var on=!!cur&&cur.id===d.id;
+    return '<button type="button" class="mob-tab'+(on?' act':'')+'"'+(on?' aria-current="page"':'')+' onclick="goDest(\''+d.id+'\')">'+icon(d.icon)+'<span>'+d.label+'</span></button>';
+  }).join('');
+}
+function updateMobTabs(){ renderMobBar(); }
+// Se conserva por compatibilidad: el menu movil (hamburguesa) se retiro.
+function toggleMobileMenu(){}
+
+// El destino ya imprime su titulo arriba: la cabecera interna de cada
+// pantalla (rotulo "Seguir · Portafolio" + su propio h1) se quita para que
+// la pagina tenga un solo titulo. Queda su subtitulo y sus acciones.
+function dedupeMainHeader(){
+  var m=document.getElementById('main'); if(!m||!S.user) return;
+  if(m.querySelector('[data-shell-dedup]')) return;
+  var h=m.querySelector('.ph, .fos-module-header, .dash-page-header'); if(!h) return;
+  h.setAttribute('data-shell-dedup','1');
+  h.querySelectorAll('.ph-crumb, .fos-module-crumb, .dash-page-breadcrumb').forEach(function(x){x.remove();});
+  var t=h.querySelector('h1, h2, .fos-module-title, .dash-page-title'); if(t) t.remove();
+  // Si solo quedaron piezas ocultas (p. ej. la frescura que Hoy muestra solo
+  // en el movil), la cabecera no ocupa lugar.
+  var visible=Array.prototype.some.call(h.querySelectorAll('*'),function(x){ return x.children.length===0&&x.offsetParent!==null&&(x.textContent.trim()||/^(BUTTON|INPUT|SELECT|A)$/.test(x.tagName)); });
+  if(!visible) h.classList.add('ph-empty');
+}
+(function(){
+  var m=document.getElementById('main');
+  if(m&&window.MutationObserver) new MutationObserver(dedupeMainHeader).observe(m,{childList:true});
+})();
+
+function setPage(p){
+  p=resolvePage(p);
+  S.page=p;
+  track('module_view',{module:p});
+  if(isAnalizarPage()&&!S._universeQuotes){
+    S._universeQuotes=true;
+    var _u=ALL_SIG.map(function(x){return x.t;}).filter(function(t){return !LIVE[t];});
+    if(_u.length) refreshLive(_u).then(function(){ if(isAnalizarPage()) try{renderMain();}catch(e){} }).catch(function(){});
+  }
+  closeDrawer();
+  acctClose();
+  gsCloseMobile();
+  renderTopbar();
+  renderMainNav();
+  renderMain();
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+// ── /NAV SHELL ───────────────────────────────────────────────────────────
+
 
 // Mini grafica de la banda de mercado. La version que vivia dentro de Contexto
 // usaba #00b050/#ff4444 hardcodeados, que ya no son los colores de la paleta:
@@ -3708,127 +3960,6 @@ function bandSpark(pts,isUp){
   }).join(' ');
   return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true" style="display:block;flex-shrink:0">'+
     '<polyline points="'+coords+'" fill="none" stroke="'+(isUp?'var(--pos)':'var(--neg)')+'" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"/></svg>';
-}
-
-function renderTopbar(){
-  var el=document.getElementById('topbar');
-  if(!el||!S.user) return;
-  var u=S.user;
-  var initials=(u.name||'U').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'U';
-  var r=DE_CACHE.regime;
-  var v=DE_CACHE.vix;
-
-  // Banda completa de mercado. Antes solo mostraba 4 simbolos (SPY/QQQ/VIX/BTC)
-  // y los 11 vivian dentro de Contexto: el dato mas util de la app solo se veia
-  // entrando a una pantalla concreta. Ahora la banda es global y Contexto ya no
-  // la duplica.
-  var BAR_DEF=[
-    {sym:'^GSPC',   label:'S&P 500'},
-    {sym:'^DJI',    label:'Dow 30'},
-    {sym:'^IXIC',   label:'Nasdaq'},
-    {sym:'^RUT',    label:'Russell 2K'},
-    {sym:'CL=F',    label:'Crude'},
-    {sym:'GC=F',    label:'Gold'},
-    {sym:'SI=F',    label:'Silver'},
-    {sym:'EURUSD=X',label:'EUR/USD'},
-    {sym:'^TNX',    label:'10-Yr'},
-    {sym:'BTC-USD', label:'BTC'},
-    {sym:'^VIX',    label:'VIX', vixOnly:true}
-  ];
-  var sep='<span style="width:1px;height:18px;background:var(--border2);flex-shrink:0"></span>';
-  var chips='';
-  if(MARKET_BAR.length){
-    BAR_DEF.forEach(function(bt){
-      var b=MARKET_BAR.find(function(x){return x.sym===bt.sym;});
-      if(!b||!isFinite(b.price)) return;
-      var isUp=(b.changePct||0)>=0;
-      var col=bt.vixOnly?'var(--text2)':(isUp?'var(--pos)':'var(--neg)');
-      var pctStr=bt.vixOnly?'':(isUp?'+':'\u2212')+fmtD(Math.abs(b.changePct||0))+'\u00a0%';
-      // Cada instrumento tiene su formato: el bono va en %, el euro a 4 decimales
-      // y bitcoin en miles. Con un formato unico se leian mal casi todos.
-      var valStr;
-      if(bt.sym==='EURUSD=X')      valStr=b.price.toLocaleString(LOC,{minimumFractionDigits:4,maximumFractionDigits:4});
-      else if(bt.sym==='^TNX')     valStr=fmtD(b.price)+'\u00a0%';
-      else if(bt.sym==='BTC-USD')  valStr='$'+fmt(b.price);
-      else if(b.price>=1000)       valStr=fmt(b.price);
-      else                         valStr=fmtD(b.price);
-      chips+=sep+
-        '<div style="display:flex;align-items:center;gap:6px;padding:0 10px;flex-shrink:0">'+
-        '<div style="display:flex;flex-direction:column;gap:1px">'+
-        '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3);letter-spacing:.3px;line-height:1.2">'+bt.label+'</span>'+
-        '<div style="display:flex;align-items:baseline;gap:5px">'+
-        '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:600;color:var(--bright);line-height:1.2">'+valStr+'</span>'+
-        (pctStr?'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:'+col+'">'+pctStr+'</span>':'')+
-        '</div></div>'+
-        bandSpark(b.spark,isUp)+
-        '</div>';
-    });
-  } else if(v&&v.vix){
-    chips=sep+'<div style="display:flex;align-items:center;gap:5px;padding:0 10px">'+
-      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text3)">VIX</span>'+
-      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:600;color:var(--bright)">'+v.vix.toFixed(1)+'</span></div>';
-  }
-
-  // Régimen chip
-  var regChip='';
-  if(r){
-    var rCol=r.regime==='risk_on'?'var(--grn)':r.regime==='risk_off'?'var(--red)':'var(--amber)';
-    regChip=sep+'<div style="display:flex;align-items:center;gap:5px;padding:0 12px">'+
-      '<span style="width:6px;height:6px;border-radius:50%;background:'+rCol+';flex-shrink:0"></span>'+
-      '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:700;color:'+rCol+';letter-spacing:.5px">'+r.label.toUpperCase()+'</span></div>';
-  }
-
-  el.innerHTML=
-    // Los 11 simbolos no caben en una pantalla estrecha: scroll horizontal en
-    // vez de recortar, para que ninguno quede inaccesible. flex:1 aqui y no en
-    // un separador aparte, para que la banda ocupe el espacio disponible.
-    '<div class="mkt-strip" style="display:flex;align-items:center;height:100%;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden">'+chips+regChip+'</div>'+
-    '<span class="live-badge-wrap" style="margin-right:14px;white-space:nowrap">'+liveBadge()+'</span>'+
-    '<div role="button" tabindex="0" title="'+u.email+'" style="width:28px;height:28px;border-radius:50%;background:var(--grn-bg);border:1px solid var(--grn-lt);display:flex;align-items:center;justify-content:center;font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--grn);flex-shrink:0;cursor:pointer" onclick="setPage(\'settings\')">'+initials+'</div>';
-
-  if(!r||!v){
-    Promise.all([deGetRegime(),deGetVIX()]).then(function(){renderTopbar();}).catch(function(){});
-  }
-}
-function toggleMobileMenu(force){
-  // El drawer movil es #mainnav (el nav de grupos). #sb es un sidebar retirado
-  // que ya no se muestra nunca (ver comentario en su regla CSS); tocar el
-  // boton hamburguesa solia abrir ese vacio.
-  var nav=document.getElementById('mainnav');
-  if(!nav) return;
-  var bd=document.getElementById('sb-backdrop');
-  var open=typeof force==='boolean'?force:!nav.classList.contains('mobile-open');
-  nav.classList.toggle('mobile-open',open);
-  if(bd) bd.style.display=open?'block':'none';
-}
-function setPage(p){
-  // Estos redirects venian de una consolidacion anterior (10a9fcf) que oculto
-  // sig/comp del sidebar y los mandaba a screener. Las paginas se volvieron a
-  // mostrar pero el redirect quedo: el usuario pulsaba Senales o Comparador y
-  // aterrizaba en Screener. renderSig y renderComp funcionan, asi que se quita.
-  // 'pb' si sigue redirigiendo, porque ahora es una pestana de Riesgo, pero
-  // fijando antes la pestana: el redirect a secas la dejaba en 'mis posiciones'.
-  // 'pb' es la calculadora (pantalla propia desde I04). Antes redirigia a una
-  // pestaña de Riesgo y renderMain la volvía a 'mis': el botón de la ficha
-  // terminaba en la tabla de Riesgo.
-  // Contexto/Noticias se fusiono dentro del Dashboard (banda "Mercado hoy").
-  // Cualquier enlace antiguo a 'news' aterriza en el Dashboard.
-  if(p==='news') p='dash';
-  if(p==='sentiment'||p==='radar') p='decision';
-  S.page=p;
-  track('module_view',{module:p});
-  if(isAnalizarPage()&&!S._universeQuotes){
-    S._universeQuotes=true;
-    var _u=ALL_SIG.map(function(x){return x.t;}).filter(function(t){return !LIVE[t];});
-    if(_u.length) refreshLive(_u).then(function(){ if(isAnalizarPage()) try{renderMain();}catch(e){} }).catch(function(){});
-  }
-  closeDrawer();
-  toggleMobileMenu(false);
-  renderTopbar();
-  // La barra superior se repinta entera: al cambiar de grupo cambia tambien la
-  // segunda fila, asi que no basta con mover la clase 'act' como en el sidebar.
-  renderMainNav();
-  renderMain();
 }
 
 var _modalLastFocus=null;
@@ -3872,19 +4003,6 @@ function _setupModalFocus(){
     if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
     else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
   });
-}
-
-// ── SIDEBAR ────────────────────────────────────────────────────
-function renderSidebar(){
-  // El sidebar quedo obsoleto: era una SEGUNDA navegacion (agrupada distinto
-  // que la top-nav) que ya no se muestra en ningun ancho (.sb{display:none}).
-  // Se conserva SOLO el toggle de la clase no-auth, que es load-bearing para
-  // el layout (controla #mainnav, bandas fijas y padding). La unica fuente de
-  // navegacion es ahora NAV_C / renderMainNav.
-  var sb=document.getElementById("sb");
-  if(!S.user){ if(sb) sb.innerHTML=""; document.body.classList.add("no-auth"); return; }
-  document.body.classList.remove("no-auth");
-  if(sb) sb.innerHTML="";
 }
 
 // ── DECISION ENGINE ────────────────────────────────────────────
@@ -4244,7 +4362,9 @@ function analisisTabs(){
     (ANALISIS_TAB==='universo'?'Tu watchlist y tu portafolio, con contexto de mercado':'Escribe los tickers que quieras y filtra por criterio')+
     '</span></div>';
 }
-function renderDecisionEngineBody(){
+function renderMercado(){ ANALISIS_TAB='universo'; renderDecisionEngineBody('mercado'); }
+function renderDecisionEngineBody(mode){
+  var isMercado=mode==='mercado';
   var main=document.getElementById('main');
   var isFreeUser=S.user&&planOf().locked.indexOf('decision')>=0;
   // Free users get a teaser: full Régimen card + first ticker analysis with upgrade overlay
@@ -4276,10 +4396,12 @@ function renderDecisionEngineBody(){
     'Cada activo muestra sus indicadores por separado (medias de 50 y 200 días, RSI, MACD, volumen), con su rango y una frase que explica qué significa. '+
     'No hay una nota que los combine ni niveles de entrada: son lecturas de datos históricos, no recomendaciones.'+
     '</div></div>';
-  main.innerHTML=_ph('Analizar · Motor de Análisis','Motor de Análisis','// Contexto de mercado · Cada indicador con su rango y su lectura','<button class="btn" style="font-size:11px;border-color:var(--border);color:var(--text3)" onclick="openModal(\'score-info\')">¿Qué mide cada indicador? →</button>')+
-    analisisTabs()+
-    explicaUniverso+
-    '<div id="de-body" style="padding:0 20px 40px">'+
+  main.innerHTML=(isMercado
+    ? _ph('Mercado','Mercado','Régimen, volatilidad y amplitud del mercado, y los próximos resultados de las empresas que sigues.')
+    : _ph('Analizar · Motor de Análisis','Motor de Análisis','// Contexto de mercado · Cada indicador con su rango y su lectura','<button class="btn" style="font-size:11px;border-color:var(--border);color:var(--text3)" onclick="openModal(\'score-info\')">¿Qué mide cada indicador? →</button>')+
+      analisisTabs()+
+      explicaUniverso)+
+    '<div id="de-body" style="padding:'+(isMercado?'0 0 40px':'0 20px 40px')+'">'+
     // Skeleton screens — show structure immediately, data fills in
     '<div class="de-skeleton">'+
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'+
@@ -4302,13 +4424,16 @@ function renderDecisionEngineBody(){
     '</div>';
 
 
-  Promise.all([deGetRegime(),deGetVIX(),deGetBreadth()].concat(tickers.map(function(t){return deScoreTicker(t);})).concat(tickers.map(function(t){return deGetEarnings(t);})))
+  // En Mercado no se calculan las lecturas por activo (pasan a Lista):
+  // solo regimen, VIX, amplitud y las fechas de resultados.
+  var scoreTickers=isMercado?[]:tickers;
+  Promise.all([deGetRegime(),deGetVIX(),deGetBreadth()].concat(scoreTickers.map(function(t){return deScoreTicker(t);})).concat(tickers.map(function(t){return deGetEarnings(t);})))
   .then(function(results){
     var regime=results[0];
     var vix=results[1];
     var breadth=results[2];
-    var scores=results.slice(3,3+tickers.length).filter(Boolean).sort(function(a,b){return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;});
-    var earningsArr=results.slice(3+tickers.length).filter(Boolean);
+    var scores=results.slice(3,3+scoreTickers.length).filter(Boolean).sort(function(a,b){return a.ticker<b.ticker?-1:a.ticker>b.ticker?1:0;});
+    var earningsArr=results.slice(3+scoreTickers.length).filter(Boolean);
     var earningsMap={};earningsArr.forEach(function(e){if(e)earningsMap[e.ticker]=e;});
     // ── COLORES RÉGIMEN ──
     var regimeBg=regime.regime==='risk_on'?'rgba(61,190,122,.07)':regime.regime==='risk_off'?'rgba(248,113,113,.07)':'rgba(245,158,11,.07)';
@@ -4396,7 +4521,7 @@ function renderDecisionEngineBody(){
           '</div>';
       }).join('');
       earningsCard='<div style="margin-bottom:16px">'+
-        '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">'+icon('calendar')+' Earnings — próximos resultados</div>'+
+        '<div style="font-size:11px;font-family:\'IBM Plex Mono\',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">'+icon('calendar')+' Próximos resultados de empresas</div>'+
         '<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">'+eItems+'</div>'+
         '</div>';
     }
@@ -4467,7 +4592,11 @@ function renderDecisionEngineBody(){
     var assetsPane='<div id="de-pane-assets" style="display:none">'+scoresHtml+disclaimer+'</div>';
     var deb=document.getElementById('de-body');
     if(!deb) return; // la persona ya cambió de pantalla
-    deb.innerHTML=tabNav+globalPane+assetsPane;
+    if(isMercado){
+      deb.innerHTML=globalPane+
+        '<p class="mkt-to-list">Las lecturas de cada activo que sigues están en tu lista. '+
+        '<button type="button" class="btn" onclick="setPage(\'watch\')">Ver lecturas de tu lista</button></p>';
+    } else deb.innerHTML=tabNav+globalPane+assetsPane;
     drawSPYMiniChart(regime);
   }).catch(function(err){
     var deb2=document.getElementById('de-body'); if(!deb2) return;
@@ -4480,7 +4609,12 @@ function renderDecisionEngineBody(){
 // (ver renderInvestigar) — la construccion real del HTML vive en
 // renderScreenerSection(), que devuelve un string en vez de pisar #main
 // directamente, para poder incrustarse junto a Watchlist y Comparador.
-function renderScreenerBody(){ renderInvestigar('screener'); }
+function renderScreenerBody(){
+  // Los filtros re-pintan al terminar una busqueda async: solo si la persona
+  // sigue en Descubrir (antes pisaba #main en cualquier pantalla).
+  if(S.page!=='screener') return;
+  document.getElementById('main').innerHTML=renderScreenerSection();
+}
 function renderScreenerSection(){
   var plan=planOf();
   if(plan.locked&&plan.locked.indexOf('screener')>=0){
@@ -4810,21 +4944,18 @@ function renderMain(){
   // renderScreenerSection/renderCompSection) dentro de renderInvestigar,
   // dejando Watchlist visible y utilizable igual para el usuario free.
   if(plan.locked.indexOf(S.page)>=0 && S.page!=='screener' && S.page!=='comp'){renderPaywall();return;}
-  var pages={dash:renderDash,port:renderPort,watch:renderWatch,sig:renderSig,news:renderDash,pb:renderPBBody,comp:renderComp,sentiment:function(){ANALISIS_TAB='universo';renderAnalisis();},radar:function(){ANALISIS_TAB='universo';renderAnalisis();},decision:function(){ANALISIS_TAB='universo';renderAnalisis();},ind:renderInd,risk:renderRisk,back:renderBack,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
+  // Ids viejos (sig, ind, back, news...) caen en su hoja nueva: ver PAGE_ALIAS.
+  S.page=resolvePage(S.page);
+  // 'decision' es ahora Mercado: solo el contexto (regimen, VIX, amplitud,
+  // resultados). Las lecturas por activo pasan a Lista en la fase 3.
+  var pages={dash:renderDash,port:renderPort,watch:renderWatch,pb:renderPBBody,comp:renderComp,decision:renderMercado,risk:renderRisk,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,settings:renderSettings,help:renderHelp};
   (pages[S.page]||renderDash)();
-  (function(){
-    var m=document.getElementById('main'); if(!m||m.querySelector('.legal-foot')) return;
-    var f=document.createElement('p'); f.className='legal-foot';
-    f.innerHTML='Herramienta educativa. No constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida. No somos bróker ni ejecutamos órdenes.<button onclick="toggleDisclaimer()">Ver aviso</button>';
-    m.appendChild(f);
-  })();
+  dedupeMainHeader();
+  sideSync();
   if(S.demoMode){
     var mainEl=document.getElementById('main');
     if(mainEl){ var rb=document.createElement('div'); rb.innerHTML=demoRibbon(); if(rb.firstChild) mainEl.insertBefore(rb.firstChild,mainEl.firstChild); }
   }
-  var curPage=PAGES.find(function(p){return p.id===S.page;});
-  var mLabel=document.getElementById('mobile-page-label');
-  if(mLabel&&curPage) mLabel.textContent=curPage.label;
   // Inject trial countdown banner
   var banner=trialBanner();
   if(banner){
@@ -5683,7 +5814,7 @@ function renderPort(){
   document.getElementById("main").innerHTML=
     '<div class="fos-module-header">'+
     '<div><div class="fos-module-crumb">Seguir · Portafolio</div><h1 class="fos-module-title">Portafolio</h1><div class="fos-module-sub">Tus posiciones · <span id="saved">Guardado</span></div></div>'+
-    '<div class="ph-right">'+liveBadge()+(isProPort?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('decision')+' Motor →</button>':'')+
+    '<div class="ph-right">'+liveBadge()+(isProPort?'<button class="btn" style="font-size:11px;border-color:var(--blue);color:var(--blue)" onclick="setPage(\'decision\')">'+icon('globe')+' Mercado</button>':'')+
     // Currency selector
     '<div role="group" aria-label="Moneda" style="display:flex;gap:2px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px">'+
     ['USD','CLP','MXN','COP','ARS','PEN'].map(function(c){
@@ -6041,13 +6172,19 @@ function sigTableRow(s, opts){
 // directamente, para poder incrustarse junto a Screener y Comparador. El
 // loader async de DE Score se separo a investigarWatchPostRender() porque
 // necesita que las celdas #des-<ticker> ya esten en el DOM real.
-function renderWatch(){ renderInvestigar('watch'); }
+// Reestructura v3: cada seccion de la vieja pagina Investigar es su propia
+// pestaña de Lista (Mi lista · Descubrir · Comparar). renderInvestigar queda
+// sin uso hasta la limpieza de la fase 5.
+function renderWatch(){
+  document.getElementById('main').innerHTML=renderWatchSection();
+  investigarWatchPostRender();
+}
 function renderWatchSection(){
   var wl=S.watchlist;
   var avail=["AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","SPY","QQQ","VTI","IVV","DIA","XLK","XLV","XLE","JPM","V","UNH","WMT","JNJ","AMD","NKE","PG","HD","MA","DIS"].filter(function(t){return wl.indexOf(t)<0;});
 
   var quickTags=avail.slice(0,20).map(function(t){
-    return '<span class="wtag" role="button" tabindex="0" onclick="addWatch(\''+esc(t)+'\')" aria-label="Agregar '+esc(t)+' al watchlist">'+esc(t)+'</span>';
+    return '<span class="wtag" role="button" tabindex="0" onclick="addWatch(\''+esc(t)+'\')" aria-label="Agregar '+esc(t)+' a tu lista">'+esc(t)+'</span>';
   }).join("");
 
   var isPro=S.user&&planOf().locked.indexOf('decision')<0;
@@ -6057,7 +6194,7 @@ function renderWatchSection(){
     var inPort=S.portfolio.some(function(h){return h.t===t;});
     var portBadge=inPort?'<span style="font-size:11px;padding:1px 5px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:3px;color:var(--blue);margin-left:4px">PORT</span>':'';
     var deCell=''; // columna "DE Score" retirada en el relanzamiento v2 (T18)
-    var rmCell='<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de la watchlist">'+icon('close')+'</button></td>';
+    var rmCell='<td><button class="btn btn-r wl-rm-btn" style="padding:2px 7px;font-size:11px" onclick="event.stopPropagation();rmWatch(\''+esc(t)+'\')" aria-label="Quitar '+esc(t)+' de tu lista">'+icon('close')+'</button></td>';
     return sigTableRow(s,{tickerExtra:portBadge, trailing:deCell+rmCell});
   }).join("");
 
@@ -6168,11 +6305,13 @@ function addWatch(t){
   if(S.watchlist.indexOf(t)<0){
     S.watchlist.push(t);persist();
     sbAddWatch(t);
-    showToast(t+' agregado al watchlist');
+    showToast(t+' agregado a tu lista');
     if(isInvestigarPage()) renderMain();
   }
 }
-function addCustomW(){var t=(document.getElementById("wc").value||"").toUpperCase().trim();if(t.length>=1&&t.length<=6&&S.watchlist.indexOf(t)<0){S.watchlist.push(t);persist();renderWatch();}}
+// Pasa por addWatch: antes empujaba el ticker solo en memoria y no lo
+// guardaba en Supabase (al recargar desaparecia).
+function addCustomW(){var t=(document.getElementById("wc").value||"").toUpperCase().trim();if(t.length>=1&&t.length<=6&&S.watchlist.indexOf(t)<0){addWatch(t);}}
 function rmWatch(t){
   // A diferencia de borrar una posicion del portfolio (que pide confirmacion),
   // sacar un ticker de la watchlist es reversible al toque: se puede deshacer
@@ -6181,7 +6320,7 @@ function rmWatch(t){
   S.watchlist=S.watchlist.filter(function(x){return x!==t;});
   persist();
   sbRmWatch(t);
-  showToast(t+' removido del watchlist','warning',function(){
+  showToast(t+' quitado de tu lista','warning',function(){
     if(S.watchlist.indexOf(t)<0){
       S.watchlist.splice(Math.min(idx,S.watchlist.length),0,t);
       persist();
@@ -8656,7 +8795,7 @@ var ONBOARD={step:0,shown:false};
 var ONBOARD_STEPS=[
   {icon:'port',page:'port',title:'Tu portafolio, con tus datos',
    desc:'Cargas tus posiciones y ves su valor, el resultado y cuánto pesa cada una. Cada precio muestra su hora y si viene con retraso.'},
-  {icon:'sig',page:'sig',title:'Indicadores con su rango, no opiniones',
+  {icon:'watch',page:'watch',title:'Indicadores con su rango, no opiniones',
    desc:'Cada activo muestra su tendencia, RSI, MACD y volumen por separado, con su rango y una frase que explica qué significa. Sin notas ni señales de compra o venta.'},
   {icon:'pb',page:'pb',title:'Con tu regla de riesgo',
    desc:'La calculadora te dice cuántas unidades caben si arriesgas un porcentaje fijo de tu capital hasta tu stop, y avisa si superas tu límite de concentración.'}
@@ -8728,33 +8867,33 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     if(S.modal){closeModal();return;}
     document.getElementById('mroot').innerHTML='';
+    acctClose(); gsCloseMobile();
     closeDrawer();
     if(document.getElementById('ai-panel'))
       document.getElementById('ai-panel').style.transform='translateX(100%)';
     return;
   }
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-  var map={
-    'n':'news','d':'dash','p':'port','w':'watch','s':'sig',
-    'b':'pb','c':'comp',
-    'i':'ind','r':'risk','k':'back','t':'alert'
-  };
-  if(e.key==='?' ){showShortcuts();return;}
-  if(e.altKey&&map[e.key.toLowerCase()]){
+  // Cmd/Ctrl+K abre el buscador incluso desde un campo de texto.
+  if((e.metaKey||e.ctrlKey)&&!e.altKey&&(e.key==='k'||e.key==='K')){ e.preventDefault(); gsFocus(); return; }
+  var tag=e.target&&e.target.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(e.target&&e.target.isContentEditable)) return;
+  if(e.key==='/'&&!e.altKey&&!e.metaKey&&!e.ctrlKey){ e.preventDefault(); gsFocus(); return; }
+  if(e.key==='?'){showShortcuts();return;}
+  // Alt+1..5: los 5 destinos. Se lee e.code porque en macOS Alt+1 escribe "¡".
+  var m=/^Digit([1-5])$/.exec(e.code||'');
+  if(e.altKey&&!e.metaKey&&!e.ctrlKey&&m){
     e.preventDefault();
-    setPage(map[e.key.toLowerCase()]);
+    goDest(DEST[+m[1]-1].id);
+    return;
   }
   if(e.key==='r'&&e.ctrlKey){e.preventDefault();manualRefresh();}
 });
 
 function showShortcuts(){
-  var rows=[
-    ['Alt+N','Noticias'],['Alt+D','Panorama'],['Alt+P','Portafolio'],
-    ['Alt+W','Lista de seguimiento'],['Alt+S','Tendencia'],['Alt+B','Calculadora'],
-    ['Alt+C','Comparador'],
-    ['Alt+I','Indicadores'],['Alt+R','Riesgo'],['Alt+K','Probar estrategia'],['Alt+T','Alertas'],
-    ['Ctrl+R','Actualizar precios'],['?','Ver atajos'],['Esc','Cerrar paneles'],
-  ];
+  var rows=DEST.map(function(d,i){ return ['Alt+'+(i+1),d.label]; }).concat([
+    ['/','Buscar ticker o empresa'],['Ctrl+K o ⌘K','Buscar ticker o empresa'],
+    ['Ctrl+R','Actualizar precios'],['?','Ver atajos'],['Esc','Cerrar paneles y búsqueda'],
+  ]);
   document.getElementById('mroot').innerHTML=
     '<div class="overlay" onclick="document.getElementById(\'mroot\').innerHTML=\'\'">'+
     '<div class="modal" style="max-width:380px" onclick="event.stopPropagation()">'+
@@ -8998,7 +9137,13 @@ function compChangeTicker(i,val){
 // renderInvestigar) — la construccion real del HTML vive en
 // renderCompSection(), que devuelve un string en vez de pisar #main
 // directamente, para poder incrustarse junto a Watchlist y Screener.
-function renderComp(){ renderInvestigar('comp'); }
+function renderComp(){
+  // compLoad() re-pinta al llegar los datos: solo si la persona sigue en
+  // Comparar. "Comparar con SPY" de la ficha llama compSet() y luego
+  // setPage('comp'), que pinta el estado de carga y despues el grafico.
+  if(S.page!=='comp') return;
+  document.getElementById('main').innerHTML=renderCompSection();
+}
 function renderCompSection(){
   var plan=planOf();if(plan.locked&&plan.locked.indexOf('comp')>=0){return lockedBanner('Comparador de Activos','Compara hasta 4 activos simultáneamente con métricas de precio, retorno y fundamentos.');}
   var colors=["var(--amber)","var(--blue)","var(--grn)","#a78bfa"];
@@ -9922,23 +10067,15 @@ function initTheme(){
 
 
 function renderDisclaimer(){
-  if(!S.user){
-    var existing=document.getElementById('disclaimer-bar');
-    if(existing) existing.remove();
-    return;
-  }
-  var el=document.getElementById('disclaimer-bar');
-  if(el) return;
-  var d=document.createElement('div');
-  d.id='disclaimer-bar';
-  d.className='disclaimer-bar';
-  // Antes el texto completo (~350 caracteres) iba en la franja fija: en
-  // pantallas estrechas envolvia a 3-4 lineas y tapaba el contenido. Ahora es
-  // una sola linea truncada con 'Ver aviso', y el texto integro se muestra al
-  // hacer clic. Asi la altura es predecible y .main puede reservar el hueco.
-  d.innerHTML='<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>No es un bróker</strong> · análisis educativo, no asesoría financiera · cada precio muestra su hora y su retraso</span>'+
-    '<button onclick="toggleDisclaimer()" style="flex-shrink:0;background:none;border:1px solid rgba(180,83,9,.3);border-radius:4px;color:inherit;font:inherit;font-size:11px;padding:2px 8px;cursor:pointer;margin-left:8px">Ver aviso</button>';
-  document.body.appendChild(d);
+  // Antes era una franja fija al pie que tapaba la ultima fila de cada tabla.
+  // Ahora es una linea al final del contenido (#legal-foot), con el mismo
+  // texto y el mismo "Ver aviso".
+  var f=document.getElementById('legal-foot');
+  var old=document.getElementById('disclaimer-bar'); if(old) old.remove();
+  if(!f) return;
+  if(!S.user){ f.innerHTML=''; return; }
+  if(f.firstChild) return;
+  f.innerHTML='<p>Herramienta educativa. No constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida. No somos bróker ni ejecutamos órdenes.<button type="button" onclick="toggleDisclaimer()">Ver aviso</button></p>';
 }
 
 
@@ -10570,44 +10707,5 @@ sb.auth.onAuthStateChange(function(event,session){
 
 </script>
 
-<!-- Mobile bottom tab bar -->
-<nav id="mob-tab-bar" aria-label="Navegación principal">
-  <button class="mob-tab" id="mbt-dash" onclick="setPage('dash')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    Inicio
-  </button>
-  <button class="mob-tab" id="mbt-port" onclick="setPage('port')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-    Portafolio
-  </button>
-  <button class="mob-tab" id="mbt-pb" onclick="setPage('pb')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8"/><circle cx="8" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="16" cy="12" r="1"/><circle cx="8" cy="16" r="1"/><circle cx="12" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></svg>
-    Calcular
-  </button>
-  <button class="mob-tab" id="mbt-alert" onclick="setPage('alert')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7z"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>
-    Alertas
-  </button>
-  <button class="mob-tab" id="mbt-more" onclick="toggleMobileMenu(true)" aria-haspopup="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
-    Más
-  </button>
-</nav>
-<script>
-function updateMobTabs(){
-  // I08: Inicio · Portafolio · Calcular · Alertas · Más (el resto vive en Más).
-  var main=['dash','port','pb','alert'];
-  main.forEach(function(p){
-    var el=document.getElementById('mbt-'+p);
-    if(el){ var on=S.page===p||(p==='dash'&&S.page==='news'); el.classList.toggle('act',on); if(on) el.setAttribute('aria-current','page'); else el.removeAttribute('aria-current'); }
-  });
-  var more=document.getElementById('mbt-more');
-  if(more) more.classList.toggle('act',main.indexOf(S.page)<0&&S.page!=='news');
-}
-// Patch setPage to keep tabs in sync
-var _origSetPage=setPage;
-setPage=function(p){_origSetPage(p);updateMobTabs();};
-updateMobTabs();
-</script>
 </body>
 </html>
