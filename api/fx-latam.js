@@ -1,6 +1,9 @@
 // api/fx-latam.js — Vercel Edge Function
 // Returns live USD → LATAM currency rates via Yahoo Finance
-// Currencies: CLP, MXN, COP, ARS, PEN
+// Currencies: CLP, MXN, COP, ARS, PEN, BRL
+// sources[ccy] = 'fallback' marks a hardcoded rate (Yahoo failed). The app uses
+// those only for the display-currency selector, never to convert an asset's
+// price to USD. BRL has no hardcoded fallback: if Yahoo fails it is omitted.
 // Usage: GET /api/fx-latam
 
 export const config = { runtime: 'edge' };
@@ -11,6 +14,7 @@ const PAIRS = {
   COP: 'USDCOP=X',
   ARS: 'USDARS=X',
   PEN: 'USDPEN=X',
+  BRL: 'USDBRL=X',
 };
 
 const FALLBACKS = { CLP: 960, MXN: 17.3, COP: 4200, ARS: 1060, PEN: 3.75 }; // updated Jul 2026 — ARS es tipo oficial BCRA
@@ -50,8 +54,10 @@ export default async function handler(req) {
       rates[currency] = await fetchRate(symbol);
       sources[currency] = 'yahoo';
     } catch {
-      rates[currency] = FALLBACKS[currency];
-      sources[currency] = 'fallback';
+      if (FALLBACKS[currency]) {
+        rates[currency] = FALLBACKS[currency];
+        sources[currency] = 'fallback';
+      }
     }
   }));
 
