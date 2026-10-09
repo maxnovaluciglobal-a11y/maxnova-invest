@@ -1920,6 +1920,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <script src="/app/lib/csv-import.js"></script>
 <script src="/app/lib/holdings.js"></script>
 <script src="/app/lib/fx.js"></script>
+<script src="/app/lib/diversification.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -4956,7 +4957,7 @@ function portRebalHint(port,totM){
 // Una sola tabla con el riesgo al stop adentro (antes vivia en la pestaña
 // Riesgo). Los montos se guardan en USD; el selector de moneda convierte
 // todas las cifras de dinero de la banda y de la tabla.
-var PORT={capEdit:false,editRow:null,divOpen:false,corrLoading:false};
+var PORT={capEdit:false,editRow:null,divOpen:false,corrLoading:false,corrFailed:{}};
 var PORT_CCY=['USD','CLP','MXN','COP','ARS','PEN'];
 function ccyRate(){ return FX_RATES[USER_CURRENCY]||1; }
 // Dinero en la moneda elegida. dec: decimales (por defecto 2 en USD/MXN/PEN y
@@ -5031,35 +5032,45 @@ function portSetStop(id,val){
 }
 function portToggleRow(id){ PORT.editRow=PORT.editRow===id?null:id; renderMain(); }
 // Diversificación: la matriz se calcula al abrir la sección (sin boton aparte).
+// Reglas contra el bucle de producción (app/lib/diversification.js): cada
+// renderMain re-inserta <details open> y el navegador dispara "toggle" otra
+// vez; solo cuenta si cambia el estado. Un ticker sin historia queda en
+// PORT.corrFailed y no se vuelve a pedir hasta "Reintentar". Un solo render al
+// terminar.
+function portCorrHas(t){ return !!(dHistCache[t+'_60']&&dHistCache[t+'_60'].length>5); }
+function portCorrPlan(port){ return InvestDiv.corrPlan((port||[]).map(function(h){return h.t;}),portCorrHas,PORT.corrFailed); }
 function portDivToggle(el){
+  if(!InvestDiv.divToggleChanged(el.open,PORT.divOpen)) return;
   PORT.divOpen=el.open;
   if(el.open) portLoadCorr();
 }
+function portCorrRetry(){ PORT.corrFailed={}; portLoadCorr(); }
 async function portLoadCorr(){
   var port=S.portfolio.slice(0,planOf().maxT);
   if(port.length<2||PORT.corrLoading) return;
-  var tickers=port.map(function(h){return h.t;}).slice(0,8);
-  if(tickers.every(function(t){return dHistCache[t+'_60']&&dHistCache[t+'_60'].length>5;})) return;
+  var plan=portCorrPlan(port);
+  if(!plan.toFetch.length) return;
   PORT.corrLoading=true;
-  await Promise.all(tickers.map(async function(t){
-    var k=t+'_60';
-    if(!dHistCache[k]){
-      try{ var h=await fetchHistory(t,'2mo'); if(h&&h.length>5) dHistCache[k]=h; }catch(e){}
-    }
+  if(S.page==='port') renderMain(); // muestra "Calculando…" una vez
+  await Promise.all(plan.toFetch.map(async function(t){
+    try{
+      var h=await fetchHistory(t,'2mo');
+      if(InvestDiv.histUsable(h)) dHistCache[t+'_60']=h; else PORT.corrFailed[t]=true;
+    }catch(e){ PORT.corrFailed[t]=true; }
   }));
   PORT.corrLoading=false;
-  PORT.corrTried=true;
   if(S.page==='port') renderMain();
 }
 function portDiversificacion(port){
   var corr;
   if(port.length<2) corr='<p class="port-muted">La correlación necesita al menos dos posiciones.</p>';
   else {
-    var tickers=port.map(function(h){return h.t;}).slice(0,8);
-    var loaded=tickers.every(function(t){return dHistCache[t+'_60']&&dHistCache[t+'_60'].length>5;});
-    if(loaded) corr=renderCorrelationMatrix(port);
-    else if(PORT.corrTried&&!PORT.corrLoading) corr='<p class="port-muted">No se pudo cargar la historia de precios para calcular la correlación. <button type="button" class="linkbtn" onclick="PORT.corrTried=false;portLoadCorr()">Reintentar</button></p>';
-    else corr='<p class="port-muted"><span class="spin-sm"></span> Calculando la correlación con dos meses de cierres…</p>';
+    var plan=portCorrPlan(port);
+    var fuera=plan.failed.length?'<p class="port-muted">Sin historia de precios: '+plan.failed.map(esc).join(', ')+(plan.failed.length===1?' quedó fuera de la matriz. ':' quedaron fuera de la matriz. ')+'<button type="button" class="linkbtn" onclick="portCorrRetry()">Reintentar</button></p>':'';
+    if(plan.pending&&PORT.corrLoading) corr='<p class="port-muted"><span class="spin-sm"></span> Calculando la correlación con dos meses de cierres…</p>';
+    else if(plan.ready) corr=renderCorrelationMatrix(port.filter(function(h){return plan.usable.indexOf(h.t)>=0;}))+fuera;
+    else if(plan.pending) corr='<p class="port-muted"><span class="spin-sm"></span> Calculando la correlación con dos meses de cierres…</p>';
+    else corr='<p class="port-muted">No se pudo cargar la historia de precios de al menos dos posiciones para calcular la correlación. <button type="button" class="linkbtn" onclick="portCorrRetry()">Reintentar</button></p>';
   }
   return '<details class="port-div"'+(PORT.divOpen?' open':'')+' ontoggle="portDivToggle(this)">'+
     '<summary>Diversificación</summary>'+
