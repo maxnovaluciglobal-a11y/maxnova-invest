@@ -200,3 +200,11 @@ Este archivo es nuevo (creado 13-sep-2026, no existía antes). Memoria relevante
 `financeos_moy_iq_invest_auditoria_completa_20260913` (hallazgo #1 = este),
 `financeos_moy_iq_invest_pausa_decision_20260912` (por qué no se toca infraestructura),
 `invest_repo_path`, `organizacion_naming_pendientes` (typo maxnova-invest).
+
+## Auditoría de seguridad (18-oct-2026) — RLS re-verificada y versionada
+
+Segunda verificación de la RLS (la primera fue el 13-sep). Método transversal: memoria `auditoria-seguridad-metodo`.
+
+- RLS de `portfolio_holdings`, `watchlist`, `consents`, `profiles` **re-confirmada con dump de `pg_policies`**: las 4 con RLS ON y aislamiento por usuario (`auth.uid() = user_id`; en `profiles`, `= id`), 11 policies, sin fuga. Rol `{public}` pero sin riesgo (`auth.uid()` es null para anon → 0 filas).
+- **Esas 4 tablas, que existían solo en el dashboard, quedaron versionadas** en `supabase/migrations/20261018120000_rls_moyiq_unversioned_tables.sql` (idempotente, validada). Pendiente aparte: capturar su DDL de columnas (`pg_dump --schema-only`) para reconstrucción total.
+- `stripe-webhook` y `check-plan` verifican firma/JWT; `delete-account` usa el JWT como única identidad; las api de mercado no filtran keys. Sin vulnerabilidad.
