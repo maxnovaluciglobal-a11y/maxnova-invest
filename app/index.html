@@ -8669,6 +8669,9 @@ async function _sbLoadUserDataImpl(authUser){
     console.error("sbLoadUserData failed",e);
     // Fallback to defaults so the app still renders
     S.user={id:authUser.id,email:authUser.email,name:authUser.email.split("@")[0],plan:"free"};
+    // Sin el perfil real no se sabe el capital de esta cuenta: 0 bloquea
+    // persist() (no pisa el valor guardado) y no se muestra uno ajeno.
+    S.capital=0;S.capitalPlan=null;S.capitalResults=null;
     S.portfolio=[];
     S.watchlist=[];
     S.seededIds=[];
@@ -8862,7 +8865,11 @@ async function logout(){
   S.portfolio=[];
   S.watchlist=[];
   S.demoMode=false;S.seededIds=[];S._realPortfolio=null;S._realWatch=null;
-  render();
+  // Aislamiento entre cuentas (18-oct-2026): recargar en vez de seguir con el
+  // estado en memoria. Limpiar campo por campo dejaba restos (plan de capital,
+  // capital, resultados) que la siguiente cuenta veía y podía guardar como suyos.
+  try{ localStorage.removeItem('mv_prices_cache'); }catch(e){}
+  window.location.reload();
 }
 
 // persist(): syncs capital+profile to Supabase (debounced) — portfolio/watchlist
@@ -8963,8 +8970,12 @@ renderDisclaimer();
 
 sb.auth.onAuthStateChange(function(event,session){
   if(event==="SIGNED_OUT"){
-    S.user=null;S.page="dash";
-    render();
+    // Cierre de sesión (también desde otra pestaña): arranque limpio.
+    S.user=null;
+    window.location.reload();
+  } else if(event==="SIGNED_IN"&&session&&session.user&&S.user&&S.user.id&&S.user.id!==session.user.id){
+    // Otra cuenta entró en otra pestaña: nada de la anterior queda en memoria.
+    window.location.reload();
   } else if(event==="SIGNED_IN"&&session&&session.user){
     sbLoadUserData(session.user).then(function(){ render(); bootLiveData(); });
   }

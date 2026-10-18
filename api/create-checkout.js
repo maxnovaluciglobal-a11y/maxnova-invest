@@ -38,7 +38,24 @@ export default async function handler(req) {
   let body;
   try { body = await req.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
-  const { product, email, userId, successUrl, cancelUrl, interval } = body;
+  const { product, successUrl, cancelUrl, interval, token } = body;
+
+  // La cuenta sale del JWT verificado, nunca del body: con un userId del body
+  // cualquiera podía atar su cliente de Stripe al perfil de otra persona
+  // (el webhook escribe plan y stripe_customer_id en ese perfil).
+  // Mismas variables que billing-portal.js. Al reactivar el cobro, el cliente
+  // tiene que mandar { token: session.access_token } (como billing-portal).
+  const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+  if (!token || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) return json({ error: 'No autorizado' }, 401);
+  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: SUPABASE_SERVICE_KEY, Authorization: `Bearer ${token}` },
+  });
+  if (!userRes.ok) return json({ error: 'No autorizado' }, 401);
+  const authUser = await userRes.json();
+  const userId = authUser?.id;
+  const email = authUser?.email;
+  if (!userId) return json({ error: 'No autorizado' }, 401);
   if (product !== 'invest_pro') return json({ error: `Unknown product: ${product}` }, 400);
 
   // Price IDs — set these in Vercel env vars after creating products in Stripe
