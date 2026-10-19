@@ -75,8 +75,8 @@ describe('matriz de correlación', () => {
 describe('tanda Hoy, Aportes y tema (oct-2026)', () => {
   const darkBlock = css.slice(css.indexOf('[data-theme="dark"] {\n  --grn:'), css.indexOf('/* ── RESET'));
   it('rojo de pérdida AA en oscuro y familia Navy', () => {
-    expect(darkBlock).toContain('--neg:       #D4735F;');
-    expect(darkBlock).toContain('--red:       #D4735F;');
+    expect(darkBlock).toContain('--neg:       #E59580;');
+    expect(darkBlock).toContain('--red:       #E59580;');
     expect(darkBlock).toContain('--bg:        #0E1628;');
     expect(darkBlock).toContain('--card:      #14213D;');
     expect(darkBlock).toContain('--card2:     #1A2A4A;');

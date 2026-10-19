@@ -14,7 +14,7 @@ colors:
   ink-muted: "#63604F"
   pos: "#356E57"
   neg: "#A23E2E"
-  warn: "#9C5419"
+  warn: "#8A4A14"
   info: "#3E5A78"
   rail-fg: "rgba(241,238,230,0.76)"
   rail-pos: "#8FD0B4"
@@ -25,11 +25,11 @@ colors:
   dark-raised-2: "#213357"
   dark-raised-3: "#2A3E66"
   dark-ink-body: "#C7C2B2"
-  dark-ink-muted: "#9C9784"
+  dark-ink-muted: "#B5B09C"
   laton-dark: "#CC9A52"
   pos-dark: "#74C2A3"
-  neg-dark: "#D4735F"
-  warn-dark: "#E0975A"
+  neg-dark: "#E59580"
+  warn-dark: "#E6A36B"
 typography:
   display:
     fontFamily: "IBM Plex Mono, monospace"

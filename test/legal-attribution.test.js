@@ -32,6 +32,7 @@ describe('terms.html §4 (datos de precios)', () => {
   it('sigue nombrando las demás fuentes', () => {
     expect(terms).toContain('Yahoo Finance');
     expect(terms).toContain('mindicador.cl');
-    expect(terms).toContain('Financial Modeling Prep y Finnhub');
+    expect(terms).toContain('Finnhub');
+    expect(terms).toContain('Financial Modeling Prep');
   });
 });

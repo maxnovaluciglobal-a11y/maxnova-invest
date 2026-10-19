@@ -81,7 +81,7 @@ input, select, textarea { font-size: 16px; }
   --red-bg:    rgba(162,62,46,0.08);
   --red-lt:    #F3DAD5;
 
-  --amber:     #9C5419;
+  --amber:     #8A4A14;
   --amber-bg:  rgba(201,122,61,0.12);
 
   /* Alias de fondos/bordes de estado usados en .sigb/.rtab y badges inline.
@@ -100,7 +100,7 @@ input, select, textarea { font-size: 16px; }
 
   /* Aliases usados en JS inline styles */
   --green:     #356E57;
-  --orange:    #9C5419;
+  --orange:    #8A4A14; /* aviso: AA (≥4,6) sobre su fondo en todas las superficies (A11Y-2) */
   --orange-bg: rgba(201,122,61,0.12);
   --orange-bd: #E3C08F;
 
@@ -174,21 +174,21 @@ input, select, textarea { font-size: 16px; }
   --laton:      #CC9A52;
   --laton-700:  #E3C592;
 
-  /* Rojo de pérdida en oscuro: AA sobre el fondo (5,51) y la superficie (4,88). */
-  --red:       #D4735F;
+  /* Rojo de pérdida en oscuro: AA en fondo, superficie y estados elevados card2-4 (≥4,5; A11Y-12). */
+  --red:       #E59580;
   --red-bg:    rgba(212,115,95,0.16);
   --red-lt:    #4A2A22;
 
-  --amber:     #E0975A;
+  --amber:     #E6A36B;
   --amber-bg:  rgba(224,151,90,0.16);
 
   /* Semantica de resultado en oscuro — verde único positivo/éxito. */
   --pos:       #74C2A3;
-  --neg:       #D4735F;
+  --neg:       #E59580;
 
   /* Aliases dark mode */
   --green:     #74C2A3;
-  --orange:    #E0975A;
+  --orange:    #E6A36B;
   --orange-bg: rgba(224,151,90,0.16);
   --orange-bd: #6B4A2A;
 
@@ -206,8 +206,8 @@ input, select, textarea { font-size: 16px; }
   --card4:     #2A3E66;
 
   --text:      #C7C2B2;
-  --text2:     #9C9784;
-  --text3:     #9C9784;
+  --text2:     #B5B09C; /* ≥4,8 también sobre card3/card4 (A11Y-12) */
+  --text3:     #B5B09C;
   --bright:    #FAF8F2;
   --white:     #f1f5f9;
 
@@ -222,6 +222,11 @@ input, select, textarea { font-size: 16px; }
 
 /* ── RESET ── */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+/* Los controles no heredan la fuente por defecto (salían en Arial: BRD-14). */
+button, input, select, textarea { font-family: inherit; }
+/* Objetivos táctiles de la pantalla de acceso: 44 px (INV-13, WCAG 2.5.8). */
+.wv3-tab-btn, .wv3-google-btn, .wv3-submit { min-height:44px; }
+.wv3-panel .linklike { min-height:44px; display:inline-flex; align-items:center; }
 
 html { font-size:14px; -webkit-text-size-adjust:100%; }
 
@@ -705,7 +710,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-badge{display:inline-flex;align-items:center;gap:8px;background:var(--grn-bg);border:1px solid var(--grn-lt);border-radius:var(--r-xl);padding:4px 12px;align-self:flex-start}
 .wv3-badge span{font-size:11px;color:var(--grn);}
 .wv3-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0}
-.wv3-h1{font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--bright);letter-spacing:-.03em;line-height:1.15;margin:0}
+.wv3-h1{font-family:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--bright);letter-spacing:-.03em;line-height:1.15;margin:0}
 .wv3-sub{font-size:15px;color:var(--text2);line-height:1.7;max-width:480px;margin:0}
 .wv3-ctx-label{font-size:11px;color:var(--text3);margin-bottom:8px}
 .wv3-ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -4695,55 +4700,34 @@ function renderWelcome(){
 
 function openTCModal(tab){
   var isTc=tab!=='pp';
+  // Resumen fiel de /terms.html y /privacy.html: lo vinculante son esas páginas (versión y fecha abajo).
   var tcContent=
-    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de Uso — MOY IQ Invest</h3>'+
+    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de uso de MOY IQ Invest (resumen)</h3>'+
     '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
-    '<b style="color:var(--bright)">1. Naturaleza del servicio</b><br>'+
-    'MOY IQ Invest es una plataforma de análisis técnico educativo. Los indicadores, lecturas y '+
-    'cualquier output generado por la plataforma son herramientas de análisis basadas en datos históricos '+
-    'y modelos matemáticos. No constituyen asesoría financiera, recomendaciones de inversión ni predicciones de mercado.<br><br>'+
-    '<b style="color:var(--bright)">2. Datos y retrasos</b><br>'+
-    'Los precios y datos de mercado pueden presentar retrasos de 15 minutos o más. '+
-    'MOY IQ Invest no garantiza la exactitud, integridad o actualidad de los datos mostrados. '+
-    'Los datos provienen de fuentes de terceros (Yahoo Finance, FMP) y pueden contener errores.<br><br>'+
-    '<b style="color:var(--bright)">3. Sin asesoría financiera</b><br>'+
-    'Nada en esta plataforma debe interpretarse como asesoría de inversión personalizada. '+
-    'Toda decisión de inversión es responsabilidad exclusiva del usuario. '+
-    'MOY IQ Invest no es un broker, asesor de inversiones ni gestora de activos registrada.<br><br>'+
-    '<b style="color:var(--bright)">4. Riesgo de inversión</b><br>'+
-    'Invertir en mercados financieros conlleva riesgos significativos incluyendo pérdida parcial o total del capital. '+
-    'El desempeño histórico no garantiza resultados futuros.<br><br>'+
-    '<b style="color:var(--bright)">5. Uso aceptable</b><br>'+
-    'El usuario se compromete a usar la plataforma para fines educativos y personales únicamente. '+
-    'Queda prohibida la redistribución comercial del contenido o señales generadas.<br><br>'+
-    '<b style="color:var(--bright)">6. Modificaciones</b><br>'+
-    'MAXNOVA & LUCI Global LLC se reserva el derecho de modificar estos términos. '+
-    'El uso continuado de la plataforma implica aceptación de los términos vigentes.<br><br>'+
-    '<span style="color:var(--text3)">Vigente desde: Junio 2026 · MAXNOVA & LUCI Global LLC · Miami, FL, USA</span>'+
+    '<b style="color:var(--bright)">Herramienta informativa, no asesoría</b><br>'+
+    'Invest muestra datos de mercado, hace cálculos con los datos y las reglas que tú ingresas y explica qué mide cada indicador. '+
+    'No evalúa tu situación, no te dice qué comprar, vender o mantener, no ejecuta órdenes ni custodia dinero. '+
+    'No estamos registrados como asesores de inversión ante ningún regulador. Invertir implica riesgo de pérdida.<br><br>'+
+    '<b style="color:var(--bright)">Datos de mercado</b><br>'+
+    'Vienen de fuentes gratuitas de terceros (Yahoo Finance, Finnhub, Financial Modeling Prep, CoinGecko y el Banco Central de Chile vía mindicador.cl), '+
+    'con el retraso de cada una: cada precio muestra la hora que informa la fuente. Pueden tener errores. Son para tu uso personal: no se pueden copiar ni redistribuir.<br><br>'+
+    '<b style="color:var(--bright)">Beta pública gratuita</b><br>'+
+    'Sin pagos ni tarjeta. Si algún día hay planes pagos, te avisamos por correo antes.<br><br>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/terms.html" target="_blank" rel="noopener" style="color:var(--blue)">Términos de uso</a> (versión 2.1, 19 de octubre de 2026) · MAXNOVA &amp; LUCI Global LLC, Doral, Florida, EE.&nbsp;UU.</span>'+
     '</div>';
 
   var ppContent=
-    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Política de Privacidad — MOY IQ Invest</h3>'+
+    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Política de privacidad de MOY IQ Invest (resumen)</h3>'+
     '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
-    '<b style="color:var(--bright)">1. Datos que recopilamos</b><br>'+
-    'Recopilamos: correo, nombre, portafolio ingresado manualmente, lista de seguimiento y preferencias de configuración. '+
-    'No recopilamos datos bancarios, información de corretaje ni ejecutamos transacciones en tu nombre.<br><br>'+
-    '<b style="color:var(--bright)">2. Uso de los datos</b><br>'+
-    'Los datos se usan exclusivamente para operar el servicio: mostrar tu portafolio, generar análisis técnico '+
-    'y enviar comunicaciones relacionadas con tu cuenta. No vendemos datos a terceros.<br><br>'+
-    '<b style="color:var(--bright)">3. Almacenamiento</b><br>'+
-    'Los datos se almacenan en Supabase (infraestructura segura con cifrado en reposo y en tránsito). '+
-    'Los datos de sesión y preferencias se guardan en localStorage de tu navegador.<br><br>'+
-    '<b style="color:var(--bright)">4. Terceros</b><br>'+
-    'Usamos Stripe para procesar pagos (no almacenamos datos de tarjeta). '+
-    'Datos de mercado provistos por Yahoo Finance y Financial Modeling Prep (FMP). '+
-    'Motor de Análisis Técnico MOY IQ — los datos de tu portafolio se procesan de forma privada y no se comparten con terceros.<br><br>'+
-    '<b style="color:var(--bright)">5. Tus derechos</b><br>'+
-    'Puedes solicitar exportación o eliminación de tus datos escribiendo a support@moyiq.app. '+
-    'La eliminación de cuenta borra permanentemente tu portafolio y datos asociados.<br><br>'+
-    '<b style="color:var(--bright)">6. Cookies</b><br>'+
-    'Usamos cookies de sesión estrictamente necesarias para autenticación. No usamos cookies de seguimiento ni publicidad.<br><br>'+
-    '<span style="color:var(--text3)">Vigente desde: Junio 2026 · MAXNOVA & LUCI Global LLC · Miami, FL, USA</span>'+
+    '<b style="color:var(--bright)">Qué guardamos</b><br>'+
+    'Tu correo, tu nombre si lo das, el portafolio y la lista de seguimiento que ingresas, tu regla de riesgo y los días en que abres la app. '+
+    'No pedimos datos bancarios ni de tarjeta.<br><br>'+
+    '<b style="color:var(--bright)">Con quién</b><br>'+
+    'Supabase (base de datos y acceso), Vercel (alojamiento), PostHog (medición de uso con un identificador interno, sin tu correo) y Resend (correos), todos en EE.&nbsp;UU. '+
+    'Las fuentes de precios no reciben datos tuyos. No vendemos datos.<br><br>'+
+    '<b style="color:var(--bright)">Tus derechos</b><br>'+
+    'Puedes borrar tus datos de Invest desde Configuración, y pedir acceso, corrección, portabilidad u oposición escribiendo a invest@moyiq.app.<br><br>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.4, 19 de octubre de 2026).</span>'+
     '</div>';
 
   var content=isTc?tcContent:ppContent;
@@ -6058,11 +6042,11 @@ function mktNewsHtml(){
     // si la imagen no carga, se quita.
     var img=n.image&&/^(https:\/\/|\/)/.test(String(n.image))
       ?'<img class="mkt-news-img" src="'+esc(n.image)+'" alt="" width="72" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">':'';
-    return '<li><div class="mkt-news-tx">'+(link&&link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener">'+title+'</a>':'<span class="mkt-news-t">'+title+'</span>')+
+    return '<li><div class="mkt-news-tx">'+(link&&link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener" lang="en">'+title+'</a>':'<span class="mkt-news-t" lang="en">'+title+'</span>')+
       (meta?'<span>'+meta+'</span>':'')+'</div>'+img+'</li>';
   }).join('');
   return head+chips+'<ul class="drw-news mkt-news">'+rows+'</ul>'+
-    '<p class="port-muted">Titulares de la fuente en su idioma original. Abren en la página de cada medio.</p>';
+    '<p class="port-muted">Titulares en inglés, tal como los publica la fuente (Yahoo Finance). Abren en la página de cada medio.</p>';
 }
 
 function setNewsF(f){S.newsFilter=f;renderMain();}
@@ -6615,8 +6599,8 @@ function drawerMinePane(ticker,own,cur){
 function drawerNewsPane(ticker){
   var items=(LIVE_NEWS||[]).filter(function(n){ return (n.tickers||[]).indexOf(ticker)>=0||new RegExp('\\b'+ticker.replace(/[^A-Z0-9]/g,'')+'\\b').test(n.title||''); }).slice(0,8);
   if(!items.length) return '<p class="m10-empty" style="padding:16px 0">No hay titulares recientes de '+esc(ticker)+' en la fuente.</p>';
-  return '<ul class="drw-news">'+items.map(function(n){
-    return '<li><a href="'+esc(n.link||'#')+'" target="_blank" rel="noopener noreferrer">'+esc(n.title||'')+'</a><span>'+esc(n.source||'')+(n.hoursAgo!=null?' · hace '+n.hoursAgo+' h':'')+'</span></li>';
+  return '<p class="port-muted">Titulares en inglés, tal como los publica la fuente.</p><ul class="drw-news">'+items.map(function(n){
+    return '<li><a href="'+esc(n.link||'#')+'" target="_blank" rel="noopener noreferrer" lang="en">'+esc(n.title||'')+'</a><span>'+esc(n.source||'')+(n.hoursAgo!=null?' · hace '+n.hoursAgo+' h':'')+'</span></li>';
   }).join('')+'</ul>';
 }
 var dTicker=null,dTab="ind",dRange=126,dHistCache={},dFundCache={},dEarnCache={};
@@ -8372,7 +8356,7 @@ function toggleDisclaimer(){
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
     '<p style="font-size:12px;color:var(--text3);line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance y CoinGecko (con retraso variable; cada precio muestra su hora) \u00b7 Cripto: <a href="https://www.coingecko.com/en/api" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none">Powered by CoinGecko API</a> \u00b7 Fundamentos: Finnhub y Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
-    '<div style="display:flex;gap:14px"><a href="/terms.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">T\u00e9rminos de uso</a><a href="/privacy.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Pol\u00edtica de privacidad</a></div>'+
+    '<div style="display:flex;gap:14px"><a href="/datos-y-licencias.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Datos y licencias</a><a href="/terms.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">T\u00e9rminos de uso</a><a href="/privacy.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Pol\u00edtica de privacidad</a></div>'+
     '</div></div>';
 }
 
