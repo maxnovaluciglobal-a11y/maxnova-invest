@@ -51,11 +51,13 @@
     { "@type": "Question", "name": "¿Cuánto cuesta MOY IQ Invest?",
       "acceptedAnswer": { "@type": "Answer", "text": "Nada durante la beta pública: todas las funciones están abiertas y no pedimos tarjeta. Cuando haya planes pagos, te avisamos antes y lo que usas hoy no se pierde." } },
     { "@type": "Question", "name": "¿Los precios están al día?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el dólar observado de mindicador.cl. Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente." } },
+      "acceptedAnswer": { "@type": "Answer", "text": "Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el tipo de cambio de Yahoo Finance (para el peso chileno, mindicador.cl cuando responde). Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente." } },
     { "@type": "Question", "name": "¿Invest me dice qué comprar o vender?",
       "acceptedAnswer": { "@type": "Answer", "text": "No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Invest te ayuda a entender lo que ya tienes y cuánto arriesgas." } },
     { "@type": "Question", "name": "¿Por qué no hay una nota de 0 a 100 por activo?",
       "acceptedAnswer": { "@type": "Answer", "text": "Porque una sola cifra se lee como una calificación de compra. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70)." } },
+    { "@type": "Question", "name": "¿Qué mercados puedo seguir?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. El peso argentino usa la cotización oficial; el dólar MEP todavía no está disponible." } },
     { "@type": "Question", "name": "¿Dónde se guarda mi portafolio?",
       "acceptedAnswer": { "@type": "Answer", "text": "Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas." } }
   ]
@@ -379,7 +381,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
       <ul>
         <li><strong>No ejecutamos órdenes</strong><span>Tú decides y operas en tu bróker.</span></li>
         <li><strong>Cada precio con hora y fuente</strong><span>Sabes siempre qué tan actual es el dato.</span></li>
-        <li><strong>Chile primero</strong><span>Valores en CLP con el dólar observado del día.</span></li>
+        <li><strong>Hecho para LatAm</strong><span>Empezando por Chile: cifras en tu moneda con el tipo de cambio del día.</span></li>
       </ul>
     </div>
   </section>
@@ -517,7 +519,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         </details>
         <details>
           <summary>¿Los precios están al día?</summary>
-          <p>Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el dólar observado de mindicador.cl. Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente.</p>
+          <p>Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el tipo de cambio de Yahoo Finance (para el peso chileno, mindicador.cl cuando responde). Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente.</p>
         </details>
         <details>
           <summary>¿Invest me dice qué comprar o vender?</summary>
@@ -526,6 +528,10 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         <details>
           <summary>¿Por qué no hay una nota de 0 a 100 por activo?</summary>
           <p>Porque una sola cifra se lee como una calificación de compra. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70).</p>
+        </details>
+        <details>
+          <summary>¿Qué mercados puedo seguir?</summary>
+          <p>Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. El peso argentino usa la cotización oficial; el dólar MEP todavía no está disponible.</p>
         </details>
         <details>
           <summary>¿Dónde se guarda mi portafolio?</summary>
