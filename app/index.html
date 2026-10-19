@@ -5368,7 +5368,7 @@ function renderPort(){
     fxExclNote(excl)+fxCostNote(fxEff,fxKn,fxUnk)+
     portCapLine(totC)+
     ccyNote()+
-    (foreign?'<p class="fx-note port-muted">Entrada, precio y stop van en la moneda de cada activo. Valor, resultado y riesgo al stop van en '+USER_CURRENCY+', convertidos con el tipo de cambio del día'+(USER_CURRENCY!=='USD'?' (pasando por USD)':'')+'.</p>':'')+
+    (foreign?'<p class="fx-note port-muted">Entrada, precio y stop van en la moneda de cada activo. Valor, resultado y riesgo al stop van en '+USER_CURRENCY+', convertidos con el tipo de cambio del día'+(USER_CURRENCY!=='USD'?' (pasando por USD)':'')+'; el costo de una posición con tipo de cambio de la compra usa ese tipo de cambio.</p>':'')+
     portRebalHint(port,totM)+
     toolbar+
     table+stack+
