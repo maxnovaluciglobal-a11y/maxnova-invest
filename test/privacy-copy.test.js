@@ -39,7 +39,7 @@ describe('privacy.html · analítica con PostHog', () => {
     expect(p).toMatch(/reclamo ante la autoridad de protección de datos de tu país/);
   });
   it('tiene fecha de actualización de hoy', () => {
-    expect(p).toMatch(/Última actualización: 19 de octubre de 2026 · Versión 2\.2/);
+    expect(p).toMatch(/Última actualización: 19 de octubre de 2026 · Versión 2\.3/);
   });
 });
 
@@ -59,9 +59,14 @@ describe('privacy.html · lo que dice coincide con lo que hace el código', () =
     expect(p).toMatch(/«No rastrear» o Global Privacy Control, no medimos tu uso/);
     expect(POSTHOG_OPTS.respect_dnt).toBe(true);
   });
-  it('"no guarda nada en tu dispositivo": persistencia en memoria', () => {
-    expect(p).toMatch(/la medición de uso no guarda nada en tu dispositivo/);
+  it('PostHog "no guarda nada en tu dispositivo": persistencia en memoria', () => {
+    expect(p).toMatch(/PostHog no guarda nada en tu dispositivo/);
     expect(POSTHOG_OPTS.persistence).toBe('memory');
+  });
+  it('lo único que se guarda en el dispositivo para medir es la fecha del último día registrado (activity.js)', () => {
+    expect(p).toMatch(/la fecha del último día de actividad ya registrado, para no repetir el aviso/);
+    expect(read('app/lib/activity.js')).toContain('storage.setItem(key, day)');
+    expect(/medición de uso no guarda nada/.test(p)).toBe(false);
   });
   it('"no grabamos la pantalla": sin grabación de sesiones ni autocaptura', () => {
     expect(POSTHOG_OPTS.disable_session_recording).toBe(true);
