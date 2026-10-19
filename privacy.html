@@ -104,36 +104,37 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 <main id="main">
   <article class="wrap doc">
     <h1>Política de privacidad</h1>
-    <p class="meta">Última actualización: 8 de octubre de 2026 · Versión 2.0</p>
+    <p class="meta">Última actualización: 19 de octubre de 2026 · Versión 2.1</p>
 
     <h2>1. Responsable del tratamiento</h2>
-    <p>MAXNOVA &amp; LUCI Global LLC, operadora de MOY IQ Invest. Contacto: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a></p>
+    <p>MAXNOVA &amp; LUCI Global LLC, sociedad de responsabilidad limitada de Florida (EE.&nbsp;UU.), operadora de MOY IQ Invest. Domicilio: 10482 NW 31st Terrace, Office 1D, Doral, FL 33172, EE.&nbsp;UU. Contacto: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a> o <a href="mailto:support@moyiq.app">support@moyiq.app</a></p>
 
     <h2>2. Datos que recopilamos</h2>
     <ul>
       <li><strong>Datos de cuenta:</strong> dirección de correo electrónico, nombre (opcional) y fecha de registro.</li>
       <li><strong>Datos de portafolio:</strong> activos, cantidades, precios y notas que ingresas voluntariamente (posiciones, watchlist, bitácora y tu regla de riesgo).</li>
       <li><strong>Perfil de inversor:</strong> si completas el cuestionario y dejas tu correo, guardamos tu correo, el perfil resultante y de dónde llegaste a la página, y te enviamos por correo tu perfil. Solo si marcas la casilla de contenido te enviamos además dos correos más, con enlace para darte de baja en cada uno.</li>
-      <li><strong>Datos de uso:</strong> páginas visitadas, funciones utilizadas y eventos de sesión (vía PostHog, con anonimización de IP).</li>
+      <li><strong>Datos de uso:</strong> medimos qué secciones de la app se abren y qué funciones se usan (por ejemplo, abrir una sección, importar un archivo de posiciones, ver el ejemplo o recibir una alerta), junto con datos técnicos del navegador (navegador, sistema operativo, tipo de dispositivo, idioma y tamaño de pantalla) y los errores técnicos de la app. Esos datos se asocian a un identificador interno de tu cuenta, nunca a tu correo ni a tu nombre. No incluyen tus posiciones, tus montos ni los símbolos de tu portafolio, y no grabamos la pantalla ni lo que escribes. La dirección IP de tu conexión llega a PostHog, como a cualquier servidor al que se conecta tu navegador; no la usamos para identificarte.</li>
       <li><strong>Pagos:</strong> durante la beta pública no hay pagos y no recopilamos datos de tarjetas.</li>
     </ul>
 
-    <h2>3. Finalidad del tratamiento</h2>
+    <h2>3. Finalidad y base legal del tratamiento</h2>
     <ul>
-      <li>Proveer y mejorar las funciones de la herramienta.</li>
-      <li>Sincronizar tu portafolio entre tus dispositivos.</li>
-      <li>Enviar comunicaciones sobre el servicio, por ejemplo avisarte antes de que exista cualquier plan pago.</li>
-      <li>Analizar el uso agregado para mejorar la experiencia.</li>
+      <li>Proveer las funciones de la herramienta y sincronizar tu portafolio entre tus dispositivos. Base legal: la ejecución del servicio que pides al crear tu cuenta.</li>
+      <li>Enviar comunicaciones sobre el servicio, por ejemplo avisarte antes de que exista cualquier plan pago. Base legal: la ejecución del servicio. El contenido por correo (por ejemplo, los correos que siguen a tu perfil de inversor) solo se envía si marcas la casilla de contenido: es tu consentimiento y puedes retirarlo en cualquier momento con el enlace de baja de cada correo.</li>
+      <li>Medir el uso de la herramienta de forma agregada para mejorarla (por ejemplo, cuántas personas la usan cada semana). Base legal: nuestro interés legítimo en saber si el producto funciona y qué mejorar. Puedes oponerte a esta medición (sección 8).</li>
     </ul>
 
     <h2>4. Dónde se guardan tus datos</h2>
     <p>Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo.</p>
     <p>El sistema de acceso (correo y contraseña) es el mismo que usa MOY IQ, dentro del mismo proyecto de Supabase. Los datos de cada app se guardan por separado, y las reglas de seguridad a nivel de fila (RLS) hacen que cada cuenta solo pueda leer sus propios registros.</p>
 
-    <h2>5. Procesadores de datos</h2>
-    <p><strong>Supabase:</strong> base de datos y autenticación, con cifrado en reposo y en tránsito.</p>
-    <p><strong>PostHog:</strong> análisis de uso anonimizado.</p>
-    <p><strong>Vercel:</strong> hosting y funciones del servidor.</p>
+    <h2>5. Procesadores de datos y transferencias</h2>
+    <p><strong>Supabase</strong> (EE.&nbsp;UU., región us-east-2): base de datos y autenticación, con cifrado en reposo y en tránsito.</p>
+    <p><strong>PostHog</strong> (PostHog, Inc., EE.&nbsp;UU.): medición de uso, como se describe en la sección 2. Recibe el identificador interno de tu cuenta y los eventos de uso; no recibe tu correo ni tu nombre.</p>
+    <p><strong>Vercel</strong> (Vercel Inc., EE.&nbsp;UU.): alojamiento de la app y funciones del servidor.</p>
+    <p><strong>Resend</strong> (Resend, Inc., EE.&nbsp;UU.): envío de los correos de tu cuenta y del contenido que pediste.</p>
+    <p>Por eso tus datos se tratan en Estados Unidos, y para quien vive fuera de ese país esto implica una transferencia internacional de datos.</p>
     <p>Para mostrar precios consultamos a Yahoo Finance, CoinGecko, mindicador.cl, Financial Modeling Prep y Finnhub. A esas fuentes se les consultan los símbolos de los activos; no les enviamos tu correo ni las cantidades de tu portafolio.</p>
 
     <h2>6. No venta de datos personales</h2>
@@ -144,9 +145,10 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 
     <h2>8. Derechos del usuario</h2>
     <p>Tienes derecho a acceder, corregir, exportar o eliminar tus datos personales. La eliminación de tus datos de Invest la ejecutas tú desde Configuración → Eliminar mis datos de Invest, y borra de inmediato tu portafolio, watchlist, perfil y consentimientos registrados en Invest. Tu cuenta de acceso no se borra desde Invest, porque es la misma que usa MOY IQ; para eliminarla escribe a <a href="mailto:support@moyiq.app">support@moyiq.app</a>. Para acceder, corregir o exportar tus datos, o si prefieres que lo hagamos nosotros, escríbenos a <a href="mailto:invest@moyiq.app">invest@moyiq.app</a> con el asunto "Privacidad - [tu solicitud]". Respondemos en un plazo máximo de 30 días.</p>
+    <p>También puedes oponerte a que midamos el uso de tu cuenta: escribe a <a href="mailto:support@moyiq.app">support@moyiq.app</a> y la atendemos en ese mismo plazo. Si tu navegador envía la señal «No rastrear» o Global Privacy Control, no medimos tu uso. Si consideras que tratamos tus datos de forma indebida, puedes presentar un reclamo ante la autoridad de protección de datos de tu país.</p>
 
     <h2>9. Cookies y almacenamiento local</h2>
-    <p>MOY IQ Invest usa el almacenamiento local del navegador (localStorage) para guardar preferencias de sesión y una copia local de tu portafolio. No usamos cookies de rastreo de terceros.</p>
+    <p>MOY IQ Invest usa el almacenamiento local del navegador (localStorage) para guardar preferencias de sesión y una copia local de tu portafolio. No usamos cookies de rastreo de terceros y la medición de uso no guarda nada en tu dispositivo.</p>
 
     <h2>10. Seguridad</h2>
     <p>Usamos autenticación con tokens JWT, HTTPS en todas las comunicaciones y seguridad a nivel de fila (RLS) en la base de datos para que cada persona acceda únicamente a sus propios datos.</p>

@@ -6,7 +6,6 @@
 <title>MOY IQ Invest · App</title>
 <meta name="description" content="App de MOY IQ Invest: portafolio, indicadores técnicos explicados y calculadora con tu regla de riesgo. Beta pública gratuita. Herramienta educativa, no asesoría financiera."/>
 <!-- Preconnect for critical origins -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
 <link rel="preconnect" href="https://nelwgbcddwiaimzbcuas.supabase.co"/>
 <!-- Fuentes self-hosted (/fonts.css, las mismas de la landing). Nunca Google Fonts. -->
 <link rel="preload" href="/fonts/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYbSB4Zh.woff2" as="font" type="font/woff2" crossorigin/>
@@ -2060,6 +2059,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <script src="/app/lib/fx.js"></script>
 <script src="/app/lib/diversification.js"></script>
 <script src="/app/lib/market.js"></script>
+<script src="/app/lib/analytics.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -2073,7 +2073,7 @@ var POSTHOG_HOST = 'https://us.i.posthog.com'; // (EU: https://eu.i.posthog.com)
   if(!POSTHOG_KEY) return; // sin key → no se carga nada
   try{
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    window.posthog.init(POSTHOG_KEY,{api_host:POSTHOG_HOST,capture_pageview:false,persistence:'localStorage',autocapture:false});
+    window.posthog.init(POSTHOG_KEY,Object.assign({api_host:POSTHOG_HOST},InvestAnalytics.POSTHOG_OPTS));
   }catch(e){/* silent */}
 })();
 
@@ -2082,9 +2082,10 @@ var POSTHOG_HOST = 'https://us.i.posthog.com'; // (EU: https://eu.i.posthog.com)
 function track(event, props){
   try{ if(window.posthog && typeof window.posthog.capture==='function') window.posthog.capture(event, props||{}); }catch(e){/* silent */}
 }
-// Identificar usuario tras login (asocia eventos a la persona)
+// Identificar la cuenta tras login o al volver con la sesión abierta. Solo viaja el id interno:
+// sin correo, nombre ni plan (D-04). La persistencia es en memoria, así que hay que repetirlo en cada carga.
 function trackIdentify(user){
-  try{ if(window.posthog && user && user.id) window.posthog.identify(user.id, {email:user.email, plan:user.plan}); }catch(e){/* silent */}
+  try{ InvestAnalytics.identify(window.posthog, user); }catch(e){/* silent */}
 }
 // Observabilidad: registra fallos de API/red como evento (PostHog) + console.
 // Permite que el negocio detecte caídas de proveedores (Yahoo/FMP/Stripe) sin
@@ -2301,7 +2302,7 @@ function notifyAlert(a,cur){
       new Notification('Alerta · '+a.asset, {body:msg, tag:'alert-'+a.id, icon:'/icon-192.png'});
     }
   }catch(e){}
-  try{ if(typeof track==='function') track('alert_triggered',{asset:a.asset,type:a.type}); }catch(e){}
+  try{ if(typeof track==='function') track('alert_triggered',{type:a.type}); }catch(e){}
 }
 // Pide permiso de notificacion una vez, dentro de un gesto del usuario (al crear
 // una alerta). Si lo niega, las alertas siguen avisando por toast in-app.
@@ -2472,32 +2473,12 @@ async function fetchQuote(ticker){
     var ckey='q_'+ticker;
     var cached=_cacheGet(ckey);
     if(cached){fetchStats.ok++;return cached;}
-    var res;
-    if(_USE_EDGE){
-      res=await fetchWithTimeout('/api/quote?ticker='+encodeURIComponent(ticker),5000);
-    } else {
-      // local dev fallback
-      var rawUrl='https://query1.finance.yahoo.com/v8/finance/chart/'+ticker+'?interval=1d&range=1d';
-      res=await fetchWithTimeout('https://api.allorigins.win/raw?url='+encodeURIComponent(rawUrl),7000);
-    }
+    if(!_USE_EDGE) return null; // sin /api no hay datos: nada se consulta a proxies de terceros
+    var res=await fetchWithTimeout('/api/quote?ticker='+encodeURIComponent(ticker),5000);
     if(!res||!res.ok) throw new Error('HTTP '+(res?res.status:'no response'));
     var json=await res.json();
-    var q;
-    if(_USE_EDGE){
-      q=json[ticker.toUpperCase()];
-      if(!q) throw new Error('no data');
-    } else {
-      var m=json.chart&&json.chart.result&&json.chart.result[0]&&json.chart.result[0].meta;
-      if(!m||!m.regularMarketPrice) throw new Error('no meta');
-      var price=m.regularMarketPrice; var prev=m.chartPreviousClose||m.previousClose||price;
-      q={ticker:ticker,price:price,prevClose:prev,change:price-prev,changePct:prev?(price-prev)/prev:0,
-         volume:m.regularMarketVolume||0,marketCap:0,high52:m.fiftyTwoWeekHigh||null,
-         low52:m.fiftyTwoWeekLow||0,currency:m.currency||'USD',
-         marketTime:m.regularMarketTime?m.regularMarketTime*1000:null,
-         tradingStart:m.currentTradingPeriod&&m.currentTradingPeriod.regular?m.currentTradingPeriod.regular.start*1000:null,
-         tradingEnd:m.currentTradingPeriod&&m.currentTradingPeriod.regular?m.currentTradingPeriod.regular.end*1000:null,
-         fetchedAt:Date.now()};
-    }
+    var q=json[ticker.toUpperCase()];
+    if(!q) throw new Error('no data');
     var out={ticker:ticker,price:q.price,prevClose:q.prevClose,
              change:q.change,changePct:q.changePct,volume:q.volume||0,
              marketCap:q.marketCap||0,high52:q.high52||null,
@@ -2564,40 +2545,17 @@ async function _fetchHistoryImpl(ticker,range){
       }
     }catch(e){}
     // 3. Network fetch
-    var res;
-    if(_USE_EDGE){
-      res=await fetchWithTimeout('/api/history?ticker='+encodeURIComponent(ticker)+'&range='+r+'&interval=1d',8000);
-    } else {
-      var rawUrl='https://query1.finance.yahoo.com/v8/finance/chart/'+ticker+'?interval=1d&range='+r+'&includePrePost=false';
-      res=await fetchWithTimeout('https://api.allorigins.win/raw?url='+encodeURIComponent(rawUrl),9000);
-    }
+    if(!_USE_EDGE) return null; // sin /api no hay datos: nada se consulta a proxies de terceros
+    var res=await fetchWithTimeout('/api/history?ticker='+encodeURIComponent(ticker)+'&range='+r+'&interval=1d',8000);
     if(!res||!res.ok) throw new Error('HTTP '+(res?res.status:'no response'));
     var json=await res.json();
-    var data;
-    if(_USE_EDGE){
-      // /api/history returns {ticker,range,interval,data:[{date,open,high,low,close,volume}]}
-      if(!json.data||!json.data.length) throw new Error('no data');
-      data=json.data.map(function(d,i){
-        return {date:new Date(d.date).toLocaleDateString('es-CL',{month:'short',day:'numeric'}),
-                ts:Math.floor(new Date(d.date).getTime()/1000),
-                open:d.open,high:d.high,low:d.low,close:d.close,vol:d.volume,p:i+1};
-      }).filter(function(d){return d.close>0;});
-    } else {
-      // raw Yahoo Finance format
-      var result=json.chart&&json.chart.result&&json.chart.result[0];
-      if(!result||!result.timestamp) throw new Error('no result');
-      var ts=result.timestamp;
-      var q2=result.indicators&&result.indicators.quote&&result.indicators.quote[0];
-      if(!q2) throw new Error('no quote');
-      data=[];
-      for(var i=0;i<ts.length;i++){
-        if(q2.close[i]!=null&&q2.close[i]>0){
-          data.push({date:new Date(ts[i]*1000).toLocaleDateString('es-CL',{month:'short',day:'numeric'}),
-                     open:q2.open[i]||q2.close[i],high:q2.high[i]||q2.close[i],
-                     low:q2.low[i]||q2.close[i],close:q2.close[i],vol:q2.volume[i]||0,p:i+1});
-        }
-      }
-    }
+    // /api/history returns {ticker,range,interval,data:[{date,open,high,low,close,volume}]}
+    if(!json.data||!json.data.length) throw new Error('no data');
+    var data=json.data.map(function(d,i){
+      return {date:new Date(d.date).toLocaleDateString('es-CL',{month:'short',day:'numeric'}),
+              ts:Math.floor(new Date(d.date).getTime()/1000),
+              open:d.open,high:d.high,low:d.low,close:d.close,vol:d.volume,p:i+1};
+    }).filter(function(d){return d.close>0;});
     if(!data||data.length<5) throw new Error('insufficient data');
     _cacheSet(ckey,data);
     // Persist to localStorage so next page load is instant
@@ -4164,9 +4122,8 @@ async function deGetEarnings(ticker){
     var ckey='earn_'+ticker;
     var cached=_cacheGet(ckey);
     if(cached) return cached;
-    var r=_USE_EDGE
-      ? await fetchWithTimeout('/api/quoteSummary?ticker='+encodeURIComponent(ticker)+'&modules=calendarEvents',7000)
-      : await fetchWithTimeout('https://api.allorigins.win/raw?url='+encodeURIComponent('https://query1.finance.yahoo.com/v10/finance/quoteSummary/'+ticker+'?modules=calendarEvents'),9000);
+    if(!_USE_EDGE) return null; // sin /api no hay datos: nada se consulta a proxies de terceros
+    var r=await fetchWithTimeout('/api/quoteSummary?ticker='+encodeURIComponent(ticker)+'&modules=calendarEvents',7000);
     if(!r||!r.ok) return null;
     var data=await r.json();
     var cal=data&&data.quoteSummary&&data.quoteSummary.result&&data.quoteSummary.result[0]&&data.quoteSummary.result[0].calendarEvents;
@@ -8965,6 +8922,7 @@ renderDisclaimer();
     var sess=await withTimeout(sb.auth.getSession(),10000);
     if(sess.data.session&&sess.data.session.user){
       await sbLoadUserData(sess.data.session.user);
+      trackIdentify(S.user);
     }
   }catch(e){ console.error("boot session check failed",e); }
   render();
@@ -8996,7 +8954,7 @@ sb.auth.onAuthStateChange(function(event,session){
     // Otra cuenta entró en otra pestaña: nada de la anterior queda en memoria.
     window.location.reload();
   } else if(event==="SIGNED_IN"&&session&&session.user){
-    sbLoadUserData(session.user).then(function(){ render(); bootLiveData(); });
+    sbLoadUserData(session.user).then(function(){ trackIdentify(S.user); render(); bootLiveData(); });
   }
 });
 
