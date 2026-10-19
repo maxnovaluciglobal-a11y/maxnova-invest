@@ -1,7 +1,8 @@
-# RUNBOOK Operativo — FinanceOS Invest
+# RUNBOOK Operativo — MOY IQ Invest
 
 Guía de continuidad para detectar y responder a caídas. Pareja con la observabilidad
-PostHog (evento `api_error`) ya instrumentada en la app.
+PostHog (evento `api_error`) ya instrumentada en la app. Beta pública gratuita desde el
+08-oct-2026: no hay cobro (ver Stripe abajo). Actualizada el 19-oct-2026.
 
 ---
 
@@ -10,11 +11,13 @@ PostHog (evento `api_error`) ya instrumentada en la app.
 | Proveedor | Qué provee | Endpoint(s) | Riesgo | Plan B actual |
 |---|---|---|---|---|
 | **Yahoo Finance** (no oficial) | Precios, marketbar, noticias, histórico | `/api/quote`, `/api/marketbar`, `/api/news`, `/api/history` | **Alto** — sin SLA, puede bloquear o rate-limitear | Cache localStorage (precios 2h, noticias 15min, marketbar 3min) + fallback RSS en news |
-| **Financial Modeling Prep (FMP)** | Fundamentals, dividendos | `/api/fundamentals` | Medio — límite del tier free | Cache localStorage 1h |
-| **Supabase** | Auth + datos de usuario | `*.supabase.co` | Alto — sin esto no hay login | Ninguno (crítico) |
-| **Stripe** | Pagos | `/api/create-checkout`, `/api/stripe-webhook` | Alto para ingresos | Trial sigue funcionando sin Stripe |
-| **Vercel** | Hosting + edge functions | todo | Alto | Ninguno |
-| **PostHog** | Analítica/observabilidad | `us.i.posthog.com` | Bajo — no afecta UX (track es no-op si falla) | — |
+| **Finnhub** (principal) y **Financial Modeling Prep (FMP)** (respaldo) | Fundamentals, dividendos; FMP además los resultados trimestrales | `/api/fundamentals`, `/api/earnings` | Medio — límites del tier free (`/api/earnings` está devolviendo vacío: INV-7) | Cache localStorage 1h |
+| **CoinGecko** · **mindicador.cl** | Criptoactivos · dólar observado y monedas de LatAm | `/api/crypto` · `/api/fx`, `/api/fx-latam` | Medio | — |
+| **Supabase** (`financeos-prod`, compartido con MOY IQ) | Auth + datos de usuario | `*.supabase.co` | Alto — sin esto no hay login | Ninguno (crítico) |
+| **Stripe** | Cobro, **pausado** en la beta gratuita | `/api/create-checkout` y `/api/billing-portal` devuelven 410 `billing_paused`; `/api/stripe-webhook` verifica la firma y responde 200 `ignored: billing_paused` | Sin impacto hoy: no se cobra | — |
+| **Vercel** (proyecto `invest-moyiq`, team `maxnovaluci-global`) | Hosting + edge functions | todo | Alto | Ninguno |
+| **PostHog** | Medición de uso (sin correo ni IP del cliente, ver `app/lib/analytics.js`) | `us.i.posthog.com` | Bajo — no afecta UX (track es no-op si falla) | — |
+| **Resend** | Correos (bienvenida, perfil de inversor, newsletter diario por el proxy de newsletters) | `api.resend.com` | Bajo | — |
 
 ---
 
@@ -25,7 +28,7 @@ nueva alerta) sobre estos contextos:
 
 | `context` | Significa | Severidad | Umbral sugerido |
 |---|---|---|---|
-| `checkout` (`critical:true`) | Falla el checkout de Stripe | **P0** — pérdida directa de ingreso | ≥1 en 5 min → avisar ya |
+| `checkout` (`critical:true`) | Falla el checkout de Stripe. **Pausado**: en la beta no hay cobro; volver a armar esta alerta (P0) al reactivarlo | — | — |
 | `quotes` | Yahoo no devuelve precios | P1 — dashboard degradado | >10 en 15 min → revisar Yahoo |
 | `marketbar` | Falla la barra de mercado | P2 | >20 en 1h |
 | `news` | Falla el feed de noticias | P2 | >20 en 1h |
@@ -39,15 +42,20 @@ de Supabase o Vercel.
 ## 3. Respuesta por escenario
 
 ### Yahoo Finance bloqueado / rate-limit (spike de `quotes`/`marketbar`/`news`)
-1. Verificar: `curl -s "https://invest.financeospro.com/api/quote?ticker=SPY"` — ¿200 con precio o error?
+1. Verificar: `curl -s "https://invest.moyiq.app/api/quote?ticker=SPY"` — ¿200 con precio o error?
 2. La app degrada sola a cache (precios hasta 2h). El usuario ve badge "Caché".
 3. Si persiste >2h: rotar el `User-Agent` en `api/quote.js`/`marketbar.js`/`news.js`, o
    activar proveedor de respaldo (ver §4 — pendiente E3).
 
-### Stripe falla (`checkout` critical)
-1. Verificar variables en Vercel: `STRIPE_SECRET_KEY`, `STRIPE_PRICE_INVEST_PRO*`.
-2. Revisar dashboard de Stripe (estado de la API).
-3. El trial sigue activo — el usuario no queda bloqueado, solo no puede pagar.
+### Cobro (Stripe): pausado
+Nada que hacer hoy: no hay checkout ni trial en la beta (`INVEST_BETA=true`). Al reactivar el cobro:
+poner `BILLING_PAUSED=false` en `api/stripe-webhook.js`, reactivar `create-checkout`, `billing-portal`
+y el cron de `trial-emails-cron` (que sigue fuera de `vercel.json`), y volver a armar la alerta
+`checkout` de PostHog.
+
+### La cuenta de usuarios activos no sube o `invest_weekly_active` está vacía
+Ver la sección 6: revisar que la app sirva `app/lib/activity.js`, que `invest_record_activity` no devuelva
+errores en la red de un navegador con sesión y que la migración `20261019102000` siga aplicada.
 
 ### Supabase caído (login falla, eventos a 0)
 1. Status: https://status.supabase.com
@@ -70,9 +78,15 @@ de Supabase o Vercel.
 ---
 
 ## 5. Despliegue y rollback
-- Deploy: push a `main` → Vercel auto-despliega (~1-2 min).
+- Deploy: push a `main` → Vercel despliega por git el proyecto `invest-moyiq` (team
+  `maxnovaluci-global`) en menos de un minuto. Si no despliega:
+  `vercel deploy --prod --scope maxnovaluci-global` desde `main` limpio. `.vercel/project.json` conserva
+  el nombre viejo `magnova-invest`, con el mismo `projectId`.
+- Verificar: `curl` de `https://invest.moyiq.app/app/` con el contenido nuevo y la consola del
+  navegador sin errores.
 - Rollback: `git revert <sha> && git push`, o desde el dashboard de Vercel (Promote a un
   deploy anterior).
+- Antes de integrar: `npm test` completo.
 - Validar JS antes de push: `node -e "new Function(<script de index.html>)"`.
 - Recordatorio: `vercel.json` usa `outputDirectory:"."` → assets estáticos van en la RAÍZ del repo.
 

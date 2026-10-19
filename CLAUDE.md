@@ -1,19 +1,27 @@
 # CLAUDE.md
 
 Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest** de
-MAXNOVA & Luci LLC — `invest.moyiq.app` / `invest.financeospro.com`). Pausado el
-12-sep-2026 (0 usuarios, 0 revenue) y **relanzado como beta pública gratuita** (rama
-`relaunch/v2`, oct-2026; plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).
-Cobro pausado hasta el disparador del plan. No proponer features/backend nuevos sin pedido
-explícito de Walter; fixes de consistencia sí están habilitados.
+MAXNOVA & Luci LLC — `invest.moyiq.app`; `invest.financeospro.com` sigue como alias heredado).
+**Beta pública gratuita desde el 08-oct-2026**: estuvo en pausa del 12-sep al 08-oct y el
+relanzamiento v2 ya está en `main` (plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).
+Su rol (producto, sección de MOY IQ o canal) se decide en el checkpoint del 5-nov (D-08 de la
+auditoría 360). Cobro pausado hasta el disparador: 100 usuarios activos por semana, que se
+mide con `invest_weekly_active` (`RUNBOOK.md` §6). Features nuevos solo con pedido explícito de
+Walter; las correcciones de consistencia y la ejecución de la auditoría 360
+(`../../00 - Gestion/auditorias/2026-10-18-auditoria-360/`) sí están habilitadas.
+Deploy: un push a `main` redespliega por git el proyecto de Vercel `invest-moyiq` (team
+`maxnovaluci-global`); ver `RUNBOOK.md` §5.
 
 ## Qué es
 
 PWA de análisis de inversiones para LATAM (`app/index.html`). Landing en `index.html` +
-páginas legales. `api/` son Vercel Edge Functions (Stripe checkout/webhook/billing portal,
-delete-account, check-plan, cron de emails de trial, proxies de datos de mercado —
-Yahoo Finance/FMP). `package.json` dice `"name": "maxnova-invest"` (typo histórico de la
-LLC, MAXNOVA con X — no renombrar sin pedido, ver `organizacion_naming_pendientes`).
+páginas legales. `api/` son Vercel Edge Functions: Stripe checkout/webhook/billing portal y
+cron de emails de trial (pausados en la beta), delete-account, check-plan y proxies de datos
+de mercado (Yahoo Finance, Finnhub con respaldo en FMP, CoinGecko y mindicador.cl).
+`package.json` dice `"name": "maxnova-invest"` y `.vercel/project.json` conserva el nombre
+viejo `magnova-invest` (typos históricos de la LLC, MAXNOVA con X — no renombrar sin pedido,
+ver `organizacion_naming_pendientes`); el proyecto real de Vercel es `invest-moyiq`
+(mismo `projectId`).
 
 ## Infraestructura compartida con MOY IQ — NO documentado hasta ahora
 
@@ -21,19 +29,24 @@ Invest usa el **mismo proyecto Supabase que MOY IQ/financeos-app**: `nelwgbcddwi
 (`supabase/.temp/linked-project.json` → `financeos-prod`). No hay separación a nivel de
 infraestructura pese a que ambos productos se facturan por separado desde la migración de
 cuentas Stripe del 11/12-sep-2026. Esto es una decisión heredada, no evaluada — auditoría
-del 13-sep-2026 la marcó como hallazgo crítico #1. Esta sesión audita RLS; **no se migra
-nada** (ver arriba, pausa de producto).
+del 13-sep-2026 la marcó como hallazgo crítico #1. Esta sección es esa auditoría de RLS
+(re-verificada el 18-oct, más abajo). Desde entonces Invest salió de la pausa y ya hubo
+cambios de esquema: ver "Migraciones SQL versionadas".
 
-**Limitación de esta auditoría**: no hay MCP de Supabase ni credenciales en este repo (no
-existe `.env`, está gitignoreado). El análisis se basa en los `.sql` sueltos en la raíz de
-este repo y en `01 - Maxnova Luci Global/02 - MOY IQ/05 - Producto/financeos-app/*.sql` +
-`financeos-app/supabase/migrations/`. Esto puede estar desactualizado respecto a lo que
-hay realmente en producción — verificar contra el dashboard de Supabase antes de asumir.
+**Cómo verificar contra producción**: no hay `.env` en el repo (está gitignoreado), pero el
+CLI de Supabase está logueado en esta máquina:
+`supabase db query --linked --project-ref nelwgbcddwiaimzbcuas -o json "<SQL de solo lectura>"`
+(`pg_policies`, `information_schema`, `has_table_privilege`). Las `.sql` de este repo y de
+`financeos-app/supabase/migrations/` pueden estar desactualizadas respecto a la base: mirar
+siempre la base antes de asumir.
 
 ### Tablas que usa Invest (con service_role, key en Vercel env)
 
 `profiles`, `portfolio_holdings`, `watchlist`, `consents`, `trial_emails`,
-`webhook_events`, `licenses` (compartida, ver hallazgo abajo).
+`webhook_events`, `licenses` (compartida, ver hallazgo abajo) e `invest_activity_days`
+(desde el 19-oct-2026: un día por cuenta en que se abrió la app, para contar usuarios activos
+por semana; el cliente solo la escribe, vía la función `invest_record_activity()`, y la lee
+`service_role` con la vista `invest_weekly_active`).
 
 - Los endpoints en `api/` (`check-plan.js`, `billing-portal.js`, `delete-account.js`,
   `stripe-webhook.js`, `trial-emails-cron.js`) usan **siempre `SUPABASE_SERVICE_KEY`**
@@ -42,8 +55,8 @@ hay realmente en producción — verificar contra el dashboard de Supabase antes
   esté mal, estos endpoints no filtran por lo que dice el JWT, no por lo que manda el
   cliente.
 - El cliente (`app/index.html`) usa la **anon key** vía `supabase-js` y siempre agrega
-  `.eq("id", authUser.id)` / `.eq("user_id", userId)` explícito en cada query (líneas
-  9546, 10690, 10729, 10832, 10919, 11098, 11135-11163). Esto es defensa en profundidad,
+  `.eq("id", authUser.id)` / `.eq("user_id", userId)` explícito en cada query (buscar
+  `.eq("user_id"` y `.eq("id"` en `app/index.html`). Esto es defensa en profundidad,
   no la única barrera — si RLS no filtra por `auth.uid()`, cualquiera con un token válido
   (de cualquiera de los dos productos, si comparten `auth.users`) podría llamar la REST
   API de Supabase directo sin ese `.eq()` y leer filas ajenas.
@@ -138,7 +151,7 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
   - Email a la lista de espera: borrador en `docs/relaunch-email.md` (no publicado:
     `*.md` está en `.vercelignore`).
   - `api/delete-account.js` borra **solo datos de Invest** (holdings, watchlist,
-    consents, trial_emails, profiles). Nunca el `auth.users`: es compartido con MOY IQ;
+    consents, trial_emails, invest_activity_days, profiles). Nunca el `auth.users`: es compartido con MOY IQ;
     la baja de la cuenta se pide por `support@moyiq.app`.
   - Leads del quiz: `perfil-inversor.html` manda `p_consent_marketing`, que requiere la
     migración `financeos-app/supabase/migrations/20261009000100_*` aplicada antes del push.
@@ -151,13 +164,23 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 - Rollback: `git revert <sha> && git push` (Vercel redespliega solo) o promote de un
   deploy anterior desde el dashboard.
 - `package.json` no tiene build script real, solo `"test": "vitest run"`.
-- CSP en `vercel.json` limita `connect-src` a Supabase, Yahoo Finance, FMP, mindicador.cl,
-  proxies CORS y PostHog — si se agrega un proveedor de datos nuevo, hay que sumarlo ahí
-  o rompe en silencio (bloqueado por CSP, no por error de red visible en Network tab).
+- CSP en `vercel.json` limita `connect-src` a Supabase, Yahoo Finance, FMP, mindicador.cl
+  y PostHog — si se agrega un proveedor de datos nuevo, hay que sumarlo ahí o rompe en
+  silencio (bloqueado por CSP, no por error de red visible en Network tab). Los proxies CORS
+  de terceros (allorigins, corsproxy) se quitaron el 19-oct-2026: sin `/api` (por ejemplo en
+  `localhost`) la app no consulta datos de mercado. Para probarla con datos, `vercel dev` o
+  interceptar `/api/*` en un navegador de pruebas con `_USE_EDGE=true`.
+- Medición de uso (19-oct-2026): PostHog **sin correo, sin IP del lado del cliente y sin
+  almacenamiento en el dispositivo** (`app/lib/analytics.js`: solo el id de la cuenta, perfil
+  solo al identificarse, sin autocaptura ni grabación, `before_send` que limpia correos y
+  recorta las URL). `ip:false` no tiene efecto en el SDK actual: descartar la IP es un ajuste
+  del proyecto de PostHog. Al cambiar `privacy.html`, mantener `test/privacy-copy.test.js` en
+  verde. Usuarios activos por semana: `app/lib/activity.js` + `RUNBOOK.md` §6.
 
-## Migraciones SQL versionadas (reorganizado 13-sep-2026)
+## Migraciones SQL versionadas (reorganizado 13-sep-2026; flujo actualizado 19-oct-2026)
 
-Los 3 `.sql` sueltos que estaban en la raíz (hallazgo técnico #8 de la auditoría del
+Desde el 19-oct-2026 hay migraciones nuevas aplicadas a mano (ver la lista al final de esta
+sección). Lo que sigue describe la reorganización original del 13-sep. Los 3 `.sql` sueltos que estaban en la raíz (hallazgo técnico #8 de la auditoría del
 13-sep) se movieron y renombraron a `supabase/migrations/`, siguiendo el mismo patrón de
 nomenclatura (`YYYYMMDDHHMMSS_descripcion.sql`) que usa `financeos-app/supabase/migrations/`.
 **Solo se reordenó/renombró — el SQL de cada archivo quedó exactamente igual, no se
@@ -177,13 +200,21 @@ repo está reescrito/squasheado y no sirve para esto):
 3. `20260911204000_trial_used_anti_reuse_fix.sql` — ex `supabase-trial-fix.sql`. Columna
    `trial_used`, backfill, `REVOKE` de columnas de dinero, trigger anti-reabuso.
 
-No se portó ningún runner de aplicación de migraciones — `financeos-app` tampoco tiene
-uno propio, usa el Supabase CLI estándar (`supabase migration new` / `supabase db push
---linked`) solo para migraciones *nuevas*, dejando sus `.sql` viejos como registro
-histórico. Invest sigue el mismo patrón: la carpeta ordenada es documentación/versionado;
-cualquier migración nueva (si Walter la pide — recordar que Invest está en pausa de
-producto) usa ese mismo flujo del CLI, verificando primero contra producción real. Detalle
-completo en `supabase/migrations/README.md`.
+No se portó ningún runner de aplicación de migraciones. **No usar `supabase db push`**: el
+historial remoto (`supabase_migrations.schema_migrations`) es compartido con `financeos-app`
+y no registra las migraciones de este repo, así que `db push` intentaría correr las locales
+que el remoto no conoce (incluidas las viejas, como `validate_license`). Flujo vigente:
+1. Escribir el `.sql` aditivo e idempotente en `supabase/migrations/`.
+2. Probarlo en un Postgres local o en un contenedor (imagen de Supabase + PostgREST) con
+   los casos de RLS y los grants, incluido el pedido real de `supabase-js` (ver C-10).
+3. "Dry run" contra producción: el archivo dentro de un bloque `DO` que termina en
+   `RAISE EXCEPTION`, así Postgres deshace todo y no queda nada.
+4. Aplicar: `supabase db query --linked --project-ref nelwgbcddwiaimzbcuas -f <archivo>`.
+5. Verificar con `SELECT` (`pg_class`, `pg_policies`, `information_schema`, `has_*_privilege`).
+Aplicada así: `20261019102000_invest_activity_days.sql` (C-10: tabla, función y vista para
+medir usuarios activos por semana). `20261018120000_rls_moyiq_unversioned_tables.sql` versiona
+la RLS de las 4 tablas creadas a mano tal como ya estaba en producción. Estado de cada archivo en
+`supabase/migrations/README.md`.
 
 ## Lead magnet + auth compartida con MOY IQ (14-sep-2026, pedido explícito de Walter)
 
@@ -198,8 +229,10 @@ Detalle completo: memoria `financeos_moy_iq_invest_crm_20260914`, `financeos_moy
 
 Este archivo es nuevo (creado 13-sep-2026, no existía antes). Memoria relevante:
 `financeos_moy_iq_invest_auditoria_completa_20260913` (hallazgo #1 = este),
-`financeos_moy_iq_invest_pausa_decision_20260912` (por qué no se toca infraestructura),
-`invest_repo_path`, `organizacion_naming_pendientes` (typo maxnova-invest).
+`financeos_moy_iq_invest_pausa_decision_20260912` (**histórica**: la pausa terminó el
+08-oct-2026; su regla "no tocar invest-web" ya no rige), `invest_repo_path`,
+`organizacion_naming_pendientes` (typo maxnova-invest). Si algo de esta guía contradice a
+`../../00 - Gestion/ESTADO.md`, gana `ESTADO.md`.
 
 ## Auditoría de seguridad (18-oct-2026) — RLS re-verificada y versionada
 

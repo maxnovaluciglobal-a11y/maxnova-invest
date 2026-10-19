@@ -26,27 +26,29 @@ historial de git de este repo está reescrito/squasheado y no refleja fechas rea
    — columna `trial_used` en `profiles`, backfill, `REVOKE` de columnas de dinero para
    `anon`/`authenticated`, y trigger `protect_trial_reuse` anti-reabuso de trial.
 
-## Sin runner de migraciones
+## Sin runner de migraciones (flujo vigente al 19-oct-2026)
 
-A diferencia de lo que se evaluó portar, **no se construyó ningún script runner acá**.
-Invest está en pausa de inversión de producto (ver `financeos_moy_iq_invest_pausa_decision_20260912`
-en memoria) y el propio `financeos-app` tampoco usa un runner propio — usa el flujo
-estándar del Supabase CLI (`supabase migration new` / `supabase db push --linked`) para
-migraciones *nuevas*, dejando sus `.sql` viejos como registro histórico sin re-ejecutar
-(ver `financeos-app/supabase/migrations/README.md`). Cualquier cambio de esquema
-**nuevo** en Invest, si Walter lo pide, debería seguir ese mismo patrón: `supabase
-migration new <nombre>` + `supabase db push --linked --project-ref nelwgbcddwiaimzbcuas`
-contra el proyecto compartido — verificando primero contra producción real antes de
-escribir nada, como ya advierte el `CLAUDE.md` de la raíz.
+No se construyó ningún script runner acá. El historial remoto (`supabase_migrations.schema_migrations`)
+es compartido con `financeos-app` y no registra ninguna migración de este repo, así que **no usar
+`supabase db push`**: intentaría correr las migraciones locales que el remoto no conoce, incluidas las
+viejas (la de `validate_license` pisaría la función real de MOY IQ). Cada archivo nuevo es aditivo e
+idempotente y se aplica así (lo usado el 19-oct-2026 con `20261019102000`):
 
-## Migraciones aplicadas a mano después del 13-sep (no están en el historial remoto)
+1. Probarlo en un Postgres local o en un contenedor (imagen de Supabase + PostgREST), con los casos de
+   RLS y de permisos, incluido el pedido real de `supabase-js`.
+2. "Dry run" contra producción: el archivo dentro de un bloque `DO` que termina en
+   `RAISE EXCEPTION 'DRY_RUN_ROLLBACK_OK'`; Postgres deshace todo y no queda nada.
+3. Aplicar: `supabase db query --linked --project-ref nelwgbcddwiaimzbcuas -f <archivo>`.
+4. Verificar con `SELECT` (`pg_class`, `pg_policies`, `information_schema`, `has_*_privilege`).
 
-El historial remoto (`supabase_migrations.schema_migrations`) es compartido con `financeos-app` y no
-registra las migraciones de este repo. **No usar `supabase db push`**: intentaría correr las migraciones
-locales que el remoto no conoce, incluidas las viejas. Se aplican con `supabase db query --linked -f
-<archivo>` (solo SQL), y cada archivo es aditivo e idempotente.
+Estado de los archivos de esta carpeta (ninguno figura en `supabase_migrations.schema_migrations`):
 
-- `20261018120000_rls_moyiq_unversioned_tables.sql` — RLS de `portfolio_holdings`, `watchlist`, `consents`, `profiles`.
-- `20261019102000_invest_activity_days.sql` — C-10 (INV-3): tabla `invest_activity_days`, función
-  `invest_record_activity()` y vista `invest_weekly_active` para medir los usuarios activos por semana.
-  Aplicada el 19-oct-2026 (consulta de WAU en `RUNBOOK.md`, sección 6).
+- `20260615141400`, `20260719193300`, `20260911204000`: históricas, aplicadas a mano entre junio y
+  septiembre (ver arriba).
+- `20260914150000_invest_lead_magnet.sql`: tabla `invest_leads` y RPC `register_invest_lead` del quiz de
+  perfil de inversor (14-sep-2026).
+- `20261018120000_rls_moyiq_unversioned_tables.sql`: versiona la RLS de `portfolio_holdings`,
+  `watchlist`, `consents` y `profiles` tal como ya estaba en producción (dump de `pg_policies` del 18-oct).
+- `20261019102000_invest_activity_days.sql`: C-10 (INV-3), aplicada el 19-oct-2026. Tabla
+  `invest_activity_days`, función `invest_record_activity()` y vista `invest_weekly_active` para medir los
+  usuarios activos por semana (consulta de WAU en `RUNBOOK.md`, sección 6).
