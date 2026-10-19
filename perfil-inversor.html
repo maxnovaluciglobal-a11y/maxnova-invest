@@ -102,6 +102,9 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,46px);l
 .field input[type=email]::placeholder{color:var(--text2)}
 .err{font-size:14px;color:#A3402F;margin:0 0 10px;display:none}
 .consent-check{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin:6px 0 16px;cursor:pointer}
+.optin-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:14px;color:var(--text2);margin:0 0 16px}
+.optin-note p{margin:0}
+.optin-note[hidden],.optin-note [hidden]{display:none}
 .consent-check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--laton-700)}
 .btn-full{width:100%}
 .gate-fineprint{font-size:13px;color:var(--text2);margin-top:12px;text-align:center}
@@ -203,6 +206,11 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
         <p class="result-badge">Tu perfil de inversor</p>
         <div class="profile-name" id="result-profile-name">—</div>
         <p class="result-desc" id="result-profile-desc"></p>
+      </div>
+
+      <div class="optin-note" id="optin-note" hidden>
+        <p id="optin-status" role="status" aria-live="polite"></p>
+        <button type="button" class="btn btn-line" id="optin-retry" hidden>Reenviar correo</button>
       </div>
 
       <p class="disclaimer">Este perfil es orientativo y se basa en tus respuestas sobre tolerancia al riesgo y horizonte. No es asesoría financiera ni una recomendación de compra o venta de ningún activo: es un punto de partida para pensar tu propia regla de riesgo.</p>
@@ -333,6 +341,45 @@ function detectFuente() {
   return 'directo';
 }
 
+var OPTIN_URL = SUPABASE_URL + '/functions/v1/send-optin-confirmation';
+var OPTIN_MESSAGES = {
+  sent: 'Te enviamos un correo para confirmar tu suscripción. Revisa tu bandeja de entrada y la carpeta de spam.',
+  already_sent: 'Ya te enviamos un correo para confirmar tu suscripción. Revisa tu bandeja de entrada y la carpeta de spam.',
+  already_confirmed: 'Tu suscripción ya está confirmada. No necesitas hacer nada más.',
+  rate_limited: 'Ya enviamos varios correos de confirmación a esta dirección. Revisa tu bandeja de entrada o inténtalo de nuevo mañana.',
+  error: 'No pudimos enviar el correo de confirmación. Tu perfil se guardó igual; puedes intentarlo de nuevo.',
+  not_saved: 'No pudimos registrar tu suscripción en este momento. Tu perfil aparece igual aquí abajo.',
+};
+
+function sendOptinConfirmation(leadId) {
+  return fetch(OPTIN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: 'invest', id: leadId }),
+  }).then(function (res) {
+    return res.json().catch(function () { return null; }).then(function (data) {
+      if (res.status === 429) return 'rate_limited';
+      if (res.ok && data && data.ok && OPTIN_MESSAGES[data.state]) return data.state;
+      return 'error';
+    });
+  }).catch(function () { return 'error'; });
+}
+
+function showOptinStatus(state) {
+  document.getElementById('optin-note').hidden = false;
+  document.getElementById('optin-status').textContent = OPTIN_MESSAGES[state] || OPTIN_MESSAGES.error;
+  document.getElementById('optin-retry').hidden = state !== 'error';
+}
+
+function requestOptin(leadId) {
+  var retry = document.getElementById('optin-retry');
+  retry.disabled = true;
+  return sendOptinConfirmation(leadId).then(function (state) {
+    retry.disabled = false;
+    showOptinStatus(state);
+  });
+}
+
 function registerInvestLead(email, perfil, puntaje, consentMarketing) {
   return fetch(SUPABASE_URL + '/rest/v1/rpc/register_invest_lead', {
     method: 'POST',
@@ -359,7 +406,7 @@ function registerInvestLead(email, perfil, puntaje, consentMarketing) {
       }
       return data;
     })
-    .catch(function () { /* si falla el guardado del lead, igual mostramos el resultado ya calculado */ });
+    .catch(function () { return null; /* si falla el guardado del lead, igual mostramos el resultado ya calculado */ });
 }
 
 // --- Motor del quiz ---
@@ -463,7 +510,16 @@ document.getElementById('gate-form').addEventListener('submit', function (e) {
   var result = window.__investResult || { key: 'moderado', puntaje: 50 };
   var consentMarketing = document.getElementById('gate-consent').checked;
 
-  registerInvestLead(email, result.key, result.puntaje, consentMarketing).then(function () {
+  registerInvestLead(email, result.key, result.puntaje, consentMarketing).then(function (data) {
+    if (consentMarketing) {
+      if (data && data.ok && data.id) {
+        var leadId = data.id;
+        document.getElementById('optin-retry').addEventListener('click', function () { requestOptin(leadId); });
+        requestOptin(leadId);
+      } else {
+        showOptinStatus('not_saved');
+      }
+    }
     var profile = PROFILES[result.key];
     document.getElementById('result-profile-name').textContent = profile.name;
     document.getElementById('result-profile-desc').textContent = profile.desc;
