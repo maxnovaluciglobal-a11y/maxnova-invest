@@ -2060,6 +2060,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <script src="/app/lib/diversification.js"></script>
 <script src="/app/lib/market.js"></script>
 <script src="/app/lib/analytics.js"></script>
+<script src="/app/lib/activity.js"></script>
 <script>
 
 // ═══════════════════════════════════════════════════════════════
@@ -2086,6 +2087,15 @@ function track(event, props){
 // sin correo, nombre ni plan (D-04). La persistencia es en memoria, así que hay que repetirlo en cada carga.
 function trackIdentify(user){
   try{ InvestAnalytics.identify(window.posthog, user); }catch(e){/* silent */}
+}
+// Un día de actividad por cuenta (usuarios activos por semana, C-10). Una llamada por día y por dispositivo.
+function recordActivity(){
+  try{ if(S.user&&S.user.id) InvestActivity.recordActivity(sb,S.user.id,localStorage,Date.now()); }catch(e){/* silent */}
+}
+// Con la sesión lista (arranque, entrada de otra pestaña o Google, login y alta): medición de uso.
+function onSessionReady(){
+  trackIdentify(S.user);
+  recordActivity();
 }
 // Observabilidad: registra fallos de API/red como evento (PostHog) + console.
 // Permite que el negocio detecte caídas de proveedores (Yahoo/FMP/Stripe) sin
@@ -8758,7 +8768,7 @@ async function doLogin(){
     err.textContent='Entraste, pero no se pudo cargar tu perfil ('+((le&&le.message)||'error')+'). Reintenta o contacta soporte.';
     return;
   }
-  trackIdentify(S.user); track('login');
+  onSessionReady(); track('login');
   document.getElementById("mroot").innerHTML="";
   render();
 }
@@ -8811,7 +8821,7 @@ async function doRegister(){
     // Activate 14-day trial for new accounts
     await sb.from("profiles").update({trial_started_at:new Date().toISOString()}).eq("id",res.data.user.id);
     await sbLoadUserData(res.data.user);
-    trackIdentify(S.user); track('signup');
+    onSessionReady(); track('signup');
     document.getElementById("mroot").innerHTML="";
     render();
   }else{
@@ -8922,7 +8932,7 @@ renderDisclaimer();
     var sess=await withTimeout(sb.auth.getSession(),10000);
     if(sess.data.session&&sess.data.session.user){
       await sbLoadUserData(sess.data.session.user);
-      trackIdentify(S.user);
+      onSessionReady();
     }
   }catch(e){ console.error("boot session check failed",e); }
   render();
@@ -8954,7 +8964,7 @@ sb.auth.onAuthStateChange(function(event,session){
     // Otra cuenta entró en otra pestaña: nada de la anterior queda en memoria.
     window.location.reload();
   } else if(event==="SIGNED_IN"&&session&&session.user){
-    sbLoadUserData(session.user).then(function(){ trackIdentify(S.user); render(); bootLiveData(); });
+    sbLoadUserData(session.user).then(function(){ onSessionReady(); render(); bootLiveData(); });
   }
 });
 

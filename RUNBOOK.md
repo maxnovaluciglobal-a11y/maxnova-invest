@@ -75,3 +75,48 @@ de Supabase o Vercel.
   deploy anterior).
 - Validar JS antes de push: `node -e "new Function(<script de index.html>)"`.
 - Recordatorio: `vercel.json` usa `outputDirectory:"."` → assets estáticos van en la RAÍZ del repo.
+
+---
+
+## 6. Usuarios activos por semana (WAU) de Invest
+
+El disparador de cobro (checkpoint del 5-nov) es **100 usuarios activos por semana**. Login y `profiles`
+se comparten con MOY IQ, así que `auth.users` y `profiles` no sirven para medirlo. Desde el 19-oct-2026 la
+app registra un día de actividad por cuenta: al abrirse con la sesión iniciada llama (una vez por día y por
+dispositivo) a `public.invest_record_activity()`, que guarda `(cuenta, hoy UTC)` en
+`public.invest_activity_days`. Migración: `supabase/migrations/20261019102000_invest_activity_days.sql`
+(aplicada a mano con `supabase db query --linked -f`, no con `db push`: el historial de migraciones del
+proyecto es compartido con `financeos-app`).
+
+- Solo escribe la propia cuenta (la función toma la identidad del JWT) y solo lee `service_role`/`postgres`.
+  Los clientes (`anon`, `authenticated`) no pueden leer la tabla ni la vista.
+- "Eliminar mis datos de Invest" (`api/delete-account.js`) borra también esas filas; al borrar la cuenta
+  se van en cascada.
+- La semana es ISO (lunes a domingo) y el día es UTC.
+- Solo hay datos desde el 19-oct-2026: la medición necesita 2 o 3 semanas antes del 5-nov.
+
+**WAU por semana, todas las cuentas** (SQL Editor de Supabase, o
+`supabase db query --linked --project-ref nelwgbcddwiaimzbcuas "<consulta>"`):
+
+```sql
+select * from public.invest_weekly_active limit 8;
+```
+
+**WAU sin cuentas internas ni de prueba** (el criterio de la auditoría DAT-9; puede dejar fuera algún correo
+real que contenga "test"):
+
+```sql
+select s.week_start, to_char(s.week_start, 'IYYY-"W"IW') as iso_week, count(distinct s.user_id) as wau_reales
+from (
+  select a.user_id, a.day - (extract(isodow from a.day)::int - 1) as week_start
+  from public.invest_activity_days a
+  join auth.users u on u.id = a.user_id
+  where u.email !~* '(walterlamadriz|maxnova|lamadriz|test|prueba|example)'
+) s
+group by s.week_start
+order by s.week_start desc
+limit 8;
+```
+
+Si la semana en curso está incompleta, mirar la anterior. Si la vista no devuelve filas, revisar que la
+app esté sirviendo `app/lib/activity.js` y que no haya errores `invest_record_activity` en la red.

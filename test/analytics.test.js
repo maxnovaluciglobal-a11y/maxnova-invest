@@ -133,17 +133,20 @@ describe('scrubEvent', () => {
 });
 
 describe('quien vuelve con la sesión abierta también se identifica (la persistencia es en memoria)', () => {
-  it('boot() identifica después de cargar la cuenta y antes de pintar', () => {
+  it('boot() llama a onSessionReady después de cargar la cuenta y antes de pintar', () => {
     const boot = between('(async function boot(){', '// ── Retorno post-pago de Stripe');
     const load = boot.indexOf('await sbLoadUserData(sess.data.session.user);');
-    const ident = boot.indexOf('trackIdentify(S.user)');
+    const ready = boot.indexOf('onSessionReady()');
     expect(load).toBeGreaterThan(0);
-    expect(ident).toBeGreaterThan(load);
-    expect(ident).toBeLessThan(boot.indexOf('render();'));
+    expect(ready).toBeGreaterThan(load);
+    expect(ready).toBeLessThan(boot.indexOf('render();'));
   });
-  it('la entrada de otra pestaña o de Google (SIGNED_IN) también identifica', () => {
+  it('la entrada de otra pestaña o de Google (SIGNED_IN) también llama a onSessionReady', () => {
     const cb = html.slice(html.indexOf('sb.auth.onAuthStateChange(function(event,session){'));
-    expect(cb).toMatch(/sbLoadUserData\(session\.user\)\.then\(function\(\)\{\s*trackIdentify\(S\.user\);/);
+    expect(cb).toMatch(/sbLoadUserData\(session\.user\)\.then\(function\(\)\{\s*onSessionReady\(\);/);
+  });
+  it('onSessionReady identifica la cuenta en PostHog', () => {
+    expect(between('function onSessionReady(){', '\n}\n')).toContain('trackIdentify(S.user)');
   });
 });
 

@@ -17,7 +17,8 @@
 //      so deleting the account also stops billing, not just data. Never blocks
 //      the rest of the flow — a deleted account with a subscription that needs
 //      a manual cancel is a smaller problem than a stuck deletion.
-//   2. portfolio_holdings, watchlist, consents, trial_emails — every row with
+//   2. portfolio_holdings, watchlist, consents, trial_emails, invest_activity_days
+//      (days the app was opened, for the weekly-active count) — every row with
 //      user_id = this user.
 //   3. The profiles row itself (id = this user). `profiles` is Invest-only;
 //      MOY IQ does not use it.
@@ -63,7 +64,7 @@ function json(data, status = 200, req) {
 
 // Tables holding per-user data, cleared (in this order) before the profile
 // row and the auth user itself can go. All filtered by user_id.
-const USER_DATA_TABLES = ['portfolio_holdings', 'watchlist', 'consents', 'trial_emails'];
+const USER_DATA_TABLES = ['portfolio_holdings', 'watchlist', 'consents', 'trial_emails', 'invest_activity_days'];
 
 async function deleteRows(table, userId, idColumn) {
   const url = `${SUPABASE_URL}/rest/v1/${table}?${idColumn}=eq.${userId}`;

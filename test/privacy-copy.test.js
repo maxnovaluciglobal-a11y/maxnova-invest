@@ -39,7 +39,18 @@ describe('privacy.html · analítica con PostHog', () => {
     expect(p).toMatch(/reclamo ante la autoridad de protección de datos de tu país/);
   });
   it('tiene fecha de actualización de hoy', () => {
-    expect(p).toMatch(/Última actualización: 19 de octubre de 2026 · Versión 2\.1/);
+    expect(p).toMatch(/Última actualización: 19 de octubre de 2026 · Versión 2\.2/);
+  });
+});
+
+describe('privacy.html · días de actividad (C-10)', () => {
+  it('dice que guarda el día en que abres la app, asociado a la cuenta, para contar a las personas activas', () => {
+    expect(p).toMatch(/guardamos en nuestra base de datos, asociado a tu cuenta, cada día en que abres la app de Invest con tu sesión iniciada/);
+    expect(p).toMatch(/cuántas personas la usan cada semana/);
+  });
+  it('y que "Eliminar mis datos de Invest" también los borra (api/delete-account.js lo hace)', () => {
+    expect(p).toMatch(/perfil, consentimientos y días de actividad registrados en Invest/);
+    expect(read('api/delete-account.js')).toContain("'invest_activity_days'");
   });
 });
 
