@@ -52,3 +52,6 @@ Estado de los archivos de esta carpeta (ninguno figura en `supabase_migrations.s
 - `20261019102000_invest_activity_days.sql`: C-10 (INV-3), aplicada el 19-oct-2026. Tabla
   `invest_activity_days`, función `invest_record_activity()` y vista `invest_weekly_active` para medir los
   usuarios activos por semana (consulta de WAU en `RUNBOOK.md`, sección 6).
+- `20261019160000_portfolio_holdings_fx_at_cost.sql`: FIN-12, aplicada el 19-oct-2026 con `supabase db query --linked -f`
+  (dry run previo). Columna `portfolio_holdings.fx_at_cost` (moneda por 1 USD al comprar, null = desconocido),
+  check > 0 y `grant update (fx_at_cost)` a `authenticated` (en esta tabla el UPDATE se otorga por columna).

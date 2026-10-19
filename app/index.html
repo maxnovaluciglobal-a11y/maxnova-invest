@@ -2413,6 +2413,14 @@ function fxExclNote(list,where){
     list.length+(list.length===1?' posición sin tipo de cambio ('+esc(ccys.join(', '))+'): no se cuenta en '+(where||'estos totales'):' posiciones sin tipo de cambio ('+esc(ccys.join(', '))+'): no se cuentan en '+(where||'estos totales'))+'.</p>';
 }
 
+// FIN-12: efecto del tipo de cambio desde la compra, aparte del resultado del activo.
+function fxCostNote(effect,known,unknown){
+  var parts=[];
+  if(known&&Math.abs(effect)>=0.5) parts.push('El resultado incluye <span class="num">'+money(effect,0,true)+'</span> por la variación del tipo de cambio desde la compra.');
+  if(unknown) parts.push(unknown+(unknown===1?' posición en otra moneda no tiene':' posiciones en otra moneda no tienen')+' el tipo de cambio de la compra: su resultado en USD usa el de hoy y no incluye la variación del dólar. Puedes agregarlo al editar la posición.');
+  return parts.length?'<p class="fx-note port-muted" role="note">'+parts.join(' ')+'</p>':'';
+}
+
 function setUserCurrency(c){
   USER_CURRENCY=c;
   try{localStorage.setItem('mv_currency',c);}catch(e){}
@@ -4837,7 +4845,7 @@ function renderDash(){
   var dc=T.day>=0?'pos':'neg', tc=T.total>=0?'pos':'neg';
   var band=heroFig({aria:'Resumen de hoy',label:'Valor de tu portafolio',value:money(T.value,0),sub:numWrap(approx),
     row:[['Hoy','<b class="num '+dc+'">'+money(T.day,0,true)+'</b> <span class="num '+dc+'">'+(T.day>=0?'+':'')+pct(T.dayPct)+'</span>'],
-         ['Total','<b class="num '+tc+'">'+money(T.total,0,true)+'</b> <span class="'+tc+'"><span class="num">'+(T.total>=0?'+':'')+pct(T.totalPct)+'</span> sobre lo invertido</span>']]});
+         ['Resultado no realizado','<b class="num '+tc+'">'+money(T.total,0,true)+'</b> <span class="'+tc+'"><span class="num">'+(T.total>=0?'+':'')+pct(T.totalPct)+'</span> sobre lo invertido</span>']]});
 
   main.innerHTML=
     '<div class="fos-module-header"><div><div class="fos-module-sub"><span class="fresh-m live-badge-wrap">'+liveBadge()+'</span></div></div></div>'+
@@ -4847,7 +4855,7 @@ function renderDash(){
     // Hoy, variante A: desde 1200 px el valor y los dos bloques en una fila;
     // entre 1024 y 1199 el valor arriba y los bloques en dos columnas.
     '<div class="hoy-top">'+band+dashRiskCard(rs,lim,real)+dashFocoCard(port)+'</div>'+
-    fxExclNote(PV.excluded)+
+    fxExclNote(PV.excluded)+fxCostNote(T.fxEffect,T.fxKnown,T.fxUnknown)+
     dashTopPositions(pu,rs,T.value)+
     dashAporteCard()+
     '<p class="hoy-ctx" id="hoy-ctx" aria-live="polite">'+dashCtxHtml(DE_CACHE.regime,DE_CACHE.vix,false)+'</p>'+
@@ -5215,8 +5223,12 @@ function renderPort(){
   }
   function hjOf(h){ return JSON.stringify(byId[h.id]||h).replace(/"/g,"&quot;"); }
   var totM=port.reduce(function(s,h){return s+h.sh*h.cur;},0);
-  var totC=port.reduce(function(s,h){return s+h.sh*h.cost;},0);
+  // FIN-12: el costo de una posición en otra moneda va al tipo de cambio de la compra si se conoce.
+  var totC=port.reduce(function(s,h){return s+(h.costUsdBuy!=null?h.costUsdBuy:h.sh*h.cost);},0);
   var totP=totM-totC;
+  var fxEff=port.reduce(function(s,h){return s+(h.costUsdBuy!=null?h.sh*h.cost-h.costUsdBuy:0);},0);
+  var fxKn=port.filter(function(h){return h.costUsdBuy!=null;}).length;
+  var fxUnk=port.filter(function(h){return h.ccy&&h.ccy!=='USD'&&h.costUsdBuy==null;}).length;
   var cap=S.capital>0?S.capital:0;
   var lim=riskConcentrationLimit();
   var realStops=HOLDINGS_STOP===true;
@@ -5238,7 +5250,7 @@ function renderPort(){
   var pc=totP>=0?'pos':'neg';
   var band=heroFig({aria:'Resumen del portafolio',label:'Riesgo al stop',cls:rs.totalRisk>0?'neg':'',value:(rs.totalRisk>0?money(-rs.totalRisk,0):money(0,0)),sub:numWrap(riskSub),
     row:[['Valor','<b class="num">'+money(totM,0)+'</b> <span>'+numWrap(approx)+'</span>'],
-         ['Resultado','<b class="num '+pc+'">'+money(totP,0,true)+'</b> <span class="'+pc+'"><span class="num">'+(totP>=0?'+':'')+pct(totP/(totC||1))+'</span> sobre lo invertido</span>'],
+         ['Resultado no realizado','<b class="num '+pc+'">'+money(totP,0,true)+'</b> <span class="'+pc+'"><span class="num">'+(totP>=0?'+':'')+pct(totP/(totC||1))+'</span> sobre lo invertido</span>'],
          ['Mayor peso',mayor?'<b>'+esc(mayor.t)+'</b> <b class="num">'+fmtPctN(mayor.weight*100,0)+'</b> '+(mayor.overLimit
             ?warnTag('supera tu límite de '+fmtPctN(lim*100,0))+(alt?' · con <span class="num">'+fmtUnits(alt.maxUnits)+'</span>'+(alt.maxUnits===1?' unidad':' unidades')+' quedaría en <span class="num">'+fmtPctN(alt.weightAtMax*100,0)+'</span>':'')
             :'· tu límite es <span class="num">'+fmtPctN(lim*100,0)+'</span>'):'—']]});
@@ -5353,7 +5365,7 @@ function renderPort(){
     seedCleanupBanner()+
     '<div class="port-wrap pv">'+
     band+
-    fxExclNote(excl)+
+    fxExclNote(excl)+fxCostNote(fxEff,fxKn,fxUnk)+
     portCapLine(totC)+
     ccyNote()+
     (foreign?'<p class="fx-note port-muted">Entrada, precio y stop van en la moneda de cada activo. Valor, resultado y riesgo al stop van en '+USER_CURRENCY+', convertidos con el tipo de cambio del día'+(USER_CURRENCY!=='USD'?' (pasando por USD)':'')+'.</p>':'')+
@@ -6299,6 +6311,17 @@ function posCcySync(){
   var el=document.getElementById('pt'); if(!el) return;
   var lbl=posCcyLabel(el.value);
   document.querySelectorAll('.pos-ccy').forEach(function(x){x.innerHTML=lbl;});
+  posFxSync();
+}
+// FIN-12: tipo de cambio de la compra, solo para activos que no cotizan en USD.
+function posFxSync(){
+  var el=document.getElementById('pt'), w=document.getElementById('pfx-wrap'); if(!el||!w) return;
+  var t=String(el.value||'').toUpperCase().trim(), c=t?assetCcy(t):'USD';
+  var show=!!c&&c!=='USD';
+  w.hidden=!show;
+  var l=document.getElementById('pfx-ccy'); if(l) l.textContent=show?c:'';
+  var r=show?InvestFx.rateOf(c,FX_ASSET):null;
+  var inp=document.getElementById('pfx'); if(inp) inp.placeholder=r?'Hoy: '+fmt(Math.round(r*100)/100):'';
 }
 function mPos(mr){
   var ed=S.modal==="editpos";
@@ -6324,10 +6347,16 @@ function mPos(mr){
        '<input id="pstop" class="inp ifu" type="number" inputmode="decimal" placeholder="Precio donde saldrías" value="'+(pos.stop||"")+'" min="0" step="any"/>'+
        '<div class="calc-hint" style="margin:-4px 0 10px">Si lo dejas vacío, la posición queda “sin stop” en Riesgo. Como referencia, −8 % bajo la entrada.</div>'
       :'')+
+    '<div id="pfx-wrap" hidden>'+
+      '<label class="fl" for="pfx">Tipo de cambio de la compra (opcional): <span id="pfx-ccy"></span> por 1 USD</label>'+
+      '<input id="pfx" class="inp ifu" type="number" inputmode="decimal" min="0" step="any" value="'+(pos.fxCost>0?pos.fxCost:'')+'"/>'+
+      '<div class="calc-hint" style="margin:-4px 0 10px">Con este dato el resultado en USD incluye la variación del dólar desde tu compra. Sin él, se calcula con el tipo de cambio de hoy.</div>'+
+    '</div>'+
     // I10: el precio actual lo trae la app (posAutofillPrice); no se pide a mano.
     '<input id="pcur" type="hidden" value="'+(pos.cur||"")+'"/>'+
     '<button class="btn-big" style="width:100%;margin-top:12px" onclick="savePos('+(ed&&S.editPos?S.editPos.id:-1)+')">'+(ed?"Guardar cambios":"Agregar")+'</button>'+
     '</div></div>';
+  posFxSync();
   if(!ed)setTimeout(function(){var el=document.getElementById("pt");if(el)el.focus();},100);
 }
 async function savePos(id){
@@ -6339,19 +6368,22 @@ async function savePos(id){
   var stopEl=document.getElementById("pstop");
   var stop=stopEl?parseFloat(stopEl.value||""):NaN;
   stop=stop>0?stop:null;
+  var fxEl=document.getElementById("pfx"), fxW=document.getElementById("pfx-wrap");
+  var fxCost=fxEl&&fxW&&!fxW.hidden?parseFloat(fxEl.value||""):NaN;
+  fxCost=fxCost>0?fxCost:null;
   var err=document.getElementById("perr");
   if(!t){err.style.display="block";err.textContent="Ticker requerido";return;}
   if(!sh||sh<=0){err.style.display="block";err.textContent="Unidades no válidas";return;}
   if(!cost||cost<=0){err.style.display="block";err.textContent="Precio de entrada inválido";return;}
   if(!cur||cur<=0) cur=(LIVE[t]&&LIVE[t].price)||cost; // sin cotización aún: se usa la entrada hasta que llegue
   if(id===-1){
-    var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur,stop:stop};
+    var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur,stop:stop,fxCost:fxCost};
     S.portfolio.push(h);
     sbAddHolding(h).then(function(realId){if(realId){h.id=realId;persist();}}).catch(function(){});
   } else {
     var idx=S.portfolio.findIndex(function(p){return p.id===id;});
     if(idx>=0){
-      S.portfolio[idx]=Object.assign({},S.portfolio[idx],{type:type,sh:sh,cost:cost,cur:cur},stopEl?{stop:stop}:{});
+      S.portfolio[idx]=Object.assign({},S.portfolio[idx],{type:type,sh:sh,cost:cost,cur:cur,fxCost:fxCost},stopEl?{stop:stop}:{});
       sbUpdateHolding(S.portfolio[idx]);
     }
   }
@@ -6524,7 +6556,10 @@ function saveTrade(){
   // Fase 3: la operacion AJUSTA la posicion (app/lib/holdings.js). El
   // resultado de una venta se mide contra la entrada de la posicion.
   var pos=ticker?S.portfolio.find(function(h){return h.t===ticker;}):null;
-  var adj=(type==='buy'||type==='sell')&&ticker?applyTrade(pos||null,{type:type,qty:qty,price:price,amount:amount}):{action:'none'};
+  // FIN-12: el tipo de cambio de hoy solo vale para una operación de hoy; con otra fecha queda desconocido.
+  var tCcy=ticker?assetCcy(ticker):'USD';
+  var tFx=(tCcy&&tCcy!=='USD'&&date===new Date().toISOString().slice(0,10))?InvestFx.rateOf(tCcy,FX_ASSET):null;
+  var adj=(type==='buy'||type==='sell')&&ticker?applyTrade(pos||null,{type:type,qty:qty,price:price,amount:amount,fx:tFx}):{action:'none'};
   var pnl=(type==='sell'&&adj.pnl!=null)?adj.pnl:null;
 
   loadTrades();loadAlerts();
@@ -6544,7 +6579,7 @@ function saveTrade(){
 
   var creoPosicion=false, cerrar=null;
   if(adj.action==='create'){
-    var nuevo={id:S.nextId++, t:ticker, type:/-USD$/.test(ticker)?'Crypto':'Stock', sh:adj.sh, cost:adj.cost, cur:price||adj.cost, stop:null};
+    var nuevo={id:S.nextId++, t:ticker, type:/-USD$/.test(ticker)?'Crypto':'Stock', sh:adj.sh, cost:adj.cost, cur:price||adj.cost, stop:null, fxCost:adj.fxCost||null};
     S.portfolio.push(nuevo);
     creoPosicion=true;
     if(typeof sbAddHolding==='function'&&!S.demoMode){
@@ -6553,7 +6588,7 @@ function saveTrade(){
     persist();
   } else if(adj.action==='update'&&pos){
     // Mismo objeto que leen Posiciones, Hoy y la ficha: el stop queda intacto.
-    pos.sh=adj.sh; pos.cost=adj.cost;
+    pos.sh=adj.sh; pos.cost=adj.cost; pos.fxCost=adj.fxCost||null;
     if(!S.demoMode) sbUpdateHolding(pos);
     persist();
   } else if(adj.action==='close'&&pos){
@@ -8369,7 +8404,8 @@ try{ sb=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){ console.error("S
 // Map a DB holding row -> in-memory portfolio item shape {id,t,type,sh,cost,note}
 function rowToHolding(r){
   return {id:r.id, t:r.ticker, type:r.asset_type, sh:Number(r.shares), cost:Number(r.avg_cost), note:r.note||"",
-    stop:(r.stop!=null&&Number(r.stop)>0)?Number(r.stop):null};
+    stop:(r.stop!=null&&Number(r.stop)>0)?Number(r.stop):null,
+    fxCost:(r.fx_at_cost!=null&&Number(r.fx_at_cost)>0)?Number(r.fx_at_cost):null};
 }
 // I03 · ¿Existe portfolio_holdings.stop? null = sin comprobar. Si la migración
 // 20261011000000 todavía no se aplicó, la app sigue con la estimación −8 %.
@@ -8381,6 +8417,9 @@ async function detectHoldingsStop(rows){
     HOLDINGS_STOP=!(r&&r.error);
   }catch(e){ HOLDINGS_STOP=false; }
 }
+// FIN-12: portfolio_holdings.fx_at_cost (migración 20261019160000). Si faltara, se guarda sin él.
+var HOLDINGS_FX=true;
+function _isFxColumnError(err){ return !!err&&/fx_at_cost/i.test(String(err.message||'')); }
 function _isStopColumnError(err){ return !!err&&/stop/i.test(String(err.message||''))&&/column|schema/i.test(String(err.message||'')+String(err.code||'')); }
 
 // ── CONSENT FUNCTIONS (F1-07) ─────────────────────────────────
@@ -8858,7 +8897,12 @@ async function sbAddHolding(h){
   if(!S.user||!S.user.id) return h.id;
   var row={user_id:S.user.id, ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""};
   if(HOLDINGS_STOP===true) row.stop=(h.stop>0?h.stop:null);
+  if(HOLDINGS_FX) row.fx_at_cost=(h.fxCost>0?h.fxCost:null);
   var res=await sb.from("portfolio_holdings").insert(row).select().single();
+  if(res.error&&row.fx_at_cost!==undefined&&_isFxColumnError(res.error)){
+    HOLDINGS_FX=false; delete row.fx_at_cost;
+    res=await sb.from("portfolio_holdings").insert(row).select().single();
+  }
   if(res.error&&row.stop!==undefined&&_isStopColumnError(res.error)){
     HOLDINGS_STOP=false; delete row.stop;
     res=await sb.from("portfolio_holdings").insert(row).select().single();
@@ -8871,7 +8915,12 @@ async function sbUpdateHolding(h){
   if(!S.user||!S.user.id) return;
   var upd={ticker:h.t, asset_type:h.type, shares:h.sh, avg_cost:h.cost, note:h.note||""};
   if(HOLDINGS_STOP===true) upd.stop=(h.stop>0?h.stop:null);
+  if(HOLDINGS_FX) upd.fx_at_cost=(h.fxCost>0?h.fxCost:null);
   var res=await sb.from("portfolio_holdings").update(upd).eq("id",h.id).eq("user_id",S.user.id);
+  if(res.error&&upd.fx_at_cost!==undefined&&_isFxColumnError(res.error)){
+    HOLDINGS_FX=false; delete upd.fx_at_cost;
+    res=await sb.from("portfolio_holdings").update(upd).eq("id",h.id).eq("user_id",S.user.id);
+  }
   if(res.error&&upd.stop!==undefined&&_isStopColumnError(res.error)){
     HOLDINGS_STOP=false; delete upd.stop;
     res=await sb.from("portfolio_holdings").update(upd).eq("id",h.id).eq("user_id",S.user.id);

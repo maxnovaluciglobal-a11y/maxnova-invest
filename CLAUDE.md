@@ -219,7 +219,9 @@ que el remoto no conoce (incluidas las viejas, como `validate_license`). Flujo v
    `RAISE EXCEPTION`, así Postgres deshace todo y no queda nada.
 4. Aplicar: `supabase db query --linked --project-ref nelwgbcddwiaimzbcuas -f <archivo>`.
 5. Verificar con `SELECT` (`pg_class`, `pg_policies`, `information_schema`, `has_*_privilege`).
-Aplicada así: `20261019102000_invest_activity_days.sql` (C-10: tabla, función y vista para
+Aplicadas así: `20261019160000_portfolio_holdings_fx_at_cost.sql` (FIN-12: tipo de cambio de la compra por
+posición; ojo, en `portfolio_holdings` el UPDATE de `authenticated` es por columna: una columna nueva
+necesita su `grant update (col)`) y `20261019102000_invest_activity_days.sql` (C-10: tabla, función y vista para
 medir usuarios activos por semana). `20261018120000_rls_moyiq_unversioned_tables.sql` versiona
 la RLS de las 4 tablas creadas a mano tal como ya estaba en producción. Estado de cada archivo en
 `supabase/migrations/README.md`.

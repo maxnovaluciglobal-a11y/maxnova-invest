@@ -85,6 +85,13 @@
     return r === 1 ? +amount : amount * r;
   }
 
+  // Tipo de cambio de la compra (unidades de la moneda por 1 USD) guardado en la
+  // posicion, o null si no hay uno valido (FIN-12).
+  function fxCostOf(h) {
+    var f = h ? Number(h.fxCost) : NaN;
+    return h && h.fxCost != null && isFinite(f) && f > 0 ? f : null;
+  }
+
   function decimalsFor(ccy) {
     return NO_DECIMALS[normCcy(ccy)] ? 0 : 2;
   }
@@ -108,8 +115,12 @@
         return;
       }
       var conv = function (v) { return r === 1 || v == null || !isFinite(v) ? v : v / r; };
+      var fc = r === 1 ? null : fxCostOf(h);
       rows.push(Object.assign({}, h, base, {
         fx: r,
+        fxCost: fc,
+        // Costo total en USD al tipo de cambio de la compra (null si no se conoce).
+        costUsdBuy: fc ? (h.sh * h.cost) / fc : null,
         cost: conv(h.cost),
         cur: conv(h.cur),
         stop: h.stop > 0 ? conv(h.stop) : h.stop,
@@ -126,6 +137,7 @@
   // operacion, al dashTotals anterior.
   function portfolioTotals(port, liveOf, ccyOf, rates) {
     var value = 0, cost = 0, day = 0, priced = 0, excluded = 0, counted = 0;
+    var fxEffect = 0, fxKnown = 0, fxUnknown = 0;
     (port || []).forEach(function (h) {
       var ccy = ccyOf ? ccyOf(h.t) : currencyOf(h.t);
       var r = rateOf(ccy, rates);
@@ -134,7 +146,17 @@
       var conv = function (v) { return r === 1 ? v : v / r; };
       var lq = liveOf ? liveOf(h.t) : null;
       var px = lq && lq.price > 0 ? lq.price : null;
-      cost += conv(h.sh * h.cost);
+      // El costo va al tipo de cambio de la compra si se conoce (FIN-12); la
+      // diferencia con el de hoy es el efecto cambiario, que se informa aparte.
+      var fc = r === 1 ? null : fxCostOf(h);
+      if (fc) {
+        cost += (h.sh * h.cost) / fc;
+        fxEffect += (h.sh * h.cost) / r - (h.sh * h.cost) / fc;
+        fxKnown++;
+      } else {
+        cost += conv(h.sh * h.cost);
+        if (r !== 1) fxUnknown++;
+      }
       value += conv(h.sh * (px || h.cost));
       if (px) {
         priced++;
@@ -153,6 +175,9 @@
       priced: priced,
       missing: counted - priced,
       excluded: excluded,
+      fxEffect: fxEffect,
+      fxKnown: fxKnown,
+      fxUnknown: fxUnknown,
     };
   }
 
@@ -179,6 +204,7 @@
     toUsd: toUsd,
     fromUsd: fromUsd,
     decimalsFor: decimalsFor,
+    fxCostOf: fxCostOf,
     convertHoldings: convertHoldings,
     portfolioTotals: portfolioTotals,
     sumUsd: sumUsd,
