@@ -3,6 +3,10 @@
 // Finnhub: 200-500ms latency vs FMP 800-2500ms
 export const config = { runtime: 'edge' };
 
+// Formato de ticker de Yahoo (acciones, ETF, índices, divisas, cripto): letras, números y . ^ = -
+const TICKER_RE = /^[A-Za-z0-9.^=-]{1,12}$/;
+const MAX_TICKER_PARAM = 200;
+
 const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 function buildHeaders(req) {
@@ -23,6 +27,11 @@ export default async function handler(req) {
   const { searchParams } = new URL(req.url);
   const tickersParam = (searchParams.get('ticker') || '').toUpperCase().trim();
   if (!tickersParam) return new Response(JSON.stringify({ error: 'ticker_required' }), { status: 400, headers: HEADERS });
+  // Cada ticker pasa por Finnhub y FMP, que tienen cuota: nada que no sea un ticker llega a un proveedor.
+  const requested = tickersParam.length > MAX_TICKER_PARAM ? [] : tickersParam.split(',').map(t => t.trim()).filter(Boolean);
+  if (!requested.length || requested.some(t => !TICKER_RE.test(t))) {
+    return new Response(JSON.stringify({ error: 'invalid_ticker' }), { status: 400, headers: HEADERS });
+  }
 
   const finnhubKey = process.env.FINNHUB_API_KEY;
   const fmpKey     = process.env.FMP_API_KEY;
@@ -31,7 +40,7 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'server_misconfigured' }), { status: 503, headers: HEADERS });
   }
 
-  const tickers = tickersParam.split(',').map(t => t.trim()).filter(Boolean).slice(0, 10);
+  const tickers = requested.slice(0, 10);
 
   try {
     const results = await Promise.allSettled(

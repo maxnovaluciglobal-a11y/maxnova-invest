@@ -2,6 +2,9 @@
 // FMP earnings-surprises: últimos 8 trimestres + próxima fecha
 export const config = { runtime: 'edge' };
 
+// Formato de ticker de Yahoo (acciones, ETF, índices, divisas, cripto): letras, números y . ^ = -
+const TICKER_RE = /^[A-Za-z0-9.^=-]{1,12}$/;
+
 const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
 
 function buildHeaders(req, extra = {}) {
@@ -23,6 +26,7 @@ export default async function handler(req) {
   const ticker = (searchParams.get('ticker') || '').toUpperCase().trim();
   const HEADERS = buildHeaders(req);
   if (!ticker) return new Response(JSON.stringify({ error: 'ticker_required' }), { status: 400, headers: HEADERS });
+  if (!TICKER_RE.test(ticker)) return new Response(JSON.stringify({ error: 'invalid_ticker' }), { status: 400, headers: HEADERS });
 
   const apiKey = process.env.FMP_API_KEY;
   if (!apiKey) return new Response(JSON.stringify({ error: 'server_misconfigured' }), { status: 503, headers: HEADERS });
