@@ -20,6 +20,7 @@ const PAIRS = {
 const FALLBACKS = { CLP: 960, MXN: 17.3, COP: 4200, ARS: 1060, PEN: 3.75 }; // updated Jul 2026 — ARS es tipo oficial BCRA
 
 import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
+import { fetchMindicadorUsd } from './_lib/mindicador.js';
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
@@ -51,27 +52,23 @@ export default async function handler(req) {
   const rates = {};
   const sources = {};
 
-  await Promise.all(Object.entries(PAIRS).map(async ([currency, symbol]) => {
-    try {
-      rates[currency] = await fetchRate(symbol);
-      sources[currency] = 'yahoo';
-    } catch {
-      if (FALLBACKS[currency]) {
-        rates[currency] = FALLBACKS[currency];
-        sources[currency] = 'fallback';
+  // mindicador.cl (fuente oficial para el CLP) va en paralelo con Yahoo y con timeout corto:
+  // antes se consultaba después y sumaba hasta 4 s a cada respuesta sin caché.
+  const [, clp] = await Promise.all([
+    Promise.all(Object.entries(PAIRS).map(async ([currency, symbol]) => {
+      try {
+        rates[currency] = await fetchRate(symbol);
+        sources[currency] = 'yahoo';
+      } catch {
+        if (FALLBACKS[currency]) {
+          rates[currency] = FALLBACKS[currency];
+          sources[currency] = 'fallback';
+        }
       }
-    }
-  }));
-
-  // Also try mindicador.cl for CLP as authoritative source
-  try {
-    const r = await fetch('https://mindicador.cl/api/dolar', { signal: AbortSignal.timeout(4000) });
-    if (r.ok) {
-      const d = await r.json();
-      const v = d?.serie?.[0]?.valor;
-      if (v) { rates.CLP = v; sources.CLP = 'mindicador'; }
-    }
-  } catch { /* keep Yahoo rate */ }
+    })),
+    fetchMindicadorUsd(),
+  ]);
+  if (clp) { rates.CLP = clp.valor; sources.CLP = 'mindicador'; }
 
   return new Response(JSON.stringify({ rates, sources, updatedAt: new Date().toISOString() }), {
     status: 200,

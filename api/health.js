@@ -8,6 +8,7 @@
 export const config = { runtime: 'edge' };
 
 import { rejectForeignOrigin } from './_lib/origin.js';
+import { MINDICADOR_URL, MINDICADOR_TIMEOUT_MS } from './_lib/mindicador.js';
 
 const UA = 'Mozilla/5.0 (compatible; FINANCEOS/1.0)';
 const now = () => Date.now();
@@ -23,8 +24,8 @@ async function probe(fn) {
   }
 }
 
-async function get(url, headers = {}) {
-  const res = await fetch(url, { headers: { Accept: 'application/json', ...headers }, signal: AbortSignal.timeout(6000) });
+async function get(url, headers = {}, timeoutMs = 6000) {
+  const res = await fetch(url, { headers: { Accept: 'application/json', ...headers }, signal: AbortSignal.timeout(timeoutMs) });
   let json = null;
   if (res.ok) { try { json = await res.json(); } catch { json = null; } }
   return { status: res.status, json };
@@ -44,7 +45,8 @@ const yahooNews = async () => {
 };
 
 const mindicador = async () => {
-  const { status, json } = await get('https://mindicador.cl/api/dolar');
+  // Mismo timeout que /api/fx-latam: el estado refleja lo que ve la app.
+  const { status, json } = await get(MINDICADOR_URL, {}, MINDICADOR_TIMEOUT_MS);
   const s = json?.serie?.[0];
   return { ok: !!s?.valor, status, ageSeconds: s?.fecha ? ageSec(Date.parse(s.fecha)) : null };
 };

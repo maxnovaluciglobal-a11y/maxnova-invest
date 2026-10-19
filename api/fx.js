@@ -5,6 +5,7 @@
 export const config = { runtime: 'edge' };
 
 import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
+import { fetchMindicadorUsd } from './_lib/mindicador.js';
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
@@ -25,32 +26,19 @@ export default async function handler(req) {
   const blocked = rejectForeignOrigin(req);
   if (blocked) return blocked;
 
-  try {
-    const res = await fetch('https://mindicador.cl/api/dolar', {
-      headers: { 'Accept': 'application/json' },
-      signal: AbortSignal.timeout(6000),
-    });
-
-    if (!res.ok) throw new Error(`mindicador returned ${res.status}`);
-
-    const data = await res.json();
-    const value = data?.serie?.[0]?.valor;
-
-    if (!value) throw new Error('no value in response');
-
+  const clp = await fetchMindicadorUsd();
+  if (clp) {
     return new Response(JSON.stringify({
-      usdClp: value,
-      date:   data?.serie?.[0]?.fecha || new Date().toISOString(),
+      usdClp: clp.valor,
+      date:   clp.fecha,
       source: 'Banco Central de Chile',
     }), { status: 200, headers: HEADERS });
-
-  } catch (err) {
-    // Return fallback value rather than failing completely
-    return new Response(JSON.stringify({
-      usdClp: 950,
-      date:   new Date().toISOString(),
-      source: 'fallback',
-      error:  err.message,
-    }), { status: 200, headers: HEADERS });
   }
+  // Valor fijo de respaldo: sin fecha, para que nadie lo lea como el dólar de hoy (FIN-17).
+  return new Response(JSON.stringify({
+    usdClp: 950,
+    date:   null,
+    source: 'fallback',
+    error:  'mindicador unavailable',
+  }), { status: 200, headers: HEADERS });
 }

@@ -3870,7 +3870,7 @@ function _setupModalFocus(){
 }
 
 // ── DECISION ENGINE ────────────────────────────────────────────
-var DE_CACHE={regime:null,vix:null,breadth:null,sectorRS:{},scores:{},lastFetch:0};
+var DE_CACHE={regime:null,vix:null,sectorRS:{},scores:{},lastFetch:0};
 
 // VIX — volatility regime layer
 async function deGetVIX(){
@@ -3889,23 +3889,6 @@ async function deGetVIX(){
     var result={vix:v,prev:prev,regime:regime,label:label,color:color,emoji:emoji,tip:tip,sizing:sizing};
     DE_CACHE.vix=result;return result;
   }catch(e){return{vix:null,regime:'unknown',label:'sin dato',color:'var(--text3)',emoji:'muted',tip:'No se pudo obtener VIX.',sizing:1.0};}
-}
-
-// Market Breadth — % S&P 500 above SMA200 via $SPXA200R
-async function deGetBreadth(){
-  if(DE_CACHE.breadth&&(Date.now()-DE_CACHE.lastFetch)<1800000)return DE_CACHE.breadth;
-  try{
-    var hist=await fetchHistory('%5ESPXA200R','3mo');
-    if(!hist||!hist.length)throw new Error('no data');
-    var v=hist[hist.length-1].close; // value is already a percentage (0-100)
-    var prev=hist.length>5?hist[hist.length-6].close:v;
-    var regime=v>=70?'strong':v>=50?'neutral':v>=30?'weak':'bear';
-    var label={strong:'fuerte',neutral:'neutral',weak:'débil',bear:'muy débil'}[regime];
-    var color={strong:'var(--grn)',neutral:'var(--blue)',weak:'var(--amber)',bear:'var(--red)'}[regime];
-    var warning=v<50&&v<prev?'Menos de la mitad de las acciones del índice está sobre su media de 200 días, y la proporción viene bajando.':'';
-    var result={pct:v,prev:prev,regime:regime,label:label,color:color,warning:warning};
-    DE_CACHE.breadth=result;return result;
-  }catch(e){return{pct:null,regime:'unknown',label:'sin dato',color:'var(--text3)',warning:''};}
 }
 
 // Sector RS — performance del sector del ticker vs SPY (30 días)
@@ -4498,7 +4481,7 @@ function renderMain(){
   if(!S.user){renderWelcome();return;}
   // Ids viejos (sig, ind, back, news...) caen en su hoja nueva: ver PAGE_ALIAS.
   S.page=resolvePage(S.page);
-  // 'decision' es ahora Mercado: solo el contexto (regimen, VIX, amplitud,
+  // 'decision' es ahora Mercado: solo el contexto (regimen, VIX,
   // resultados). Las lecturas por activo pasan a Lista en la fase 3.
   var pages={dash:renderDash,port:renderPort,watch:renderWatch,pb:renderPBBody,comp:renderComp,decision:renderMercado,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,plans:renderPlans,settings:renderSettings,help:renderHelp};
   (pages[S.page]||renderDash)();
@@ -5875,7 +5858,7 @@ function stripLoadSparks(){
 
 // ── MERCADO (reestructura v3, fase 4) ───────────────────────────────
 // ¿En qué contexto estoy invirtiendo? Régimen con su explicación, una banda
-// con volatilidad, amplitud y SPY frente a su media de 200 días; los índices
+// con volatilidad y SPY frente a su media de 200 días; los índices
 // y materias primas que antes eran la cinta de arriba; los próximos
 // resultados de las empresas que tienes o sigues, y las noticias con filtros.
 // Las lecturas por activo viven en Lista › Mi lista.
@@ -5924,8 +5907,8 @@ function renderMercado(){
   mktLoad();
 }
 function mktLoad(){
-  Promise.all([deGetRegime().catch(function(){return null;}),deGetVIX().catch(function(){return null;}),deGetBreadth().catch(function(){return null;})]).then(function(res){
-    MKT.ctx={r:res[0],v:res[1],b:res[2]};
+  Promise.all([deGetRegime().catch(function(){return null;}),deGetVIX().catch(function(){return null;})]).then(function(res){
+    MKT.ctx={r:res[0],v:res[1]};
     var el=document.getElementById('mkt-ctx-b'); if(!el) return;
     el.innerHTML=mktCtxHtml(MKT.ctx);
     drawSPYMiniChart(MKT.ctx.r);
@@ -5946,10 +5929,10 @@ function mktLoad(){
 }
 
 // Contexto: régimen (ícono + palabra) con "¿Qué significa para mí?" y una
-// banda con volatilidad, amplitud y SPY frente a su media de 200 días.
+// banda con volatilidad y SPY frente a su media de 200 días.
 function mktCtxHtml(c){
-  if(!c) return '<p class="port-muted"><span class="spin-sm"></span> Cargando régimen, volatilidad y amplitud…</p>';
-  var r=c.r, v=c.v, b=c.b, hasR=!!(r&&r.spy!=null);
+  if(!c) return '<p class="port-muted"><span class="spin-sm"></span> Cargando régimen y volatilidad…</p>';
+  var r=c.r, v=c.v, hasR=!!(r&&r.spy!=null);
   var reg='<div class="mkt-reg">'+
     '<div class="mkt-reg-t">'+regimeTag(r)+'</div>'+
     '<p class="mkt-reg-d">'+(hasR?esc(r.desc):'No se pudo cargar la historia de SPY para calcular el régimen.')+'</p>'+
@@ -5958,20 +5941,18 @@ function mktCtxHtml(c){
       '<p class="mkt-key-l"><span><i class="mkt-key k-px"></i>SPY</span><span><i class="mkt-key k-ma"></i>Media de 200 días</span><span>Último año, cierres diarios</span></p>'+
       '<p id="spy-mini-fallback" class="port-muted" hidden>No se pudo dibujar el gráfico de SPY.</p>':'')+
     '</div>';
-  // Volatilidad, amplitud y SPY frente a su media: una línea de cifras sobre
+  // Volatilidad y SPY frente a su media: una línea de cifras sobre
   // el fondo (mismo patrón que la línea secundaria de heroFig), sin recuadro.
   var vixOk=v&&v.vix!=null;
   var vixZone=vixOk?((v.regime==='elevated'||v.regime==='crisis')?warnTag(v.label):esc(v.label)):'sin dato';
-  var bOk=b&&b.pct!=null;
   var p200=hasR&&r.pct200!=null?r.pct200*100:null;
   var figs=[
     ['Volatilidad (VIX)','<b class="num">'+(vixOk?fmt1(v.vix):'—')+'</b> <span>'+vixZone+(vixOk?' · bajo <span class="num">15</span> es baja, sobre <span class="num">25</span> es elevada':'')+'</span>'],
-    ['Amplitud del S&amp;P 500','<b class="num">'+(bOk?fmtPctN(b.pct,0):'—')+'</b> <span>'+(bOk?'de sus acciones sobre su media de 200 días · '+(b.warning?warnTag(b.label):esc(b.label)):'sin dato')+'</span>'],
     ['SPY frente a su media de 200 días','<b class="num'+(p200==null?'':(p200>=0?' pos':' neg'))+'">'+(p200==null?'—':(p200>=0?'+':'')+fmtPctN(p200,1))+'</b> <span>'+(p200==null?'sin dato':(p200>=0?'sobre':'bajo')+' la media · SPY <span class="num">'+fmtUSD(r.spy)+'</span>, media <span class="num">'+fmtUSD(r.sma200)+'</span>')+'</span>']
   ];
-  return '<div class="mkt-ctx">'+reg+'<div class="hero-row mkt-figs" role="group" aria-label="Volatilidad, amplitud y tendencia del S&amp;P 500">'+
+  return '<div class="mkt-ctx">'+reg+'<div class="hero-row mkt-figs" role="group" aria-label="Volatilidad y tendencia del S&amp;P 500">'+
     figs.map(function(f){ return '<span class="hero-it"><span class="hero-k">'+f[0]+'</span> '+f[1]+'</span>'; }).join('')+'</div>'+
-    (bOk&&b.warning?'<p class="port-muted">'+esc(b.warning)+'</p>':'')+'</div>';
+    '</div>';
 }
 
 // Índices y materias primas: la cinta que antes vivía arriba, como tabla.
