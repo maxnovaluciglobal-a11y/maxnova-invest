@@ -210,7 +210,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
     '^TNX':'Bono EE.UU. 10 años (%)', 'BTC-USD':'Bitcoin (US$)', '^VIX':'VIX'
   };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-  function nf(v, dec){ return v.toLocaleString('es-CL', {minimumFractionDigits:dec, maximumFractionDigits:dec}); }
+  function num(v){ return typeof v === 'number' && isFinite(v) ? v : null; }
+  function nf(v, dec){ if (num(v) == null) return '—'; return v.toLocaleString('es-CL', {minimumFractionDigits:dec, maximumFractionDigits:dec}); }
 
   function fmtPrice(sym, v){
     if (v == null) return '—';
@@ -257,8 +258,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
       var cls = pctClass(it.changePct);
       return '<div class="tile">'+
         '<p class="tile-label">'+esc(LABEL_ES[it.sym] || it.label)+'</p>'+
-        '<p class="tile-val">'+fmtPrice(it.sym, it.price)+'</p>'+
-        '<p class="tile-chg '+cls+'">'+fmtPct(it.changePct)+'</p>'+
+        '<p class="tile-val">'+esc(fmtPrice(it.sym, it.price))+'</p>'+
+        '<p class="tile-chg '+cls+'">'+esc(fmtPct(it.changePct))+'</p>'+
       '</div>';
     }).join('');
     var errNote = document.getElementById('errNote');
@@ -294,7 +295,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
       var ok = v && src !== 'fallback';
       return '<div class="tile">'+
         '<p class="tile-label">USD → '+LABELS[cur]+'</p>'+
-        '<p class="tile-val">'+(ok ? nf(v, 2) : '—')+'</p>'+
+        '<p class="tile-val">'+(ok ? esc(nf(v, 2)) : '—')+'</p>'+
         '<p class="tile-src">'+(ok ? esc(SRC[src] || '') : 'Sin conexión con la fuente')+'</p>'+
       '</div>';
     }).join('');
@@ -331,6 +332,27 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
     box.innerHTML = '<p class="snap-banner">Estás viendo un estado compartido, consultado el ' + esc(fecha) + '. No se actualiza. <a href="'+esc(window.location.pathname)+'">Ver el estado actual</a></p>';
   }
 
+  // El snap llega por la URL: no es confiable. Solo pasan símbolos y monedas
+  // conocidos, números finitos y las fuentes que la página sabe mostrar.
+  var FX_CURS = ['CLP','MXN','COP','ARS','PEN'];
+  var FX_SRCS = ['mindicador','yahoo','fallback'];
+  function sanitizeSnapshot(raw){
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+    var t = num(raw.t);
+    if (t == null || isNaN(new Date(t).getTime())) return null;
+    var items = (Array.isArray(raw.items) ? raw.items : []).slice(0, 20).filter(function(i){
+      return i && typeof i.s === 'string' && Object.prototype.hasOwnProperty.call(LABEL_ES, i.s);
+    }).map(function(i){ return {s: i.s, l: LABEL_ES[i.s], p: num(i.p), c: num(i.c)}; });
+    var fx = {}, fs = {};
+    FX_CURS.forEach(function(k){
+      var v = raw.fx && num(raw.fx[k]);
+      if (v != null && v > 0) fx[k] = v;
+      var src = raw.fs && raw.fs[k];
+      if (FX_SRCS.indexOf(src) >= 0) fs[k] = src;
+    });
+    return {t: t, items: items, fx: fx, fs: fs};
+  }
+
   function renderFromSnapshot(snap){
     renderSnapshotBanner(snap.t);
     var items = (snap.items || []).map(function(i){ return {sym:i.s, label:i.l, price:i.p, changePct:i.c}; });
@@ -363,7 +385,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
       }
       // Hora de la consulta (no la de cada cotización: estas fuentes pueden traer retraso).
       var ts = mb.fetchedAt || Date.now();
-      document.getElementById('updTime').innerHTML = CLOCK + 'Consultado ' + hhmm(ts) + ' · las cotizaciones pueden tener retraso';
+      document.getElementById('updTime').innerHTML = CLOCK + 'Consultado ' + esc(hhmm(ts)) + ' · las cotizaciones pueden tener retraso';
       LIVE_STATE = buildSnapshot(items, cleanRates(fx.rates, fx.sources), fx.sources);
     }).catch(function(){
       document.getElementById('updTime').textContent = 'No se pudieron cargar los datos. Inténtalo de nuevo en unos minutos.';
@@ -387,7 +409,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
   var snapParam = params.get('snap');
   if (snapParam){
     try {
-      var snap = JSON.parse(b64urlDecode(snapParam));
+      var snap = sanitizeSnapshot(JSON.parse(b64urlDecode(snapParam)));
+      if (!snap) throw new Error('snap');
       renderFromSnapshot(snap);
     } catch(e){
       fetchLive();
