@@ -3238,7 +3238,8 @@ function updateLivePricesInDOM(){
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-function safeLink(url){var s=String(url||'').trim().toLowerCase();return(!s||s.indexOf('javascript:')===0)?'#':url;}
+function safeLink(url){try{var u=new URL(String(url||'').trim());return(u.protocol==='https:'||u.protocol==='http:')?u.href:'#';}catch(e){return '#';}}
+function localDay(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
 // ── MARKET STATUS ───────────────────────────────────────────────
 function isNYSEOpen(){
@@ -6120,10 +6121,12 @@ async function confirmDeleteAccount(){
   if(btn){ btn.disabled=true; btn.textContent='Eliminando…'; }
   try{
     if(typeof sb==='undefined'||!sb||!sb.auth){ throw new Error('No se pudo cargar el servicio de autenticación. Recarga la página.'); }
-    var sess=await sb.auth.getSession();
+    var DA_SLOW='El servidor no respondió a tiempo y tus datos no se eliminaron. Revisa tu conexión e intenta de nuevo.';
+    var sess=await withTimeout(sb.auth.getSession(),8000,DA_SLOW);
     var tok=sess&&sess.data&&sess.data.session&&sess.data.session.access_token;
     if(!tok){ throw new Error('Inicia sesión de nuevo para poder eliminar tus datos.'); }
-    var res=await fetch('/api/delete-account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok})});
+    var res=await fetch('/api/delete-account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok}),signal:AbortSignal.timeout(20000)})
+      .catch(function(e){ throw (e&&(e.name==='TimeoutError'||e.name==='AbortError'))?new Error(DA_SLOW):e; });
     var data=await res.json().catch(function(){return {};});
     if(!res.ok||!data.ok){
       throw new Error(data.error||'No se pudieron eliminar tus datos. Intenta de nuevo o escribe a invest@moyiq.app.');
@@ -6413,7 +6416,7 @@ function delPos(id){
 function mTrade(mr){
   var tickers=S.portfolio.map(function(h){return h.t;}).concat(S.watchlist.filter(function(t){return typeof t==='string';}));
   tickers=Array.from(new Set(tickers)).sort();
-  var today=new Date().toISOString().slice(0,10);
+  var today=localDay();
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:400px" onclick="event.stopPropagation()">'+
     '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 style="display:flex;align-items:center;gap:8px;justify-content:center">'+icon('clipboard','ico-lg')+'Registrar operación</h2>'+
@@ -6539,7 +6542,7 @@ function saveTrade(){
   var pos=ticker?S.portfolio.find(function(h){return h.t===ticker;}):null;
   // FIN-12: el tipo de cambio de hoy solo vale para una operación de hoy; con otra fecha queda desconocido.
   var tCcy=ticker?assetCcy(ticker):'USD';
-  var tFx=(tCcy&&tCcy!=='USD'&&date===new Date().toISOString().slice(0,10))?InvestFx.rateOf(tCcy,FX_ASSET):null;
+  var tFx=(tCcy&&tCcy!=='USD'&&date===localDay())?InvestFx.rateOf(tCcy,FX_ASSET):null;
   var adj=(type==='buy'||type==='sell')&&ticker?applyTrade(pos||null,{type:type,qty:qty,price:price,amount:amount,fx:tFx}):{action:'none'};
   var pnl=(type==='sell'&&adj.pnl!=null)?adj.pnl:null;
 
@@ -6616,7 +6619,7 @@ function drawerNewsPane(ticker){
   var items=(LIVE_NEWS||[]).filter(function(n){ return (n.tickers||[]).indexOf(ticker)>=0||new RegExp('\\b'+ticker.replace(/[^A-Z0-9]/g,'')+'\\b').test(n.title||''); }).slice(0,8);
   if(!items.length) return '<p class="m10-empty" style="padding:16px 0">No hay titulares recientes de '+esc(ticker)+' en la fuente.</p>';
   return '<p class="port-muted">Titulares en inglés, tal como los publica la fuente.</p><ul class="drw-news">'+items.map(function(n){
-    return '<li><a href="'+esc(n.link||'#')+'" target="_blank" rel="noopener noreferrer" lang="en">'+esc(n.title||'')+'</a><span>'+esc(n.source||'')+(n.hoursAgo!=null?' · hace '+n.hoursAgo+' h':'')+'</span></li>';
+    return '<li><a href="'+esc(safeLink(n.link))+'" target="_blank" rel="noopener noreferrer" lang="en">'+esc(n.title||'')+'</a><span>'+esc(n.source||'')+(n.hoursAgo!=null?' · hace '+n.hoursAgo+' h':'')+'</span></li>';
   }).join('')+'</ul>';
 }
 var dTicker=null,dTab="ind",dRange=126,dHistCache={},dFundCache={},dEarnCache={};

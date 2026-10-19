@@ -26,6 +26,13 @@ function guessCat(title) {
   return 'Macro';
 }
 
+function httpUrl(u) {
+  try {
+    const url = new URL(String(u || '').trim());
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+  } catch { return ''; }
+}
+
 function bestImage(thumbnail) {
   if (!thumbnail?.resolutions?.length) return null;
   // prefer largest resolution, avoid tiny icons
@@ -96,7 +103,7 @@ export default async function handler(req) {
       decColor: 'var(--text2)',
       key: '',
       source: n.publisher || 'Yahoo Finance',
-      link: n.link || '',
+      link: httpUrl(n.link),
       hoursAgo: hoursAgo(n.providerPublishTime),
       image: bestImage(n.thumbnail),
     }));
@@ -139,7 +146,7 @@ export default async function handler(req) {
           decColor: 'var(--text2)',
           key: '',
           source: src,
-          link,
+          link: httpUrl(link),
           hoursAgo: hoursAgo(pub),
           image,
         };
