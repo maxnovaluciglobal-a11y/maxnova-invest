@@ -19,7 +19,7 @@ const PAIRS = {
 
 const FALLBACKS = { CLP: 960, MXN: 17.3, COP: 4200, ARS: 1060, PEN: 3.75 }; // updated Jul 2026 — ARS es tipo oficial BCRA
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
+import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
@@ -45,6 +45,8 @@ async function fetchRate(symbol) {
 export default async function handler(req) {
   const HEADERS = buildHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: HEADERS });
+  const blocked = rejectForeignOrigin(req);
+  if (blocked) return blocked;
 
   const rates = {};
   const sources = {};

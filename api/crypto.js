@@ -9,7 +9,7 @@
 
 export const config = { runtime: 'edge' };
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
+import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
@@ -58,6 +58,8 @@ function normalizeSymbol(raw) {
 export default async function handler(req) {
   const HEADERS = buildHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: HEADERS });
+  const blocked = rejectForeignOrigin(req);
+  if (blocked) return blocked;
 
   const { searchParams } = new URL(req.url);
   const raw = searchParams.get('symbols') || searchParams.get('ticker') || '';

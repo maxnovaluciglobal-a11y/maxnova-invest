@@ -2654,7 +2654,7 @@ async function fetchEarningsData(ticker){
   if(dEarnCache[ticker]) return dEarnCache[ticker];
   // localStorage cache — 4h TTL
   try{
-    var lsEKey='fe_'+ticker;
+    var lsEKey='fe2_'+ticker;
     var storedE=localStorage.getItem(lsEKey);
     if(storedE){
       var parsedE=JSON.parse(storedE);
@@ -2668,9 +2668,9 @@ async function fetchEarningsData(ticker){
     var res=await fetch('/api/earnings?ticker='+encodeURIComponent(ticker),{signal:AbortSignal.timeout(6000)});
     if(!res.ok) return null;
     var data=await res.json();
-    if(data&&data.quarters){
+    if(data&&data.quarters&&data.source){
       dEarnCache[ticker]=data;
-      try{localStorage.setItem('fe_'+ticker,JSON.stringify({ts:Date.now(),data:data}));}catch(e){}
+      try{localStorage.setItem('fe2_'+ticker,JSON.stringify({ts:Date.now(),data:data}));}catch(e){}
     }
     return data||null;
   }catch(e){return null;}
@@ -4128,24 +4128,17 @@ async function deScoreTicker(ticker){
 
 
 async function deGetEarnings(ticker){
+  // Próxima fecha de resultados desde /api/earnings (Finnhub, respaldo FMP). Devuelve
+  // {unavailable:true} si la fuente no respondió, para no decir "ninguna publica" sin datos.
   try{
-    var ckey='earn_'+ticker;
-    var cached=_cacheGet(ckey);
-    if(cached) return cached;
-    if(!_USE_EDGE) return null; // sin /api no hay datos: nada se consulta a proxies de terceros
-    var r=await fetchWithTimeout('/api/quoteSummary?ticker='+encodeURIComponent(ticker)+'&modules=calendarEvents',7000);
-    if(!r||!r.ok) return null;
-    var data=await r.json();
-    var cal=data&&data.quoteSummary&&data.quoteSummary.result&&data.quoteSummary.result[0]&&data.quoteSummary.result[0].calendarEvents;
-    if(!cal) return null;
-    var dates=cal.earnings&&cal.earnings.earningsDate;
-    if(!dates||!dates.length) return null;
-    var ts=dates[0].raw*1000;
+    var d=await fetchEarningsData(ticker);
+    if(!d||!d.source) return {ticker:ticker,unavailable:true};
+    if(!d.nextDate) return null;
+    var ts=Date.parse(d.nextDate+'T12:00:00Z');
+    if(!isFinite(ts)) return null;
     var dt=new Date(ts);
-    var out={ticker:ticker,date:dt,dateStr:dt.toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'}),daysAway:Math.round((ts-Date.now())/86400000)};
-    _cacheSet(ckey,out);
-    return out;
-  }catch(e){return null;}
+    return {ticker:ticker,date:dt,dateStr:dt.toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}),daysAway:Math.round((ts-Date.now())/86400000)};
+  }catch(e){return {ticker:ticker,unavailable:true};}
 }
 
 
@@ -5947,10 +5940,11 @@ function mktLoad(){
   var defaults=!tickers.length;
   if(defaults) tickers=['AAPL','NVDA','MSFT','AMZN','GOOGL','META'];
   var key=tickers.join(',');
-  if(MKT.earn&&MKT.earn.key===key) return;
+  if(MKT.earn&&MKT.earn.key===key&&!MKT.earn.failed) return;
   Promise.all(tickers.map(function(t){return deGetEarnings(t).catch(function(){return null;});})).then(function(list){
-    var items=list.filter(function(e){return e&&e.daysAway>=-2&&e.daysAway<=45;}).sort(function(a,b){return a.daysAway-b.daysAway;});
-    MKT.earn={key:key,defaults:defaults,items:items};
+    var failed=list.filter(function(e){return e&&e.unavailable;}).length;
+    var items=list.filter(function(e){return e&&!e.unavailable&&e.daysAway>=-2&&e.daysAway<=45;}).sort(function(a,b){return a.daysAway-b.daysAway;});
+    MKT.earn={key:key,defaults:defaults,items:items,failed:failed,total:list.length};
     var el=document.getElementById('mkt-earn'); if(el) el.innerHTML=mktEarnHtml();
   });
 }
@@ -6011,7 +6005,9 @@ function mktEarnHtml(){
   var e=MKT.earn;
   if(!e) return head+'<p class="port-muted"><span class="spin-sm"></span> Buscando las fechas de resultados…</p>';
   var note=e.defaults?'<p class="port-muted">Todavía no tienes ni sigues activos: se muestran empresas de referencia.</p>':'<p class="port-muted">De las empresas que tienes o sigues, en los próximos 45 días.</p>';
-  if(!e.items.length) return head+note+'<p class="hoy-txt">Ninguna publica resultados en los próximos 45 días, según la fuente.</p>';
+  if(e.total&&e.failed===e.total) return head+'<p class="hoy-txt">No se pudo consultar la fuente de fechas de resultados en este momento. Se vuelve a intentar cuando vuelvas a esta página.</p>';
+  var partial=e.failed?'<p class="port-muted">No hay dato de '+e.failed+' de '+e.total+' empresas: la fuente no respondió.</p>':'';
+  if(!e.items.length) return head+note+partial+'<p class="hoy-txt">Ninguna publica resultados en los próximos 45 días, según la fuente.</p>';
   var wl=navWatchTickers();
   var rows=e.items.slice(0,10).map(function(x){
     var d=x.daysAway;
@@ -6021,7 +6017,7 @@ function mktEarnHtml(){
       '<span class="ps-l1"><span class="ps-t">'+esc(x.ticker)+'</span><span class="num">'+esc(x.dateStr)+'</span><span class="mkt-when">'+when+'</span></span>'+
       '<span class="ps-l2"><span>'+esc(TICKER_NAMES[x.ticker]||'')+'</span>'+(mine?'<span>'+mine+'</span>':'')+'</span></button></li>';
   }).join('');
-  return head+note+'<ul class="port-stack mkt-list">'+rows+'</ul>';
+  return head+note+partial+'<ul class="port-stack mkt-list">'+rows+'</ul>';
 }
 
 // ── Noticias ──
@@ -6766,7 +6762,7 @@ function openDrawer(ticker,curPrice){
     try{ var _lsf=localStorage.getItem(fundLsKey(ticker)); if(_lsf){var _pf=JSON.parse(_lsf);if(_pf&&_pf.ts&&(Date.now()-_pf.ts)<3600000&&_pf.data) dFundCache[ticker]=_pf.data;} }catch(e){}
   }
   if(!dEarnCache[ticker]){
-    try{ var _lse=localStorage.getItem('fe_'+ticker); if(_lse){var _pe=JSON.parse(_lse);if(_pe&&_pe.ts&&(Date.now()-_pe.ts)<14400000&&_pe.data) dEarnCache[ticker]=_pe.data;} }catch(e){}
+    try{ var _lse=localStorage.getItem('fe2_'+ticker); if(_lse){var _pe=JSON.parse(_lse);if(_pe&&_pe.ts&&(Date.now()-_pe.ts)<14400000&&_pe.data) dEarnCache[ticker]=_pe.data;} }catch(e){}
   }
   if(!dFundCache[ticker]){
     fetchFundamentals(ticker).then(function(f){ if(f){ dFundCache[ticker]=f; if(dTicker===ticker){ renderDrawerHead(ticker); if(dTab==='fund') renderDrawerBody(); } } }).catch(function(){});

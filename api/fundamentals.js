@@ -7,7 +7,7 @@ export const config = { runtime: 'edge' };
 const TICKER_RE = /^[A-Za-z0-9.^=-]{1,12}$/;
 const MAX_TICKER_PARAM = 200;
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
+import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
 
 function buildHeaders(req) {
   const origin = req.headers.get('origin') || '';
@@ -23,6 +23,8 @@ function buildHeaders(req) {
 export default async function handler(req) {
   const HEADERS = buildHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: HEADERS });
+  const blocked = rejectForeignOrigin(req);
+  if (blocked) return blocked;
 
   const { searchParams } = new URL(req.url);
   const tickersParam = (searchParams.get('ticker') || '').toUpperCase().trim();

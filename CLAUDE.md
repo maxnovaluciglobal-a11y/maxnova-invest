@@ -164,12 +164,20 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 - Rollback: `git revert <sha> && git push` (Vercel redespliega solo) o promote de un
   deploy anterior desde el dashboard.
 - `package.json` no tiene build script real, solo `"test": "vitest run"`.
-- CSP en `vercel.json` limita `connect-src` a Supabase, Yahoo Finance, FMP, mindicador.cl
-  y PostHog — si se agrega un proveedor de datos nuevo, hay que sumarlo ahí o rompe en
-  silencio (bloqueado por CSP, no por error de red visible en Network tab). Los proxies CORS
-  de terceros (allorigins, corsproxy) se quitaron el 19-oct-2026: sin `/api` (por ejemplo en
-  `localhost`) la app no consulta datos de mercado. Para probarla con datos, `vercel dev` o
-  interceptar `/api/*` en un navegador de pruebas con `_USE_EDGE=true`.
+- CSP en `vercel.json` (19-oct-2026, C-33): `connect-src` solo permite el propio sitio, Supabase y
+  PostHog. El navegador no habla con ningún proveedor de mercado: todo pasa por `/api/*`. Si
+  alguna vez el cliente necesita llamar a un tercero, hay que sumarlo ahí o rompe en silencio.
+  `unsafe-inline` sigue (script inline de ~410 KB y ~270 manejadores `onclick=`: quitarlo exige
+  reescribir el SPA). HSTS con `includeSubDomains`. Los proxies CORS de terceros (allorigins,
+  corsproxy) se quitaron el 19-oct-2026: sin `/api` (por ejemplo en `localhost`) la app no
+  consulta datos de mercado. Para probarla con datos, `vercel dev` o interceptar `/api/*` en un
+  navegador de pruebas con `_USE_EDGE=true`.
+- API de mercado (C-33): `api/_lib/origin.js` responde 403 `origin_not_allowed` (sin llamar al
+  proveedor) a un navegador con `Origin` ajeno; **sin `Origin` (curl, el newsletter) pasa**. No
+  hay límite por IP en el código: en serverless un contador en memoria no se comparte entre
+  instancias (ver `RUNBOOK.md` §4). `/api/earnings` usa Finnhub y FMP `/stable/earnings` de
+  respaldo y dice `source` (null si no hubo dato). `GET /api/health` da el estado de cada
+  proveedor (código y antigüedad del dato), sin claves, con 15 min de caché.
 - Medición de uso (19-oct-2026): PostHog **sin correo, sin IP del lado del cliente y sin
   almacenamiento en el dispositivo** (`app/lib/analytics.js`: solo el id de la cuenta, perfil
   solo al identificarse, sin autocaptura ni grabación, `before_send` que limpia correos y

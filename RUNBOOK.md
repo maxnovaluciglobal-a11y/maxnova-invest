@@ -11,7 +11,7 @@ PostHog (evento `api_error`) ya instrumentada en la app. Beta pública gratuita 
 | Proveedor | Qué provee | Endpoint(s) | Riesgo | Plan B actual |
 |---|---|---|---|---|
 | **Yahoo Finance** (no oficial) | Precios, marketbar, noticias, histórico | `/api/quote`, `/api/marketbar`, `/api/news`, `/api/history` | **Alto** — sin SLA, puede bloquear o rate-limitear | Cache localStorage (precios 2h, noticias 15min, marketbar 3min) + fallback RSS en news |
-| **Finnhub** (principal) y **Financial Modeling Prep (FMP)** (respaldo) | Fundamentals, dividendos; FMP además los resultados trimestrales | `/api/fundamentals`, `/api/earnings` | Medio — límites del tier free (`/api/earnings` está devolviendo vacío: INV-7) | Cache localStorage 1h |
+| **Finnhub** (principal) y **Financial Modeling Prep (FMP)** (respaldo) | Fundamentals, dividendos, resultados trimestrales y próxima fecha de resultados | `/api/fundamentals`, `/api/earnings` (FMP por `/stable/`: los `/api/v3` devolvían vacío, INV-7) | Medio — límites del tier free | Cache localStorage 1h-4h; `source` en la respuesta |
 | **CoinGecko** · **mindicador.cl** | Criptoactivos · dólar observado y monedas de LatAm | `/api/crypto` · `/api/fx`, `/api/fx-latam` | Medio | — |
 | **Supabase** (`financeos-prod`, compartido con MOY IQ) | Auth + datos de usuario | `*.supabase.co` | Alto — sin esto no hay login | Ninguno (crítico) |
 | **Stripe** | Cobro, **pausado** en la beta gratuita | `/api/create-checkout` y `/api/billing-portal` devuelven 410 `billing_paused`; `/api/stripe-webhook` verifica la firma y responde 200 `ignored: billing_paused` | Sin impacto hoy: no se cobra | — |
@@ -72,8 +72,15 @@ errores en la red de un navegador con sesión y que la migración `2026101910200
 - **E3 — Proveedor de datos de respaldo**: agregar failover de Yahoo a FMP/Alpha Vantage
   en `/api/quote` y `/api/marketbar` cuando Yahoo devuelva error/empty. Hoy solo hay cache.
 - **Backups Supabase**: confirmar política de backup/restore del plan actual.
-- **Health-check proactivo**: Vercel Cron → ping a `/api/quote` y `/api/marketbar` →
-  webhook a Slack/email si fallan (complementa las alertas reactivas de PostHog).
+- **Health-check proactivo**: ya existe `GET /api/health` (19-oct-2026): por API (quote, news, fx,
+  fundamentals, earnings, crypto) y proveedor da `ok`, `status` (código HTTP, `timeout`, `no_key` o
+  `not_checked` si el respaldo no hizo falta) y `ageSeconds` (antigüedad del dato). 200 si cada API
+  tiene al menos una fuente que funciona, 503 si no. Caché de 15 min; con parámetros responde 400.
+  Falta que un monitor externo lo consulte (crear la cuenta del monitor es de Walter).
+- **Límite de uso por IP**: no está en el código a propósito. En funciones serverless/edge un
+  contador en memoria vive en cada instancia y no se comparte: no limita de verdad. La opción real
+  es una regla de rate limit del Firewall de Vercel sobre `/api/*` (panel del proyecto, la configura
+  Walter). Mientras: 403 a navegadores de otros sitios, validación de ticker y caché en la CDN.
 
 ---
 

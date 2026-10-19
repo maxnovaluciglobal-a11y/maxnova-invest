@@ -29,7 +29,7 @@ const SYMBOLS = [
   { sym: '^VIX',     label: 'VIX'          },
 ];
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
+import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
 
 function buildCors(req) {
   const origin = req.headers.get('origin') || '';
@@ -72,6 +72,8 @@ async function fetchSymbol(sym) {
 export default async function handler(req) {
   const CORS = buildCors(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
+  const blocked = rejectForeignOrigin(req);
+  if (blocked) return blocked;
 
   const resultados = await Promise.allSettled(SYMBOLS.map(s => fetchSymbol(s.sym)));
 

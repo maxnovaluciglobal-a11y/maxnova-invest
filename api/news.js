@@ -34,7 +34,7 @@ function bestImage(thumbnail) {
   return best?.url || null;
 }
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com', 'https://app.moyiq.app', 'https://app.financeospro.com'];
+import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
 
 export default async function handler(req) {
   const origin = req.headers.get('origin') || '';
@@ -44,6 +44,8 @@ export default async function handler(req) {
     'Vary': 'Origin',
   };
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
+  const blocked = rejectForeignOrigin(req);
+  if (blocked) return blocked;
 
   const { searchParams } = new URL(req.url);
   const rawTickers = searchParams.get('tickers') || 'SPY,QQQ,NVDA,AAPL,AMZN,META,MSFT,GLD';

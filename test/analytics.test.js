@@ -166,24 +166,25 @@ describe('sin proxies CORS de terceros', () => {
     expect(has(/<link rel="preconnect" href="https:\/\/cdn\.jsdelivr\.net"/)).toBe(false);
   });
   it('sin /api (localhost) las consultas de mercado no salen a ningún tercero', async () => {
-    const code = ['fetchQuote', '_fetchHistoryImpl', 'deGetEarnings'].map(fnSrc).join('\n');
+    const code = ['fetchQuote', '_fetchHistoryImpl', 'fetchEarningsData', 'deGetEarnings'].map(fnSrc).join('\n');
     const calls = [];
     const ctx = {
-      _USE_EDGE: false, console, Date, JSON, encodeURIComponent,
+      _USE_EDGE: false, console, Date, JSON, encodeURIComponent, AbortSignal, dEarnCache: {},
       fetchStats: { ok: 0, fail: 0 },
       _cacheGet: () => null, _cacheSet: () => {},
       localStorage: { getItem: () => null, setItem: () => {} },
       fetchWithTimeout: async (url) => { calls.push(url); return { ok: false, status: 500 }; },
+      fetch: async (url) => { calls.push(url); return { ok: false, status: 500 }; },
     };
     vm.createContext(ctx);
     vm.runInContext(code + '\nthis.fq = fetchQuote; this.fh = _fetchHistoryImpl; this.fe = deGetEarnings;', ctx);
     expect(await ctx.fq('AAPL')).toBe(null);
     expect(await ctx.fh('AAPL', '3mo')).toBe(null);
-    expect(await ctx.fe('AAPL')).toBe(null);
+    expect((await ctx.fe('AAPL')).unavailable).toBe(true);
     expect(calls).toEqual([]);
   });
   it('con /api las tres consultas siguen yendo a la ruta propia', async () => {
-    const code = ['fetchQuote', '_fetchHistoryImpl', 'deGetEarnings'].map(fnSrc).join('\n');
+    const code = ['fetchQuote', '_fetchHistoryImpl', 'fetchEarningsData', 'deGetEarnings'].map(fnSrc).join('\n');
     const calls = [];
     const day = (d) => ({ date: '2026-10-' + d, open: 1, high: 2, low: 1, close: 1.5, volume: 10 });
     const ctx = {
@@ -195,18 +196,25 @@ describe('sin proxies CORS de terceros', () => {
         calls.push(url);
         if (url.startsWith('/api/quote?')) return { ok: true, json: async () => ({ AAPL: { price: 190, prevClose: 188, change: 2, changePct: 0.01 } }) };
         if (url.startsWith('/api/history?')) return { ok: true, json: async () => ({ data: ['01', '02', '03', '04', '05', '06'].map(day) }) };
-        return { ok: true, json: async () => ({ quoteSummary: { result: [{ calendarEvents: { earnings: { earningsDate: [{ raw: 1792800000 }] } } }] } }) };
+        return { ok: false, status: 404 };
+      },
+      AbortSignal, dEarnCache: {},
+      fetch: async (url) => {
+        calls.push(url);
+        return { ok: true, json: async () => ({ ticker: 'AAPL', nextDate: '2026-10-29', nextEpsEst: 1.8, quarters: [], source: 'finnhub' }) };
       },
     };
     vm.createContext(ctx);
     vm.runInContext(code + '\nthis.fq = fetchQuote; this.fh = _fetchHistoryImpl; this.fe = deGetEarnings;', ctx);
     expect((await ctx.fq('AAPL')).price).toBe(190);
     expect((await ctx.fh('AAPL', '3mo')).length).toBe(6);
-    expect((await ctx.fe('AAPL')).ticker).toBe('AAPL');
+    const e = await ctx.fe('AAPL');
+    expect(e.ticker).toBe('AAPL');
+    expect(e.date.toISOString().slice(0, 10)).toBe('2026-10-29');
     expect(calls).toEqual([
       '/api/quote?ticker=AAPL',
       '/api/history?ticker=AAPL&range=3mo&interval=1d',
-      '/api/quoteSummary?ticker=AAPL&modules=calendarEvents',
+      '/api/earnings?ticker=AAPL',
     ]);
   });
 });

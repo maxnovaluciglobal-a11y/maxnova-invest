@@ -4,6 +4,8 @@
 
 export const config = { runtime: 'edge' };
 
+import { allowOrigin } from './_lib/origin.js';
+
 export default async function handler(req) {
   return new Response(
     JSON.stringify({ error: 'This endpoint is deprecated. Use /api/fundamentals instead.', deprecated: true }),
@@ -11,7 +13,8 @@ export default async function handler(req) {
       status: 410,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': allowOrigin(req),
+        'Vary': 'Origin',
       },
     }
   );
