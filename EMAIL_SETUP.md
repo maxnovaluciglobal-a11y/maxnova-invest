@@ -5,7 +5,7 @@ Automated emails sent to Pro-trial users on **day 1, 7, 12 and 14** of their
 
 - **Endpoint:** `api/trial-emails-cron.js` (Vercel Edge Function)
 - **Trigger:** Vercel Cron, daily at `0 14 * * *` (14:00 UTC ≈ 10am LATAM) — see `vercel.json`
-- **Sender:** Resend REST API, from `FinanceOS Invest <invest@financeospro.com>`
+- **Sender:** Resend REST API, from `MOY IQ Invest <invest@moyiq.app>`
 - **Dedup:** `trial_emails` table (one row per user per day-mark)
 
 ## 1. Environment variables (set in Vercel → Project → Settings → Environment Variables)
@@ -22,9 +22,9 @@ Automated emails sent to Pro-trial users on **day 1, 7, 12 and 14** of their
 
 ## 2. Verify the Resend domain
 
-In the Resend dashboard, **Domains → add `financeospro.com`** and add the
+In the Resend dashboard, **Domains → add `moyiq.app` (already verified)** and add the
 provided **SPF, DKIM and (optionally) DMARC** DNS records at your DNS provider
-(Cloudflare). Emails will not send from `invest@financeospro.com` until the
+(Cloudflare). Emails will not send from `invest@moyiq.app` until the
 domain shows **Verified**.
 
 ## 3. Run the SQL in Supabase
@@ -48,7 +48,7 @@ ALTER TABLE trial_emails ENABLE ROW LEVEL SECURITY;
 After deploying and setting the env vars:
 
 ```bash
-curl -H "Authorization: Bearer $CRON_SECRET" https://invest.financeospro.com/api/trial-emails-cron
+curl -H "Authorization: Bearer $CRON_SECRET" https://invest.moyiq.app/api/trial-emails-cron
 ```
 
 Returns a JSON summary: `{ "processed": N, "sent": M, "skipped": K, "errors": [...] }`.

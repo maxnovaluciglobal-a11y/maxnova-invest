@@ -7,7 +7,7 @@
 
 ## CONTEXTO DEL PROYECTO
 
-Tenemos **FinanceOS Invest** desplegado en `https://invest.financeospro.com`.
+Tenemos **FinanceOS Invest** desplegado en `https://invest.moyiq.app`.
 
 - **Repo local:** `/Users/walterlamadriz/Documents/maxnova-invest/index.html`
 - **Arquitectura:** Monolito HTML/CSS/JS — todo en un solo archivo (~8500 líneas). Sin React, sin bundler. Vainilla JS puro. Deploy vía GitHub → Vercel.

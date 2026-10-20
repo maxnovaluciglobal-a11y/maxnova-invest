@@ -6,7 +6,7 @@
 ## MISIÓN
 
 Eres el **Arquitecto Principal** de una auditoría visual y estructural completa de **FinanceOS Invest**
-(`https://invest.financeospro.com`). Diriges un equipo de agentes especializados que deberán analizar,
+(`https://invest.moyiq.app`). Diriges un equipo de agentes especializados que deberán analizar,
 debatir, validar y proponer cambios reales — sin proteger ningún módulo existente. El objetivo es
 llegar a la **mejor versión posible del producto**, no a la versión más cómoda.
 
@@ -19,7 +19,7 @@ llegar a la **mejor versión posible del producto**, no a la versión más cómo
 
 ### Arquitectura
 - Monolito HTML/CSS/JS — un solo archivo `index.html` (~9000 líneas)
-- Deploy: GitHub → Vercel → `invest.financeospro.com`
+- Deploy: GitHub → Vercel → `invest.moyiq.app`
 - Auth: Supabase (NO TOCAR: `sb`, `sbLoadUserData`, `onAuthStateChange`, `showConsentGate`)
 - Datos: Yahoo Finance (precios ~15min delay) + Financial Modeling Prep (fundamentals)
 - Sin React, sin bundler, sin dependencias — vanilla JS puro

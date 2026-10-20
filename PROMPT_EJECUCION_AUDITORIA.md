@@ -9,7 +9,7 @@ Venimos de una auditoría multi-agente completa de los 19 módulos de FinanceOS 
 El plan de ejecución ya fue aprobado. Esta sesión ejecuta los cambios en el orden definido.
 
 **Archivo a modificar:** `/Users/walterlamadriz/Documents/maxnova-invest/index.html`
-**Deploy:** git commit + git push → GitHub → Vercel → `invest.financeospro.com`
+**Deploy:** git commit + git push → GitHub → Vercel → `invest.moyiq.app`
 **Regla de oro:** Verificar que el monolito no tiene errores de JS después de CADA fase antes de continuar.
 
 ---

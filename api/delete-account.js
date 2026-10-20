@@ -43,7 +43,7 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app'];
 
 function cors(req) {
   const origin = req.headers.get('origin') || '';

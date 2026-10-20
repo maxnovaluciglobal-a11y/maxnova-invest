@@ -5,7 +5,7 @@
 // Usage: POST /api/billing-portal  { token: "<supabase access token>" }
 export const config = { runtime: 'edge' };
 
-const ALLOWED_ORIGINS = ['https://invest.moyiq.app', 'https://invest.financeospro.com', 'https://financeospro.com'];
+const ALLOWED_ORIGINS = ['https://invest.moyiq.app'];
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;

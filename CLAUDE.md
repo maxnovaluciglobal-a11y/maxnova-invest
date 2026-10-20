@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest** de
-MAXNOVA & Luci LLC — `invest.moyiq.app`; `invest.financeospro.com` sigue como alias heredado).
+MAXNOVA & Luci LLC — `invest.moyiq.app`).
 **Beta pública gratuita desde el 08-oct-2026**: estuvo en pausa del 12-sep al 08-oct y el
 relanzamiento v2 ya está en `main` (plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).
 Su rol (producto, sección de MOY IQ o canal) se decide en el checkpoint del 5-nov (D-08 de la

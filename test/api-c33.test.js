@@ -59,7 +59,7 @@ describe('control de origen', () => {
   it('los orígenes propios y las vistas previas del team pasan', async () => {
     routes.push([/yahoo/, () => YAHOO_CHART()]);
     const h = await load('quote');
-    for (const o of ['https://invest.moyiq.app', 'https://app.moyiq.app', 'https://invest.financeospro.com',
+    for (const o of ['https://invest.moyiq.app', 'https://app.moyiq.app',
       'https://invest-moyiq-abc123-maxnovaluci-global.vercel.app', 'https://magnova-invest.vercel.app']) {
       expect((await h(req('/api/quote?ticker=AAPL', o))).status).toBe(200);
     }

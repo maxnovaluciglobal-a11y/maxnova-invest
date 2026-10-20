@@ -6,10 +6,7 @@
 
 export const ALLOWED_ORIGINS = [
   'https://invest.moyiq.app',
-  'https://invest.financeospro.com',
-  'https://financeospro.com',
   'https://app.moyiq.app',
-  'https://app.financeospro.com',
 ];
 
 // Despliegues de vista previa del team de Vercel (solo el team puede crear ese sufijo)
