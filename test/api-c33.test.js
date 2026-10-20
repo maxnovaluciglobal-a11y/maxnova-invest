@@ -34,6 +34,7 @@ const ENDPOINTS = [
   ['earnings', '/api/earnings?ticker=AAPL'],
   ['fx', '/api/fx'],
   ['fx-latam', '/api/fx-latam'],
+  ['fx-ars', '/api/fx-ars'],
   ['marketbar', '/api/marketbar'],
   ['health', '/api/health'],
 ];

@@ -1491,6 +1491,9 @@ body:not(.no-auth) .pagehead { display:block; }
 .port-cap b.neg { color: var(--neg); }
 .port-cap .inp { width: 160px; min-height: 40px; }
 .port-ccy-note { font-size: 12px; color: var(--text2); }
+.port-ars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.port-ars p { margin: 0; flex: 1 1 240px; }
+.port-ars .port-ccy { margin-left: 0; }
 .port-note { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; background: var(--orange-bg); border-radius: var(--r-md); }
 .port-note p { flex: 1; min-width: 220px; margin: 0; font-size: 13px; color: var(--text); line-height: 1.5; }
 
@@ -2376,6 +2379,40 @@ function fxAssetFrom(rates,sources){
   Object.keys(rates||{}).forEach(function(c){ if(!sources||sources[c]!=='fallback') out[c]=rates[c]; });
   return out;
 }
+// UXP-8: el peso argentino va al dólar MEP (por defecto) o al oficial. La tasa elegida
+// se usa en las cifras en ARS y para pasar a USD las posiciones de .BA, para que un
+// monto en pesos dé lo mismo de ida y de vuelta. Sin MEP, se usa el oficial y se avisa.
+var ARS_KIND=(function(){try{return localStorage.getItem('mv_ars_kind')==='Oficial'?'Oficial':'MEP';}catch(e){return 'MEP';}}());
+var ARS_FX={mep:null,oficial:FX_RATES.ARS,oficialReal:false,oficialDate:null,used:null};
+function applyArsRate(){
+  var u=InvestFx.arsRate(ARS_KIND,ARS_FX.mep,ARS_FX.oficial);
+  ARS_FX.used=u;
+  if(!u) return;
+  FX_RATES.ARS=u.rate;
+  if(u.kind==='MEP'||ARS_FX.oficialReal) FX_ASSET.ARS=u.rate; else delete FX_ASSET.ARS;
+}
+function setArsKind(k){
+  ARS_KIND=k==='Oficial'?'Oficial':'MEP';
+  try{localStorage.setItem('mv_ars_kind',ARS_KIND);}catch(e){}
+  applyArsRate();
+  renderMain();
+}
+var _fxArsFetched=false;
+async function fetchFXArs(){
+  if(_fxArsFetched||!_USE_EDGE) return;
+  _fxArsFetched=true;
+  try{
+    var key='mv_fx_ars1', c=null;
+    try{c=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
+    if(c&&c.mep&&c.mep.rate>0&&(Date.now()-c.ts)<3*60*60*1000){ ARS_FX.mep=c.mep; applyArsRate(); return; }
+    var res=await fetchWithTimeout('/api/fx-ars',6000);
+    var data=await res.json();
+    ARS_FX.mep=data&&data.mep&&data.mep.rate>0?{rate:+data.mep.rate,date:data.mep.date||null}:null;
+    if(ARS_FX.mep){ try{localStorage.setItem(key,JSON.stringify({mep:ARS_FX.mep,ts:Date.now()}));}catch(e){} }
+    applyArsRate();
+    if(S.user&&!S.modal&&(USER_CURRENCY==='ARS'||(S.portfolio||[]).some(function(h){return assetCcy(h.t)==='ARS';}))){ try{renderMain();}catch(e){} }
+  }catch(e){ applyArsRate(); }
+}
 function assetCcy(t){ var q=LIVE[t]; return InvestFx.currencyOf(t,q&&q.currency); }
 function assetRate(t){ return InvestFx.rateOf(assetCcy(t),FX_ASSET); }
 function toUsdT(amount,t){ return InvestFx.toUsd(amount,assetCcy(t),FX_ASSET); }
@@ -2428,9 +2465,18 @@ function setUserCurrency(c){
 }
 
 
+// El ARS de /api/fx-latam es el oficial: se guarda aparte antes de aplicar el elegido.
+function fxArsOficial(when){
+  ARS_FX.oficial=FX_RATES.ARS;
+  ARS_FX.oficialReal=FX_ASSET.ARS!=null;
+  var t=when?new Date(when):null;
+  ARS_FX.oficialDate=t&&isFinite(t.getTime())?t.toISOString():null;
+  applyArsRate();
+}
 async function fetchFXLatam(){
   if(_fxFetched||!_USE_EDGE) return;
   _fxFetched=true;
+  fetchFXArs();
   try{
     var cacheKey='mv_fx_latam2';
     var cached=null;
@@ -2438,6 +2484,7 @@ async function fetchFXLatam(){
     if(cached&&cached.rates&&(Date.now()-cached.ts)<FX_CACHE_TTL){
       FX_RATES=Object.assign({},FX_RATES,cached.rates,{USD:1});
       FX_ASSET=fxAssetFrom(cached.rates,cached.sources||{});
+      fxArsOficial(cached.ts);
       return;
     }
     var res=await fetchWithTimeout('/api/fx-latam',6000);
@@ -2445,6 +2492,7 @@ async function fetchFXLatam(){
     if(data&&data.rates){
       FX_RATES=Object.assign({},FX_RATES,data.rates,{USD:1});
       FX_ASSET=fxAssetFrom(data.rates,data.sources||{});
+      fxArsOficial(data.updatedAt);
       try{localStorage.setItem(cacheKey,JSON.stringify({rates:data.rates,sources:data.sources||{},ts:Date.now()}));}catch(e){}
       // Las posiciones en otra moneda esperaban la tasa para sumar a los totales.
       if(S.user&&hasForeignAssets()&&!S.modal){ try{renderMain();}catch(e){} }
@@ -5065,8 +5113,24 @@ function money(usd,dec,signed){
   var sym=FX_SYMBOLS[c]||'$';
   return (v<0?'−':(signed&&v>0?'+':''))+sym+s;
 }
+function fxWhen(iso){
+  var t=iso?new Date(iso):null;
+  return t&&isFinite(t.getTime())?t.toLocaleString(LOC,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+}
+function arsNote(){
+  var u=ARS_FX.used, src;
+  if(u&&u.kind==='MEP') src='dólar MEP (venta) · fuente: DolarApi (dolarapi.com)'+(u.date?' · '+fxWhen(u.date):'');
+  else src=ARS_FX.oficialReal?'dólar oficial · fuente: Yahoo Finance'+(ARS_FX.oficialDate?' · '+fxWhen(ARS_FX.oficialDate):''):'dólar oficial · valor de respaldo, sin fecha';
+  var fb=u&&u.fallback?(u.kind==='Oficial'?'El dólar MEP no está disponible ahora: se usa el oficial.':'El oficial no está disponible ahora: se usa el MEP.'):'';
+  return '<div class="port-ccy-note port-ars"><p>Cifras en ARS · 1 USD = '+fmt(ccyRate())+' ARS · '+src+' · tus montos se guardan en USD'+(fb?'. '+fb:'')+'</p>'+
+    '<div class="port-ccy" role="group" aria-label="Tipo de cambio del peso argentino">'+['Oficial','MEP'].map(function(k){
+      var a=ARS_KIND===k;
+      return '<button type="button" aria-pressed="'+a+'" class="'+(a?'act':'')+'" onclick="setArsKind(\''+k+'\')">'+k+'</button>';
+    }).join('')+'</div></div>';
+}
 function ccyNote(){
   if(USER_CURRENCY==='USD') return '';
+  if(USER_CURRENCY==='ARS') return arsNote();
   return '<p class="port-ccy-note">Cifras en '+USER_CURRENCY+' · 1 USD = '+fmt(ccyRate())+' '+USER_CURRENCY+' · tus montos se guardan en USD</p>';
 }
 function portIsCrypto(h){ return h.type==='Crypto'||/-USD$/.test(String(h.t||'')); }

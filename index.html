@@ -57,7 +57,7 @@
     { "@type": "Question", "name": "¿Por qué no hay una nota de 0 a 100 por activo?",
       "acceptedAnswer": { "@type": "Answer", "text": "Porque una sola cifra se lee como una calificación de compra. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70)." } },
     { "@type": "Question", "name": "¿Qué mercados puedo seguir?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. El peso argentino usa la cotización oficial; el dólar MEP todavía no está disponible." } },
+      "acceptedAnswer": { "@type": "Answer", "text": "Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. En pesos argentinos puedes elegir el dólar MEP (el valor por defecto, de DolarApi) o el oficial; la app muestra la fuente y la hora de la cotización y, si el MEP no está disponible, usa el oficial y lo indica." } },
     { "@type": "Question", "name": "¿Dónde se guarda mi portafolio?",
       "acceptedAnswer": { "@type": "Answer", "text": "Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas." } }
   ]
@@ -535,7 +535,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         </details>
         <details>
           <summary>¿Qué mercados puedo seguir?</summary>
-          <p>Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. El peso argentino usa la cotización oficial; el dólar MEP todavía no está disponible.</p>
+          <p>Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. En pesos argentinos puedes elegir el dólar MEP (el valor por defecto, de DolarApi) o el oficial; la app muestra la fuente y la hora de la cotización y, si el MEP no está disponible, usa el oficial y lo indica.</p>
         </details>
         <details>
           <summary>¿Dónde se guarda mi portafolio?</summary>

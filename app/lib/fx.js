@@ -197,6 +197,24 @@
     return { total: total, excluded: excluded, items: out };
   }
 
+  // Tipo de cambio del peso argentino (UXP-8). kind: "MEP" (por defecto) u
+  // "Oficial". mep: {rate, date} de /api/fx-ars (DolarApi) o null. oficial:
+  // unidades de ARS por 1 USD del tipo oficial, o null. Devuelve
+  // {rate, kind, fallback, date} (kind = el que se usa de verdad; fallback = se
+  // pidio el MEP y no habia, asi que va el oficial) o null si no hay ninguno.
+  function arsRate(kind, mep, oficial) {
+    var m = mep ? Number(mep.rate) : NaN;
+    var o = Number(oficial);
+    var okM = isFinite(m) && m > 0;
+    var okO = oficial != null && isFinite(o) && o > 0;
+    if (kind !== "Oficial" && okM) {
+      return { rate: m, kind: "MEP", fallback: false, date: mep.date || null };
+    }
+    if (okO) return { rate: o, kind: "Oficial", fallback: kind !== "Oficial", date: null };
+    if (okM) return { rate: m, kind: "MEP", fallback: true, date: mep.date || null };
+    return null;
+  }
+
   var api = {
     SUFFIX_CCY: SUFFIX_CCY,
     currencyOf: currencyOf,
@@ -208,6 +226,7 @@
     convertHoldings: convertHoldings,
     portfolioTotals: portfolioTotals,
     sumUsd: sumUsd,
+    arsRate: arsRate,
   };
 
   if (typeof module !== "undefined" && module.exports) {
