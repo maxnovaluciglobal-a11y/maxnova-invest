@@ -22,8 +22,11 @@ const norm = (h) => {
 const TOKEN_DEF = /--[\w-]+\s*:\s*#[0-9a-fA-F]{3,8}\b/g;
 const HEX = /(?<![&\w])#[0-9a-fA-F]{6}\b|(?<![&\w])#[0-9a-fA-F]{3}\b(?![\w-])/g;
 
+// BRD-4: la paleta compartida vive en /tokens.css (copia de financeos-app): sus hex también valen.
+const TOKENS_CSS = read("tokens.css");
 function allowedFor(src) {
   const set = new Set([...BRAND, ...GOOGLE].map(norm));
+  for (const m of TOKENS_CSS.matchAll(TOKEN_DEF)) set.add(norm(m[0].split(":")[1].trim()));
   for (const m of src.matchAll(TOKEN_DEF)) set.add(norm(m[0].split(":")[1].trim()));
   return set;
 }

@@ -10,16 +10,18 @@
 //    online, cache offline; evita servir el build viejo una recarga extra).
 //  - Iconos same-origin: CACHE-FIRST con revalidacion.
 //  - Todo lo demas same-origin (incl. /api/*): passthrough.
-const CACHE = 'maxnova-v8';
+const CACHE = 'maxnova-v9';
 const CORE = ['/', '/app'];
 
 function isAppHtml(path) {
   return path === '/' || path === '/app' || path.endsWith('/index.html');
 }
 function isCacheableAsset(path) {
-  return /\/icon-\d+\.png$/.test(path) ||
+  return /\/icon-(maskable-)?\d+\.png$/.test(path) ||
          path === '/apple-touch-icon.png' ||
          path === '/favicon.svg' ||
+         path === '/icon.svg' ||
+         path === '/tokens.css' ||
          path === '/manifest.webmanifest';
 }
 

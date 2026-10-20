@@ -7,10 +7,30 @@ import { resolve } from 'node:path';
 const html = readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 const lightBlock = html.slice(0, html.indexOf('/* ── DARK MODE ── */'));
 const darkBlock = html.slice(html.indexOf('[data-theme="dark"] {\n  --grn:'), html.indexOf('/* ── RESET'));
-const tok = (block, name) => {
-  const m = block.match(new RegExp('--' + name + ':\\s*(#[0-9A-Fa-f]{6})'));
-  if (!m) throw new Error('token ' + name);
-  return m[1];
+// Los tokens de Invest apuntan a /tokens.css (BRD-4): se resuelve var(--x) primero en el
+// bloque de Invest y después en tokens.css (claro: :root; oscuro: [data-theme="dark"] sobre :root).
+const tokensCss = readFileSync(resolve(__dirname, '../tokens.css'), 'utf8');
+const tkLight = tokensCss.slice(0, tokensCss.indexOf('[data-theme="dark"]'));
+const tkDark = tokensCss.slice(tokensCss.indexOf('[data-theme="dark"]'));
+const rawOf = (block, name) => {
+  const m = block.match(new RegExp('--' + name + ':\\s*([^;]+);'));
+  return m ? m[1].replace(/\/\*.*?\*\//g, '').trim() : null;
+};
+const tok = (block, name, base) => {
+  const dark = block === darkBlock;
+  const chain = dark ? [darkBlock, lightBlock, tkDark, tkLight] : [lightBlock, tkLight];
+  let v = null;
+  for (const b of chain) { v = rawOf(b, name); if (v) break; }
+  if (!v) throw new Error('token ' + name);
+  const ref = v.match(/^var\(--([\w-]+)\)$/);
+  if (ref) return tok(block, ref[1], base);
+  const rgba = v.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
+  if (rgba) {
+    const fg = '#' + [1, 2, 3].map(i => (+rgba[i]).toString(16).padStart(2, '0')).join('');
+    return blend(fg, +rgba[4], base || tok(block, 'card'));
+  }
+  if (!/^#[0-9A-Fa-f]{6}$/.test(v)) throw new Error('token ' + name + ' = ' + v);
+  return v;
 };
 const rgb = (h) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const lum = (h) => {
@@ -28,11 +48,18 @@ describe('contraste de los tokens', () => {
       expect(ratio(fg, bg), s).toBeGreaterThanOrEqual(4.5);
     }
   });
-  it('oscuro: texto secundario, pérdida y aviso llegan a 4,5:1 en el fondo y en card..card4', () => {
+  it('oscuro: texto secundario, pérdida y aviso llegan a 4,5:1 en el fondo y en card..card3', () => {
     for (const t of ['text2', 'red', 'neg', 'orange']) {
-      for (const s of ['bg', 'card', 'card2', 'card3', 'card4']) {
+      for (const s of ['bg', 'card', 'card2', 'card3']) {
         expect(ratio(tok(darkBlock, t), tok(darkBlock, s)), `${t} sobre ${s}`).toBeGreaterThanOrEqual(4.5);
       }
+    }
+  });
+  it('card4 (veladura en oscuro, BRD-4) solo se usa sin texto encima: esqueletos, brillo de carga y pista de rango', () => {
+    const lines = html.split('\n').filter(l => l.includes('var(--card4)')).map(l => l.trim());
+    expect(lines).toHaveLength(4);
+    for (const l of lines) {
+      expect(l).toMatch(/^(\.spark-sk \{|\.mstrip-sk \{|\.li-range \{|background: linear-gradient\(90deg, var\(--card3\) 25%, var\(--card4\) 50%)/);
     }
   });
 });

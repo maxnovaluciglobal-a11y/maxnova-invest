@@ -60,7 +60,7 @@ describe('modo oscuro en dos niveles', () => {
     expect(block).not.toContain('#14213D');
   });
   it('en claro la barra sigue en Navy', () => {
-    expect(css).toMatch(/:root \{\s*--side-w: 232px;\s*--side-wc: 64px;\s*--side-bg: #14213D;/);
+    expect(css).toMatch(/:root \{\s*--side-w: 232px;\s*--side-wc: 64px;\s*--side-bg: var\(--navy\);/);
   });
 });
 
@@ -74,12 +74,12 @@ describe('matriz de correlación', () => {
 
 describe('tanda Hoy, Aportes y tema (oct-2026)', () => {
   const darkBlock = css.slice(css.indexOf('[data-theme="dark"] {\n  --grn:'), css.indexOf('/* ── RESET'));
-  it('rojo de pérdida AA en oscuro y familia Navy', () => {
-    expect(darkBlock).toContain('--neg:       #E59580;');
+  it('rojo de pérdida AA en oscuro y superficies del modo oscuro de la app (BRD-4)', () => {
+    expect(darkBlock).toContain('--neg:       var(--red);');
     expect(darkBlock).toContain('--red:       #E59580;');
-    expect(darkBlock).toContain('--bg:        #0E1628;');
-    expect(darkBlock).toContain('--card:      #14213D;');
-    expect(darkBlock).toContain('--card2:     #1A2A4A;');
+    expect(darkBlock).toContain('--bg:        #12161F;');
+    expect(darkBlock).toContain('--card:      var(--sur);');
+    expect(darkBlock).toContain('--card2:     var(--sur2);');
     expect(darkBlock).not.toContain('#C96856');
   });
   it('botón de tema en la franja, con aria-pressed, entre frescura y cuenta', () => {

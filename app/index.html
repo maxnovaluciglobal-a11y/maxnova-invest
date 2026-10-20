@@ -27,6 +27,7 @@
 <meta name="apple-mobile-web-app-title" content="Invest"/>
 <link rel="canonical" href="https://invest.moyiq.app/app"/>
 <meta name="author" content="MAXNOVA &amp; LUCI Global LLC"/>
+<link rel="stylesheet" href="/tokens.css"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
    MOY IQ INVEST — Sistema de diseño alineado con FinanceOS Pro
@@ -65,23 +66,21 @@ input, select, textarea { font-size: 16px; }
      hue que no compite con el P&L. Los nombres --grn* se conservan a proposito:
      renombrar 260 usos anadiria riesgo sin cambiar nada visual. */
   /* ── Paleta de marca MOY IQ ("El Instrumento") — alineada a financeos-app ── */
-  --grn:       #14213D; /* Navy — marca/estructura */
+  --grn:       var(--navy); /* marca/estructura */
   /* Superficies solidas de CTA: Latón, SIEMPRE con texto Navy encima (nunca
      blanco — falla AA sobre Latón). Ver los 3 usos de --grn-solid más abajo,
      ya migrados a color:var(--grn) en vez de color:#fff. */
-  --grn-solid: #B8863B;
+  --grn-solid: var(--laton);
   --grn-bg:    rgba(20,33,61,0.07);
   --grn-lt:    rgba(20,33,61,0.14);
-  --grn-d:     #0D1730;
 
-  --laton:      #B8863B;
-  --laton-700:  #8A6329; /* texto/íconos sobre Papel — AA */
+  /* --laton y --laton-700 vienen de /tokens.css (copia de financeos-app, BRD-4). */
 
-  --red:       #A23E2E;
+  --red:       var(--error);
   --red-bg:    rgba(162,62,46,0.08);
   --red-lt:    #F3DAD5;
 
-  --amber:     #8A4A14;
+  --amber:     var(--warning-800);
   --amber-bg:  rgba(201,122,61,0.12);
 
   /* Alias de fondos/bordes de estado usados en .sigb/.rtab y badges inline.
@@ -95,36 +94,35 @@ input, select, textarea { font-size: 16px; }
   /* ── Semantica de resultado ──────────────────────────────────────────
      Ganancia y perdida. Verde = único color positivo/éxito del brand book;
      rojo/error para pérdida. Convención universal en finanzas, no cambia. */
-  --pos:       #356E57;
-  --neg:       #A23E2E;
+  --pos:       var(--verde-800);
+  --neg:       var(--error);
 
   /* Aliases usados en JS inline styles */
-  --green:     #356E57;
-  --orange:    #8A4A14; /* aviso: AA (≥4,6) sobre su fondo en todas las superficies (A11Y-2) */
+  --green:     var(--verde-800);
+  --orange:    var(--warning-800); /* aviso: AA (≥4,6) sobre su fondo en todas las superficies (A11Y-2) */
   --orange-bg: rgba(201,122,61,0.12);
-  --orange-bd: #E3C08F;
 
-  --blue:      #3E5A78;
+  --blue:      var(--info-800);
   --blue-bg:   rgba(91,122,153,0.12);
 
   /* Superficies — Papel */
-  --bg:        #F1EEE6;
-  --bg2:       #FAF8F2;
-  --card:      #FAF8F2;
-  --card2:     #F1EEE6;
-  --card3:     #F5F2EA;
-  --card4:     #E4DFD1;
+  --bg:        var(--papel);
+  --bg2:       var(--papel-000);
+  --card:      var(--papel-000);
+  --card2:     var(--papel);
+  --card3:     var(--sur2);
+  --card4:     var(--papel-200);
 
   /* Texto — Navy */
-  --text:      #4A4739;
-  --text2:     #63604F;
-  --text3:     #63604F;
-  --bright:    #14213D;
-  --white:     #ffffff;
+  /* --tm/--th de /tokens.css: cambian solos en oscuro. */
+  --text:      var(--tm);
+  --text2:     var(--th);
+  --text3:     var(--th);
+  --bright:    var(--navy);
 
   /* Bordes */
-  --border:    rgba(20,33,61,0.10);
-  --border2:   rgba(20,33,61,0.18);
+  --border:    var(--brd);
+  --border2:   var(--brd2);
   --border3:   rgba(20,33,61,0.24);
 
   /* Sombras */
@@ -164,55 +162,47 @@ input, select, textarea { font-size: 16px; }
 }
 
 /* ── DARK MODE ── */
+/* Superficies, texto y bordes del modo oscuro de financeos-app (/tokens.css, BRD-4).
+   Solo quedan valores propios de Invest donde el de la app no llega a AA aquí:
+   el rojo de pérdida (#C96856 da 4,2:1 sobre --sur2) y sus tintes. */
 [data-theme="dark"] {
-  --grn:       #F1EEE6; /* Papel funciona como "primario" claro sobre fondo Navy oscuro */
-  --grn-solid: #CC9A52; /* Latón para datos/CTA sobre Navy oscuro — texto Navy encima */
+  --grn:       var(--papel); /* Papel como "primario" claro sobre el fondo oscuro */
+  --grn-solid: var(--accent-dark); /* Latón para datos/CTA sobre oscuro — texto Navy encima */
   --grn-bg:    rgba(241,238,230,0.08);
   --grn-lt:    rgba(241,238,230,0.16);
-  --grn-d:     #FAF8F2;
 
-  --laton:      #CC9A52;
-  --laton-700:  #E3C592;
+  --laton:      var(--accent-dark);
+  --laton-700:  var(--laton-300);
 
-  /* Rojo de pérdida en oscuro: AA en fondo, superficie y estados elevados card2-4 (≥4,5; A11Y-12). */
+  /* Rojo de pérdida en oscuro: AA en fondo, superficie y estados elevados (≥6:1; A11Y-12). */
   --red:       #E59580;
   --red-bg:    rgba(212,115,95,0.16);
   --red-lt:    #4A2A22;
 
-  --amber:     #E6A36B;
+  --amber:     var(--warning-dark);
   --amber-bg:  rgba(224,151,90,0.16);
 
-  /* Semantica de resultado en oscuro — verde único positivo/éxito. */
-  --pos:       #74C2A3;
-  --neg:       #E59580;
+  --pos:       var(--verde-dark);
+  --neg:       var(--red);
 
-  /* Aliases dark mode */
-  --green:     #74C2A3;
-  --orange:    #E6A36B;
+  --green:     var(--verde-dark);
+  --orange:    var(--warning-dark);
   --orange-bg: rgba(224,151,90,0.16);
-  --orange-bd: #6B4A2A;
 
-  --blue:      #89A6C2;
+  --blue:      var(--info-dark);
   --blue-bg:   rgba(137,166,194,0.16);
 
-  /* Oscuro desde la familia Navy, en dos niveles: fondo #0E1628 y una
-     superficie (#14213D) para barra lateral, ficha, menús y paneles, separada
-     por una línea fina. card2-4 son estados elevados (hover, pistas, barras). */
-  --bg:        #0E1628;
-  --bg2:       #14213D;
-  --card:      #14213D;
-  --card2:     #1A2A4A;
-  --card3:     #213357;
-  --card4:     #2A3E66;
+  /* Fondo + tres niveles (--sur/--sur2/--sur3 de la app); card4 es una veladura
+     para pistas y esqueletos de carga. */
+  --bg:        #12161F;
+  --bg2:       var(--sur);
+  --card:      var(--sur);
+  --card2:     var(--sur2);
+  --card3:     var(--sur3);
+  --card4:     var(--brd2);
 
-  --text:      #C7C2B2;
-  --text2:     #B5B09C; /* ≥4,8 también sobre card3/card4 (A11Y-12) */
-  --text3:     #B5B09C;
-  --bright:    #FAF8F2;
-  --white:     #FAF8F2;
+  --bright:    var(--papel-000);
 
-  --border:    rgba(228,223,209,0.10);
-  --border2:   rgba(228,223,209,0.18);
   --border3:   rgba(228,223,209,0.26);
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
@@ -1046,7 +1036,7 @@ tr:last-child td { border-bottom: none; }
 
 .demo-ribbon { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--laton); border-radius:var(--r-md); box-shadow:var(--shadow-sm); }
 .demo-ribbon-tag { font-size:12px; font-weight:700; color:var(--grn); background:var(--laton); padding:3px 8px; border-radius:var(--r-sm); }
-[data-theme="dark"] .demo-ribbon-tag { color:#14213D; }
+[data-theme="dark"] .demo-ribbon-tag { color:var(--navy); }
 .demo-ribbon-txt { flex:1 1 220px; font-size:13px; color:var(--text); line-height:1.5; }
 .demo-ribbon .btn, .demo-ribbon .btn-big, .seed-banner .btn, .seed-banner .btn-big { min-height:44px; }
 .seed-banner { display:flex; flex-wrap:wrap; gap:14px 20px; align-items:center; padding:16px 18px; margin:0 0 18px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
@@ -1174,14 +1164,14 @@ body.no-auth .legal-foot { display:none; }
 :root {
   --side-w: 232px;
   --side-wc: 64px;
-  --side-bg: #14213D;
+  --side-bg: var(--navy);
   --side-fg: rgba(241,238,230,.76);
-  --side-fg-strong: #FAF8F2;
+  --side-fg-strong: var(--papel-000);
   --side-line: rgba(241,238,230,.12);
   --side-hover: rgba(241,238,230,.07);
   --side-act: rgba(184,134,59,.18);
-  --side-mark: #B8863B;
-  --side-pos: #8FD0B4;
+  --side-mark: var(--laton);
+  --side-pos: var(--verde-dark);
   --side-neg: #F0A493;
   --content-max: 1200px;
   --content-px: 24px;
@@ -1189,12 +1179,12 @@ body.no-auth .legal-foot { display:none; }
   --mbar-h: 60px;
 }
 [data-theme="dark"] {
-  /* Dos niveles en oscuro: fondo #12161F y una sola superficie (#181D29) para
+  /* Dos niveles en oscuro: fondo #12161F y una sola superficie (--sur) para
      la barra lateral, la ficha, menús y paneles, separada por una línea fina. */
   --side-bg: var(--card);
   --side-line: var(--border2);
   --side-act: rgba(204,154,82,.16);
-  --side-mark: #CC9A52;
+  --side-mark: var(--accent-dark);
 }
 @media (max-width: 1023px) { :root { --content-px: 16px; } }
 
@@ -1951,8 +1941,8 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 .peso-c { text-align: right; }
 .peso-w { display: block; text-align: right; max-width: none; margin-top: 2px; }
 .cmp-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; flex-shrink: 0; }
-:root { --cmp2: #6F8FB3; --cmp3: #8A8676; --cmp4: #3E5A78; }
-[data-theme="dark"] { --cmp2: #89A6C2; --cmp3: #9C9784; --cmp4: #C7D3E0; }
+:root { --cmp2: #6F8FB3; --cmp3: #8A8676; --cmp4: var(--info-800); }
+[data-theme="dark"] { --cmp2: var(--info-dark); --cmp3: var(--th); --cmp4: #C7D3E0; }
 </style>
 </head>
 <body>
@@ -3391,7 +3381,7 @@ var DEST=[
 // Fuera de los 5 destinos: se llega desde el menu de la cuenta.
 var DEST_ACCOUNT={settings:{id:'ajustes',label:'Ajustes'},help:{id:'ayuda',label:'Ayuda'}};
 var PAGE_ALIAS={
-  // ids retirados de la navegacion (su codigo sigue en el archivo hasta la fase 5)
+  // ids retirados de la navegacion (su codigo ya se quito): enlaces viejos
   news:'dash', back:'bitacora', sig:'watch', ind:'watch', sentiment:'decision', radar:'decision',
   // Fase 2: el riesgo al stop vive dentro de Posiciones (columna Stop).
   risk:'port',
@@ -8333,7 +8323,7 @@ function themeIsDark(){ return document.documentElement.getAttribute('data-theme
 function applyTheme(){
   var t=themeStored(), dark=t?t==='dark':themeSystemDark();
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
-  var m=document.getElementById('meta-theme'); if(m) m.setAttribute('content',dark?'#0E1628':'#14213D');
+  var m=document.getElementById('meta-theme'); if(m) m.setAttribute('content',dark?'#12161F':'#14213D');
   return dark;
 }
 var THEME_SUN='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';

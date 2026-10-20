@@ -17,12 +17,13 @@
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
+<link rel="stylesheet" href="/tokens.css"/>
 <style>
 :root{
-  --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
-  --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
-  --papel-000:#FAF8F2;--papel:#F1EEE6;
-  --text:#14213D;--text2:#4A5368;
+  /* Paleta: /tokens.css (copia de financeos-app/src/styles/tokens.css, BRD-4). Aquí solo los tonos propios de estas páginas. */
+  --navy-200:#B9C0CF;
+  
+  --text:var(--navy);--text2:var(--navy-400);
   --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
   --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
   --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -44,6 +45,8 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .lockup .iq{border:1.5px solid var(--laton);color:var(--laton);border-radius:3px;padding:.12em .32em;line-height:1;font-family:var(--mono);font-weight:500;font-size:.68em;letter-spacing:0}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
 .lockup.on-dark{color:#F1EEE6}
+/* Aguja del dial en Latón (BRD-7): base sobre Navy, 700 sobre fondo claro (AA para gráficos). */
+.lockup:not(.on-dark) .dial{--needle:var(--laton-700)}
 .lockup.on-dark .suffix{color:var(--navy-200)}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
 .btn-cta{background:var(--laton);color:var(--navy)}
@@ -93,8 +96,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
   <line x1="28.79" y1="71.21" x2="24.54" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="50" y1="20" x2="50" y2="14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
   <line x1="71.21" y1="71.21" x2="75.46" y2="75.46" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" fill="#B8863B"/>
-  <circle cx="50" cy="50" r="3.5" fill="#B8863B"/>
+  <path d="M 52 53.46 L 72.52 37 L 48 46.54 Z" style="fill:var(--needle,#B8863B)"/>
+  <circle cx="50" cy="50" r="3.5" style="fill:var(--needle,#B8863B)"/>
 </symbol>
 </defs>
 </svg>

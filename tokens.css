@@ -1,0 +1,163 @@
+/* src/styles/tokens.css
+   Tokens de diseño de MOY IQ: paleta, tipografía, radios, espaciado, sombras y
+   movimiento, en claro y en oscuro. Es el ÚNICO lugar de la app donde se
+   definen colores (auditoría 360, BRD-4 / BRD-10): el resto usa var(--…).
+   src/styles/tokens.js repite la paleta para lo que no lee CSS (PDF de
+   react-pdf, metadatos), y tokens.test.js falla si los dos se desalinean o si
+   aparece un hex fuera de la paleta en src/.
+   Para la landing e Invest: copiar este archivo tal cual (ver
+   docs/tokens-de-diseno.md); no editar la copia, editar este y volver a copiar. */
+
+:root {
+  /* ── Paleta de marca MOY IQ (brand book, aprobada — ver CLAUDE.md § Sistema visual) ── */
+  --navy:        #14213D;
+  --navy-700:    #1C2A4A;
+  --navy-400:    #4A5875;
+  --laton:       #B8863B;
+  --laton-300:   #E3C592;
+  --laton-700:   #8A6329;   /* íconos/estados sobre fondo claro — la base falla AA (2.78:1) */
+  --laton-text:  var(--laton-700); /* texto en Latón (placa IQ): 700 en claro, base en oscuro */
+  --accent-dark: #CC9A52;   /* CTAs/datos sobre fondo Navy en marketing — no usar sobre Papel */
+  --accent-dark-hover: #E3B36B;
+  --papel:       #F1EEE6;
+  --papel-000:   #FAF8F2;
+  --papel-200:   #E4DFD1;
+  --verde:       #5FA98C;
+  --verde-800:   #356E57;   /* texto/íconos — la base falla AA como texto chico */
+  --verde-dark:  #74C2A3;   /* variante para dark mode */
+  --ceniza:      #8B7A55;
+  --ceniza-700:  #5F5236;
+  --ceniza-300:  #B8AC91;
+  --warning:     #C97A3D;
+  --warning-800: #8A4A14;   /* siempre esta variante en texto (5,3:1 sobre el aviso, A11Y-2) */
+  --warning-dark:#E0975A;
+  --error:       #A23E2E;
+  --error-dark:  #C96856;
+  --info:        #5B7A99;
+  --info-800:    #3E5A78;   /* siempre esta variante en texto */
+  --info-dark:   #89A6C2;
+
+  /* Light theme — superficies/texto en base Papel */
+  --bg:        var(--papel);
+  --sur:       var(--papel-000);
+  --sur2:      #F5F2EA;
+  --sur3:      var(--papel-200);
+  --brd:       rgba(20,33,61,0.10);
+  --brd2:      rgba(20,33,61,0.18);
+  --tx:        var(--navy);
+  --tm:        #4A4739;   /* secundario — 7.3:1 sobre --bg */
+  --th:        #63604F;   /* terciario — 4.9:1 sobre --bg */
+
+  /* ── Marca / estructura (nav activo, focus ring, links) → Navy ── */
+  --grn:       var(--navy);
+  --grn-bg:    rgba(20,33,61,0.07);
+  --grn-lt:    rgba(20,33,61,0.14);
+  --grn-tint:  rgba(20,33,61,0.05);
+
+  /* ── Semánticos de DATO (el dato, no la marca) ── */
+  --red:       var(--error);
+  --red-bg:    rgba(162,62,46,0.08);
+  --amb:       var(--warning-800);
+  --amb-bg:    rgba(201,122,61,0.12);
+  --blu:       var(--info-800);
+  --blu-bg:    rgba(91,122,153,0.12);
+  --accent:    var(--verde-800);      /* "positivo" pervasivo en toda la app */
+  --accent-bg: rgba(53,110,87,0.09);
+  --accent2:   var(--info-800);       /* acento secundario / "en progreso" */
+  /* ── Semántica por rol (el DATO, no la marca). Verde = único positivo/éxito. ── */
+  --pos:  var(--accent);   --pos-bg:  var(--accent-bg);   /* positivo / ingreso / on-track */
+  --neg:  var(--red);      --neg-bg:  var(--red-bg);      /* gasto / sobregiro */
+  --warn: var(--amb);      --warn-bg: var(--amb-bg);      /* cerca del límite */
+  --info: var(--blu);      --info-bg: var(--blu-bg);      /* neutral / deudas */
+
+  /* ── Charts: grid visible + paleta categórica derivada de la familia de marca ── */
+  --chart-grid: rgba(20,33,61,0.12);
+  --cat-1:var(--navy-400);   --cat-2:var(--laton-700);  --cat-3:var(--verde-800); --cat-4:var(--warning-800);
+  --cat-5:var(--info-800);   --cat-6:var(--error);      --cat-7:var(--ceniza-700); --cat-8:var(--accent-dark);
+
+  /* ── Tipografía ── */
+  --sans:      'IBM Plex Sans', sans-serif;
+  /* Wordmark/display: Instrument Sans. Estático (400/500/600/700 + italic 400),
+     sin eje de ancho variable — a diferencia de la Archivo anterior, el peso se
+     controla con font-weight normal, no font-variation-settings. */
+  --display:   'MOY Bullet', 'Instrument Sans', 'IBM Plex Sans', sans-serif; /* MOY Bullet: solo U+2022, ver public/fonts.css */
+  --mono:      'IBM Plex Mono', monospace;
+  /* Radios — chicos y técnicos a propósito (nunca pill / rounded-lg grande). */
+  --r:         8px;    /* botones */
+  --rl:        10px;   /* cards */
+  --rs:        4px;    /* elementos chicos (progress bar, chips) */
+  --rxl:       12px;   /* tarjetas destacadas / modales */
+  --r-plate:   3px;    /* placa "IQ" del wordmark */
+  /* Escala tipográfica */
+  --fs-xs:     11px;   /* piso de legibilidad (REC-N6): nada de texto bajo 11 px */
+  --fs-sm:     12px;
+  --fs-md:     14px;
+  --fs-lg:     18px;
+  --fs-xl:     22px;
+  --fs-2xl:    28px;
+  --fs-3xl:    36px;   /* números hero / display */
+  --fs-hero:   clamp(42px, 9vw, 54px);   /* veredicto/cifra protagonista — autoridad tipo referencia premium */
+  /* Espaciado (ritmo de 4px) */
+  --sp-1:      4px;
+  --sp-2:      8px;
+  --sp-3:      12px;
+  --sp-4:      16px;
+  --sp-5:      20px;
+  --sp-6:      24px;
+  --sp-8:      32px;
+  /* Elevación — profundidad sutil, la clave contra el "se ve plano" */
+  --sh-1:      0 1px 2px rgba(20,33,61,.05), 0 1px 3px rgba(20,33,61,.04);
+  --sh-2:      0 2px 4px rgba(20,33,61,.06), 0 4px 12px rgba(20,33,61,.06);
+  --sh-3:      0 8px 24px rgba(20,33,61,.10), 0 2px 8px rgba(20,33,61,.06);
+  /* Movimiento — easing */
+  --ease:      cubic-bezier(.22,.61,.36,1);
+  --ease-out:  cubic-bezier(.23,1,.32,1);   /* ease-out fuerte para press/feedback (Emil) */
+  --dur:       .18s;
+  /* Movimiento — tokens del instrumento (brand book, tabla "Motion") */
+  --dur-instrument-settle: 900ms;   /* barrido inicial del gauge/IQ Score */
+  --ease-instrument:       cubic-bezier(.22,1,.36,1);
+  --dur-value-update:      550ms;   /* aguja/cifra a nuevo valor — nunca vuelve a cero antes */
+  --dur-surface-enter:     220ms;   /* cards y modales entrando */
+  --dur-surface-exit:      150ms;   /* cards y modales saliendo */
+  --dur-press:             80ms;    /* feedback táctil, scale .98 */
+  --dur-alert-pulse:       1200ms;  /* único loop permitido — alerta urgente genuina, ×2 */
+}
+
+[data-theme="dark"] {
+  --laton-text: var(--laton);
+  --bg:        #12161F;
+  --sur:       #181D29;
+  --sur2:      #1D2331;
+  --sur3:      #242B3B;
+  --brd:       rgba(228,223,209,0.10);
+  --brd2:      rgba(228,223,209,0.18);
+  --tx:        var(--papel-000);
+  --tm:        #C7C2B2;
+  --th:        #9C9784;
+
+  /* Marca/estructura en dark: Papel funciona como el "primario" claro sobre fondo Navy oscuro */
+  --grn:       var(--papel-000);
+  --grn-bg:    rgba(241,238,230,0.08);
+  --grn-lt:    rgba(241,238,230,0.16);
+  --grn-tint:  rgba(241,238,230,0.06);
+
+  --red:       var(--error-dark);
+  --red-bg:    rgba(201,104,86,0.16);
+  --amb:       var(--warning-dark);
+  --amb-bg:    rgba(224,151,90,0.16);
+  --blu:       var(--info-dark);
+  --blu-bg:    rgba(137,166,194,0.16);
+  --accent:    var(--verde-dark);
+  --accent-bg: rgba(116,194,163,0.14);
+  --accent2:   var(--info-dark);
+
+  /* Charts en dark (grid + categóricas más luminosas) */
+  --chart-grid: rgba(228,223,209,0.14);
+  --cat-1:var(--info-dark);  --cat-2:var(--laton-300);   --cat-3:var(--verde-dark); --cat-4:var(--warning-dark);
+  --cat-5:#8FB3D6;           --cat-6:var(--error-dark);  --cat-7:var(--ceniza-300); --cat-8:var(--accent-dark-hover);
+
+  /* Elevación en dark: sombra más honda + hairline de luz superior */
+  --sh-1:      0 1px 2px rgba(0,0,0,.4);
+  --sh-2:      0 4px 14px rgba(0,0,0,.45);
+  --sh-3:      0 12px 32px rgba(0,0,0,.55);
+}
