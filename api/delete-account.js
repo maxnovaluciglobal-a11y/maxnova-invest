@@ -173,8 +173,8 @@ export default async function handler(req) {
   // Relaunch v2 (oct-2026): the auth.users row is NOT deleted anymore. Since
   // 14-sep-2026 Invest and MOY IQ share the same Supabase project and auth, so
   // deleting it here would also lock the person out of MOY IQ. This endpoint
-  // removes only Invest's own data; deleting the shared account is handled
-  // through MOY IQ (support@moyiq.app).
+  // removes only Invest's own data; deleting the shared account (and all of
+  // its MOY IQ + Invest data) is https://app.moyiq.app/delete-account (SEG-5).
   console.log(`[delete-account] Invest data of ${userId} deleted (shared auth user kept).`);
   return json({ ok: true, scope: 'invest_data', authUserDeleted: false, steps }, 200, req);
 }

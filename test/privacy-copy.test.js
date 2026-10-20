@@ -49,7 +49,7 @@ describe('privacy.html · días de actividad (C-10)', () => {
     expect(p).toMatch(/cuántas personas la usan cada semana/);
   });
   it('y que "Eliminar mis datos de Invest" también los borra (api/delete-account.js lo hace)', () => {
-    expect(p).toMatch(/perfil, consentimientos y días de actividad registrados en Invest/);
+    expect(p).toMatch(/perfil, consentimientos, días de actividad y registro de correos del período de prueba de Invest/);
     expect(read('api/delete-account.js')).toContain("'invest_activity_days'");
   });
 });

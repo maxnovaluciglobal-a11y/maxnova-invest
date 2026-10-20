@@ -59,7 +59,57 @@
     return Array.isArray(h) && h.length > 5 && !(h[0] && h[0]._synthetic === true);
   }
 
-  var api = { MAX_TICKERS: MAX_TICKERS, divToggleChanged: divToggleChanged, corrPlan: corrPlan, histUsable: histUsable };
+  // FIN-4: la correlación se calcula sobre retornos diarios, no sobre precios
+  // (dos precios con tendencia salen "muy correlacionados" aunque se muevan al
+  // revés cada día), y con los cierres alineados por fecha (un feriado en un
+  // solo mercado no debe correr la serie). Con menos de MIN_RETURNS retornos en
+  // común no hay dato.
+  var MIN_RETURNS = 20;
+
+  function pearson(a, b) {
+    var n = Math.min(a.length, b.length);
+    if (n < 2) return null;
+    var ma = 0, mb = 0, i;
+    for (i = 0; i < n; i++) { ma += a[i]; mb += b[i]; }
+    ma /= n; mb /= n;
+    var num = 0, da = 0, db = 0;
+    for (i = 0; i < n; i++) {
+      var x = a[i] - ma, y = b[i] - mb;
+      num += x * y; da += x * x; db += y * y;
+    }
+    var den = Math.sqrt(da) * Math.sqrt(db);
+    return den > 0 ? num / den : null;
+  }
+
+  function closesByDay(h) {
+    var m = {};
+    (h || []).forEach(function (d) {
+      if (!d || !(d.close > 0) || !isFinite(d.close) || !isFinite(d.ts)) return;
+      m[Math.floor(d.ts / 86400)] = d.close;
+    });
+    return m;
+  }
+
+  function alignedReturns(ha, hb) {
+    var ma = closesByDay(ha), mb = closesByDay(hb);
+    var days = Object.keys(ma).filter(function (k) { return k in mb; })
+      .map(Number).sort(function (x, y) { return x - y; });
+    var ra = [], rb = [];
+    for (var i = 1; i < days.length; i++) {
+      ra.push(ma[days[i]] / ma[days[i - 1]] - 1);
+      rb.push(mb[days[i]] / mb[days[i - 1]] - 1);
+    }
+    return { ra: ra, rb: rb };
+  }
+
+  function returnCorrelation(ha, hb, minReturns) {
+    var r = alignedReturns(ha, hb);
+    if (r.ra.length < (minReturns || MIN_RETURNS)) return null;
+    return pearson(r.ra, r.rb);
+  }
+
+  var api = { MAX_TICKERS: MAX_TICKERS, MIN_RETURNS: MIN_RETURNS, divToggleChanged: divToggleChanged, corrPlan: corrPlan, histUsable: histUsable,
+    pearson: pearson, alignedReturns: alignedReturns, returnCorrelation: returnCorrelation };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof root !== "undefined") root.InvestDiv = api;
 })(typeof window !== "undefined" ? window : globalThis);
