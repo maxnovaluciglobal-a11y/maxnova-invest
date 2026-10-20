@@ -126,6 +126,17 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
+- **Colores (BRD-4, 20-oct-2026):** `/tokens.css` es una copia literal de
+  `financeos-app/src/styles/tokens.css`; no se edita aquí (se edita allá y se vuelve a copiar,
+  ver `financeos-app/docs/tokens-de-diseno.md`). Cada HTML lo carga antes de su `<style>` y
+  sus variables apuntan a la paleta (`var(--navy)`…); el modo oscuro usa las superficies de la
+  app. `test/brd4-shared-tokens.test.js` falla si la copia difiere o aparece un hex fuera de la
+  paleta sin motivo (lista `INVEST_ONLY`).
+- **Ícono (BRD-7):** aguja en Latón (`#B8863B` sobre Navy, `#8A6329` sobre fondo claro), nunca
+  verde. PNG y maskable se regeneran con `sh tools/icons/build.sh`.
+- **ARS (UXP-8):** `/api/fx-ars` trae el dólar MEP y el oficial de DolarApi (caché de 3 h en el
+  edge, cita obligatoria "DolarApi https://dolarapi.com" en `datos-y-licencias.html`). El MEP es
+  el valor por defecto; sin MEP la app usa el oficial de `/api/fx-latam` y lo indica.
 - **Relanzamiento v2 · beta pública gratuita (oct-2026, reemplaza el modo pausa T06):**
   - `index.html` es la landing de la beta (hero Navy, cuerpo Papel-000). `faq`,
     `perfil-inversor` y `estado-mercado` volvieron a la raíz; `_pausa/` queda como archivo
@@ -140,8 +151,11 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
     (`quoteFreshness`, a partir de `marketTime` que devuelven `api/quote.js` y
     `api/crypto.js`). Riesgo: `computeRiskAtStop` / `concentrationAlternative` en
     `app/lib/risk.js` (límite 25 %).
-  - Sentimiento (Fear & Greed compuesto) y Radar (Health Score + IA no conectada) están
-    fuera de la navegación; su código sigue en el archivo como código muerto.
+  - Sentimiento (Fear & Greed compuesto) y Radar (Health Score + IA no conectada) ya no
+    están en el código (verificado el 20-oct-2026, META-8): solo quedan los alias
+    `sentiment`/`radar` → `decision` de `PAGE_ALIAS` (enlaces viejos), una llamada
+    protegida a `radarSaveProfile` que no existe (no hace nada) y el comentario de los
+    íconos del gauge.
   - Cobro: `create-checkout`, `billing-portal` y `trial-emails-cron` devuelven 410
     `billing_paused`. `stripe-webhook` **verifica la firma y responde 200**
     `{received:true, ignored:"billing_paused"}` (`BILLING_PAUSED=true`): el endpoint
