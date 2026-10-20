@@ -111,6 +111,8 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.78em;letter-spacing:0;text-transform:none;color:var(--text2);margin-left:.15em}
 .lockup.on-dark{color:var(--papel)}
 .lockup.on-dark .suffix{color:var(--navy-200)}
+/* Latón como texto sobre Papel: siempre la variante oscura (AA). */
+.lockup:not(.on-dark) .iq{color:var(--laton-700);border-color:var(--laton-700)}
 
 /* Botones */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:8px;font-family:var(--body);font-size:16px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
@@ -313,7 +315,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
 
 <header class="nav">
   <div class="wrap">
-    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY <span class="iq">IQ</span> <span class="suffix">Invest</span></a>
     <nav aria-label="Principal">
       <ul class="nav-links" id="nav-links">
         <li><a href="#como-funciona">Cómo funciona</a></li>
@@ -500,7 +502,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         <a href="/perfil-inversor.html" class="btn btn-line">Descubre tu perfil (2 min)</a>
       </div>
       <div class="panel moy">
-        <span class="lockup" aria-label="MOY IQ"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span></span>
+        <span class="lockup" aria-label="MOY IQ"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY <span class="iq">IQ</span></span>
         <p>¿También llevas tu presupuesto? MOY IQ es nuestra app de finanzas personales: gastos, deudas y metas. Sus datos viven en tu dispositivo. El plan Starter es gratis.</p>
         <a class="go" href="https://moyiq.app" rel="noopener">Conoce MOY IQ <span aria-hidden="true">&nbsp;↗</span></a>
       </div>
@@ -562,7 +564,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
   <div class="wrap">
     <div class="foot">
       <div>
-        <a href="/" class="lockup" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+        <a href="/" class="lockup" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY <span class="iq">IQ</span> <span class="suffix">Invest</span></a>
         <p>Herramienta educativa. No constituye asesoría financiera, tributaria ni recomendación de compra o venta. Invertir implica riesgo de pérdida.</p>
       </div>
       <nav aria-labelledby="f-prod">

@@ -27,6 +27,7 @@
   --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
   --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
   --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --neg:#A23E2E;
   --text:#14213D;--text2:#4A5368;
   --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
   --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
@@ -79,7 +80,7 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,46px);l
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:block;width:100%;text-align:left;background:var(--papel-000);border:1px solid var(--hair);border-radius:10px;padding:14px 16px;min-height:52px;cursor:pointer;font:inherit;font-size:16px;font-weight:500;color:var(--navy)}
 .opt:hover{border-color:rgba(20,33,61,.42)}
-.opt[aria-pressed="true"]{border-color:var(--laton-700);background:#F6EEDF;box-shadow:inset 0 0 0 1px var(--laton-700)}
+.opt[aria-pressed="true"]{border-color:var(--laton-700);background:rgba(184,134,59,.12);box-shadow:inset 0 0 0 1px var(--laton-700)}
 .q-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px}
 .btn-back{background:none;border:none;color:var(--text2);font:inherit;font-size:15px;cursor:pointer;min-height:44px;padding:0 8px;border-radius:8px}
 .btn-back:hover{color:var(--navy)}
@@ -100,7 +101,7 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,46px);l
 .field label span{font-weight:400;color:var(--text2);font-size:14px;margin-left:6px}
 .field input[type=email]{width:100%;min-height:48px;font:inherit;font-size:16px;color:var(--navy);background:var(--papel-000);border:1px solid rgba(20,33,61,.42);border-radius:8px;padding:0 14px}
 .field input[type=email]::placeholder{color:var(--text2)}
-.err{font-size:14px;color:#A3402F;margin:0 0 10px;display:none}
+.err{font-size:14px;color:var(--neg);margin:0 0 10px;display:none}
 .consent-check{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin:6px 0 16px;cursor:pointer}
 .optin-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:14px;color:var(--text2);margin:0 0 16px}
 .optin-note p{margin:0}
@@ -146,7 +147,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 
 <header class="nav">
   <div class="wrap">
-    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY <span class="iq">IQ</span> <span class="suffix">Invest</span></a>
     <nav class="nav-r" aria-label="Principal">
       <a class="lnk" href="/#como-funciona">Cómo funciona</a>
       <a class="lnk" href="/faq.html">FAQ</a>

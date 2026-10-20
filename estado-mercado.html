@@ -27,6 +27,7 @@
   --navy:#14213D;--navy-700:#1A2A4A;--navy-200:#B9C0CF;
   --laton:#B8863B;--laton-700:#8A6329;--accent-dark:#CC9A52;
   --papel-000:#FAF8F2;--papel:#F1EEE6;
+  --pos:#356E57;--neg:#A23E2E;
   --text:#14213D;--text2:#4A5368;
   --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
   --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
@@ -79,9 +80,9 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,48px);l
 .tile-label{font-size:14px;color:var(--text2)}
 .tile-val{font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;font-size:22px;font-weight:500;margin-top:4px;letter-spacing:-.01em}
 .tile-chg{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;margin-top:2px}
-.tile-chg.up{color:#356E57}.tile-chg.down{color:#A3402F}.tile-chg.flat{color:var(--text2)}
+.tile-chg.up{color:var(--pos)}.tile-chg.down{color:var(--neg)}.tile-chg.flat{color:var(--text2)}
 .tile-src{font-size:12px;color:var(--text2);margin-top:4px}
-.err-note{margin-top:12px;font-size:14px;color:#A3402F}
+.err-note{margin-top:12px;font-size:14px;color:var(--neg)}
 .vix-card{display:none;align-items:center;gap:16px;margin-top:16px;padding:16px 20px;border-radius:12px;background:var(--papel)}
 .vix-dot{flex:none;width:10px;height:10px;border-radius:50%}
 .vix-label{font-weight:600}
@@ -122,7 +123,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 
 <header class="nav">
   <div class="wrap">
-    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY<span class="iq">IQ</span><span class="suffix">Invest</span></a>
+    <a href="/" class="lockup on-dark" aria-label="MOY IQ Invest, inicio"><svg class="dial" viewBox="0 0 100 100" aria-hidden="true"><use href="#dial"/></svg>MOY <span class="iq">IQ</span> <span class="suffix">Invest</span></a>
     <nav class="nav-r" aria-label="Principal">
       <a class="lnk" href="/#como-funciona">Cómo funciona</a>
       <a class="lnk" href="/perfil-inversor.html">Tu perfil de inversor</a>
@@ -232,7 +233,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
     if (v < 15) return {label:'VIX bajo', color:'#356E57', tip:'Volatilidad esperada por debajo de su promedio histórico.'};
     if (v < 20) return {label:'VIX en rango normal', color:'#14213D', tip:'Volatilidad esperada dentro de su rango histórico habitual.'};
     if (v < 30) return {label:'VIX elevado', color:'#8A6329', tip:'Volatilidad esperada sobre su promedio: más incertidumbre de lo habitual.'};
-    return {label:'VIX muy elevado', color:'#A3402F', tip:'Volatilidad esperada en niveles históricamente altos: los movimientos bruscos son más frecuentes.'};
+    return {label:'VIX muy elevado', color:'#A23E2E', tip:'Volatilidad esperada en niveles históricamente altos: los movimientos bruscos son más frecuentes.'};
   }
 
   function b64urlEncode(str){

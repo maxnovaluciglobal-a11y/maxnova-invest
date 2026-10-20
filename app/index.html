@@ -209,7 +209,7 @@ input, select, textarea { font-size: 16px; }
   --text2:     #B5B09C; /* ≥4,8 también sobre card3/card4 (A11Y-12) */
   --text3:     #B5B09C;
   --bright:    #FAF8F2;
-  --white:     #f1f5f9;
+  --white:     #FAF8F2;
 
   --border:    rgba(228,223,209,0.10);
   --border2:   rgba(228,223,209,0.18);
@@ -610,7 +610,7 @@ tr:last-child td { border-bottom: none; }
   flex-shrink: 0;
 }
 .sk-pulse {
-  background: linear-gradient(90deg, var(--card2) 25%, var(--card3,#2a2a3a) 50%, var(--card2) 75%);
+  background: linear-gradient(90deg, var(--card2) 25%, var(--card3) 50%, var(--card2) 75%);
   background-size: 200% 100%;
   animation: sk-shimmer 1.4s infinite;
 }
@@ -840,22 +840,22 @@ tr:last-child td { border-bottom: none; }
 
 /* ── TOAST NOTIFICATIONS ── */
 #toast-container { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom, 0px)); right:calc(24px + env(safe-area-inset-right, 0px)); z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
-.toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--r-md); font-size:12px; font-family:'IBM Plex Mono',monospace; color:#fff; min-width:220px; max-width:320px; box-shadow:0 4px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(10px); transition:opacity .25s,transform .25s; pointer-events:auto; }
+.toast { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--r-md); font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--bg); min-width:220px; max-width:320px; box-shadow:0 4px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(10px); transition:opacity .25s,transform .25s; pointer-events:auto; }
 .toast.show { opacity:1; transform:translateY(0); }
 .toast.success { background:var(--grn); }
-.toast.error { background:#ef4444; }
+.toast.error { background:var(--neg); }
 .toast.info { background:var(--blue); }
 .toast.warning { background:var(--amber); }
-.toast-undo { margin-left:auto; flex-shrink:0; background:rgba(255,255,255,.2); border:none; color:#fff; font-weight:700; font-size:11px; padding:8px 12px; border-radius:var(--r-sm); cursor:pointer; }
-.toast-undo:hover { background:rgba(255,255,255,.32); }
+.toast-undo { margin-left:auto; flex-shrink:0; background:rgba(241,238,230,.2); border:none; color:inherit; font-weight:700; font-size:11px; padding:8px 12px; border-radius:var(--r-sm); cursor:pointer; }
+.toast-undo:hover { background:rgba(241,238,230,.32); }
 
 /* ── @MEDIA PRINT (Radar PDF) ── */
 @media print {
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  body{background:#fff!important;color:#1a1a1a!important;font-size:10pt!important}
+  body{background:#FFFFFF!important;color:#14213D!important;font-size:10pt!important}
   .sb, .dov, .drw {display:none!important}
   .main{margin:0!important}
-  .cb{break-inside:avoid;page-break-inside:avoid;border:0.5pt solid #ddd!important;border-radius:5pt!important}
+  .cb{break-inside:avoid;page-break-inside:avoid;border:0.5pt solid #E4DFD1!important;border-radius:5pt!important}
   
   @page{size:A4;margin:18mm 15mm 14mm}
 }
@@ -967,17 +967,17 @@ tr:last-child td { border-bottom: none; }
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: background .12s, color .12s;
 }
-.mx:hover { background: rgba(239,68,68,.15); color: #ef4444; border-color: rgba(239,68,68,.4); }
+.mx:hover { background: var(--red-lt); color: var(--red); border-color: var(--red); }
 
 /* Button variants */
 
 .btn-r {
   padding:6px 14px; border-radius: var(--r-sm);
-  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.3);
-  color: #ef4444; font-size: 11px; font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--red-bg); border: 1px solid var(--red-lt);
+  color: var(--red); font-size: 11px; font-family: 'IBM Plex Sans', sans-serif;
   cursor: pointer; transition: background .12s;
 }
-.btn-r:hover { background: rgba(239,68,68,.18); }
+.btn-r:hover { background: var(--red-lt); }
 /* Quitar de watchlist: el visual se mantiene chico dentro de la fila, el area
    de toque real llega a 44x44 con un hit-area invisible (mismo patron que
    theme-toggle/hbg-btn). Antes media ~24px de ancho, acción destructiva. */
@@ -3003,18 +3003,6 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
   }).catch(function(){});
 }
 
-function genFallback(basePrice,days){
-  var data=[];var p=basePrice*0.88;
-  for(var i=0;i<days;i++){
-    var chg=(Math.random()-0.48)*p*0.022;
-    var c=Math.max(p+chg,1);
-    data.push({date:"D"+(i+1),open:p,high:Math.max(p,c)*1.005,low:Math.min(p,c)*0.995,close:c,vol:Math.floor(Math.random()*50e6+10e6),p:i+1,_synthetic:true});
-    p=c;
-  }
-  data[data.length-1].close=basePrice;
-  return data;
-}
-
 function enterDemo(){
   if(S.demoMode) return;
   S._realPortfolio=S.portfolio; S._realWatch=S.watchlist;
@@ -4533,7 +4521,7 @@ function globeBgStart(){
   }
   function tinte(){
     var cs=getComputedStyle(document.documentElement);
-    return (cs.getPropertyValue('--grn')||'#d8c9a3').trim();
+    return (cs.getPropertyValue('--grn')||'#14213D').trim();
   }
   var col=tinte();
 
@@ -4640,7 +4628,7 @@ function renderWelcome(){
     // Panel login
     '<div id="wv3-panel-login" class="wv3-panel show">'+
     '<div><label class="wv3-field-label" for="le">Correo</label><div class="wv3-field-wrap"><input id="le" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@correo.com" autocomplete="email" required onkeydown="if(event.keyCode===13)doLogin()"/></div></div>'+
-    '<div><label class="wv3-field-label" for="lp">Contraseña</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" required minlength="6" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">ver</button></div><div class="wv3-forgot"><button type="button" class="linklike" style="background:none;border:none;color:var(--grn);text-decoration:underline;cursor:pointer;font:inherit;padding:0" onclick="wv3ForgotPwd()">¿Olvidaste tu contraseña?</button></div></div>'+
+    '<div><label class="wv3-field-label" for="lp">Contraseña</label><div class="wv3-field-wrap"><input id="lp" type="password" enterkeyhint="go" placeholder="••••••••" autocomplete="current-password" required minlength="6" onkeydown="if(event.keyCode===13)doLogin()"/><button type="button" class="wv3-eye-btn" id="wv3-eye-lp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'lp\',\'wv3-eye-lp\')">mostrar</button></div><div class="wv3-forgot"><button type="button" class="linklike" style="background:none;border:none;color:var(--grn);text-decoration:underline;cursor:pointer;font:inherit;padding:0" onclick="wv3ForgotPwd()">¿Olvidaste tu contraseña?</button></div></div>'+
     '<div id="lerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="lbtn" class="wv3-submit" onclick="doLogin()">Entrar</button>'+
     '<div class="wv3-legal">Al acceder aceptas nuestros <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a> y <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>.</div>'+
@@ -4649,7 +4637,7 @@ function renderWelcome(){
     '<div id="wv3-panel-reg" class="wv3-panel">'+
     '<div><label class="wv3-field-label" for="rn">Nombre</label><div class="wv3-field-wrap"><input id="rn" type="text" enterkeyhint="next" autocapitalize="words" placeholder="Tu nombre" autocomplete="name"/></div></div>'+
     '<div><label class="wv3-field-label" for="re">Correo</label><div class="wv3-field-wrap"><input id="re" type="email" inputmode="email" enterkeyhint="next" spellcheck="false" autocapitalize="off" placeholder="tu@correo.com" autocomplete="email" required/></div></div>'+
-    '<div><label class="wv3-field-label" for="rp">Contraseña</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">ver</button></div></div>'+
+    '<div><label class="wv3-field-label" for="rp">Contraseña</label><div class="wv3-field-wrap"><input id="rp" type="password" enterkeyhint="go" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required minlength="6"/><button type="button" class="wv3-eye-btn" id="wv3-eye-rp" aria-label="Mostrar contraseña" aria-pressed="false" onclick="wv3TogglePwd(\'rp\',\'wv3-eye-rp\')">mostrar</button></div></div>'+
     // I02: las tres casillas son los tres consentimientos que pide el gate.
     // Se registran al crear la cuenta para que el gate no se repita al entrar.
     '<label class="wv3-check-row"><input id="rdisc-tc" type="checkbox" required/><span class="wv3-check-txt">Acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a>.</span></label>'+
@@ -6861,7 +6849,6 @@ function renderDrawerBody(){
   var bd=document.getElementById('drwb'); var keepTop=bd?bd.scrollTop:0;
   var lq=LIVE[ticker];
   var full=drwSeries(ticker)||[];
-  var isSynthetic=full.length>0&&full[0]._synthetic===true;
   var closes=full.map(function(d){return d.close;});
   var cur=lq&&lq.price>0?lq.price:(closes.length?closes[closes.length-1]:null);
   var own=S.portfolio.filter(function(h){return h.t===ticker;});
@@ -6918,7 +6905,6 @@ function renderDrawerBody(){
   else content=drawerNewsPane(ticker);
 
   bd.innerHTML=acts+ranges+
-    (isSynthetic?'<p class="port-note"><span>Sin histórico real para este activo: el gráfico es ilustrativo, no son precios reales.</span></p>':'')+
     chart+tabRow+'<div class="drw-panel" id="drw-panel" role="tabpanel" aria-labelledby="dtab-'+dTab+'">'+content+'</div>';
   bd.scrollTop=keepTop;
   if(full.length){
@@ -7479,7 +7465,7 @@ function installPWA(){
 
 
 // ── COMPARADOR DE ACTIVOS ────────────────────────────────────────
-var COMP={tickers:["AAPL","MSFT"],range:90,data:{},loading:false,spy:null,showSPY:true};
+var COMP={tickers:["AAPL","MSFT"],range:90,data:{},loading:false,spy:null,showSPY:true,missing:[]};
 
 function compSet(t1,t2,t3,t4){
   COMP.tickers=[t1,t2];
@@ -7544,6 +7530,8 @@ function renderCompSection(){
     chart='<div class="dload"><div class="spin"></div>Cargando el histórico…</div>';
   } else if(!hasData){
     chart='<p class="port-muted cmp-empty">Elige dos o más activos y un período para ver cómo rindieron.</p>';
+  } else if(COMP.tickers.every(function(t){return !COMP.data[t].length;})){
+    chart='<p class="port-muted cmp-empty">No hay historia de precios para comparar en este período.</p>';
   } else {
     var series=[];
     COMP.tickers.forEach(function(t,ti){
@@ -7601,32 +7589,35 @@ function renderCompSection(){
   var legend='<div class="cmp-legend">'+COMP.tickers.map(function(t,i){return '<span>'+'<i class="cmp-sw" style="background:'+colors[i]+'"></i>'+esc(t)+'</span>';}).join('')+
     (COMP.tickers.indexOf('SPY')<0?'<button type="button" class="tab'+(COMP.showSPY?' act':'')+'" aria-pressed="'+!!COMP.showSPY+'" onclick="COMP.showSPY=!COMP.showSPY;renderComp()"><i class="cmp-dash"></i>Referencia: SPY</button>':'')+'</div>';
 
+  var missing=(COMP.loading?[]:(COMP.missing||[])).filter(function(t){return COMP.tickers.indexOf(t)>=0;}).map(function(t){return '<p class="port-note"><span><b>'+esc(t)+'</b>: Sin historia disponible para este símbolo. No se dibuja su línea ni entra en las medidas.</span></p>';}).join('');
   return '<div class="fos-module-header"><div><div class="fos-module-sub">Cómo rindieron hasta cuatro activos en el mismo período, partiendo de 0 %.</div></div></div>'+
     '<div class="port-wrap pv"><div class="cmp-grid"><div class="cmp-side">'+
       '<h2 class="port-h3">Activos</h2>'+chips+
       '<h2 class="port-h3">Período</h2>'+periods+
       '<h2 class="port-h3">Pares rápidos</h2>'+sugs+
     '</div><div class="cmp-main">'+
-      '<h2 class="port-h2">Rendimiento (base 0 %)</h2>'+legend+
+      '<h2 class="port-h2">Rendimiento (base 0 %)</h2>'+legend+missing+
       '<div class="cmp-chart">'+chart+'</div>'+stats+
-      (COMP.synthetic&&COMP.synthetic.length?'<p class="port-note"><span>Sin histórico real para '+COMP.synthetic.map(esc).join(', ')+': su línea es ilustrativa, no son precios reales.</span></p>':'')+
     '</div></div></div>';
 }
 
+// Sin historia real (p. ej. /api/history 502) no se dibuja nada inventado:
+// el símbolo queda sin serie y se avisa.
+function compMissing(t){ COMP.data[t]=[]; if(COMP.missing.indexOf(t)<0) COMP.missing.push(t); }
 async function compLoad(){
   if(COMP.loading) return;
   COMP.tickers=COMP.tickers.filter(function(t){return t&&t.trim().length>0;});
   if(COMP.tickers.length<2){showToast('Selecciona al menos 2 tickers','warning');return;}
-  COMP.loading=true;COMP.data={};COMP.spy=null;COMP.synthetic=[];renderComp();
+  COMP.loading=true;COMP.data={};COMP.spy=null;COMP.missing=[];renderComp();
   var rangeMap={30:'1mo',60:'3mo',90:'3mo',130:'6mo',365:'1y',1095:'5y'}; // 2mo y 3y no existen en Yahoo: devolvian 400
   var rng=rangeMap[COMP.range]||'3mo';
   try{
     var promises=COMP.tickers.map(function(t){
       return fetchHistory(t,rng).then(function(hist){
         if(hist&&hist.length>5){COMP.data[t]=hist;}
-        else{COMP.data[t]=genFallback(getLivePrice(t)||100,COMP.range);if(COMP.synthetic.indexOf(t)<0)COMP.synthetic.push(t);}
+        else compMissing(t);
         if(!LIVE[t]) return fetchQuote(t).then(function(q){if(q) LIVE[t]=q;});
-      }).catch(function(){COMP.data[t]=genFallback(getLivePrice(t)||100,COMP.range);if(COMP.synthetic.indexOf(t)<0)COMP.synthetic.push(t);});
+      }).catch(function(){compMissing(t);});
     });
     // Fetch SPY benchmark unless already comparing it
     var spyPromise=COMP.tickers.indexOf('SPY')<0
@@ -8472,7 +8463,7 @@ function showConsentGate(userId){
         '<input type="checkbox" id="cg-inv" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
         '<span>Entiendo que MOY IQ Invest es una herramienta educativa de análisis. No proporciona asesoría financiera personalizada, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso y toda inversión implica riesgo.</span></label>'+
         '</div>'+
-        (errMsg?'<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--red)">'+errMsg+'</div>':'')+
+        (errMsg?'<div style="background:var(--red-bg);border:1px solid var(--red-lt);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--red)">'+errMsg+'</div>':'')+
         '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--grn-solid);color:#14213D;font-size:14px;font-weight:700;min-height:44px;cursor:not-allowed;opacity:.55;transition:.2s">Confirmar y continuar</button>'+
         '<div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center">MAXNOVA & LUCI Global LLC</div>'+
         '</div></div>';
@@ -8666,7 +8657,7 @@ function wv3TogglePwd(inputId, btnId){
     btn.setAttribute('aria-pressed','true');
     btn.setAttribute('aria-label','Ocultar contraseña');
   } else {
-    inp.type='password'; btn.textContent='ver';
+    inp.type='password'; btn.textContent='mostrar';
     btn.setAttribute('aria-pressed','false');
     btn.setAttribute('aria-label','Mostrar contraseña');
   }
