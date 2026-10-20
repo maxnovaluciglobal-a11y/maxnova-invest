@@ -8,7 +8,6 @@ export const config = { runtime: 'edge' };
 const ALLOWED_ORIGINS = ['https://invest.moyiq.app'];
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 
 function cors(req) {
   const origin = req.headers.get('origin') || '';
@@ -31,6 +30,7 @@ export default async function handler(req) {
     status: 410,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
+  const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
   const c = cors(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: c });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405, req);

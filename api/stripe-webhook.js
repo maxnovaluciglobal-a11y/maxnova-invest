@@ -8,7 +8,6 @@ export const config = { runtime: 'edge' };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY; // service_role key, NOT anon
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -72,17 +71,14 @@ async function verifyStripeSignature(payload, sigHeader, secret) {
 // el webhook. Por eso, con el cobro pausado, se verifica la firma igual que
 // siempre y se responde 200 sin tocar Supabase. Para volver a cobrar: poner
 // BILLING_PAUSED en false (y reactivar create-checkout / billing-portal).
+// Limpieza #2 (20-oct-2026): con el cobro pausado se responde 200 ANTES de leer
+// STRIPE_WEBHOOK_SECRET, que se quitó de Vercel junto con las demás variables de
+// Stripe de Invest. No toca nada, así que no hace falta verificar la firma. Para
+// volver a cobrar hay que crear de nuevo la variable (y las de create-checkout).
 const BILLING_PAUSED = true;
 
 export default async function handler(req) {
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
-
-  const rawBody = await req.text();
-  const sig = req.headers.get('stripe-signature');
-
-  if (!STRIPE_WEBHOOK_SECRET) return json({ error: 'Webhook secret not configured' }, 500);
-  const valid = await verifyStripeSignature(rawBody, sig, STRIPE_WEBHOOK_SECRET);
-  if (!valid) return json({ error: 'Invalid signature' }, 401);
 
   if (BILLING_PAUSED) {
     return new Response(JSON.stringify({ received: true, ignored: 'billing_paused' }), {
@@ -90,6 +86,14 @@ export default async function handler(req) {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
+
+  const rawBody = await req.text();
+  const sig = req.headers.get('stripe-signature');
+  const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!STRIPE_WEBHOOK_SECRET) return json({ error: 'Webhook secret not configured' }, 500);
+  const valid = await verifyStripeSignature(rawBody, sig, STRIPE_WEBHOOK_SECRET);
+  if (!valid) return json({ error: 'Invalid signature' }, 401);
 
   let event;
   try { event = JSON.parse(rawBody); } catch { return json({ error: 'Invalid JSON' }, 400); }

@@ -41,7 +41,11 @@ export const config = { runtime: 'edge' };
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
+// Cobro pausado (beta gratuita): no se lee STRIPE_SECRET_KEY, que se quitó de Vercel
+// (limpieza #2, 20-oct-2026). Al 20-oct ninguna fila de profiles tenía
+// stripe_subscription_id y create-checkout responde 410, así que no hay nada que
+// cancelar. Para volver a cobrar: BILLING_PAUSED = false y crear la variable.
+const BILLING_PAUSED = true;
 
 const ALLOWED_ORIGINS = ['https://invest.moyiq.app'];
 
@@ -90,6 +94,8 @@ async function deleteRows(table, userId, idColumn) {
 
 // Best-effort subscription cancellation — see file header. Never throws.
 async function cancelStripeSubscription(userId) {
+  if (BILLING_PAUSED) return { ok: null, skipped: true, reason: 'billing_paused' };
+  const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
   if (!STRIPE_SECRET) return { ok: null, skipped: true, reason: 'stripe_not_configured' };
   try {
     const profRes = await fetch(
