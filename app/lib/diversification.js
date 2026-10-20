@@ -108,8 +108,19 @@
     return pearson(r.ra, r.rb);
   }
 
+  // Comparador (INV-N11): correlación de cada par distinto, con la misma
+  // alineación por fecha que la matriz de Diversificación.
+  function pairCorrelations(tickers, histByTicker, minReturns) {
+    var out = [];
+    for (var i = 0; i < tickers.length; i++)
+      for (var j = i + 1; j < tickers.length; j++)
+        out.push({ a: tickers[i], b: tickers[j],
+          r: returnCorrelation(histByTicker[tickers[i]], histByTicker[tickers[j]], minReturns) });
+    return out;
+  }
+
   var api = { MAX_TICKERS: MAX_TICKERS, MIN_RETURNS: MIN_RETURNS, divToggleChanged: divToggleChanged, corrPlan: corrPlan, histUsable: histUsable,
-    pearson: pearson, alignedReturns: alignedReturns, returnCorrelation: returnCorrelation };
+    pearson: pearson, alignedReturns: alignedReturns, returnCorrelation: returnCorrelation, pairCorrelations: pairCorrelations };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof root !== "undefined") root.InvestDiv = api;
 })(typeof window !== "undefined" ? window : globalThis);

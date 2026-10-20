@@ -6626,18 +6626,6 @@ function drawerNewsPane(ticker){
 }
 var dTicker=null,dTab="ind",dRange=126,dHistCache={},dFundCache={},dEarnCache={};
 
-function pearson(a,b){
-  var n=Math.min(a.length,b.length);
-  if(n<5) return null;
-  var ax=a.slice(-n),bx=b.slice(-n);
-  var ma=ax.reduce(function(s,v){return s+v;},0)/n;
-  var mb=bx.reduce(function(s,v){return s+v;},0)/n;
-  var num=0,da=0,db=0;
-  for(var i=0;i<n;i++){var ra=ax[i]-ma,rb=bx[i]-mb;num+=ra*rb;da+=ra*ra;db+=rb*rb;}
-  var denom=Math.sqrt(da)*Math.sqrt(db);
-  return denom===0?null:num/denom;
-}
-
 // Matriz de correlación: una sola escala Navy/pizarra por intensidad (más
 // oscuro = se movieron más juntos). El rojo queda para pérdidas y riesgo.
 function corrColor(r){
@@ -7599,18 +7587,16 @@ function renderCompSection(){
       ['Punto más alto',function(s){return (s.maxR>=0?'+':'')+fmtPctN(s.maxR,1);}],
       ['Punto más bajo',function(s){return (s.minR>=0?'+':'')+fmtPctN(s.minR,1);}]
     ];
-    stats='<div class="tw"><table class="fos-table port-table"><thead><tr><th>Medida</th>'+st.map(function(s){return '<th><i class="cmp-sw" style="background:'+s.color+'"></i>'+esc(s.t)+'</th>';}).join('')+'</tr></thead><tbody>'+
+    stats='<div class="tw" tabindex="0" role="region" aria-label="Medidas por activo"><table class="fos-table port-table"><thead><tr><th>Medida</th>'+st.map(function(s){return '<th><i class="cmp-sw" style="background:'+s.color+'"></i>'+esc(s.t)+'</th>';}).join('')+'</tr></thead><tbody>'+
       M.map(function(m){return '<tr><td>'+m[0]+'</td>'+st.map(function(s){return '<td class="num">'+m[1](s)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>'+
       '<p class="port-muted">Índice de Sharpe: rendimiento diario promedio dividido por su volatilidad, anualizado. Mide cuánto rindió por cada unidad de variación; no anticipa el futuro.</p>';
     // Correlacion: solo pares distintos (antes incluia el activo consigo mismo).
-    var pares=[];
-    for(var i=0;i<st.length;i++) for(var j=i+1;j<st.length;j++){
-      var a=st[i].rets,b=st[j].rets,n=Math.min(a.length,b.length);
-      var r=pearson(a.slice(-n),b.slice(-n));
-      pares.push('<tr><td>'+esc(st[i].t)+' y '+esc(st[j].t)+'</td><td class="num">'+(r==null?'—':r.toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2}))+'</td><td>'+(r==null?'':r>0.7?'Se movieron muy parecido':r>0.4?'Se movieron parecido':r>-0.1?'Se movieron con independencia':'Se movieron en sentido opuesto')+'</td></tr>');
-    }
-    if(pares.length) stats+='<h3 class="port-h3">Correlación de los rendimientos diarios</h3><div class="tw"><table class="fos-table port-table"><thead><tr><th>Par</th><th>Correlación</th><th>Lectura</th></tr></thead><tbody>'+pares.join('')+'</tbody></table></div>'+
-      '<p class="port-muted">1 es igual, 0 es independiente, −1 es opuesto.</p>';
+    var pares=InvestDiv.pairCorrelations(st.map(function(s){return s.t;}),COMP.data).map(function(p){
+      var r=p.r;
+      return '<tr><td>'+esc(p.a)+' y '+esc(p.b)+'</td><td class="num">'+(r==null?'—':r.toLocaleString(LOC,{minimumFractionDigits:2,maximumFractionDigits:2}))+'</td><td>'+(r==null?'':r>0.7?'Se movieron muy parecido':r>0.4?'Se movieron parecido':r>-0.1?'Se movieron con independencia':'Se movieron en sentido opuesto')+'</td></tr>';
+    });
+    if(pares.length) stats+='<h3 class="port-h3">Correlación de los rendimientos diarios</h3><div class="tw" tabindex="0" role="region" aria-label="Correlación por par"><table class="fos-table port-table"><thead><tr><th>Par</th><th>Correlación</th><th>Lectura</th></tr></thead><tbody>'+pares.join('')+'</tbody></table></div>'+
+      '<p class="port-muted">Se comparan los mismos días en ambos activos. 1 es igual, 0 es independiente, −1 es opuesto; «—» indica menos de '+InvestDiv.MIN_RETURNS+' días de cotización en común.</p>';
   }
   var legend='<div class="cmp-legend">'+COMP.tickers.map(function(t,i){return '<span>'+'<i class="cmp-sw" style="background:'+colors[i]+'"></i>'+esc(t)+'</span>';}).join('')+
     (COMP.tickers.indexOf('SPY')<0?'<button type="button" class="tab'+(COMP.showSPY?' act':'')+'" aria-pressed="'+!!COMP.showSPY+'" onclick="COMP.showSPY=!COMP.showSPY;renderComp()"><i class="cmp-dash"></i>Referencia: SPY</button>':'')+'</div>';
