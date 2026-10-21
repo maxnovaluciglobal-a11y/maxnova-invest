@@ -1,5 +1,6 @@
 {
   "outputDirectory": ".",
+  "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ':(exclude)test' ':(exclude)tools' ':(exclude)supabase' ':(exclude)_pausa' ':(exclude)*.md' ':(exclude).impeccable' ':(exclude).gitignore'",
   "redirects": [
     {
       "source": "/_pausa",
