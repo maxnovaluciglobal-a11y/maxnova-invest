@@ -251,13 +251,12 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
   </div>
 </footer>
 
+<script src="/turnstile.js"></script>
 <script>
 // Supabase (proyecto compartido con financeos-app/MOY IQ, nelwgbcddwiaimzbcuas).
-// Publishable key — pensada para exponerse en cliente; el control de acceso
-// real es la RLS de invest_leads (insert-only para anon, ver migración
-// 20260914150000_invest_lead_magnet.sql).
+// El alta del lead va por la Edge Function lead-submit (SEG-1, turnstile.js), sin clave;
+// las funciones de correo (opt-in, nurture) se llaman por URL, también sin clave.
 var SUPABASE_URL = 'https://nelwgbcddwiaimzbcuas.supabase.co';
-var SUPABASE_KEY = 'sb_publishable_3QgfV4fRxBAGnkAt3ZYLYA_pNb-92kI';
 
 // 6 preguntas: tolerancia al riesgo, horizonte, reacción a caídas, conocimiento,
 // objetivo y liquidez necesaria. Cada opción suma puntos (0-4) a un puntaje 0-100.
@@ -384,18 +383,13 @@ function requestOptin(leadId) {
   });
 }
 
-function registerInvestLead(email, perfil, puntaje, consentMarketing) {
-  return fetch(SUPABASE_URL + '/rest/v1/rpc/register_invest_lead', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SUPABASE_KEY,
-      Authorization: 'Bearer ' + SUPABASE_KEY,
-    },
-    // p_consent_marketing requiere la migracion 20261009000100 de financeos-app
-    // (aplicarla ANTES de desplegar esta pagina; ver el plan de relanzamiento).
-    body: JSON.stringify({ p_email: email, p_perfil: perfil, p_score: puntaje, p_fuente: detectFuente(), p_consent_marketing: !!consentMarketing }),
-  }).then(function (res) { return res.json ? res.json() : null; })
+// SEG-1: el alta va por la Edge Function lead-submit (turnstile.js), que verifica el token de
+// Turnstile y llama a la RPC register_invest_lead con el service role. Mismo JSON que la RPC.
+function registerInvestLead(email, perfil, puntaje, consentMarketing, token) {
+  // p_consent_marketing requiere la migracion 20261009000100 de financeos-app
+  // (aplicarla ANTES de desplegar esta pagina; ver el plan de relanzamiento).
+  return window.MoyTurnstile.submitLead('register_invest_lead', { p_email: email, p_perfil: perfil, p_score: puntaje, p_fuente: detectFuente(), p_consent_marketing: !!consentMarketing }, token)
+  .then(function (res) { return res.json ? res.json() : null; })
     .then(function (data) {
       // Dispara el email de bienvenida de la secuencia de nurture — mismo
       // patrón que diagnostico.html/registerStarterLead: fire-and-forget,
@@ -491,6 +485,8 @@ document.getElementById('btn-next').addEventListener('click', function () {
   document.getElementById('gate-email').focus({ preventScroll: true });
 });
 
+var gateTs = window.MoyTurnstile.attach(document.getElementById('gate-form'), { action: 'invest', before: document.getElementById('gate-submit') });
+
 document.getElementById('gate-form').addEventListener('submit', function (e) {
   e.preventDefault();
   var emailInput = document.getElementById('gate-email');
@@ -514,7 +510,11 @@ document.getElementById('gate-form').addEventListener('submit', function (e) {
   var result = window.__investResult || { key: 'moderado', puntaje: 50 };
   var consentMarketing = document.getElementById('gate-consent').checked;
 
-  registerInvestLead(email, result.key, result.puntaje, consentMarketing).then(function (data) {
+  gateTs.token().then(function (token) {
+    return registerInvestLead(email, result.key, result.puntaje, consentMarketing, token);
+  }).then(function (data) {
+    gateTs.reset();
+    if (window.MoyTurnstile.isCaptchaError(data)) gateTs.showError();
     if (consentMarketing) {
       if (data && data.ok && data.id) {
         var leadId = data.id;

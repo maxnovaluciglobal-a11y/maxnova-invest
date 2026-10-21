@@ -16,6 +16,12 @@ Desde el 21-oct-2026 (LND-7) `vercel.json` lleva `ignoreCommand`: un push que so
 (queda "Canceled" por Ignored Build Step). Cualquier otro cambio, o un error del chequeo, sí construye.
 Skew Protection está activa en el proyecto (12 h) pero no fija versiones en este sitio estático (C-49).
 
+**Turnstile (SEG-1 / SEG-7, 21-oct-2026)**: el quiz (`perfil-inversor.html`) manda el lead a la Edge Function
+`lead-submit` con el token del widget por `turnstile.js` (copia del de la landing; `SITE_KEY` es la clave pública
+`moyiq-forms`, vacía = sin widget), y el login de `/app` pasa `options.captchaToken` en signIn, signUp y reset:
+Supabase Auth es el mismo proyecto que MOY IQ, así que el captcha de Auth no se prende sin esto. Orden de
+encendido en `financeos-app/docs/turnstile.md`.
+
 ## Qué es
 
 PWA de análisis de inversiones para LATAM (`app/index.html`). Landing en `index.html` +

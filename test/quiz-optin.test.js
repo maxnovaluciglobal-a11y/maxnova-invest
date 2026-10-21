@@ -3,6 +3,10 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
+
+const TS = createRequire(import.meta.url)('../turnstile.js');
+const LEAD_URL = 'https://nelwgbcddwiaimzbcuas.supabase.co/functions/v1/lead-submit';
 
 const page = readFileSync(resolve(__dirname, '../perfil-inversor.html'), 'utf8');
 const script = page.slice(page.lastIndexOf('<script>') + 8, page.lastIndexOf('</script>'));
@@ -26,11 +30,17 @@ function run({ consent, rpc, optin }) {
   let optinQueue = Array.isArray(optin) ? optin.slice() : [optin];
   const fetchStub = (url, opts) => {
     calls.push({ url, body: opts && opts.body ? JSON.parse(opts.body) : null });
-    if (url.includes('/rpc/register_invest_lead')) return rpc();
+    if (url === LEAD_URL && opts && JSON.parse(opts.body).rpc === 'register_invest_lead') return rpc();
     if (url === OPTIN_URL) { const next = optinQueue.length > 1 ? optinQueue.shift() : optinQueue[0]; return next(); }
     return res(200, { ok: true });
   };
-  const win = { location: { search: '' }, matchMedia: () => ({ matches: true }) };
+  // SEG-1: el alta va por lead-submit con el token del widget (turnstile.js).
+  const MoyTurnstile = {
+    attach: () => ({ token: () => Promise.resolve('tok'), reset() {}, showError() {} }),
+    submitLead: (rpc, args, token) => TS.submitLead(rpc, args, token, fetchStub),
+    isCaptchaError: TS.isCaptchaError,
+  };
+  const win = { location: { search: '' }, matchMedia: () => ({ matches: true }), MoyTurnstile };
   const doc = { getElementById: el, querySelectorAll: () => [], querySelector: () => null, referrer: '' };
   new Function('window', 'document', 'fetch', 'URL', 'URLSearchParams', script)(win, doc, fetchStub, URL, URLSearchParams);
   win.__investResult = { key: 'moderado', puntaje: 50 };
@@ -108,6 +118,16 @@ describe('doble opt-in desde el quiz de Invest', () => {
     expect(calls.some((c) => c.url === OPTIN_URL)).toBe(false);
     expect(el('result').style.display).toBe('block');
     expect(el('optin-status').textContent).toMatch(/No pudimos registrar tu suscripción/);
+  });
+
+  it('SEG-1: el lead va a lead-submit con rpc, args y el token', async () => {
+    const { calls } = run({ consent: false, rpc: okRpc, optin: () => res(200, { ok: true, state: 'sent' }) });
+    await flush(); await flush();
+    const lead = calls.find((c) => c.url === LEAD_URL);
+    expect(lead.body.rpc).toBe('register_invest_lead');
+    expect(lead.body.args).toMatchObject({ p_email: 'persona@ejemplo.com', p_perfil: 'moderado', p_score: 50, p_consent_marketing: false });
+    expect(lead.body.turnstileToken).toBe('tok');
+    expect(page).not.toContain('/rest/v1/rpc/register_invest_lead');
   });
 
   it('el texto no usa voseo', () => {

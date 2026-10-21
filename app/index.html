@@ -2047,6 +2047,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
      fiable como el propio index.html. Actualizar: descargar de nuevo el UMD de
      @supabase/supabase-js@2 a vendor-supabase.js. -->
 <script src="/vendor-supabase.js"></script>
+<script src="/turnstile.js"></script>
 <script src="/app/lib/async-guards.js"></script>
 <script src="/app/lib/rebalance.js"></script>
 <script src="/app/lib/risk.js"></script>
@@ -4684,12 +4685,15 @@ function renderWelcome(){
     '<div id="rerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis</button>'+
     '</div>'+
+    // SEG-7: widget de Turnstile (sin site key no aparece); invAuthCaptcha() da el token.
+    '<div id="inv-ts-anchor"></div>'+
     '</div>'+ // end wv3-auth-card
     '<div class="wv3-pricing"><div><span class="wv3-grn">'+icon('check')+'</span> Gratis durante la beta pública, sin tarjeta</div><div><span class="wv3-grn">'+icon('check')+'</span> Cada precio muestra su hora y su retraso</div></div>'+
     '</div>'+ // end wv3-right
     '</div>'+ // end wv3-wrap
     '<div class="wv3-footer">© 2025–2026 MAXNOVA &amp; LUCI Global LLC · No somos asesores financieros · Datos referenciales</div>'+
     '</div>'; // end wv3-outer
+  invAuthTs = window.MoyTurnstile ? window.MoyTurnstile.attach(document.querySelector('.wv3-auth-card'), { action: 'auth', before: document.getElementById('inv-ts-anchor') }) : null;
   globeBgStart();
   // Cargar contexto de mercado (datos con el retraso de la fuente) — sin auth
   (async function(){
@@ -8716,6 +8720,17 @@ function wv3TogglePwd(inputId, btnId){
     btn.setAttribute('aria-label','Mostrar contraseña');
   }
 }
+// SEG-7: captcha de Supabase Auth (proyecto compartido con MOY IQ). Con la site key de
+// turnstile.js, login, registro y recuperar contraseña mandan options.captchaToken; sin
+// clave el token es '' y las llamadas quedan como antes. Cada token sirve una sola vez.
+var invAuthTs = null;
+function invCaptchaToken(){ return invAuthTs ? invAuthTs.token() : Promise.resolve(''); }
+function invCaptchaDone(res){
+  if(!invAuthTs) return;
+  invAuthTs.reset();
+  if(res&&res.error&&/captcha/i.test(res.error.message||'')) invAuthTs.showError();
+}
+function invWithCaptcha(opts,tok){ if(tok){ opts=opts||{}; opts.captchaToken=tok; } return opts; }
 async function wv3ForgotPwd(){
   var emailEl=document.getElementById('le');
   var email=emailEl?emailEl.value.trim():'';
@@ -8724,7 +8739,8 @@ async function wv3ForgotPwd(){
     if(err){err.style.display='block';err.style.color='var(--red)';err.textContent='Ingresa tu email primero.';}
     return;
   }
-  var res=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  var res=await sb.auth.resetPasswordForEmail(email,invWithCaptcha({redirectTo:window.location.origin},await invCaptchaToken()));
+  invCaptchaDone(res);
   if(res.error){
     if(err){err.style.display='block';err.style.color='var(--red)';err.textContent='No se pudo enviar. Revisa que el correo esté bien escrito.';}
   } else {
@@ -8752,7 +8768,9 @@ async function doLogin(){
   // mensaje. Ahora siempre se resuelve y avisa.
   var res;
   try{
-    res=await withTimeout(sb.auth.signInWithPassword({email:e,password:p}),15000);
+    var ltok=await invCaptchaToken();
+    res=await withTimeout(sb.auth.signInWithPassword(ltok?{email:e,password:p,options:{captchaToken:ltok}}:{email:e,password:p}),15000);
+    invCaptchaDone(res);
   }catch(netErr){
     if(btn){btn.disabled=false;btn.textContent="Entrar";}
     err.style.display="block";
@@ -8766,7 +8784,8 @@ async function doLogin(){
     // deshabilitada. Ahora se mapea el motivo real de Supabase.
     var m=(res.error&&res.error.message)||'';
     var friendly='Correo o contraseña incorrectos.';
-    if(/email not confirmed/i.test(m)) friendly='Tu email aún no está confirmado. Revisa tu correo (incluida la carpeta de spam) por el enlace de confirmación.';
+    if(/captcha/i.test(m)) friendly='No se pudo verificar que eres una persona. Recarga la página e inténtalo de nuevo.';
+    else if(/email not confirmed/i.test(m)) friendly='Tu email aún no está confirmado. Revisa tu correo (incluida la carpeta de spam) por el enlace de confirmación.';
     else if(/invalid login credentials/i.test(m)) friendly='Correo o contraseña incorrectos.';
     else if(/banned|disabled|blocked|user.*not.*allowed/i.test(m)) friendly='Esta cuenta está deshabilitada. Escríbenos a soporte para reactivarla.';
     else if(/rate limit|too many/i.test(m)) friendly='Demasiados intentos. Espera un minuto y reintenta.';
@@ -8815,7 +8834,8 @@ async function doRegister(){
     // unico del proyecto (compartido con MOY IQ) en vez de invest.moyiq.app —
     // el auth-email-hook de financeos-app detecta la marca por este valor,
     // igual que ya hace resetPasswordForEmail (linea ~11284).
-    res=await withTimeout(sb.auth.signUp({email:e,password:p,options:{data:{name:name},emailRedirectTo:window.location.origin}}),15000);
+    res=await withTimeout(sb.auth.signUp({email:e,password:p,options:invWithCaptcha({data:{name:name},emailRedirectTo:window.location.origin},await invCaptchaToken())}),15000);
+    invCaptchaDone(res);
   }catch(netErr){
     if(btn){btn.disabled=false;btn.textContent="Crear cuenta";}
     err.style.display="block";
