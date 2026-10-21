@@ -32,7 +32,7 @@
   --warning-800: #8A4A14;   /* siempre esta variante en texto (5,3:1 sobre el aviso, A11Y-2) */
   --warning-dark:#E0975A;
   --error:       #A23E2E;
-  --error-dark:  #E0826E;
+  --error-dark:  #E0826E;   /* 6,09:1 sobre --sur, 5,68 sobre --sur2 (UI-Q1; #C96856 fallaba AA) */
   --info:        #5B7A99;
   --info-800:    #3E5A78;   /* siempre esta variante en texto */
   --info-dark:   #89A6C2;
@@ -81,6 +81,11 @@
      sin eje de ancho variable — a diferencia de la Archivo anterior, el peso se
      controla con font-weight normal, no font-variation-settings. */
   --display:   'MOY Bullet', 'Instrument Sans', 'IBM Plex Sans', sans-serif; /* MOY Bullet: solo U+2022, ver public/fonts.css */
+  /* Cifras (dinero y porcentajes): IBM Plex Sans, que ya trae dígitos
+     tabulares por defecto y no deja huecos en "." y "," como la mono (UI-M1,
+     aprobado por Walter el 21-oct-2026). Toda cifra usa --num / .num. */
+  --num:       'IBM Plex Sans', sans-serif;
+  /* Mono: solo identificadores y códigos (claves de licencia, IBAN, ISO). */
   --mono:      'IBM Plex Mono', monospace;
   /* Radios — chicos y técnicos a propósito (nunca pill / rounded-lg grande). */
   --r:         8px;    /* botones */
@@ -142,7 +147,7 @@
   --grn-tint:  rgba(241,238,230,0.06);
 
   --red:       var(--error-dark);
-  --red-bg:    rgba(201,104,86,0.16);
+  --red-bg:    rgba(224,130,110,0.16);
   --amb:       var(--warning-dark);
   --amb-bg:    rgba(224,151,90,0.16);
   --blu:       var(--info-dark);

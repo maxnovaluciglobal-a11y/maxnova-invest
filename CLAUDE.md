@@ -33,6 +33,23 @@ viejo `magnova-invest` (typos históricos de la LLC, MAXNOVA con X — no renomb
 ver `organizacion_naming_pendientes`); el proyecto real de Vercel es `invest-moyiq`
 (mismo `projectId`).
 
+## Diseño visual (21-oct-2026, aprobado por Walter: M1, M10, L3, L4)
+
+Reglas en `DESIGN.md` y en la guía de marca (`financeos-workspace/branding/CLAUDE.md`):
+- **Cifras en IBM Plex Sans tabular** (`--num`, definido en el `:root` de `app/index.html`
+  porque `tokens.css` es copia literal de la app; `.num` con `tabular-nums lining-nums`).
+  Héroe en Plex Sans 600. **Plex Mono solo para tickers y códigos.** Signo U+2212 y
+  U+202F antes de %. Cada % de ganancia o pérdida lleva flecha dibujada (`dirPct`, `dirPp`).
+- **Portafolio:** entre 1024 y 1279 px se ocultan Entrada, Peso y Stop (`.pc-x`); desde
+  Portafolio la ficha abre en "Mi posición" (`openDrawer(t, precio, 'mine')`).
+- **Hoy › Valor en el tiempo:** `app/lib/portfolio-history.js` (tests en
+  `test/portfolio-history.test.js`) arma la serie con `/api/history` (1y, o 5y para Máx) y
+  `CCY=X` para el tipo de cambio de cada día. Es el valor de las posiciones de HOY: no
+  incluye compras, ventas ni dividendos (lo dice el pie). Comparación: SPY o ECH (Yahoo no
+  publica el IPSA: `^IPSA` da 404). Nada de botones de compra o venta ni UI teñida por el mercado.
+- **Fuentes:** Plex Sans es un subset propio (`fonts/ibm-plex-sans-var-*.woff2`) del
+  variable completo de IBM con `pyftsubset --layout-features='*'`; detalle en `fonts.css`.
+
 ## Infraestructura compartida con MOY IQ — NO documentado hasta ahora
 
 Invest usa el **mismo proyecto Supabase que MOY IQ/financeos-app**: `nelwgbcddwiaimzbcuas`
