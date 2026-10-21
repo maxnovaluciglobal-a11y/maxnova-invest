@@ -11,6 +11,10 @@ Walter; las correcciones de consistencia y la ejecución de la auditoría 360
 (`../../00 - Gestion/auditorias/2026-10-18-auditoria-360/`) sí están habilitadas.
 Deploy: un push a `main` redespliega por git el proyecto de Vercel `invest-moyiq` (team
 `maxnovaluci-global`); ver `RUNBOOK.md` §5.
+Desde el 21-oct-2026 (LND-7) `vercel.json` lleva `ignoreCommand`: un push que solo toca `test/`,
+`tools/`, `supabase/`, `_pausa/`, `*.md` o `.impeccable/` (nada de eso se publica) no crea deployment
+(queda "Canceled" por Ignored Build Step). Cualquier otro cambio, o un error del chequeo, sí construye.
+Skew Protection está activa en el proyecto (12 h) pero no fija versiones en este sitio estático (C-49).
 
 ## Qué es
 
