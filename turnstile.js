@@ -82,9 +82,10 @@
     if (anchor && anchor.parentNode) { anchor.parentNode.insertBefore(box, anchor); anchor.parentNode.insertBefore(err, anchor); }
     else { form.appendChild(box); form.appendChild(err); }
 
-    var token = '', waiters = [], id = null, started = false;
+    var token = '', waiters = [], id = null, started = false, failed = false;
     function flush(v) { var w = waiters; waiters = []; w.forEach(function (fn) { fn(v); }); }
     function showError() { err.hidden = false; }
+    function fail() { token = ''; failed = true; showError(); flush(''); }
     function start() {
       if (started) return; started = true;
       load().then(function (ts) {
@@ -93,11 +94,11 @@
           action: opts.action || 'form',
           appearance: 'interaction-only',
           'response-field': false,
-          callback: function (t) { token = t; err.hidden = true; flush(t); },
+          callback: function (t) { token = t; failed = false; err.hidden = true; flush(t); },
           'expired-callback': function () { token = ''; ts.reset(id); },
-          'error-callback': function () { token = ''; showError(); flush(''); return true; }
+          'error-callback': function () { fail(); return true; }
         });
-      }, function () { showError(); flush(''); });
+      }, fail);
     }
     form.addEventListener('focusin', start);
     form.addEventListener('pointerdown', start);
@@ -109,6 +110,8 @@
       token: function () {
         start();
         if (token) { var v = token; token = ''; return Promise.resolve(v); }
+        // Si el widget ya falló no se espera: el envío sale sin token y el servidor decide.
+        if (failed) return Promise.resolve('');
         return new Promise(function (resolve) {
           var timer = setTimeout(function () { waiters = waiters.filter(function (w) { return w !== done; }); resolve(''); }, WAIT_MS);
           function done(v) { clearTimeout(timer); if (v) token = ''; resolve(v); }
