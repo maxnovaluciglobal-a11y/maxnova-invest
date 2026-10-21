@@ -58,17 +58,17 @@ describe("BRD-4: tokens compartidos con la app", () => {
   it("sin la deriva medida en la auditoría", () => {
     for (const f of [...PAGES, "tools/og/og-invest.html"]) {
       const s = read(f);
-      expect(s, f).not.toMatch(/#1A2A4A|#1F2E50|#0E1628|#213357|#2A3E66|#4A5368|#D4735F/i);
+      expect(s, f).not.toMatch(/#1A2A4A|#1F2E50|#213357|#2A3E66|#4A5368|#D4735F/i);
     }
   });
 
   it("el modo oscuro usa el fondo y las superficies de la app", () => {
     const app = read("app/index.html");
     const dark = app.slice(app.indexOf('[data-theme="dark"] {\n  --grn:'), app.indexOf("/* ── RESET"));
-    expect(dark).toContain("--bg:        #12161F;");
-    expect(TOKENS).toMatch(/\[data-theme="dark"\] \{[\s\S]*--bg:\s*#12161F;/);
+    expect(dark).toContain("--bg:        #0E1628;");
+    expect(TOKENS).toMatch(/\[data-theme="dark"\] \{[\s\S]*--bg:\s*#0E1628;/);
     for (const [k, v] of [["card", "sur"], ["card2", "sur2"], ["card3", "sur3"]]) expect(dark).toMatch(new RegExp(`--${k}:\\s+var\\(--${v}\\);`));
-    expect(app).toContain("dark?'#12161F':'#14213D'");
+    expect(app).toContain("dark?'#0E1628':'#14213D'");
   });
 
   it("el service worker guarda /tokens.css para que la app no pierda los colores sin conexión", () => {

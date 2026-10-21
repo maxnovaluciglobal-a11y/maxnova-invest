@@ -77,7 +77,7 @@ describe('tanda Hoy, Aportes y tema (oct-2026)', () => {
   it('rojo de pérdida AA en oscuro y superficies del modo oscuro de la app (BRD-4)', () => {
     expect(darkBlock).toContain('--neg:       var(--red);');
     expect(darkBlock).toContain('--red:       #E59580;');
-    expect(darkBlock).toContain('--bg:        #12161F;');
+    expect(darkBlock).toContain('--bg:        #0E1628;');
     expect(darkBlock).toContain('--card:      var(--sur);');
     expect(darkBlock).toContain('--card2:     var(--sur2);');
     expect(darkBlock).not.toContain('#C96856');

@@ -32,7 +32,7 @@
   --warning-800: #8A4A14;   /* siempre esta variante en texto (5,3:1 sobre el aviso, A11Y-2) */
   --warning-dark:#E0975A;
   --error:       #A23E2E;
-  --error-dark:  #E0826E;   /* 6,09:1 sobre --sur, 5,68 sobre --sur2 (UI-Q1; #C96856 fallaba AA) */
+  --error-dark:  #E59580;   /* el de Invest (UI-L1): 6,80:1 sobre --sur, 6,07 sobre --sur2, 5,33 sobre el aviso rojo (UI-Q1 subió de #C96856 a #E0826E; con el oscuro Navy, #E0826E bajaba a 4,4 en los tintes) */
   --info:        #5B7A99;
   --info-800:    #3E5A78;   /* siempre esta variante en texto */
   --info-dark:   #89A6C2;
@@ -72,6 +72,14 @@
 
   /* ── Charts: grid visible + paleta categórica derivada de la familia de marca ── */
   --chart-grid: rgba(20,33,61,0.12);
+  /* Series de los gráficos por rol (UI-M6): un gráfico nunca nombra un color
+     de marca directo, nombra el papel del dato. --chart-prev = período anterior
+     (línea punteada gris); --chart-axis = ejes y leyendas. */
+  --chart-income:  var(--verde-800);
+  --chart-expense: var(--navy-400);
+  --chart-net:     var(--navy);
+  --chart-prev:    var(--ceniza);
+  --chart-axis:    var(--th);
   --cat-1:var(--navy-400);   --cat-2:var(--laton-700);  --cat-3:var(--verde-800); --cat-4:var(--warning-800);
   --cat-5:var(--info-800);   --cat-6:var(--error);      --cat-7:var(--ceniza-700); --cat-8:var(--accent-dark);
 
@@ -128,17 +136,21 @@
   --dur-alert-pulse:       1200ms;  /* único loop permitido — alerta urgente genuina, ×2 */
 }
 
+/* Oscuro en la familia Navy, igual que Invest (UI-L1, 21-oct-2026): dos
+   niveles de layout, fondo #0E1628 y superficie Navy de marca #14213D; --sur2 y
+   --sur3 son estados elevados (hover, pistas, chips), no un tercer nivel. Antes
+   era un gris azulado (#12161F/#181D29): dos oscuros distintos para una marca. */
 [data-theme="dark"] {
   --laton-text: var(--laton);
-  --bg:        #12161F;
-  --sur:       #181D29;
-  --sur2:      #1D2331;
-  --sur3:      #242B3B;
+  --bg:        #0E1628;
+  --sur:       #14213D;   /* = --navy, la superficie es el Navy de marca */
+  --sur2:      #1A2A4A;
+  --sur3:      #213357;
   --brd:       rgba(228,223,209,0.10);
   --brd2:      rgba(228,223,209,0.18);
   --tx:        var(--papel-000);
   --tm:        #C7C2B2;
-  --th:        #9C9784;
+  --th:        #B5B09C;   /* 5,56:1 o más sobre --sur3 y los avisos tintados (#9C9784 bajaba a 4,1 en Navy) */
 
   /* Marca/estructura en dark: Papel funciona como el "primario" claro sobre fondo Navy oscuro */
   --grn:       var(--papel-000);
@@ -147,7 +159,7 @@
   --grn-tint:  rgba(241,238,230,0.06);
 
   --red:       var(--error-dark);
-  --red-bg:    rgba(224,130,110,0.16);
+  --red-bg:    rgba(229,149,128,0.16);
   --amb:       var(--warning-dark);
   --amb-bg:    rgba(224,151,90,0.16);
   --blu:       var(--info-dark);
@@ -158,6 +170,11 @@
 
   /* Charts en dark (grid + categóricas más luminosas) */
   --chart-grid: rgba(228,223,209,0.14);
+  --chart-income:  var(--verde-dark);
+  --chart-expense: var(--info-dark);
+  --chart-net:     var(--papel-000);
+  --chart-prev:    var(--ceniza-300);
+  --chart-axis:    var(--th);
   --cat-1:var(--info-dark);  --cat-2:var(--laton-300);   --cat-3:var(--verde-dark); --cat-4:var(--warning-dark);
   --cat-5:#8FB3D6;           --cat-6:var(--error-dark);  --cat-7:var(--ceniza-300); --cat-8:var(--accent-dark-hover);
 

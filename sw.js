@@ -10,7 +10,7 @@
 //    online, cache offline; evita servir el build viejo una recarga extra).
 //  - Iconos same-origin: CACHE-FIRST con revalidacion.
 //  - Todo lo demas same-origin (incl. /api/*): passthrough.
-const CACHE = 'maxnova-v9';
+const CACHE = 'maxnova-v10';
 const CORE = ['/', '/app'];
 
 function isAppHtml(path) {
