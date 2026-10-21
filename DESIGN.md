@@ -32,12 +32,12 @@ colors:
   warn-dark: "#E6A36B"
 typography:
   display:
-    fontFamily: "IBM Plex Mono, monospace"
+    fontFamily: "IBM Plex Sans, system-ui, sans-serif"
     fontSize: "54px"
     fontWeight: 600
     lineHeight: 1.05
     letterSpacing: "-0.02em"
-    fontFeature: "tnum"
+    fontFeature: "tnum, lnum"
   headline:
     fontFamily: "Instrument Sans, Georgia, sans-serif"
     fontSize: "28px"
@@ -61,11 +61,16 @@ typography:
     lineHeight: 1.4
     letterSpacing: "0"
   figure:
-    fontFamily: "IBM Plex Mono, monospace"
+    fontFamily: "IBM Plex Sans, system-ui, sans-serif"
     fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: "tnum"
+    fontFeature: "tnum, lnum"
+  identifier:
+    fontFamily: "IBM Plex Mono, monospace"
+    fontSize: "12px"
+    fontWeight: 500
+    lineHeight: 1.4
 rounded:
   xs: "4px"
   sm: "8px"
@@ -158,7 +163,7 @@ components:
 
 **Creative North Star: "The Honest Ledger"**
 
-MOY IQ Invest is the investing sibling of MOY IQ Finanzas and lives inside the same brand world ("El Instrumento"): warm Papel ground, Navy ink and structure, a single brass accent. The logged-in app is a working ledger, not a dashboard. One figure per screen carries the weight (portfolio value on Hoy, risk at stop on Posiciones, units in the Calculadora); everything else sits subordinate in quiet rows of sans text with mono digits. Density is moderate and desktop-first for reviewing and loading positions, with a phone layout built for glancing and creating alerts.
+MOY IQ Invest is the investing sibling of MOY IQ Finanzas and lives inside the same brand world ("El Instrumento"): warm Papel ground, Navy ink and structure, a single brass accent. The logged-in app is a working ledger, not a dashboard. One figure per screen carries the weight (portfolio value on Hoy, risk at stop on Posiciones, units in the Calculadora); everything else sits subordinate in quiet rows of sans text with tabular digits. Density is moderate and desktop-first for reviewing and loading positions, with a phone layout built for glancing and creating alerts.
 
 Structure comes from lines, not boxes. A Navy rail holds the five destinations and a live mini-list; content sits on bare Papel with hairline dividers between sections and between table rows. Tables bleed to the content edge with no frame. A few self-contained panels (the monthly contribution form, empty states, tinted notes) are the only boxed surfaces. Honesty is a visual property: every price shows its time and delay, every state carries an icon and a word, and the palette keeps green and red exclusively for gain and loss.
 
@@ -167,8 +172,8 @@ The system rejects the category default of a dashboard of cards with a market ta
 **Key Characteristics:**
 - Papel ground, Navy ink, Navy sidebar rail in light; in dark, two levels: ground and one surface tone. Light and dark themes from the same token names.
 - Latón appears only on the primary action and the current-destination marker.
-- IBM Plex Sans for words, IBM Plex Mono only for figures; Instrument Sans for page titles (shared MOY IQ wordmark face).
-- One hero figure per screen, set in mono at 54px.
+- IBM Plex Sans for words and for figures (tabular, lining numerals); IBM Plex Mono only for identifiers (tickers, ISIN, codes, key hints); Instrument Sans for page titles (shared MOY IQ wordmark face).
+- One hero figure per screen, set in Plex Sans 600 at 54px.
 - Hairline tables flush to the section edge; stacked rows below 1024px.
 - States always as icon plus word, never color alone.
 
@@ -213,25 +218,30 @@ Dark comes from the Navy family and has exactly two levels. **Ground** `#0E1628`
 
 ## Typography
 
-**Display Font:** IBM Plex Mono (with monospace), for the hero figure
+**Display Font:** IBM Plex Sans 600 (with system-ui, sans-serif), for the hero figure
 **Headline Font:** Instrument Sans (with Georgia, sans-serif), page titles only
-**Body Font:** IBM Plex Sans (with system-ui, sans-serif)
-**Label/Mono Font:** IBM Plex Mono, digits only
+**Body Font:** IBM Plex Sans (with system-ui, sans-serif), words and figures
+**Identifier Font:** IBM Plex Mono, tickers, ISIN, currency and country codes, key hints only
 
-**Character:** A plain, legible sans for words and a tabular mono for every digit, so numbers line up and read as data rather than prose. All faces are self-hosted from `/fonts.css`.
+**Character:** One plain, legible sans for words and numbers. IBM Plex Sans ships tabular figures by default (all ten digits are 600 units wide, the same as Mono), so columns line up without the gaps Mono leaves around `.` and `,` ("$1.234.567,89" is 14.5% wider in Mono). Figures carry `font-variant-numeric: tabular-nums lining-nums` through `--num` and `.num`. All faces are self-hosted from `/fonts.css`; the Plex Sans files are subset with every OpenType feature kept (`zero`, `ss01`–`ss05`).
+
+**Changed 21-oct-2026 (approved by Walter, M1 of the UI research):** until then the hero and every figure were set in Plex Mono. The brand guide (`financeos-workspace/branding/CLAUDE.md`) and MOY IQ Finanzas follow the same rule.
 
 ### Hierarchy
-- **Display** (600, 54px, 1.05, -0.02em; 40px under 768px): the single hero figure of a screen. Its unit sits beside it in Plex Sans 20px muted.
+- **Display** (Plex Sans 600, 54px, 1.05, -0.02em; 40px under 768px): the single hero figure of a screen. Its unit sits beside it in Plex Sans 20px muted.
 - **Headline** (600, 28px, 1.15, -0.01em): destination title in the page head. On mobile the title moves into the top bar at 20px and is never truncated.
 - **Title** (600, 16px): section headings (Tu riesgo hoy, Para revisar hoy, Tus posiciones). Sub-headings 14px/600.
 - **Body** (400, 13px, 1.5; root 14px): running text and table cells at 12-13px. Long prose capped at 62-68ch.
 - **Label** (600, 12px, sentence case, no tracking): table headers, rail list heading, form labels. Hero labels are 14px/500 muted.
-- **Figure** (Plex Mono, tabular-nums): every price, amount, percentage and count, at the size of its surrounding text. Secondary figures 22px/600 (risk at stop), summary band 20px/600.
+- **Figure** (Plex Sans via `--num`, tabular-nums lining-nums): every price, amount, percentage and count, at the size of its surrounding text. Secondary figures 22px/600 (risk at stop), summary band 20px/600.
+- **Identifier** (Plex Mono 500): tickers in chips and the correlation matrix, ISIN, currency and country codes, the "/" key hint. Never an amount, a label or a sentence.
 
 ### Named Rules
-**The Mono-for-Digits Rule.** Mono sets digits, not words. Inline figures inside sentences are wrapped digit by digit so the words around them stay in Plex Sans; freshness tags, toasts and badges set their words in Sans.
+**The One-Voice Figures Rule.** Figures and words share Plex Sans; figures differ only by `tabular-nums lining-nums` (`.num`). Inline figures inside sentences are still wrapped in `.num` so they align and never fall back to proportional digits. Mono is reserved for identifiers; freshness tags, toasts, badges and loading lines are words and use Sans.
 
 **The Narrow-Space Percent Rule.** Percentages carry a narrow no-break space before the sign (U+202F, "15,2 %"), and negatives use the true minus (U+2212), never a hyphen.
+
+**The Direction Rule.** A gain or loss percentage carries its sign, its color and a drawn arrow (↗ up, ↘ down; `dirPct()`), so the direction survives color blindness: in deuteranopia `--pos` and `--neg` are 1.09:1 apart in light.
 
 ## Layout
 
@@ -240,6 +250,7 @@ Two shells around one content column (max 1200px, side padding 24px; 16px below 
 - **Desktop (1024px and up):** a sticky rail (Navy in light, surface tone in dark) at 232px (64px collapsed, icons only) on the left: brand, five destinations, a hairline, the "Tu lista" mini-list (ticker, price, change on a 1fr/auto/62px grid, then a freshness line), and a footer with Finanzas and Contraer. To its right a sticky 60px top strip (global ticker search up to 440px wide, freshness chip, account button), then the market strip (36px, every destination), then the page head (title plus one row of page tabs), then content.
 - **Below 1024px:** the rail disappears; a fixed 60px bottom bar carries the same five destinations (plus safe-area inset). The top strip holds the destination title, a search icon that opens full-width search, and the account button, with freshness on a second line (strip height 82px). The market strip shows only at the top of Hoy and Mercado content (44px, swipeable). Page tabs bleed edge to edge and scroll horizontally with a fade mask while more remain.
 - **Sections** are separated by a top hairline and 14px padding, not by cards. Two-up section grids (Hoy, Mercado) use 24px row and 32px column gaps and collapse to one column below 1024px.
+- **Column priority (Portafolio):** from 1024px to 1279px the table hides Entrada, Peso and Stop (`.pc-x`); they stay in the asset sheet, which opens on "Mi posición" from Portafolio (units, entry, value with weight, result, risk at stop and the editable stop). From 1280px all eleven columns show.
 - **Tables become stacked rows below 1024px:** each position is a two-line row (ticker, value and result; then weight, stop and risk) with its action at the right, separated by hairlines.
 - **Rhythm:** a 2px-based spacing scale; the most used steps are 8, 12, 14, 16 and 24px.
 - **Breakpoints:** 1024px (shell switch), 768px (asset sheet becomes a bottom sheet; hero to 40px), 640px, 480px.
@@ -291,7 +302,7 @@ Restrained and solid; brass only where the screen's main action lives.
 ### Navigation
 - **Rail item:** 44px tall, 12px gap, 20px line icon, Plex Sans 14px/500 in Rail Ink. Hover: Papel 7% tint, brighter text. Current: Latón 18% chip, Latón icon, 600 weight, 1px inset Latón ring; no side stripe.
 - **Page tabs:** 44px, 14px/500 muted; current tab Navy 600 with a 3px Latón underline sitting on the 18% hairline.
-- **Mobile tab bar:** five equal tabs, 22px icon over a 12px label; current tab Navy 600 with a 3px Latón bar at the top edge.
+- **Mobile tab bar:** five equal tabs, 22px icon over a 12px label; current tab Navy 600 with a 3px Latón bar at the top edge. MOY IQ Finanzas adopts the same five-tab model (Inicio · Movimientos · Presupuestos · Metas · Menú; approved 21-oct-2026, L2).
 - **Global search:** 40px field with a search icon and a "/" key hint; results in a floating list of 44px rows (ticker, name, type).
 
 ### Hoy layout
@@ -301,7 +312,7 @@ From 1200px: one row with the hero (1.3fr) and the two blocks "Tu riesgo hoy" an
 One block "Monto y reparto" and one form. From 1024px: left (1fr) the amount and folded options whose summary always shows the current cadence and tranche split; right (1.4fr) "Tickers y porcentajes" as hairline rows in two columns with a live "Suman 100 %" status, Agregar and "Partir de". Below, after a hairline, the Latón "Calcular el reparto" and its inline error. Under 1024px the same order in one column with the button full width.
 
 ### Market strip
-A thin static strip (36px desktop, 44px touch) of the ten Mercado instruments: Spanish short name in Sans muted, value in Mono, day change in Mono pos/neg with sign, and a 48×16 sparkline. It never moves by itself: if it does not fit it scrolls by hand with scroll-snap, an edge fade and no visible scrollbar on desktop. Every item is a button to Mercado. One quiet freshness note at the end ("Con retraso de la fuente · hh:mm"). Fixed height, skeleton sparklines while history loads (one request per symbol per session), so nothing shifts.
+A thin static strip (36px desktop, 44px touch) of the ten Mercado instruments: Spanish short name in Sans muted, value in tabular Sans, day change in tabular Sans pos/neg with sign and arrow, and a 48×16 sparkline. It never moves by itself: if it does not fit it scrolls by hand with scroll-snap, an edge fade and no visible scrollbar on desktop. Every item is a button to Mercado. One quiet freshness note at the end ("Con retraso de la fuente · hh:mm"). Fixed height, skeleton sparklines while history loads (one request per symbol per session), so nothing shifts.
 
 ### Sparkline
 A 1.4px polyline with no fill, axis or animation. Green if the period went up (last close over first), red if it went down. 48×16 in the strip, 72×20 in the Mercado table ("Último mes").
@@ -312,8 +323,11 @@ Title (link) and a muted meta line on the left; on the right an optional 72×54 
 ### Correlation matrix
 One Navy/slate intensity scale (Slate Blue mixed into the surface): darker means the two assets moved more together. Every cell shows its number; the legend pairs an icon with words. Never red, amber or green: those belong to results and risk.
 
+### Portfolio value chart (Hoy)
+A tracker chart, never a broker's: "Valor en el tiempo" sits under the Hoy row. The line is always Navy (ink), whatever the market did; only the change readout carries green or red, with arrow and sign. A dashed muted line marks what was invested (cost basis). An optional comparison (none, S&P 500 through SPY, or Chilean stocks through the ECH ETF in USD, since the source has no IPSA) is a Slate Blue line rebased to the same starting value. The range sits below the chart as filter chips (1M · 3M · YTD · 1A · Máx; Máx reaches five years, the source's limit). A cursor (pointer or arrow keys) shows date and value, plus the comparison's value. The series is the value of today's positions at each day's close, converted to USD with each day's exchange rate, so it does not include past purchases, sales or dividends; the footnote says so. Positions without history are left out and named. No buy or sell control, no market-tinted UI.
+
 ### Hero Figure (signature)
-The one number a screen is about. Label in Plex Sans 14px muted, the value in Plex Mono 54px Navy (Loss Red when negative), an optional subline in 14px muted, then one row of subordinate key-value pairs above a top hairline (for example Hoy and Total with their change).
+The one number a screen is about. Label in Plex Sans 14px muted, the value in Plex Sans 600 54px Navy (Loss Red when negative), an optional subline in 14px muted, then one row of subordinate key-value pairs above a top hairline (for example Hoy and Total with their change).
 
 ### Hairline Table (signature)
 No frame, no fill, no shadow. Header row in Plex Sans 12px/600 muted with an 18% hairline beneath; body rows 12px with 10% hairlines; first and last columns flush to the section edge; columns that are mostly figures are right-aligned automatically, header included. Ticker in 600 Navy with name and type beneath in 12px muted. Row hover tints Navy 7%. Below 1024px the same data renders as stacked rows.
@@ -325,8 +339,8 @@ Every state is an icon plus a word in the state color: "Supera tu límite" (ambe
 
 ### Do:
 - **Do** keep Latón to the primary action and the current-destination marker; put Navy text on it.
-- **Do** set every digit in IBM Plex Mono with tabular numerals, and every word in IBM Plex Sans.
-- **Do** write percentages with U+202F before % and negatives with U+2212.
+- **Do** set every word and every figure in IBM Plex Sans, figures with `tabular-nums lining-nums` (`.num`), and keep IBM Plex Mono for tickers, ISIN and codes.
+- **Do** write percentages with U+202F before % and negatives with U+2212, and give every gain or loss percentage its arrow.
 - **Do** give each screen one hero figure and subordinate the rest to a single row beneath it.
 - **Do** separate sections with a top hairline and let tables bleed to the section edge, numeric columns right-aligned.
 - **Do** pair every state with an icon and a word, and show the time and delay next to every price.
@@ -341,4 +355,5 @@ Every state is an icon plus a word in the state color: "Supera tu límite" (ambe
 - **Don't** signal a state with color alone or with a bare "!".
 - **Don't** use radii above 12px or pill shapes.
 - **Don't** add shadows to surfaces in the content column.
-- **Don't** set words in mono or load fonts from Google Fonts.
+- **Don't** set words or amounts in mono, or load fonts from Google Fonts.
+- **Don't** tint the chart line or the UI by the market's direction, or add buy and sell controls: Invest is a tracker.

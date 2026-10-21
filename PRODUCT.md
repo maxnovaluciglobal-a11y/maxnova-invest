@@ -25,7 +25,7 @@ Se usa en escritorio para revisar y cargar posiciones, y en el celular para mira
 - Prohibido: recomendaciones personalizadas de qué comprar, cestas por perfil, "sugerido", notas 0-100, promesas de tiempo real (guardas en `test/copy-guard.test.js`).
 
 ## Brand Commitments
-- Marca MOY IQ: Navy `#14213D`, Latón `#B8863B` (CTA con texto Navy), Papel `#F1EEE6` / `#FAF8F2`, estados `--pos`/`--neg`/`--warn` con ícono + palabra, nunca solo color. Radios ≤ 12 px, nunca pill. IBM Plex Sans para texto, IBM Plex Mono solo para cifras. Fuentes autoalojadas, nunca Google Fonts. Modo claro y oscuro.
+- Marca MOY IQ: Navy `#14213D`, Latón `#B8863B` (CTA con texto Navy), Papel `#F1EEE6` / `#FAF8F2`, estados `--pos`/`--neg`/`--warn` con ícono + palabra, nunca solo color. Radios ≤ 12 px, nunca pill. IBM Plex Sans para texto y cifras (cifras con `tabular-nums lining-nums`); IBM Plex Mono solo para tickers, ISIN y códigos (M1, 21-oct-2026). Fuentes autoalojadas, nunca Google Fonts. Modo claro y oscuro.
 - Copy en español neutro con "tú", sin voseo, sin signos de exclamación, sin anglicismos de interfaz (portfolio, watchlist, win rate).
 - Avisos legales sobrios: "No es un bróker · análisis educativo".
 
