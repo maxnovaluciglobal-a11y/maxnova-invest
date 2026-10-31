@@ -2103,6 +2103,8 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
      window.supabase quedaba undefined y el login se colgaba. Same-origin es tan
      fiable como el propio index.html. Actualizar: descargar de nuevo el UMD de
      @supabase/supabase-js@2 a vendor-supabase.js. -->
+<!-- Primero: borra de la URL el token de entrada desde MOY IQ antes de que cargue nada más. -->
+<script src="/app/lib/handoff.js"></script>
 <script src="/vendor-supabase.js"></script>
 <script src="/turnstile.js"></script>
 <script src="/app/lib/async-guards.js"></script>
@@ -3533,7 +3535,7 @@ function sideHtml(){
       '<div id="side-list-body"></div>'+
     '</section>'+
     '<div class="side-foot">'+
-      '<a class="side-item" href="https://app.moyiq.app" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">'+icon('link')+'<span class="side-lbl">Finanzas</span><span class="sr-only"> (abre otra pestaña)</span></a>'+
+      '<a class="side-item" href="https://app.moyiq.app/app/" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">'+icon('link')+'<span class="side-lbl">Finanzas</span><span class="sr-only"> (abre otra pestaña)</span></a>'+
       '<button type="button" class="side-item" id="side-toggle" onclick="sideToggle()" aria-controls="sb">'+
         '<svg class="ico side-chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>'+
         '<span class="side-lbl">Contraer</span></button>'+
@@ -3757,7 +3759,7 @@ function acctItems(){
     {lbl:'Ayuda', ico:'help', act:"acctGo('help')"},
     {lbl:'Atajos de teclado', ico:'bolt', act:"acctClose();showShortcuts()"},
     {lbl:'Aviso legal', ico:'shield', act:"acctClose();toggleDisclaimer()"},
-    {lbl:'Finanzas', ico:'link', href:'https://app.moyiq.app'},
+    {lbl:'Finanzas', ico:'link', href:'https://app.moyiq.app/app/'},
     {lbl:'Cerrar sesión', ico:'user', act:"acctClose();logout()", sep:true}
   ];
 }
@@ -4906,7 +4908,7 @@ function renderDash(){
 
   // ── Estado vacío (I01): portada de la cuenta nueva ──
   if(port.length===0){
-    main.innerHTML='<div class="port-wrap pv">'+seedCleanupBanner()+firstRunEmpty()+'</div>';
+    main.innerHTML='<div class="port-wrap pv">'+handoffAporteBanner()+seedCleanupBanner()+firstRunEmpty()+'</div>';
     return;
   }
 
@@ -4931,6 +4933,7 @@ function renderDash(){
     '<div class="fos-module-header"><div><div class="fos-module-sub"><span class="fresh-m live-badge-wrap">'+liveBadge()+'</span></div></div></div>'+
     '<div class="port-wrap pv hoy">'+
     '<div class="mstrip-in">'+stripHtml()+'</div>'+
+    handoffAporteBanner()+
     seedCleanupBanner()+
     // Hoy, variante A: desde 1200 px el valor y los dos bloques en una fila;
     // entre 1024 y 1199 el valor arriba y los bloques en dos columnas.
@@ -5296,7 +5299,7 @@ function dashAporteCard(){
   var m=S.capitalPlan&&S.capitalPlan.monthly>0?S.capitalPlan.monthly:'';
   return '<form class="m10-aporte" novalidate onsubmit="aporteGo(event)" aria-labelledby="aporte-h">'+
     '<div><h2 class="port-h2" id="aporte-h">¿Cuánto puedes aportar este mes?</h2>'+
-    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Repartir te lleva a Planificar › Aportes con el reparto calculado.</p></div>'+
+    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app/app/" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Repartir te lleva a Planificar › Aportes con el reparto calculado.</p></div>'+
     '<div class="m10-aporte-f"><label class="sr-only" for="aporte-in">Aporte del mes en USD</label>'+
     '<input id="aporte-in" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto (USD)" value="'+m+'" aria-describedby="aporte-err" oninput="aporteClearErr()"/>'+
     '<button class="btn-big" type="submit">Repartir</button>'+
@@ -5343,6 +5346,38 @@ function applyAporteParam(){
     history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
     if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
   }catch(e){}
+}
+
+// Aportes marcados en MOY IQ (entrada con #aporte=, módulo Inversiones). Llega solo la
+// suma, sin descripciones, y nada se guarda hasta que la persona lo pide: el aviso se
+// puede cerrar y "Ir a Aportes" entra al flujo de siempre.
+function handoffAporteBanner(){
+  var a=S.handoffAporte;
+  if(!a) return '';
+  var usd=window.InvestHandoff?InvestHandoff.aporteUsd(a,function(v,c){return InvestFx.toUsd(v,c,FX_ASSET);}):null;
+  var cant=a.n===1?'1 aporte':a.n+' aportes';
+  var monto=a.ccy&&a.ccy!=='USD'?esc(a.ccy)+' '+a.amount.toLocaleString(LOC):fmtUSD(a.amount,2);
+  var aprox=usd&&a.ccy!=='USD'?' (≈ '+fmtUSD(usd,0)+')':'';
+  return '<section class="seed-banner" aria-labelledby="ho-aporte-t">'+
+    '<div class="seed-banner-body"><div class="seed-banner-t" id="ho-aporte-t">Aportes de este mes en MOY IQ</div>'+
+    '<div class="seed-banner-d">Marcaste '+cant+' por <span class="num">'+monto+aprox+'</span>. Puedes registrarlos en Planificar › Aportes. No se guarda nada hasta que lo confirmes.</div></div>'+
+    '<div class="seed-banner-acts"><button type="button" class="btn-big" onclick="handoffAporteGo()">Ir a Aportes</button>'+
+    '<button type="button" class="btn" onclick="handoffAporteClose()">Ahora no</button></div></section>';
+}
+function handoffAporteClose(){ S.handoffAporte=null; renderMain(); }
+function handoffAporteGo(){
+  var a=S.handoffAporte;
+  S.handoffAporte=null;
+  if(!a) return;
+  var usd=InvestHandoff.aporteUsd(a,function(v,c){return InvestFx.toUsd(v,c,FX_ASSET);});
+  track('bridge_aporte',{src:'handoff'});
+  if(usd&&setAporte(usd)){
+    setPage('capital'); loadCapitalData();
+    showToast('Aporte de '+fmtUSD(usd,2)+' cargado desde MOY IQ');
+  } else {
+    setPage('capital');
+    showToast('Sin tipo de cambio para '+(a.ccy||'esa moneda')+': escribe el monto en USD');
+  }
 }
 
 function dashLoadContext(){
@@ -9261,12 +9296,51 @@ async function sbRmWatch(ticker){
   if(res.error) console.error("sbRmWatch failed",res.error);
 }
 
+// ── ENTRADA DESDE MOY IQ (invest-handoff) ─────────────────────
+// app/lib/handoff.js ya sacó el token de la URL. Con un token válido se abre una sesión
+// propia de Invest; las tablas de consentimiento y onboarding siguen igual porque todo
+// pasa antes del arranque normal. Vencido o usado: queda el login de siempre.
+// signOut con scope local: el global revocaría también la sesión de esa cuenta en MOY IQ.
+// Mientras dura, onAuthStateChange no actúa: su SIGNED_OUT recargaría la página y
+// perdería el token.
+var _handoffBusy=false;
+async function consumeHandoff(){
+  var h=window.__investHandoff;
+  window.__investHandoff=null;
+  if(!h) return;
+  if(h.aporte) S.handoffAporte=h.aporte;
+  if(!h.token||!sb) return;
+  _handoffBusy=true;
+  try{
+    var cur=null;
+    try{
+      var s0=await withTimeout(sb.auth.getSession(),8000);
+      cur=s0&&s0.data&&s0.data.session&&s0.data.session.user?s0.data.session.user.id:null;
+    }catch(e){/* sin sesión legible: se intenta canjear */}
+    var act=InvestHandoff.plan(cur,h.uid);
+    if(act==='skip') return;
+    if(act==='switch'){
+      await withTimeout(sb.auth.signOut({scope:'local'}),8000);
+      try{ localStorage.removeItem('mv_prices_cache'); }catch(e){}
+    }
+    var res=await withTimeout(sb.auth.verifyOtp({token_hash:h.token,type:'magiclink'}),10000);
+    if(res&&res.error) throw res.error;
+    track('handoff_ok');
+  }catch(e){
+    S.handoffFailed=true;
+    track('handoff_fail');
+  }finally{
+    _handoffBusy=false;
+  }
+}
+
 // ── STARTUP ──────────────────────────────────────────────────
 initTheme();
 renderDisclaimer();
 
 (async function boot(){
   document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando MOY IQ Invest...</div>';
+  await consumeHandoff();
   // Timeout de 10s: igual que doLogin (mas arriba), si getSession() se cuelga
   // (intercambio OAuth interrumpido, proyecto Supabase pausado, storage de auth
   // corrupto) la app entera quedaba congelada en este spinner para siempre, sin
@@ -9281,6 +9355,11 @@ renderDisclaimer();
   render();
   if(S.user) bootLiveData(); // arranca carga de precios live (portfolio/watchlist/señales)
   if(S.user) applyAporteParam();
+  if(S.user&&S.handoffAporte&&S.page!=='dash') setPage('dash');
+  if(S.handoffFailed){
+    S.handoffFailed=false;
+    showToast('Tu acceso desde MOY IQ venció. Inicia sesión para continuar.','error');
+  }
 
   // ── Retorno post-pago de Stripe ──
   try{
@@ -9299,6 +9378,7 @@ renderDisclaimer();
 })();
 
 sb.auth.onAuthStateChange(function(event,session){
+  if(_handoffBusy) return; // boot() carga la cuenta al terminar el canje
   if(event==="SIGNED_OUT"){
     // Cierre de sesión (también desde otra pestaña): arranque limpio.
     S.user=null;
