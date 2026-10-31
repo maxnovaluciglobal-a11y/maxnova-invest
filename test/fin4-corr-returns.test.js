@@ -2,6 +2,7 @@
 // tendencia salen "muy correlacionadas" aunque sus movimientos diarios sean
 // opuestos) y alineaba por la cola, sin mirar las fechas.
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { pearson, alignedReturns, returnCorrelation, MIN_RETURNS } from "../app/lib/diversification.js";
 
 const DAY = 86400;
@@ -92,5 +93,46 @@ describe("la historia de la matriz usa un rango que /api/history acepta", () => 
     const m = app.match(/function portLoadCorr\(\)[\s\S]*?fetchHistory\(t,'([^']+)'\)/);
     expect(m).not.toBeNull();
     expect(valid).toContain(m[1]);
+  });
+});
+
+describe("FIN-4: caso de la auditoría y dato real", () => {
+  // Mismo camino del dato que en producción: /api/history devuelve fechas
+  // YYYY-MM-DD y _fetchHistoryImpl las pasa a `ts` en segundos.
+  const fromApi = (bars) => bars.map((b) => ({ ts: Math.floor(new Date(b.date).getTime() / 1000), close: b.close }));
+  const days = (n) => Array.from({ length: n }, (_, i) => new Date(Date.UTC(2026, 6, 1 + i)).toISOString().split("T")[0]);
+  const rng = (seed) => () => (seed = (seed * 16807) % 2147483647) / 2147483647 - 0.5;
+
+  // Dos series independientes con tendencia alcista y ruido propio, 60 cierres.
+  const series = (seed) => {
+    const noise = rng(seed);
+    const closes = [100];
+    for (let i = 1; i < 60; i++) closes.push(closes[i - 1] * (1 + 0.004 + 0.02 * noise()));
+    return closes;
+  };
+  const a = series(12345), b = series(987654);
+  const dates = days(60);
+  const bars = (closes) => closes.map((close, i) => ({ date: dates[i], close }));
+
+  it("dos tendencias independientes: niveles ~alta, retornos ~nula", () => {
+    expect(pearson(a, b)).toBeGreaterThan(0.8);
+    expect(Math.abs(returnCorrelation(fromApi(bars(a)), fromApi(bars(b))))).toBeLessThan(0.3);
+  });
+
+  it("con la forma de /api/history alinea por fecha (feriado en una sola bolsa)", () => {
+    const sinFeriado = bars(b).filter((d) => d.date !== dates[30]);
+    const { ra, rb } = alignedReturns(fromApi(bars(a)), fromApi(sinFeriado));
+    expect(ra).toHaveLength(58); // 59 días en común => 58 retornos
+    expect(rb).toHaveLength(58);
+    // El tramo que cruza el feriado se mide igual en las dos series.
+    expect(ra[29]).toBeCloseTo(a[31] / a[29] - 1, 12);
+    expect(rb[29]).toBeCloseTo(b[31] / b[29] - 1, 12);
+  });
+
+  it("la matriz de Diversificación y el comparador usan retornos, no cierres", () => {
+    const html = readFileSync(new URL("../app/index.html", import.meta.url), "utf8");
+    expect(html).toContain("InvestDiv.returnCorrelation(dHistCache[ta+'_60'],dHistCache[tb+'_60'])");
+    expect(html).toContain("InvestDiv.pairCorrelations(");
+    expect(html).not.toMatch(/function pearson\(/);
   });
 });
