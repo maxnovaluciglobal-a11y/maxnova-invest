@@ -269,7 +269,7 @@ Flat by default. Depth on the page comes from tone (Papel vs Papel Light) and ha
 
 ## Shapes
 
-Gently squared. Radii are 8px for controls (buttons, inputs, chips, rail items) and 12px for the few containers (boxed panels, menus, search field, account button, bottom-sheet top corners); 4px for keyboard hints and exchange tags. Nothing exceeds 12px and nothing is pill-shaped. Borders are 1px hairlines; tables carry no outer border at all. Active markers are 3px bars with 2px rounded ends (tab underline, mobile tab top bar).
+Gently squared. Radii are 8px for controls (buttons, inputs, chips, rail items) and 12px for the few containers (boxed panels, menus, search field, account button, bottom-sheet top corners); 4px for keyboard hints and exchange tags. Nothing exceeds 12px and nothing is pill-shaped. MOY IQ allows pills on segmented controls, chips and tags since 31-oct-2026 (`--r-pill`, `--r-sheet` in the shared tokens); Invest does not use them until a new visual direction decides it. Borders are 1px hairlines; tables carry no outer border at all. Active markers are 3px bars with 2px rounded ends (tab underline, mobile tab top bar).
 
 ## Components
 
