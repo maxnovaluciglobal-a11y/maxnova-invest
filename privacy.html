@@ -108,14 +108,14 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 <main id="main">
   <article class="wrap doc">
     <h1>Política de privacidad</h1>
-    <p class="meta">Última actualización: 19 de octubre de 2026 · Versión 2.4</p>
+    <p class="meta">Última actualización: 30 de octubre de 2026 · Versión 2.5</p>
 
     <h2>1. Responsable del tratamiento</h2>
     <p>MAXNOVA &amp; LUCI Global LLC, sociedad de responsabilidad limitada de Florida (EE.&nbsp;UU.), operadora de MOY IQ Invest. Domicilio: 10482 NW 31st Terrace, Office 1D, Doral, FL 33172, EE.&nbsp;UU. Contacto: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a> o <a href="mailto:support@moyiq.app">support@moyiq.app</a></p>
 
     <h2>2. Datos que recopilamos</h2>
     <ul>
-      <li><strong>Datos de cuenta:</strong> dirección de correo electrónico, nombre (opcional) y fecha de registro.</li>
+      <li><strong>Datos de cuenta:</strong> dirección de correo electrónico, nombre (opcional) y fecha de registro, y el registro de qué documentos legales aceptaste y en qué versión.</li>
       <li><strong>Datos de portafolio:</strong> activos, cantidades, precios y notas que ingresas voluntariamente (posiciones, lista de seguimiento, bitácora y tu regla de riesgo).</li>
       <li><strong>Perfil de inversor:</strong> si completas el cuestionario y dejas tu correo, guardamos tu correo, el perfil resultante y de dónde llegaste a la página, y te enviamos por correo tu perfil. Solo si marcas la casilla de contenido te enviamos además dos correos más, con enlace para darte de baja en cada uno.</li>
       <li><strong>Datos de uso:</strong> medimos qué secciones de la app se abren y qué funciones se usan (por ejemplo, abrir una sección, importar un archivo de posiciones, ver el ejemplo o recibir una alerta), junto con datos técnicos del navegador (navegador, sistema operativo, tipo de dispositivo, idioma y tamaño de pantalla) y los errores técnicos de la app. Esos datos se asocian a un identificador interno de tu cuenta, nunca a tu correo ni a tu nombre. No incluyen tus posiciones, tus montos ni los símbolos de tu portafolio, y no grabamos la pantalla ni lo que escribes. La dirección IP de tu conexión llega a PostHog, como a cualquier servidor al que se conecta tu navegador; no la usamos para identificarte. Además, guardamos en nuestra base de datos, asociado a tu cuenta, cada día en que abres la app de Invest con tu sesión iniciada: sirve para contar cuántas personas la usan cada semana.</li>
@@ -127,9 +127,10 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
     <h2>3. Finalidad y base legal del tratamiento</h2>
     <ul>
       <li>Proveer las funciones de la herramienta y sincronizar tu portafolio entre tus dispositivos. Base legal: la ejecución del servicio que pides al crear tu cuenta.</li>
+      <li>Calcular tu perfil de inversor y enviártelo por correo si lo pides. Base legal: la ejecución de lo que pides al completar el cuestionario.</li>
       <li>Enviar comunicaciones sobre el servicio, por ejemplo avisarte antes de que exista cualquier plan pago. Base legal: la ejecución del servicio. El contenido por correo (por ejemplo, los correos que siguen a tu perfil de inversor) solo se envía si marcas la casilla de contenido: es tu consentimiento y puedes retirarlo en cualquier momento con el enlace de baja de cada correo.</li>
       <li>Saber qué enlaces de nuestros correos de contenido se usan, para mejorarlos. Base legal: el mismo consentimiento con el que pediste esos correos. En los correos de tu cuenta, el registro del clic se apoya en nuestro interés legítimo en saber si llegan y se usan.</li>
-      <li>Operar y proteger el servicio (registros técnicos, prevención de abusos de las consultas de precios). Base legal: nuestro interés legítimo en mantener la herramienta disponible y segura.</li>
+      <li>Operar y proteger el servicio (registros técnicos, verificación contra robots en el acceso y los formularios, prevención de abusos de las consultas de precios). Base legal: nuestro interés legítimo en mantener la herramienta disponible y segura.</li>
       <li>Medir el uso de la herramienta de forma agregada para mejorarla (por ejemplo, cuántas personas la usan cada semana). Base legal: nuestro interés legítimo en saber si el producto funciona y qué mejorar. Puedes oponerte a esta medición (sección 8).</li>
     </ul>
 
@@ -144,36 +145,71 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
       <li><strong>Vercel</strong> (Vercel Inc., EE.&nbsp;UU.): alojamiento de la app y funciones del servidor. Recibe los registros técnicos de cada solicitud.</li>
       <li><strong>PostHog</strong> (PostHog, Inc., EE.&nbsp;UU.): medición de uso, como se describe en la sección 2. Recibe el identificador interno de tu cuenta y los eventos de uso; no recibe tu correo ni tu nombre.</li>
       <li><strong>Resend</strong> (Resend, Inc., EE.&nbsp;UU.): envío de los correos de tu cuenta y del contenido que pediste, y registro de los clics en sus enlaces.</li>
+      <li><strong>Cloudflare</strong> (Cloudflare, Inc., EE.&nbsp;UU.): DNS del dominio, reenvío de los correos que escribes a nuestras direcciones @moyiq.app y Turnstile, la verificación que comprueba que no eres un robot al entrar a la app y en el cuestionario de perfil. Turnstile recibe tu dirección IP y datos técnicos de tu navegador; Cloudflare actúa como encargado y, para mejorar esa detección de robots, como responsable propio.</li>
+      <li><strong>Google</strong> (Google LLC, EE.&nbsp;UU.): la bandeja de Gmail donde recibimos y respondemos los correos que nos escribes.</li>
     </ul>
     <p>Si eliges «Continuar con Google», Google (Google LLC, EE.&nbsp;UU.) verifica tu identidad y nos entrega tu correo y tu nombre; ese tratamiento se rige además por la política de privacidad de Google.</p>
-    <p>Por eso tus datos se tratan en Estados Unidos, y para quien vive fuera de ese país esto implica una transferencia internacional de datos. Si vives en el Espacio Económico Europeo, el Reino Unido o Suiza, la transferencia se apoya en el Marco de Privacidad de Datos UE-EE.&nbsp;UU. cuando el destinatario está certificado y, si no, en las cláusulas contractuales tipo de la Comisión Europea. Puedes pedirnos información sobre estas garantías.</p>
-    <p>Las fuentes de datos de mercado (Yahoo Finance, Finnhub, Financial Modeling Prep, CoinGecko y mindicador.cl) no reciben datos personales: las consulta nuestro servidor con los símbolos de los activos, sin tu correo, sin tus cantidades y sin tu dirección IP. El detalle de cada fuente está en <a href="/datos-y-licencias.html">Datos y licencias</a>.</p>
+    <p>Por eso tus datos se tratan en Estados Unidos, y para quien vive fuera de ese país esto implica una transferencia internacional de datos. Si vives en el Espacio Económico Europeo, el Reino Unido o Suiza, la transferencia se apoya en el Marco de Privacidad de Datos UE-EE.&nbsp;UU. cuando el destinatario está certificado y, si no, en las cláusulas contractuales tipo de la Comisión Europea. Puedes pedirnos información sobre estas garantías. Si vives en Chile o en Brasil, mira la sección 9. Si vives en otro país, la transferencia es necesaria para prestarte el servicio que pides, y solo la hacemos a los proveedores de esta lista.</p>
+    <p>Las fuentes de datos de mercado (Yahoo Finance, Finnhub, Financial Modeling Prep, CoinGecko, mindicador.cl y DolarApi) no reciben datos personales: las consulta nuestro servidor con los símbolos de los activos, sin tu correo, sin tus cantidades y sin tu dirección IP. El detalle de cada fuente está en <a href="/datos-y-licencias.html">Datos y licencias</a>. La excepción son las imágenes de las noticias: tu navegador las carga directamente desde el sitio que las publica, que recibe tu dirección IP y datos técnicos del navegador, pero no tu cuenta ni tu portafolio.</p>
 
     <h2>6. No venta de datos personales</h2>
     <p>MOY IQ Invest no vende, arrienda ni comparte datos personales con terceros para fines publicitarios o comerciales.</p>
 
     <h2>7. Retención de datos</h2>
-    <p>Los datos de cuenta y portafolio se conservan mientras la cuenta esté activa. Puedes eliminar tus datos de Invest en cualquier momento desde Configuración → Eliminar mis datos de Invest: el borrado es inmediato y automático, salvo obligación legal de retención. La cuenta de acceso, compartida con MOY IQ, la eliminas tú desde <a href="https://app.moyiq.app/delete-account">app.moyiq.app/delete-account</a>, que borra también todos tus datos de MOY IQ y de Invest (detalle en la sección 8). Tu correo para correos de contenido se conserva hasta que te des de baja o retires tu consentimiento.</p>
+    <p>Los datos de cuenta y portafolio se conservan mientras la cuenta esté activa. Puedes eliminar tus datos de Invest en cualquier momento desde Configuración → Eliminar mis datos de Invest: el borrado es inmediato y automático, salvo obligación legal de retención. La cuenta de acceso, compartida con MOY IQ, la eliminas tú desde <a href="https://app.moyiq.app/delete-account">app.moyiq.app/delete-account</a>, que borra también todos tus datos de MOY IQ y de Invest (detalle en la sección 8). Tu correo para correos de contenido se conserva hasta que te des de baja o retires tu consentimiento. Si dejaste tu correo en el cuestionario de perfil y no confirmaste la suscripción a contenido, lo conservamos como máximo 12 meses. Si te das de baja, guardamos tu correo marcado como dado de baja para no volver a escribirte por error. Los días de actividad se conservan mientras exista tu cuenta o hasta que elimines tus datos de Invest. Los eventos de uso se conservan en PostHog durante el plazo de retención de nuestra cuenta, sin tu correo ni tu nombre.</p>
 
     <h2>8. Derechos del usuario</h2>
     <p>Tienes derecho a acceder a tus datos, corregirlos, eliminarlos, exportarlos (portabilidad), oponerte a su tratamiento, pedir que se limite o bloquee y retirar tu consentimiento en cualquier momento, sin que eso afecte lo hecho antes. La eliminación de tus datos de Invest la ejecutas tú desde Configuración → Eliminar mis datos de Invest, y borra de inmediato tu portafolio, lista de seguimiento, perfil, consentimientos, días de actividad y registro de correos del período de prueba de Invest. No toca tus datos de MOY IQ. Tu cuenta de acceso no se borra desde Invest, porque es la misma que usa MOY IQ; la eliminas tú desde <a href="https://app.moyiq.app/delete-account">app.moyiq.app/delete-account</a>, iniciando sesión con el mismo correo. Ese borrado elimina la cuenta de acceso y, en la misma operación, todos tus datos de MOY IQ y de Invest, incluido tu correo en los formularios de las dos apps (como el perfil de inversor). Solo se conservan los comprobantes de pago que exige la ley y la constancia de una cancelación. Para ejercer cualquier otro derecho, o si prefieres que lo hagamos nosotros, escríbenos a <a href="mailto:invest@moyiq.app">invest@moyiq.app</a> con el asunto "Privacidad - [tu solicitud]". Respondemos en un plazo máximo de 30 días.</p>
-    <p>También puedes oponerte a que midamos el uso de tu cuenta: escribe a <a href="mailto:support@moyiq.app">support@moyiq.app</a> y la atendemos en ese mismo plazo. Si tu navegador envía la señal «No rastrear» o Global Privacy Control, no medimos tu uso. Si consideras que tratamos tus datos de forma indebida, puedes presentar un reclamo ante la autoridad de protección de datos de tu país; por ejemplo, en la Unión Europea, la de tu Estado (en España, la Agencia Española de Protección de Datos); en Brasil, la Autoridad Nacional de Protección de Datos (ANPD); en Colombia, la Superintendencia de Industria y Comercio; en Argentina, la Agencia de Acceso a la Información Pública.</p>
-    <h3>Si vives en Chile</h3>
-    <p>Desde el 1 de diciembre de 2026 rige la Ley 21.719 de protección de datos personales. Con ella puedes ejercer ante nosotros los derechos de acceso, rectificación, supresión, oposición, portabilidad y bloqueo por el mismo canal y en el mismo plazo indicados arriba, y reclamar ante la Agencia de Protección de Datos Personales. Las bases de cada tratamiento y la transferencia a Estados Unidos son las descritas en las secciones 3 y 5.</p>
+    <p>También puedes oponerte a que midamos el uso de tu cuenta: escribe a <a href="mailto:support@moyiq.app">support@moyiq.app</a> y la atendemos en ese mismo plazo. Si tu navegador envía la señal «No rastrear» o Global Privacy Control, no medimos tu uso. Si consideras que tratamos tus datos de forma indebida, puedes presentar un reclamo ante la autoridad de protección de datos de tu país; por ejemplo, en la Unión Europea, la de tu Estado (en España, la Agencia Española de Protección de Datos); en Brasil, la Agencia Nacional de Protección de Datos (ANPD); en Colombia, la Superintendencia de Industria y Comercio; en Argentina, la Agencia de Acceso a la Información Pública.</p>
+    <h3>Decisiones automatizadas</h3>
+    <p>No tomamos decisiones basadas únicamente en un tratamiento automatizado que produzcan efectos jurídicos en ti o te afecten de forma significativa. El cuestionario calcula tu perfil de inversor (por ejemplo, moderado) con tus respuestas; ese resultado no limita tu acceso a Invest y, según el perfil, cambia el texto de los correos que te enviamos. Puedes oponerte a ese uso y pedir una explicación o que una persona lo revise escribiendo a <a href="mailto:invest@moyiq.app">invest@moyiq.app</a>.</p>
 
-    <h2>9. Cookies y almacenamiento local</h2>
-    <p>MOY IQ Invest usa el almacenamiento local del navegador (localStorage) para guardar preferencias de sesión, una copia local de tu portafolio y la fecha del último día de actividad ya registrado, para no repetir el aviso. No usamos cookies de rastreo de terceros y PostHog no guarda nada en tu dispositivo.</p>
+    <h2>9. Si vives en Chile o en Brasil</h2>
+    <h3 id="chile">Chile (Ley 19.628 y Ley 21.719)</h3>
+    <p>La Ley 21.719 reforma la Ley 19.628 y también se aplica a quienes, sin estar establecidos en Chile, ofrecen bienes o servicios a personas que se encuentran allí. A la fecha de esta versión, su entrada en vigencia está fijada para el 1 de diciembre de 2026, y el Congreso tramita un proyecto que la posterga (boletín 18.623-07). Esta sección ya sigue lo que esa ley pide; lo que depende de la Agencia de Protección de Datos Personales aplica desde que la ley rija.</p>
+    <ul>
+      <li><strong>Responsable y representantes legales:</strong> MAXNOVA &amp; LUCI Global LLC, representada por sus managers Walter M. La Madriz Guerra y Patricia L. Velazco Gil. No hemos designado un encargado de prevención.</li>
+      <li><strong>Contacto:</strong> no tenemos domicilio ni representante en Chile. <a href="mailto:invest@moyiq.app">invest@moyiq.app</a> es nuestro medio de contacto para ti y para la Agencia.</li>
+      <li><strong>A quién se refieren los datos y de dónde vienen:</strong> a quienes usan Invest o responden el cuestionario de perfil. Los datos vienen de ti y, si entras con Google, también de Google.</li>
+      <li><strong>Finalidades, bases e intereses legítimos:</strong> los de la sección 3. Nuestros intereses legítimos son saber si los correos de tu cuenta se usan, operar y proteger el servicio, y medir su uso de forma agregada. Puedes oponerte a estos tratamientos.</li>
+      <li><strong>Consentimiento:</strong> puedes retirarlo en cualquier momento y sin dar motivos, con el enlace de baja de cada correo o escribiéndonos. Retirarlo no afecta lo tratado antes.</li>
+      <li><strong>Tus derechos:</strong> acceso, rectificación, supresión, oposición, portabilidad y bloqueo, y oponerte a decisiones automatizadas y pedir una explicación e intervención humana. Los ejerces por escrito a invest@moyiq.app, sin costo, indicando quién eres, una dirección para responderte y qué datos o tratamiento pides revisar.</li>
+      <li><strong>Plazos:</strong> te respondemos dentro de 30 días corridos. La ley permite prorrogarlo una sola vez, hasta por otros 30 días corridos; si lo necesitamos, te avisamos antes de que venza. Si junto con una solicitud de rectificación, supresión u oposición pides el bloqueo temporal, te respondemos en 2 días hábiles. El bloqueo suspende el tratamiento, pero los datos siguen almacenados.</li>
+      <li><strong>Transferencias:</strong> tus datos se tratan en EE.&nbsp;UU., donde estamos nosotros y los proveedores de la sección 5, porque es necesario para prestarte el servicio. A la fecha de esta versión la Agencia no ha publicado su listado de países adecuados ni sus cláusulas modelo, así que no podemos decirte que EE.&nbsp;UU. ofrezca un nivel adecuado de protección según la ley chilena, y no hemos firmado cláusulas aprobadas por la Agencia.</li>
+      <li><strong>Conservación y seguridad:</strong> secciones 7 y 11.</li>
+      <li><strong>Autoridad de control:</strong> la Agencia de Protección de Datos Personales. Si rechazamos tu solicitud, en todo o en parte, o no te respondemos a tiempo, tienes 30 días hábiles para reclamar ante ella.</li>
+      <li><strong>Incidentes de seguridad:</strong> si ocurre una vulneración que afecte tus datos, la informaremos a la Agencia y, cuando corresponda, también a ti, como exige la ley.</li>
+    </ul>
+    <h3 id="brasil">Brasil (LGPD)</h3>
+    <ul>
+      <li><strong>Controlador:</strong> MAXNOVA &amp; LUCI Global LLC. Canal de comunicación con el encargado de datos (encarregado): invest@moyiq.app.</li>
+      <li><strong>Bases legales:</strong> ejecución del contrato (art. 7, V), consentimiento (art. 7, I) e interés legítimo (art. 7, IX), según la sección 3.</li>
+      <li><strong>Tus derechos (art. 18):</strong> confirmación de que tratamos tus datos, acceso, corrección, bloqueo o eliminación de datos innecesarios, portabilidad, información sobre con quién los compartimos y revocación del consentimiento. Si pides la confirmación y el acceso completo a tus datos, respondemos en 15 días.</li>
+      <li><strong>Transferencias:</strong> nos das tus datos directamente a nosotros, una empresa en EE.&nbsp;UU., y nuestros proveedores los tratan allí porque es necesario para prestarte el servicio (artículo 33, IX, en relación con el artículo 7, V, de la LGPD). La ANPD no ha reconocido a EE.&nbsp;UU. como país con protección adecuada y no hemos firmado las cláusulas estándar de la ANPD (Resolución CD/ANPD 19/2024).</li>
+      <li><strong>Autoridad:</strong> puedes presentar una petición ante la Agencia Nacional de Protección de Datos (ANPD).</li>
+    </ul>
+    <div lang="pt-BR">
+      <h3>Transferência internacional de dados: resumo em português</h3>
+      <p><strong>Controlador:</strong> MAXNOVA &amp; LUCI Global LLC, 10482 NW 31st Terrace, Office 1D, Doral, FL 33172, EUA, invest@moyiq.app.</p>
+      <p><strong>Como, para quê e por quanto tempo:</strong> você nos envia seus dados diretamente, pela internet, e eles são tratados nos Estados Unidos enquanto forem necessários para prestar o serviço, pelos prazos indicados nesta política. Os provedores da seção 5 os tratam por nossa conta, para hospedagem, banco de dados, autenticação, envio de emails, medição de uso, segurança e suporte. Não vendemos dados pessoais.</p>
+      <p><strong>Base:</strong> a execução do contrato (art. 33, IX, e art. 7, V, da LGPD). A ANPD não reconheceu os Estados Unidos como país com nível adequado de proteção, e não assinamos as cláusulas-padrão contratuais da ANPD.</p>
+      <p><strong>Segurança e responsabilidades:</strong> como controlador, respondemos pelo tratamento e por nossos provedores; as medidas de segurança estão na seção 11.</p>
+      <p><strong>Seus direitos:</strong> você pode exercê-los gratuitamente pelo email invest@moyiq.app e peticionar contra o controlador perante a Agência Nacional de Proteção de Dados (ANPD).</p>
+    </div>
 
-    <h2>10. Seguridad</h2>
+    <h2>10. Cookies y almacenamiento local</h2>
+    <p>MOY IQ Invest usa el almacenamiento local del navegador (localStorage) para guardar preferencias de sesión, una copia local de tu portafolio y la fecha del último día de actividad ya registrado, para no repetir el aviso. No usamos cookies de rastreo y PostHog no guarda nada en tu dispositivo.</p>
+
+    <h2>11. Seguridad</h2>
     <p>Usamos autenticación con tokens JWT, HTTPS en todas las comunicaciones y seguridad a nivel de fila (RLS) en la base de datos para que cada persona acceda únicamente a sus propios datos.</p>
 
-    <h2>11. Menores de edad</h2>
+    <h2>12. Menores de edad</h2>
     <p>MOY IQ Invest no está dirigido a menores de 18 años. Si detectamos datos de un menor, los eliminaremos.</p>
 
-    <h2>12. Modificaciones</h2>
+    <h2>13. Modificaciones</h2>
     <p>Podemos actualizar esta política. Los cambios significativos se notificarán por correo electrónico.</p>
 
-    <h2>13. Contacto</h2>
+    <h2>14. Contacto</h2>
     <p>Para consultas sobre privacidad: <a href="mailto:invest@moyiq.app">invest@moyiq.app</a></p>
   </article>
 </main>

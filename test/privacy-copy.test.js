@@ -39,7 +39,30 @@ describe('privacy.html · analítica con PostHog', () => {
     expect(p).toMatch(/reclamo ante la autoridad de protección de datos de tu país/);
   });
   it('tiene fecha de actualización de hoy', () => {
-    expect(p).toMatch(/Última actualización: 19 de octubre de 2026 · Versión 2\.4/);
+    expect(p).toMatch(/Última actualización: 30 de octubre de 2026 · Versión 2\.5/);
+  });
+});
+
+describe('privacy.html · Chile, Brasil y proveedores (LEG-5, LEG-13, C-36)', () => {
+  it('Chile: no da por cierta la fecha, y no afirma garantías que no existen', () => {
+    expect(p).toMatch(/boletín 18\.623-07/);
+    expect(p).toMatch(/no hemos firmado cláusulas aprobadas por la Agencia/);
+    expect(p).toMatch(/2 días hábiles/);
+    expect(p).toMatch(/30 días hábiles para reclamar/);
+  });
+  it('Brasil: nombre vigente de la ANPD y sin afirmar cláusulas firmadas', () => {
+    expect(p).not.toMatch(/Autoridad Nacional de Protección de Datos/);
+    expect(p).toMatch(/Agência Nacional de Proteção de Dados/);
+    expect(p).toMatch(/no hemos firmado las cláusulas estándar de la ANPD/);
+    expect(privacy).toMatch(/<div lang="pt-BR">/);
+  });
+  it('declara Cloudflare Turnstile, que turnstile.js carga con clave', () => {
+    expect(p).toMatch(/Turnstile recibe tu dirección IP/);
+    expect(read('turnstile.js')).toMatch(/var SITE_KEY = '0x/);
+  });
+  it('las imágenes de noticias salen del sitio de origen (app/index.html) y la política lo dice', () => {
+    expect(read('app/index.html')).toContain('mkt-news-img');
+    expect(p).toMatch(/imágenes de las noticias: tu navegador las carga directamente/);
   });
 });
 
