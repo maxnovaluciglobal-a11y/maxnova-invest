@@ -3,10 +3,20 @@
 // cestas de tickers por perfil, montos "sugeridos" y afirmaciones de frescura
 // que no se sostienen.
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
 const html = readFileSync(fileURLToPath(new URL("../app/index.html", import.meta.url)), "utf8");
+
+// lab-sugerido.js es la única excepción: experimento interno que solo carga para las cuentas
+// de lab-gate.js mientras Walter decide (PRODUCT.md, LEG-10). Ningún otro archivo de app/lib
+// puede usar este lenguaje; lab-gate.js solo nombra la ruta de ese archivo.
+const libDir = fileURLToPath(new URL("../app/lib", import.meta.url));
+const COPY_GUARD_EXCLUDED = ["lab-sugerido.js"];
+const libs = readdirSync(libDir)
+  .filter((f) => f.endsWith(".js") && !COPY_GUARD_EXCLUDED.includes(f))
+  .map((f) => [f, readFileSync(resolve(libDir, f), "utf8").replace("/app/lib/lab-sugerido.js", "")]);
 
 describe("I05 · sin asignación por perfil ni 'Sugerido hoy'", () => {
   it("no hay columna ni leyenda 'Sugerido hoy'", () => {
@@ -20,6 +30,18 @@ describe("I05 · sin asignación por perfil ni 'Sugerido hoy'", () => {
   it("no presenta zonas de RSI como 'entrada favorable'", () => {
     expect(html).not.toMatch(/zona de entrada favorable/i);
     expect(html).not.toMatch(/RSI favorable/i);
+  });
+});
+
+describe("Monto sugerido fuera de lo publicado", () => {
+  it("la excepción es un solo archivo", () => {
+    expect(COPY_GUARD_EXCLUDED).toEqual(["lab-sugerido.js"]);
+    expect(libs.length).toBeGreaterThan(10);
+  });
+  it("ningún archivo de app/lib lo menciona", () => {
+    for (const [f, src] of libs) {
+      expect(src, f).not.toMatch(/monto sugerido|sugerido hoy|experimento interno/i);
+    }
   });
 });
 

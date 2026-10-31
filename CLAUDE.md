@@ -40,6 +40,12 @@ Sin tipo de cambio no hay 1:1: el monto queda fuera y el rendimiento sin calcula
 de trabajo y `invest_operations` la cuenta (`ledgerSync`, `ledgerPush`); si la migración no está aplicada,
 `LEDGER_TABLE=false` y todo sigue solo en el navegador. `portfolio_holdings` se sigue escribiendo igual: el panel de MOY IQ no cambió.
 
+## Experimento interno (lab)
+
+`app/lib/lab-gate.js` tiene la única lista de cuentas y carga `app/lib/lab-sugerido.js` después del login. Ese archivo agrega
+la pestaña con `registerExtraTab`: `app/index.html` no contiene sus textos. Es la única excepción de `test/copy-guard.test.js`
+y no se publica ni se anuncia (`PRODUCT.md`).
+
 ## Qué es
 
 PWA de análisis de inversiones para LATAM (`app/index.html`). Landing en `index.html` +

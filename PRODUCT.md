@@ -23,6 +23,7 @@ Se usa en escritorio para revisar y cargar posiciones, y en el celular para mira
 - App de un solo archivo (`app/index.html`, JS inline) + `app/lib/*.js` con tests (vitest). Supabase compartido con MOY IQ (`portfolio_holdings` con `stop`, `watchlist`, `profiles`, `consents`). Alertas solo en este navegador.
 - Datos de mercado con retraso (Yahoo Finance / FMP vía `api/`).
 - Prohibido: recomendaciones personalizadas de qué comprar, cestas por perfil, "sugerido", notas 0-100, promesas de tiempo real (guardas en `test/copy-guard.test.js`).
+- Excepción interna (31-oct-2026): `app/lib/lab-sugerido.js` es un experimento visible solo para las cuentas de Walter (`app/lib/lab-gate.js`). No está publicado ni aprobado: sigue la regla de arriba y depende de la decisión de Walter y de la revisión legal (LEG-10). El "Mi plan de compras" público (#14) no se construye todavía.
 
 ## Brand Commitments
 - Marca MOY IQ: Navy `#14213D`, Latón `#B8863B` (CTA con texto Navy), Papel `#F1EEE6` / `#FAF8F2`, estados `--pos`/`--neg`/`--warn` con ícono + palabra, nunca solo color. Radios ≤ 12 px, nunca pill. IBM Plex Sans para texto y cifras (cifras con `tabular-nums lining-nums`); IBM Plex Mono solo para tickers, ISIN y códigos (M1, 21-oct-2026). Fuentes autoalojadas, nunca Google Fonts. Modo claro y oscuro.

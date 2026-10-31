@@ -2128,6 +2128,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <script src="/app/lib/csv-import.js"></script>
 <script src="/app/lib/holdings.js"></script>
 <script src="/app/lib/ledger.js"></script>
+<script src="/app/lib/lab-gate.js"></script>
 <script src="/app/lib/fx.js"></script>
 <script src="/app/lib/diversification.js"></script>
 <script src="/app/lib/market.js"></script>
@@ -3528,6 +3529,19 @@ var DEST=[
     {slug:'planes',      label:'Planes guardados', page:'plans'}]},
   {id:'mercado',    label:'Mercado',    icon:'globe', tabs:[{slug:'',page:'decision'}]}
 ];
+// Pestañas que agrega un módulo que carga aparte. Ninguna existe en este archivo: sin
+// registro, su hoja no resuelve y cae en Hoy.
+var EXTRA_PAGES={};
+function registerExtraTab(destId,tab,fn){
+  var d=DEST.find(function(x){return x.id===destId;});
+  if(!d||d.tabs.some(function(t){return t.page===tab.page;})) return;
+  d.tabs.push(Object.assign({extra:true},tab));
+  EXTRA_PAGES[tab.page]=fn;
+}
+function clearExtraTabs(){
+  DEST.forEach(function(d){ d.tabs=d.tabs.filter(function(t){return !t.extra;}); });
+  EXTRA_PAGES={};
+}
 // Fuera de los 5 destinos: se llega desde el menu de la cuenta.
 var DEST_ACCOUNT={settings:{id:'ajustes',label:'Ajustes'},help:{id:'ayuda',label:'Ayuda'}};
 var PAGE_ALIAS={
@@ -4662,7 +4676,7 @@ function renderMain(){
   // 'decision' es ahora Mercado: solo el contexto (regimen, VIX,
   // resultados). Las lecturas por activo pasan a Lista en la fase 3.
   var pages={dash:renderDash,port:renderPort,watch:renderWatch,pb:renderPBBody,comp:renderComp,decision:renderMercado,divs:renderDivs,rebal:renderRebal,alert:renderAlert,bitacora:renderBitacora,screener:renderScreenerBody,capital:renderCapital,plans:renderPlans,settings:renderSettings,help:renderHelp};
-  (pages[S.page]||renderDash)();
+  (pages[S.page]||EXTRA_PAGES[S.page]||renderDash)();
   dedupeMainHeader();
   sideSync();
   stripEnsure();
@@ -9213,6 +9227,9 @@ async function _sbLoadUserDataImpl(authUser){
     S.watchlist=watch;
     loadTrades();loadAlerts();
     ledgerSync();
+    // Módulo aparte: solo existe para las cuentas de lab-gate.js.
+    clearExtraTabs();
+    if(window.InvestLabGate) InvestLabGate.load(S.user.id);
     fetchFXLatam();
     // F1-07: consent gate — only active when CONSENT_GATE_ENABLED is true.
     // When false, no query to public.consents is made and no modal is shown.
