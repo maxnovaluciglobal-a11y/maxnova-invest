@@ -17,7 +17,7 @@
 //      so deleting the account also stops billing, not just data. Never blocks
 //      the rest of the flow — a deleted account with a subscription that needs
 //      a manual cancel is a smaller problem than a stuck deletion.
-//   2. portfolio_holdings, watchlist, consents, trial_emails, invest_activity_days
+//   2. portfolio_holdings, invest_operations, watchlist, consents, trial_emails, invest_activity_days
 //      (days the app was opened, for the weekly-active count) — every row with
 //      user_id = this user.
 //   3. The profiles row itself (id = this user). `profiles` is Invest-only;
@@ -68,7 +68,11 @@ function json(data, status = 200, req) {
 
 // Tables holding per-user data, cleared (in this order) before the profile
 // row and the auth user itself can go. All filtered by user_id.
-const USER_DATA_TABLES = ['portfolio_holdings', 'watchlist', 'consents', 'trial_emails', 'invest_activity_days'];
+const USER_DATA_TABLES = ['portfolio_holdings', 'invest_operations', 'watchlist', 'consents', 'trial_emails', 'invest_activity_days'];
+
+// Mientras la migración 20261031120000 no esté aplicada, la tabla no existe y no hay nada
+// que borrar: no debe frenar el borrado del resto.
+const NEW_TABLES = ['invest_operations'];
 
 async function deleteRows(table, userId, idColumn) {
   const url = `${SUPABASE_URL}/rest/v1/${table}?${idColumn}=eq.${userId}`;
@@ -83,6 +87,9 @@ async function deleteRows(table, userId, idColumn) {
     });
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
+      if (NEW_TABLES.includes(table) && (res.status === 404 || /PGRST205|42P01/.test(detail))) {
+        return { table, ok: true, deleted: 0, skipped: 'table_not_found' };
+      }
       return { table, ok: false, error: `HTTP ${res.status}: ${detail.slice(0, 300)}` };
     }
     const rows = await res.json().catch(() => []);

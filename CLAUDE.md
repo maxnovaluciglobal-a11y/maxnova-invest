@@ -31,6 +31,15 @@ este repo va con `scope:'local'`**: el global revoca también la sesión de MOY 
 como suma, se muestran en Hoy (`handoffAporteBanner`) y solo se escriben con "Ir a Aportes". `financeos-app` copia la
 valuación de `app/lib/fx.js` en `src/utils/investValuation.js`: si cambia acá, cambia allá.
 
+## Efectivo del portafolio (31-oct-2026)
+
+`app/lib/ledger.js` (puro, tests en `test/ledger.test.js`) calcula efectivo, total aportado, valor actual y rendimiento
+desde las operaciones. Cumple siempre ganancia = valor actual − aportado: unidades que están en operaciones y no en
+Posiciones se siguen valuando (aviso con "Registrar la venta"), y posiciones sin operaciones cuentan como aporte a su costo.
+Sin tipo de cambio no hay 1:1: el monto queda fuera y el rendimiento sin calcular. `localStorage` (`it_<uid>`) es la copia
+de trabajo y `invest_operations` la cuenta (`ledgerSync`, `ledgerPush`); si la migración no está aplicada,
+`LEDGER_TABLE=false` y todo sigue solo en el navegador. `portfolio_holdings` se sigue escribiendo igual: el panel de MOY IQ no cambió.
+
 ## Qué es
 
 PWA de análisis de inversiones para LATAM (`app/index.html`). Landing en `index.html` +

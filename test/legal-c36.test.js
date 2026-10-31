@@ -73,6 +73,6 @@ describe('resumen legal dentro de la app', () => {
   });
   it('remite a las versiones vigentes', () => {
     expect(modal).toContain('versión 2.1, 19 de octubre de 2026');
-    expect(modal).toContain('versión 2.5, 30 de octubre de 2026');
+    expect(modal).toContain('versión 2.6, 31 de octubre de 2026');
   });
 });

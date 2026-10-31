@@ -10,7 +10,7 @@
   "use strict";
   var EPS = 1e-7;
 
-  // holding: {sh, cost, stop?} | null. trade: {type:'buy'|'sell', qty, price, amount}.
+  // holding: {sh, cost, stop?} | null. trade: {type:'buy'|'sell'|'bonus', qty, price, amount}.
   // Devuelve {action:'create'|'update'|'close'|'none', sh, cost, sold, pnl}.
   // - buy: suma unidades y recalcula la entrada como promedio ponderado.
   // - sell: resta unidades a la entrada actual (pnl = (precio - entrada) x vendidas).
@@ -21,6 +21,14 @@
   // costo en USD (FIN-12). Si alguna compra no lo tiene, queda null (desconocido).
   function applyTrade(holding, trade) {
     var qty = Number(trade.qty) || 0;
+    // Bono o referido: unidades sin costo. Suman unidades y dejan igual el costo total y el
+    // de la compra en USD; nunca se tratan como una compra a precio de mercado.
+    if (trade.type === "bonus") {
+      if (!(qty > 0)) return { action: "none" };
+      if (!holding) return { action: "create", sh: qty, cost: 0, fxCost: null };
+      var bs0 = Number(holding.sh) || 0, bsh = bs0 + qty;
+      return { action: "update", sh: bsh, cost: (bs0 * (Number(holding.cost) || 0)) / bsh, fxCost: holding.fxCost != null ? holding.fxCost : null };
+    }
     var price = Number(trade.price) || 0;
     var amount = Number(trade.amount) || 0;
     if (!(qty > 0) && price > 0 && amount > 0) qty = amount / price;

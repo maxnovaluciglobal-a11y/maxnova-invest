@@ -1567,6 +1567,19 @@ body:not(.no-auth) .pagehead { display:block; }
 .port-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); margin: 0 0 8px; }
 
 /* Movimientos */
+.cash-sec { display: flex; flex-direction: column; gap: 10px; }
+.cash-sec .hoy-sec-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.mv-empty-a { display: flex; flex-wrap: wrap; gap: 8px; }
+.op-edit { color: var(--text2); }
+@media (max-width: 1023px) {
+  .cash-sec .linkbtn, .capx-l .linkbtn, .fx-note .linkbtn { min-height: 44px; }
+  .modal-tr .inp, .modal-tr .btn-big { min-height: 44px; }
+  .modal-tr .mx { width: 44px; height: 44px; }
+}
+.tr-opts { border: none; margin: 0; padding: 0; min-width: 0; }
+.tr-opts legend { padding: 0; }
+.tr-check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; color: var(--text); cursor: pointer; }
+.tr-check input { width: 20px; height: 20px; flex: none; accent-color: var(--blue); }
 .mv-empty { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; max-width: 560px; padding: 24px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--r-md); }
 .mv-empty h2 { margin: 0; font-size: 18px; font-weight: 600; color: var(--bright); }
 .mv-empty p { margin: 0; font-size: 13px; color: var(--text2); line-height: 1.6; }
@@ -2114,6 +2127,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <script src="/app/lib/demo-seed.js"></script>
 <script src="/app/lib/csv-import.js"></script>
 <script src="/app/lib/holdings.js"></script>
+<script src="/app/lib/ledger.js"></script>
 <script src="/app/lib/fx.js"></script>
 <script src="/app/lib/diversification.js"></script>
 <script src="/app/lib/market.js"></script>
@@ -2267,7 +2281,7 @@ const S={
   consentGateRequired: false,
   missingConsents: [],
   // ── BITÁCORA ──
-  trades:[],          // {id,ticker,type,date,price,qty,amount,rsi,note,pnl}
+  trades:[],          // {id,uid,ticker,type,date,currency,price,qty,amount,fx,rsi,note,pnl,cash,reinvested,edited,source,synced}
   tradeFilter:{ticker:"ALL",type:"ALL"},
   tradeNextId:1,
   // ── ALERTAS ──
@@ -2286,12 +2300,80 @@ const S={
   screenerRunning:false,
 };
 
-// ── TRADE PERSISTENCE (localStorage — no schema change needed) ──
+// ── TRADE PERSISTENCE ──
+// localStorage es la copia de trabajo: la app abre y escribe sin esperar a la red.
+// invest_operations (migración 20261031120000) guarda el libro en la cuenta.
 function persistTrades(){
   try{var k='it_'+(S.user&&S.user.id||'demo');localStorage.setItem(k,JSON.stringify(S.trades));localStorage.setItem(k+'_nid',S.tradeNextId);}catch(e){}
 }
 function loadTrades(){
   try{var k='it_'+(S.user&&S.user.id||'demo');S.trades=JSON.parse(localStorage.getItem(k)||'[]');S.tradeNextId=parseInt(localStorage.getItem(k+'_nid')||'1');}catch(e){S.trades=[];S.tradeNextId=1;}
+}
+
+// Libro en la cuenta. null = sin comprobar; false = la migración aún no se aplicó: todo
+// sigue funcionando solo en este navegador, como antes (mismo criterio que HOLDINGS_STOP).
+var LEDGER_TABLE=null, _ledgerBusy=false;
+function _ledgerOn(){ return !!(sb&&S.user&&S.user.id&&!S.demoMode&&LEDGER_TABLE!==false); }
+function _ledgerDelKey(){ return 'it_'+(S.user&&S.user.id||'demo')+'_del'; }
+function _ledgerDeleted(){ try{ return JSON.parse(localStorage.getItem(_ledgerDelKey())||'[]'); }catch(e){ return []; } }
+function _ledgerSetDeleted(l){ try{ if(l.length) localStorage.setItem(_ledgerDelKey(),JSON.stringify(l)); else localStorage.removeItem(_ledgerDelKey()); }catch(e){} }
+function _newUid(){
+  if(window.crypto&&crypto.randomUUID) return crypto.randomUUID();
+  var b=crypto.getRandomValues(new Uint8Array(16)); b[6]=b[6]&15|64; b[8]=b[8]&63|128;
+  var h=Array.prototype.map.call(b,function(x){ return (x+256).toString(16).slice(1); }).join('');
+  return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
+}
+// Sube operaciones sin perder nada: lo que falla queda pendiente para la próxima carga.
+async function ledgerPush(list){
+  if(!_ledgerOn()||!list.length) return false;
+  var rows=list.map(function(o){ return InvestLedger.opToRow(o,S.user.id); });
+  var res=await withTimeout(sb.from('invest_operations').upsert(rows,{onConflict:'id'}),8000);
+  if(res.error){
+    if(InvestLedger.isMissingTable(res.error)){ LEDGER_TABLE=false; return false; }
+    console.error('ledgerPush failed',res.error);
+    // Una fila rechazada no frena las demás: quedan pendientes solo las que fallan.
+    if(list.length>1){ for(var i=0;i<list.length;i++) await ledgerPush([list[i]]); }
+    return false;
+  }
+  LEDGER_TABLE=true;
+  // Las vistas recargan S.trades desde localStorage: se marca por uid, no por referencia.
+  var up={}; list.forEach(function(o){ up[o.uid]=true; });
+  loadTrades();
+  S.trades.forEach(function(o){ if(up[o.uid]) o.synced=true; });
+  persistTrades();
+  return true;
+}
+async function ledgerDrop(uids){
+  if(!_ledgerOn()||!uids.length) return;
+  var res=await withTimeout(sb.from('invest_operations').delete().in('id',uids).eq('user_id',S.user.id),8000);
+  if(res.error){ if(InvestLedger.isMissingTable(res.error)) LEDGER_TABLE=false; else console.error('ledgerDrop failed',res.error); return; }
+  _ledgerSetDeleted(_ledgerDeleted().filter(function(u){ return uids.indexOf(u)<0; }));
+}
+async function ledgerSync(){
+  if(!_ledgerOn()||_ledgerBusy) return;
+  _ledgerBusy=true;
+  try{
+    var uid=S.user.id;
+    var res=await withTimeout(sb.from('invest_operations').select(InvestLedger.COLUMNS).eq('user_id',uid).order('seq'),8000);
+    if(res.error){
+      if(InvestLedger.isMissingTable(res.error)) LEDGER_TABLE=false; else console.error('ledgerSync failed',res.error);
+      return;
+    }
+    if(!S.user||S.user.id!==uid) return;
+    LEDGER_TABLE=true;
+    loadTrades();
+    var before=JSON.stringify(S.trades);
+    var dirty=false;
+    S.trades.forEach(function(o){ if(!o.uid){ o.uid=_newUid(); dirty=true; } });
+    var del=_ledgerDeleted();
+    var m=InvestLedger.mergeOps(S.trades,(res.data||[]).map(InvestLedger.rowToOp),del);
+    S.trades=m.ops; S.tradeNextId=Math.max(S.tradeNextId,m.nextId);
+    persistTrades();
+    if(del.length) await ledgerDrop(del);
+    if(m.upload.length) await ledgerPush(m.upload);
+    if((dirty||before!==JSON.stringify(S.trades))&&!S.modal&&(S.page==='dash'||S.page==='bitacora')) renderMain();
+  }catch(e){ console.error('ledgerSync failed',e); }
+  finally{ _ledgerBusy=false; }
 }
 
 // ── ALERTAS (mismo patron de persistencia local que los trades) ──
@@ -2388,7 +2470,7 @@ function ensureNotifyPermission(){
 function realizedPnlFor(ticker){
   var avgCost=null,shares=0,realized=0,buyCosts=[];
   S.trades.filter(function(t){return t.ticker===ticker;}).sort(function(a,b){return a.id-b.id;}).forEach(function(t){
-    if(t.type==='buy'){buyCosts.push({qty:t.qty,price:t.amount/t.qty});shares+=t.qty;}
+    if(t.type==='buy'||(t.type==='dividend'&&t.reinvested)){buyCosts.push({qty:t.qty,price:t.amount/t.qty});shares+=t.qty;}
     else if(t.type==='sell'){var cost=buyCosts.length?buyCosts.reduce(function(s,b){return s+b.price*b.qty;},0)/buyCosts.reduce(function(s,b){return s+b.qty;},0):0;realized+=(t.amount/t.qty-cost)*t.qty;shares-=t.qty;}
   });
   return realized;
@@ -3927,7 +4009,7 @@ function openModal(t,data){
   // perderse al abrir/cerrar un dialogo).
   // En el ejemplo, "Nueva posición" sale primero del ejemplo: lo que se
   // agregue tiene que ir al portafolio real, no al ficticio.
-  if(S.demoMode&&(t==='addpos'||t==='importcsv')){ exitDemo(); }
+  if(S.demoMode&&(t==='addpos'||t==='importcsv'||t==='addtrade')){ exitDemo(); }
   _modalLastFocus=document.activeElement;
   closeDrawer();S.modal=t;S.editPos=data||null;if(t==='upgrade')track('paywall_view');renderModal();
 }
@@ -4563,7 +4645,7 @@ function renderSettings(){
         '<input type="file" id="backup-file" accept="application/json,.json" hidden onchange="importBackup(this.files[0])"/>'))+
     sec('riesgo','Zona de riesgo',
       row('Cerrar sesión','Sale de tu cuenta en este navegador.','<button type="button" class="btn" onclick="logout()">Cerrar sesión</button>')+
-      (u?row('Eliminar mis datos de Invest','Borra solo lo de Invest: portafolio, lista, perfil y consentimientos. Tu cuenta de acceso es la misma de MOY IQ y sigue activa.','<button type="button" class="btn btn-r" onclick="openModal(\'delacct\')">'+icon('trash')+' Eliminar datos</button>'):'')+
+      (u?row('Eliminar mis datos de Invest','Borra solo lo de Invest: portafolio, operaciones, lista, perfil y consentimientos. Tu cuenta de acceso es la misma de MOY IQ y sigue activa.','<button type="button" class="btn btn-r" onclick="openModal(\'delacct\')">'+icon('trash')+' Eliminar datos</button>'):'')+
       (u?row('Eliminar la cuenta','Borra la cuenta de acceso y todos tus datos de MOY IQ y de Invest a la vez. Se hace en MOY IQ, con este mismo correo.','<a class="btn btn-r" href="https://app.moyiq.app/delete-account" target="_blank" rel="noopener">Eliminar la cuenta<span class="sr-only"> (se abre MOY IQ en otra pestaña)</span></a>'):''),'set-danger')+
     sec('contacto','Contacto',
       row('Escríbenos','Dudas, errores o ideas.','<a class="btn" href="mailto:invest@moyiq.app">'+icon('mail')+' invest@moyiq.app</a>')+
@@ -4817,7 +4899,7 @@ function openTCModal(tab){
     'Las fuentes de precios no reciben datos tuyos. Las imágenes de noticias las carga tu navegador desde el sitio que las publica. No vendemos datos.<br><br>'+
     '<b style="color:var(--bright)">Tus derechos</b><br>'+
     'Puedes borrar tus datos de Invest desde Configuración, y pedir acceso, corrección, portabilidad u oposición escribiendo a invest@moyiq.app.<br><br>'+
-    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.5, 30 de octubre de 2026).</span>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.6, 31 de octubre de 2026).</span>'+
     '</div>';
 
   var content=isTc?tcContent:ppContent;
@@ -4908,7 +4990,7 @@ function renderDash(){
 
   // ── Estado vacío (I01): portada de la cuenta nueva ──
   if(port.length===0){
-    main.innerHTML='<div class="port-wrap pv">'+handoffAporteBanner()+seedCleanupBanner()+firstRunEmpty()+'</div>';
+    main.innerHTML='<div class="port-wrap pv">'+handoffAporteBanner()+seedCleanupBanner()+dashCashBlock()+firstRunEmpty()+'</div>';
     return;
   }
 
@@ -4941,6 +5023,7 @@ function renderDash(){
     pvhShell()+
     fxExclNote(PV.excluded)+fxCostNote(T.fxEffect,T.fxKnown,T.fxUnknown)+
     dashTopPositions(pu,rs,T.value)+
+    dashCashBlock()+
     dashAporteCard()+
     '<p class="hoy-ctx" id="hoy-ctx" aria-live="polite">'+dashCtxHtml(DE_CACHE.regime,DE_CACHE.vix,false)+'</p>'+
     '</div>';
@@ -5344,7 +5427,7 @@ function applyAporteParam(){
     qp.delete('aporte');
     var q=qp.toString();
     history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
-    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
+    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); S.aporteDeposit={amount:parseFloat(v),ccy:'USD',usd:parseFloat(v),n:1}; setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
   }catch(e){}
 }
 
@@ -5360,7 +5443,7 @@ function handoffAporteBanner(){
   var aprox=usd&&a.ccy!=='USD'?' (≈ '+fmtUSD(usd,0)+')':'';
   return '<section class="seed-banner" aria-labelledby="ho-aporte-t">'+
     '<div class="seed-banner-body"><div class="seed-banner-t" id="ho-aporte-t">Aportes de este mes en MOY IQ</div>'+
-    '<div class="seed-banner-d">Marcaste '+cant+' por <span class="num">'+monto+aprox+'</span>. Puedes registrarlos en Planificar › Aportes. No se guarda nada hasta que lo confirmes.</div></div>'+
+    '<div class="seed-banner-d">Marcaste '+cant+' por <span class="num">'+monto+aprox+'</span>. Puedes repartirlos y sumarlos a tu efectivo en Planificar › Aportes. No se guarda nada hasta que lo confirmes.</div></div>'+
     '<div class="seed-banner-acts"><button type="button" class="btn-big" onclick="handoffAporteGo()">Ir a Aportes</button>'+
     '<button type="button" class="btn" onclick="handoffAporteClose()">Ahora no</button></div></section>';
 }
@@ -5370,6 +5453,7 @@ function handoffAporteGo(){
   S.handoffAporte=null;
   if(!a) return;
   var usd=InvestHandoff.aporteUsd(a,function(v,c){return InvestFx.toUsd(v,c,FX_ASSET);});
+  S.aporteDeposit=a;
   track('bridge_aporte',{src:'handoff'});
   if(usd&&setAporte(usd)){
     setPage('capital'); loadCapitalData();
@@ -5813,24 +5897,109 @@ function movCell(l,v,s,cls){
   var vv=String(v); vv=vv.indexOf('<')>=0?vv:numWrap(vv);
   return '<div class="pband-c"><div class="pband-l">'+l+'</div><div class="pband-v'+(cls?' '+cls:'')+'">'+vv+'</div>'+(s?'<div class="pband-s">'+s+'</div>':'')+'</div>';
 }
+// ── EFECTIVO Y APORTES ──────────────────────────────────────────
+var TRADE_CCYS=['USD','CLP','MXN','COP','ARS','PEN','BRL'];
+function ledgerBook(){
+  return InvestLedger.book(S.demoMode?[]:S.trades,S.portfolio,{
+    ccyOf:assetCcy,
+    priceOf:function(t){
+      if(LIVE[t]&&LIVE[t].price>0) return LIVE[t].price;
+      var h=S.portfolio.find(function(x){return x.t===t;});
+      return h&&h.cur>0?h.cur:null;
+    },
+    toUsd:function(v,c){ return InvestFx.toUsd(v,c,FX_ASSET); }
+  });
+}
+function ledgerCcyLine(B){
+  var keys=Object.keys(B.cashByCcy);
+  if(!keys.length) return 'todavía sin movimientos';
+  if(keys.length===1&&keys[0]==='USD') return 'saldo de tus depósitos, retiros y operaciones';
+  return keys.map(function(c){ return c==='?'?'moneda desconocida':pxHtml(B.cashByCcy[c],c); }).join(' · ');
+}
+function ledgerAportadoSub(B){
+  var parts=[];
+  if(B.deposits||B.withdrawals) parts.push('depósitos menos retiros');
+  if(B.implicit>0) parts.push('compras fuera del efectivo');
+  if(B.opening>0) parts.push(B.openingCount+(B.openingCount===1?' posición cargada':' posiciones cargadas')+' sin operaciones, a su costo');
+  return parts.length?parts.join(' + '):'sin aportes registrados';
+}
+function ledgerBand(B){
+  var r=B.returnPct, rc=r>0?'pos':r<0?'neg':'';
+  var rSub=r!=null?money(B.gain,0,true)+' sobre lo aportado':(B.complete?'aún sin aportes registrados':'falta un tipo de cambio');
+  return '<section class="pband" aria-label="Efectivo y aportes">'+
+    movCell('Efectivo',money(B.cash,0),ledgerCcyLine(B),B.cash<0?'neg':'')+
+    movCell('Total aportado',money(B.contributed,0),ledgerAportadoSub(B))+
+    movCell('Valor actual',money(B.value,0),'posiciones '+money(B.positionsValue,0)+' + efectivo')+
+    movCell('Rendimiento',r!=null?dirPct(r):'—',rSub,rc)+
+    '</section>';
+}
+function ledgerNotes(B){
+  var out='';
+  var excl=B.excludedCcys.concat(B.excludedPositions);
+  if(excl.length||B.excludedOps){
+    out+='<p class="fx-note port-muted" role="note">'+icon('warning','ico-inline')+'Sin tipo de cambio'+(excl.length?' para '+esc(excl.join(', ')):'')+': esos montos no se cuentan en estos totales y el rendimiento queda sin calcular.</p>';
+  }
+  var neg=Object.keys(B.cashByCcy).filter(function(c){ return B.cashByCcy[c]<-0.005; });
+  if(neg.length){
+    out+='<p class="fx-note port-muted" role="note">'+icon('warning','ico-inline')+'Saldo negativo en '+esc(neg.join(', ').replace('?','moneda desconocida'))+': falta registrar un depósito o un cambio de moneda.</p>';
+  }
+  B.orphans.forEach(function(o){
+    out+='<p class="fx-note port-muted" role="note">'+icon('warning','ico-inline')+'<span class="num">'+fmtUnits(o.sh)+'</span> u. de '+esc(o.t)+' siguen en tus operaciones, pero no en Posiciones: se cuentan en el valor actual. '+
+      '<button type="button" class="linkbtn" onclick="openModal(\'addtrade\',{type:\'sell\',t:\''+esc(o.t)+'\',price:'+(+o.price||0)+',qty:'+(+o.sh)+'})">Registrar la venta<span class="sr-only"> de '+esc(o.t)+'</span></button></p>';
+  });
+  if(B.unpriced.length){
+    out+='<p class="fx-note port-muted" role="note">Sin precio de hoy para '+esc(B.unpriced.join(', '))+': se usa el último precio registrado.</p>';
+  }
+  return out;
+}
+// Hoy: aparece cuando la persona ya usa el efectivo. El detalle vive en Movimientos.
+function dashCashBlock(){
+  if(S.demoMode) return '';
+  var B=ledgerBook();
+  if(!B.usesCash) return '';
+  return '<section class="cash-sec" aria-labelledby="hoy-cash-h"><div class="hoy-sec-h"><h2 class="port-h2" id="hoy-cash-h">Efectivo y aportes</h2>'+
+    '<button type="button" class="linkbtn" onclick="setPage(\'bitacora\')">Ver en Movimientos</button></div>'+
+    ledgerBand(B)+ledgerNotes(B)+'</section>';
+}
+// Aporte que llegó desde MOY IQ: se ofrece registrarlo; nada se escribe sin confirmar.
+function capDepositBanner(){
+  var a=S.aporteDeposit;
+  var p=a?InvestLedger.aportePending(a,S.trades,localDay().slice(0,7)):null;
+  if(!p||!(p.amount>0)) return '';
+  return '<section class="seed-banner" aria-labelledby="cap-dep-t"><div class="seed-banner-body"><div class="seed-banner-t" id="cap-dep-t">Aporte marcado en MOY IQ</div>'+
+    '<div class="seed-banner-d">Puedes sumarlo a tu efectivo como un depósito de <span class="num">'+pxHtml(p.amount,p.ccy)+'</span>. No se guarda nada hasta que lo confirmes.</div></div>'+
+    '<div class="seed-banner-acts"><button type="button" class="btn-big" onclick="capDepositOpen()">Registrar depósito</button>'+
+    '<button type="button" class="btn" onclick="S.aporteDeposit=null;renderMain()">Ahora no</button></div></section>';
+}
+function capDepositOpen(){
+  var p=InvestLedger.aportePending(S.aporteDeposit,S.trades,localDay().slice(0,7));
+  if(p) openModal('addtrade',{type:'deposit',amount:p.amount,ccy:p.ccy,note:'Aporte desde MOY IQ',source:'moyiq'});
+}
 function mvDate(d){ if(!d) return '—'; var x=new Date(d+'T12:00:00'); return isNaN(x)?esc(d):x.toLocaleDateString(LOC,{day:'numeric',month:'short',year:'numeric'}); }
 function renderBitacora(){
   loadTrades();loadAlerts();
   var all=S.trades;
-  var typeLabel={buy:'Compra',sell:'Venta',deposit:'Depósito',withdrawal:'Retiro',dividend:'Dividendo'};
+  var typeLabel={buy:'Compra',sell:'Venta',deposit:'Depósito',withdrawal:'Retiro',dividend:'Dividendo',bonus:'Bono o referido'};
+  var typeOf=function(t){ return t.type==='dividend'&&t.reinvested?'Dividendo reinvertido':(typeLabel[t.type]||esc(t.type)); };
+  // &#10033; va como entidad: es un asterisco tipográfico, no un emoji de interfaz.
+  var editMark=function(t){ return t.edited?' <span class="op-edit" title="Monto editado respecto del cálculo">&#10033;<span class="sr-only"> monto editado</span></span>':''; };
+  var B=ledgerBook();
+  var cashBtns='<button type="button" class="btn" onclick="openModal(\'addtrade\',{type:\'deposit\'})">'+icon('plus')+' Depositar</button>'+
+    '<button type="button" class="btn" onclick="openModal(\'addtrade\',{type:\'withdrawal\'})">Retirar</button>';
   var actions='<div class="port-bar">'+
     '<button type="button" class="btn-big" onclick="openModal(\'addtrade\')">'+icon('plus')+' Registrar operación</button>'+
+    cashBtns+
     (all.length?'<button type="button" class="btn" onclick="exportTradesCSV()">'+icon('download')+' Exportar CSV</button>':'')+
     '</div>';
 
   if(!all.length){
     document.getElementById("main").innerHTML=
-      '<div class="fos-module-header"><div><div class="fos-module-sub">Tus compras, ventas, depósitos, retiros y dividendos</div></div></div>'+
-      '<div class="port-wrap pv"><div class="mv-empty">'+
+      '<div class="fos-module-header"><div><div class="fos-module-sub">Tus compras, ventas, depósitos, retiros, dividendos y bonos</div></div></div>'+
+      '<div class="port-wrap pv">'+(S.portfolio.length?ledgerBand(B)+ledgerNotes(B):'')+'<div class="mv-empty">'+
         '<div class="mv-empty-i">'+icon('clipboard','ico-lg')+'</div>'+
         '<h2>Todavía no registras operaciones</h2>'+
-        '<p>Anota cada compra, venta o dividendo que hagas en tu bróker. Con eso ves tu resultado realizado, tu costo promedio y cómo te fue en cada operación cerrada.</p>'+
-        '<button type="button" class="btn-big" onclick="openModal(\'addtrade\')">'+icon('plus')+' Registrar operación</button>'+
+        '<p>Anota cada depósito, compra, venta o dividendo que hagas en tu bróker. Con eso ves tu efectivo, cuánto aportaste, tu resultado realizado y tu costo promedio.</p>'+
+        '<div class="mv-empty-a"><button type="button" class="btn-big" onclick="openModal(\'addtrade\')">'+icon('plus')+' Registrar operación</button>'+cashBtns+'</div>'+
       '</div></div>';
     return;
   }
@@ -5841,28 +6010,22 @@ function renderBitacora(){
 
   // Cada operación se registra en la moneda de su activo (depósitos y retiros
   // en USD). Los totales se suman en USD; sin tipo de cambio no se cuentan.
-  var trCcy=function(t){ return t.ticker?assetCcy(t.ticker):'USD'; };
+  var trCcy=function(t){ return InvestLedger.opCcy(t,assetCcy); };
   var trUsd=function(v,t){ return InvestFx.toUsd(v,trCcy(t),FX_ASSET); };
   var sinFx=all.filter(function(t){ return trUsd(t.amount||0,t)==null; });
   var sumOf=function(list,f){ return InvestFx.sumUsd(list,f,trCcy,FX_ASSET).total; };
   var totalInvested=sumOf(all.filter(function(t){return t.type==='buy';}),function(t){return t.amount;});
   var totalRealized=sumOf(all.filter(function(t){return t.type==='sell'&&t.pnl;}),function(t){return t.pnl||0;});
   var totalDivs=sumOf(all.filter(function(t){return t.type==='dividend';}),function(t){return t.amount;});
-  var totalCash=all.reduce(function(s,t){
-    var a=trUsd(t.amount,t); if(a==null) return s;
-    if(t.type==='deposit'||t.type==='sell'||t.type==='dividend') return s+a;
-    if(t.type==='withdrawal'||t.type==='buy') return s-a;
-    return s;
-  },S.capital>0?S.capital:0);
   var sells=all.filter(function(t){return t.type==='sell'&&t.pnl!=null&&trUsd(t.pnl,t)!=null;})
     .map(function(t){ var u=trUsd(t.pnl,t); return u===t.pnl?t:Object.assign({},t,{pnl:u}); });
   var st=movStats(sells);
 
-  var band='<section class="pband" aria-label="Resumen de movimientos">'+
+  var band=ledgerBand(B)+ledgerNotes(B)+
+    '<section class="pband pband-3" aria-label="Resumen de movimientos">'+
     movCell('Resultado realizado',fmtUSD(totalRealized,0).replace(/^\$/,totalRealized>0?'+$':'$'),sells.length+(sells.length===1?' venta con resultado':' ventas con resultado'),totalRealized>0?'pos':totalRealized<0?'neg':'')+
     movCell('Invertido',fmtUSD(totalInvested,0),'suma de tus compras')+
     movCell('Dividendos cobrados',fmtUSD(totalDivs,0),'registrados aquí')+
-    movCell('Efectivo',fmtUSD(totalCash,0),'estimado: '+(S.capital>0?'capital de referencia ':'')+'más depósitos y ventas, menos compras y retiros',totalCash<0?'neg':'')+
     '</section>'+
     (sinFx.length?'<p class="fx-note port-muted" role="note">'+icon('warning','ico-inline')+sinFx.length+(sinFx.length===1?' operación sin tipo de cambio: no se cuenta en estos totales.':' operaciones sin tipo de cambio: no se cuentan en estos totales.')+'</p>':'')+
     (all.some(function(t){return trCcy(t)!=='USD';})?'<p class="fx-note port-muted">Cada operación se muestra en la moneda de su activo; los totales, en USD con el tipo de cambio del día.</p>':'');
@@ -5895,8 +6058,8 @@ function renderBitacora(){
     '<label>Activo <select class="inp" onchange="S.tradeFilter.ticker=this.value;renderBitacora()">'+
       tickers.map(function(t){return '<option value="'+esc(t)+'"'+(S.tradeFilter.ticker===t?' selected':'')+'>'+(t==='ALL'?'Todos':esc(t))+'</option>';}).join('')+'</select></label>'+
     '<label>Tipo <select class="inp" onchange="S.tradeFilter.type=this.value;renderBitacora()">'+
-      ['ALL','buy','sell','deposit','withdrawal','dividend'].map(function(v){
-        var l={ALL:'Todos',buy:'Compras',sell:'Ventas',deposit:'Depósitos',withdrawal:'Retiros',dividend:'Dividendos'};
+      ['ALL','buy','sell','deposit','withdrawal','dividend','bonus'].map(function(v){
+        var l={ALL:'Todos',buy:'Compras',sell:'Ventas',deposit:'Depósitos',withdrawal:'Retiros',dividend:'Dividendos',bonus:'Bonos y referidos'};
         return '<option value="'+v+'"'+(S.tradeFilter.type===v?' selected':'')+'>'+l[v]+'</option>';
       }).join('')+'</select></label>'+
     (S.tradeFilter.ticker!=='ALL'||S.tradeFilter.type!=='ALL'?'<button type="button" class="linkbtn" onclick="S.tradeFilter={ticker:\'ALL\',type:\'ALL\'};renderBitacora()">Quitar filtros</button>':'')+
@@ -5904,7 +6067,7 @@ function renderBitacora(){
 
   var opStack=trades.length?'<ul class="port-stack">'+trades.map(function(t){
     return '<li class="ps-row"><div class="ps-main" style="cursor:default">'+
-      '<span class="ps-l1"><span class="ps-t">'+(typeLabel[t.type]||esc(t.type))+(t.ticker?' · '+esc(t.ticker):'')+'</span><span class="num">'+pxHtml(t.amount,trCcy(t))+'</span>'+(t.pnl!=null?'<span class="num '+(t.pnl>0?'pos':t.pnl<0?'neg':'')+'">'+(t.pnl>0?'+':'')+pxHtml(t.pnl,trCcy(t))+'</span>':'')+'</span>'+
+      '<span class="ps-l1"><span class="ps-t">'+typeOf(t)+(t.ticker?' · '+esc(t.ticker):'')+'</span><span class="num">'+pxHtml(t.amount,trCcy(t))+editMark(t)+'</span>'+(t.pnl!=null?'<span class="num '+(t.pnl>0?'pos':t.pnl<0?'neg':'')+'">'+(t.pnl>0?'+':'')+pxHtml(t.pnl,trCcy(t))+'</span>':'')+'</span>'+
       '<span class="ps-l2"><span>'+mvDate(t.date)+'</span>'+(t.qty?'<span><b class="num">'+fmtUnits(t.qty)+'</b> u. a <b class="num">'+pxHtml(t.price,trCcy(t))+'</b></span>':'')+(t.note?'<span>'+esc(t.note)+'</span>':'')+'</span></div>'+
       '<button type="button" class="btn btn-r port-ib" onclick="deleteTrade('+t.id+')" aria-label="Eliminar operación del '+esc(t.date||'')+'">'+icon('trash')+'</button></li>';
   }).join('')+'</ul>':'';
@@ -5912,10 +6075,10 @@ function renderBitacora(){
     return '<tr>'+
       '<td>'+numWrap(mvDate(t.date))+'</td>'+
       '<td>'+(t.ticker?'<button type="button" class="port-tk" onclick="navOpenTicker(\''+esc(t.ticker)+'\')">'+esc(t.ticker)+'</button>':'—')+'</td>'+
-      '<td>'+(typeLabel[t.type]||esc(t.type))+'</td>'+
+      '<td>'+typeOf(t)+'</td>'+
       '<td class="num col-sec">'+(t.price?pxHtml(t.price,trCcy(t)):'—')+'</td>'+
       '<td class="num col-sec">'+(t.qty?fmtUnits(t.qty):'—')+'</td>'+
-      '<td class="num">'+pxHtml(t.amount,trCcy(t))+'</td>'+
+      '<td class="num">'+pxHtml(t.amount,trCcy(t))+editMark(t)+'</td>'+
       '<td class="num col-sec">'+(t.rsi||'—')+'</td>'+
       '<td class="num '+(t.pnl>0?'pos':t.pnl<0?'neg':'')+'">'+(t.pnl!=null?(t.pnl>0?'+':'')+pxHtml(t.pnl,trCcy(t)):'—')+'</td>'+
       '<td class="col-sec mv-note">'+esc(t.note||'')+'</td>'+
@@ -5934,21 +6097,18 @@ function renderBitacora(){
         return '<tr><td>'+esc(d.t)+'</td><td class="num">'+d.n+'</td><td class="num pos">+'+(d.t==='—'?fmtUSD(d.total):pxT(d.total,d.t))+'</td></tr>';
       }).join('')+'</tbody></table></div></div>';
   }
-  var costRows=Array.from(new Set(all.filter(function(t){return t.type==='buy';}).map(function(t){return t.ticker;}))).map(function(tkr){
-    var buys=all.filter(function(t){return t.ticker===tkr&&t.type==='buy';});
-    var sls=all.filter(function(t){return t.ticker===tkr&&t.type==='sell';});
-    var bq=buys.reduce(function(s,t){return s+(t.qty||0);},0);
-    var q=bq-sls.reduce(function(s,t){return s+(t.qty||0);},0);
-    var avg=bq>0?buys.reduce(function(s,t){return s+t.amount;},0)/bq:0;
+  var costRows=Array.from(new Set(all.filter(function(t){return t.type==='buy'||t.type==='bonus'||(t.type==='dividend'&&t.reinvested);}).map(function(t){return t.ticker;}))).map(function(tkr){
+    // Los bonos suman unidades, no entran al promedio de lo pagado.
+    var c=InvestLedger.costOf(all,tkr);
     var real=realizedPnlFor(tkr);
-    if(q<=0&&real===0) return '';
-    return '<tr><td>'+esc(tkr)+'</td><td class="num">'+pxT(avg,tkr)+'</td><td class="num">'+fmtUnits(Math.max(0,q))+'</td>'+
+    if(c.units<=0&&real===0) return '';
+    return '<tr><td>'+esc(tkr)+'</td><td class="num">'+(c.paidSh>0?pxT(c.avgPaid,tkr):'sin costo')+'</td><td class="num">'+fmtUnits(Math.max(0,c.units))+(c.bonusSh>0?'<span class="port-sub">'+fmtUnits(c.bonusSh)+' de bono</span>':'')+'</td>'+
       '<td class="num '+(real>0?'pos':real<0?'neg':'')+'">'+(real?(real>0?'+':'')+pxT(real,tkr):'—')+'</td></tr>';
   }).join('');
   var costHtml=costRows?'<div><h3 class="port-h3">Costo promedio ponderado</h3><div class="tw"><table class="fos-table"><thead><tr><th>Activo</th><th>Costo promedio</th><th>Unidades</th><th>Resultado realizado</th></tr></thead><tbody>'+costRows+'</tbody></table></div></div>':'';
 
   document.getElementById("main").innerHTML=
-    '<div class="fos-module-header"><div><div class="fos-module-sub">Tus compras, ventas, depósitos, retiros y dividendos · se guardan en este navegador</div></div></div>'+
+    '<div class="fos-module-header"><div><div class="fos-module-sub">Tus compras, ventas, depósitos, retiros y dividendos · '+(LEDGER_TABLE===true?'se guardan en tu cuenta':'se guardan en este navegador')+'</div></div></div>'+
     '<div class="port-wrap pv">'+
     band+actions+perf+
     '<h2 class="port-h2">Operaciones</h2>'+filters+
@@ -5964,8 +6124,14 @@ function deleteTrade(id){
   openModal('deltrade');
 }
 function doDeleteTrade(id){
+  var gone=S.trades.find(function(t){return t.id===id;});
   S.trades=S.trades.filter(function(t){return t.id!==id;});
   persistTrades();
+  // Si la red falla, el borrado queda anotado y se repite en la próxima carga.
+  if(gone&&gone.uid&&LEDGER_TABLE!==false){
+    _ledgerSetDeleted(_ledgerDeleted().concat([gone.uid]));
+    ledgerDrop([gone.uid]).catch(function(e){ console.error('ledgerDrop failed',e); });
+  }
   S.modal=null;S.delTradeId=null;
   document.getElementById("mroot").innerHTML="";
   renderBitacora();
@@ -5973,9 +6139,9 @@ function doDeleteTrade(id){
 
 function exportTradesCSV(){
   if(!S.trades.length){showToast("No hay operaciones para exportar.","warning");return;}
-  var rows=[["ID","Fecha","Ticker","Tipo","Precio","Qty","Monto","RSI","P&L","Nota"]];
+  var rows=[["ID","Fecha","Ticker","Tipo","Precio","Qty","Monto","RSI","P&L","Nota","Moneda","Pasa por el efectivo","Reinvertido","Monto editado"]];
   S.trades.slice().sort(function(a,b){return b.id-a.id;}).forEach(function(t){
-    rows.push([t.id,t.date,t.ticker||'',t.type,t.price||'',t.qty||'',t.amount,t.rsi||'',t.pnl!=null?t.pnl:'',t.note||'']);
+    rows.push([t.id,t.date,t.ticker||'',t.type,t.price||'',t.qty||'',t.amount,t.rsi||'',t.pnl!=null?t.pnl:'',t.note||'',InvestLedger.opCcy(t,assetCcy)||'',t.cash==null?'':(t.cash?'sí':'no'),t.reinvested?'sí':'',t.edited?'sí':'']);
   });
   var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
   var a=document.createElement("a");
@@ -6473,7 +6639,7 @@ function mDelAccount(mr){
     '<p class="msub">'+(email?'Cuenta: <b style="color:var(--bright)">'+email+'</b><br>':'')+
     'Esta acción es <b style="color:var(--bright)">irreversible</b>. Se borra de inmediato, para siempre:</p>'+
     '<ul style="font-size:12px;color:var(--text2);margin:-12px 0 16px 18px;line-height:1.7">'+
-      '<li>Tu portafolio y tu lista de seguimiento</li>'+
+      '<li>Tu portafolio, tus operaciones y tu lista de seguimiento</li>'+
       '<li>Tu perfil y consentimientos de Invest</li>'+
       '<li>Los días en que abriste Invest y el registro de correos del período de prueba</li>'+
       '<li>Cualquier suscripción de Invest que quedara activa (se cancela)</li>'+
@@ -6737,7 +6903,9 @@ async function savePos(id){
   var err=document.getElementById("perr");
   if(!t){err.style.display="block";err.textContent="Ticker requerido";return;}
   if(!sh||sh<=0){err.style.display="block";err.textContent="Unidades no válidas";return;}
-  if(!cost||cost<=0){err.style.display="block";err.textContent="Precio de entrada inválido";return;}
+  // Una posición que nació de un bono tiene costo 0 y se puede seguir editando.
+  var prevCost=id===-1?null:(S.portfolio.find(function(p){return p.id===id;})||{}).cost;
+  if(!(cost>0)&&!(cost===0&&prevCost===0)){err.style.display="block";err.textContent="Precio de entrada inválido";return;}
   if(!cur||cur<=0) cur=(LIVE[t]&&LIVE[t].price)||cost; // sin cotización aún: se usa la entrada hasta que llegue
   if(id===-1){
     var h={id:S.nextId++,t:t,type:type,sh:sh,cost:cost,cur:cur,stop:stop,fxCost:fxCost};
@@ -6793,57 +6961,75 @@ function delPos(id){
 
 // ── MODAL TRADE (Bitácora) ──────────────────────────────────────
 function mTrade(mr){
+  var pre=S.editPos||{};
   var tickers=S.portfolio.map(function(h){return h.t;}).concat(S.watchlist.filter(function(t){return typeof t==='string';}));
   tickers=Array.from(new Set(tickers)).sort();
   var today=localDay();
-  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:400px" onclick="event.stopPropagation()">'+
+  var cashOn=pre.cash!=null?!!pre.cash:S.trades.some(function(t){return t.type==='deposit';});
+  var ccy=pre.ccy||'USD';
+  mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal modal-tr" style="max-width:400px" onclick="event.stopPropagation()">'+
     '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 style="display:flex;align-items:center;gap:8px;justify-content:center">'+icon('clipboard','ico-lg')+'Registrar operación</h2>'+
-    '<p class="msub">Se guarda en Portafolio › Movimientos y actualiza el costo promedio</p>'+
+    '<p class="msub">Se guarda en Portafolio › Movimientos y actualiza tu efectivo y tu costo promedio</p>'+
     '<div id="trerr" class="err" style="display:none"></div>'+
 
     '<label class="fl" for="tr_type">Tipo de operación</label>'+
     '<select id="tr_type" class="inp ifu" onchange="mTradeTypeChange()" style="cursor:pointer">'+
-    '<option value="buy">Compra</option>'+
-    '<option value="sell">Venta</option>'+
-    '<option value="dividend">Dividendo recibido</option>'+
-    '<option value="deposit">Depósito de capital</option>'+
-    '<option value="withdrawal">Retiro de capital</option>'+
+    [['buy','Compra'],['sell','Venta'],['dividend','Dividendo recibido'],['bonus','Bono o referido'],['deposit','Depósito de capital'],['withdrawal','Retiro de capital']].map(function(o){
+      return '<option value="'+o[0]+'"'+(pre.type===o[0]?' selected':'')+'>'+o[1]+'</option>';
+    }).join('')+
     '</select>'+
 
     '<div id="tr_ticker_row">'+
     '<label class="fl" for="tr_ticker">Ticker</label>'+
-    '<input id="tr_ticker" class="inp ifu" placeholder="AAPL" style="text-transform:uppercase" list="tr_tklist" value="'+(S.editPos&&S.editPos.t?esc(S.editPos.t):'')+'"/>'+
+    '<input id="tr_ticker" class="inp ifu" placeholder="AAPL" style="text-transform:uppercase" list="tr_tklist" value="'+(pre.t?esc(pre.t):'')+'"/>'+
     '<datalist id="tr_tklist">'+tickers.map(function(t){return '<option value="'+esc(t)+'"/>';}).join("")+'</datalist>'+
+    '</div>'+
+
+    '<fieldset id="tr_div_row" class="tr-opts"><legend class="fl">Qué hiciste con el dividendo</legend>'+
+    '<label class="tr-check"><input type="radio" name="tr_div" id="tr_div_cash" value="cash" checked onchange="mTradeTypeChange()"/> Pasó a mi efectivo</label>'+
+    '<label class="tr-check"><input type="radio" name="tr_div" id="tr_div_drip" value="drip" onchange="mTradeTypeChange()"/> Se reinvirtió en más unidades (DRIP)</label>'+
+    '</fieldset>'+
+
+    '<div id="tr_ccy_row">'+
+    '<label class="fl" for="tr_ccy">Moneda</label>'+
+    '<select id="tr_ccy" class="inp ifu" style="cursor:pointer">'+TRADE_CCYS.concat(TRADE_CCYS.indexOf(ccy)<0?[ccy]:[]).map(function(c){return '<option value="'+esc(c)+'"'+(c===ccy?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select>'+
     '</div>'+
 
     '<div id="tr_price_row">'+
     '<label class="fl" for="tr_price">Precio por acción</label>'+
-    '<input id="tr_price" class="inp ifu" type="number" placeholder="185.00" step="0.01" min="0.001" value="'+(S.editPos&&S.editPos.price>0?(+S.editPos.price).toFixed(2):'')+'" oninput="mTradeCalc()"/>'+
+    '<input id="tr_price" class="inp ifu" type="number" placeholder="185.00" step="0.01" min="0.001" value="'+(pre.price>0?(+pre.price).toFixed(2):'')+'" oninput="mTradeCalc()"/>'+
     '</div>'+
 
     '<div id="tr_qty_row">'+
-    '<label class="fl" for="tr_qty">Cantidad (shares)</label>'+
-    '<input id="tr_qty" class="inp ifu" type="number" placeholder="10" step="0.001" min="0.001" oninput="mTradeCalc()"/>'+
+    '<label class="fl" for="tr_qty">Cantidad (unidades)</label>'+
+    '<input id="tr_qty" class="inp ifu" type="number" placeholder="10" step="any" min="0" value="'+(pre.qty>0?+pre.qty:'')+'" oninput="mTradeCalc()"/>'+
     '</div>'+
 
-    '<label class="fl" for="tr_amount">Monto total <span style="font-size:11px;color:var(--text3)">(auto-calculado)</span></label>'+
-    '<input id="tr_amount" class="inp ifu" type="number" placeholder="1850.00" step="0.01" min="0" oninput="mTradeAmtChange()"/>'+
+    '<div id="tr_amount_row">'+
+    '<label class="fl" for="tr_amount">Monto total <span id="tr_amount_auto" style="font-size:11px;color:var(--text3)">(auto-calculado)</span></label>'+
+    '<input id="tr_amount" class="inp ifu" type="number" placeholder="1850.00" step="0.01" min="0" value="'+(pre.amount>0?+pre.amount:'')+'" oninput="mTradeAmtChange()"/>'+
+    '</div>'+
+
+    '<p id="tr_bonus_row" class="calc-hint">Sin costo: suma unidades y no cambia lo que pagaste. No afecta tu efectivo.</p>'+
+
+    '<label id="tr_cash_row" class="tr-check"><input type="checkbox" id="tr_cash"'+(cashOn?' checked':'')+'/> <span id="tr_cash_t">Descontar de mi efectivo</span></label>'+
 
     '<label class="fl" for="tr_date">Fecha</label>'+
     '<input id="tr_date" class="inp ifu" type="date" value="'+today+'"/>'+
 
     '<div id="tr_rsi_row">'+
     '<label class="fl" for="tr_rsi">RSI al momento <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
-    '<input id="tr_rsi" class="inp ifu" type="number" placeholder="52" min="0" max="100" step="0.1"/>'+
+    '<input id="tr_rsi" class="inp ifu" type="number" placeholder="52" min="0" max="100" step="0.1" value="'+(pre.rsi>0?+pre.rsi:'')+'"/>'+
     '</div>'+
 
     '<label class="fl" for="tr_note">Nota <span style="font-size:11px;color:var(--text3)">(opcional)</span></label>'+
-    '<input id="tr_note" class="inp ifu" placeholder="Ej: Entrada en soporte SMA50"/>'+
+    '<input id="tr_note" class="inp ifu" maxlength="500" placeholder="Ej: Entrada en soporte SMA50" value="'+esc(pre.note||'')+'"/>'+
 
     '<button class="btn-big" style="width:100%;margin-top:14px" onclick="saveTrade()">Registrar operación</button>'+
     '</div></div>';
-  setTimeout(function(){var el=document.getElementById("tr_ticker");if(el)el.focus();},100);
+  mTradeTypeChange();
+  setTimeout(function(){var el=document.getElementById("tr_ticker");if(el&&el.offsetParent)el.focus();},100);
 }
 
 function mComoCalcula(mr){
@@ -6876,14 +7062,21 @@ function abrirComoCalcula(key){ S.comoCalculaKey=key; openModal('como-calcula');
 
 function mTradeTypeChange(){
   var type=document.getElementById("tr_type").value;
-  var showTicker=["buy","sell","dividend"].indexOf(type)>=0;
-  var showPrice=["buy","sell"].indexOf(type)>=0;
-  var showQty=["buy","sell"].indexOf(type)>=0;
-  var showRsi=["buy","sell"].indexOf(type)>=0;
-  document.getElementById("tr_ticker_row").style.display=showTicker?"":"none";
-  document.getElementById("tr_price_row").style.display=showPrice?"":"none";
-  document.getElementById("tr_qty_row").style.display=showQty?"":"none";
-  document.getElementById("tr_rsi_row").style.display=showRsi?"":"none";
+  var is=function(l){ return l.indexOf(type)>=0; };
+  var drip=type==="dividend"&&document.getElementById("tr_div_drip").checked;
+  var show=function(id,on){ document.getElementById(id).style.display=on?"":"none"; };
+  var showTicker=is(["buy","sell","dividend","bonus"]);
+  show("tr_ticker_row",showTicker);
+  show("tr_div_row",type==="dividend");
+  show("tr_ccy_row",is(["deposit","withdrawal"]));
+  show("tr_price_row",is(["buy","sell"])||drip);
+  show("tr_qty_row",is(["buy","sell","bonus"])||drip);
+  show("tr_amount_row",type!=="bonus");
+  show("tr_bonus_row",type==="bonus");
+  show("tr_cash_row",is(["buy","sell"]));
+  show("tr_rsi_row",is(["buy","sell"]));
+  document.getElementById("tr_amount_auto").style.display=(is(["buy","sell"])||drip)?"":"none";
+  document.getElementById("tr_cash_t").textContent=type==="sell"?"Sumar a mi efectivo":"Descontar de mi efectivo";
   if(!showTicker){document.getElementById("tr_ticker").value="";}
 }
 function mTradeCalc(){
@@ -6898,6 +7091,7 @@ function mTradeAmtChange(){
 }
 
 function saveTrade(){
+  var pre=S.editPos||{};
   var type=document.getElementById("tr_type").value;
   var ticker=(document.getElementById("tr_ticker").value||"").toUpperCase().trim();
   var price=parseFloat(document.getElementById("tr_price").value||"");
@@ -6907,42 +7101,64 @@ function saveTrade(){
   var rsi=parseFloat(document.getElementById("tr_rsi").value||"")||null;
   var note=document.getElementById("tr_note").value.trim();
   var err=document.getElementById("trerr");
+  var fail=function(m){ err.style.display="block"; err.textContent=m; };
+  var bonus=type==="bonus";
+  var drip=type==="dividend"&&document.getElementById("tr_div_drip").checked;
+  var trades=type==="buy"||type==="sell";
 
-  var needsTicker=["buy","sell","dividend"].indexOf(type)>=0;
-  if(needsTicker&&!ticker){err.style.display="block";err.textContent="Escribe el ticker.";return;}
-  if(!amount||amount<=0){err.style.display="block";err.textContent="Escribe el monto total.";return;}
-  if(!date){err.style.display="block";err.textContent="Elige la fecha.";return;}
+  var needsTicker=trades||bonus||type==="dividend";
+  if(needsTicker&&!ticker) return fail("Escribe el ticker.");
+  if(bonus){ amount=0; price=0; if(!(qty>0)) return fail("Escribe cuántas unidades recibiste."); }
+  else if(!amount||amount<=0) return fail("Escribe el monto total.");
+  if(drip){
+    if(!(qty>0)&&price>0) qty=amount/price;
+    if(!(qty>0)) return fail("Escribe las unidades que recibiste o el precio de la reinversión.");
+  }
+  if(!date) return fail("Elige la fecha.");
 
   // For buy/sell compute qty if missing
-  if(["buy","sell"].indexOf(type)>=0&&(!qty||qty<=0)&&price>0) qty=amount/price;
+  if(trades&&(!qty||qty<=0)&&price>0) qty=amount/price;
 
   // Fase 3: la operacion AJUSTA la posicion (app/lib/holdings.js). El
   // resultado de una venta se mide contra la entrada de la posicion.
   var pos=ticker?S.portfolio.find(function(h){return h.t===ticker;}):null;
   // FIN-12: el tipo de cambio de hoy solo vale para una operación de hoy; con otra fecha queda desconocido.
-  var tCcy=ticker?assetCcy(ticker):'USD';
+  var tCcy=ticker?assetCcy(ticker):document.getElementById("tr_ccy").value;
   var tFx=(tCcy&&tCcy!=='USD'&&date===localDay())?InvestFx.rateOf(tCcy,FX_ASSET):null;
-  var adj=(type==='buy'||type==='sell')&&ticker?applyTrade(pos||null,{type:type,qty:qty,price:price,amount:amount,fx:tFx}):{action:'none'};
+  // DRIP: el dividendo compra unidades en el acto; el costo es lo reinvertido.
+  var adjType=drip?'buy':type;
+  var adj=(trades||bonus||drip)&&ticker?applyTrade(pos||null,{type:adjType,qty:qty,price:price,amount:amount,fx:tFx}):{action:'none'};
   var pnl=(type==='sell'&&adj.pnl!=null)?adj.pnl:null;
 
   loadTrades();loadAlerts();
-  S.trades.push({
+  var op={
     id:S.tradeNextId++,
+    uid:_newUid(),
     ticker:needsTicker?ticker:null,
     type:type,
     date:date,
+    currency:tCcy||null,
     price:price||null,
     qty:qty||null,
     amount:amount,
+    fx:tFx,
     rsi:rsi,
     note:note,
     pnl:pnl,
-  });
+    cash:trades?document.getElementById("tr_cash").checked:null,
+    reinvested:drip,
+    // El monto cambió respecto del cálculo con que se abrió el formulario.
+    edited:pre.refAmount>0&&Math.abs(amount-pre.refAmount)>0.005,
+    source:pre.source||null,
+  };
+  S.trades.push(op);
   persistTrades();
+  ledgerPush([op]).catch(function(e){ console.error('ledgerPush failed',e); });
+  if(pre.source==='moyiq') S.aporteDeposit=null;
 
   var creoPosicion=false, cerrar=null;
   if(adj.action==='create'){
-    var nuevo={id:S.nextId++, t:ticker, type:/-USD$/.test(ticker)?'Crypto':'Stock', sh:adj.sh, cost:adj.cost, cur:price||adj.cost, stop:null, fxCost:adj.fxCost||null};
+    var nuevo={id:S.nextId++, t:ticker, type:/-USD$/.test(ticker)?'Crypto':'Stock', sh:adj.sh, cost:adj.cost, cur:(LIVE[ticker]&&LIVE[ticker].price)||price||adj.cost, stop:null, fxCost:adj.fxCost||null};
     S.portfolio.push(nuevo);
     creoPosicion=true;
     if(typeof sbAddHolding==='function'&&!S.demoMode){
@@ -7369,7 +7585,8 @@ function importBackup(file){
       var d=JSON.parse(e.target.result);
       if(!d||typeof d!=='object') throw new Error('formato');
       if(Array.isArray(d.portfolio)) S.portfolio=d.portfolio;
-      if(Array.isArray(d.trades)) S.trades=d.trades;
+      // Lo restaurado vuelve a subirse: el id estable evita duplicarlo en la cuenta.
+      if(Array.isArray(d.trades)) S.trades=d.trades.map(function(o){ var c=Object.assign({},o); delete c.synced; return c; });
       if(Array.isArray(d.watchlist)) S.watchlist=d.watchlist;
       if(d.capitalPlan) S.capitalPlan=d.capitalPlan;
       if(typeof d.capital==='number') S.capital=d.capital;
@@ -7377,6 +7594,7 @@ function importBackup(file){
       if(d.rebalTargets&&typeof REBAL==='object'){ REBAL.targets=d.rebalTargets; if(typeof rebalSaveTargets==='function') rebalSaveTargets(); }
       if(typeof persist==='function') persist();
       if(typeof persistTrades==='function') persistTrades();
+      ledgerSync();
       if(typeof _capSave==='function') _capSave();
       showToast('Copia restaurada correctamente');
       renderMain();
@@ -7792,6 +8010,7 @@ function renderHelp(){
     ['Riesgo y planificación',[
       ['¿Cómo funciona la calculadora?','Escribes el ticker, la entrada y tu stop. Con tu capital y el porcentaje que aceptas perder por operación (tu regla), te dice cuántas unidades enteras caben, cuánto pierdes si el precio toca el stop y si la posición supera tu límite de concentración. La regla es tuya: la app solo hace la cuenta.'],
       ['¿Qué es el riesgo al stop?','Lo que perderías en cada posición si el precio baja hasta tu stop. Hoy y Posiciones suman ese monto para todas las posiciones que tienen stop.'],
+      ['¿Cómo se calcula mi efectivo?','Con lo que registras en Portafolio › Movimientos: los depósitos y dividendos suman, los retiros restan, y cada compra o venta lo mueve si marcas esa opción. El total aportado son tus depósitos menos tus retiros, más lo que compraste fuera del efectivo y el costo de las posiciones que cargaste sin operaciones. El rendimiento compara tu valor actual con lo aportado.'],
       ['¿Cómo se reparte un aporte?','En Planificar › Aportes eliges tus tickers y el porcentaje de cada uno, o partes de tus objetivos. Cada parte se divide en tramos por media móvil; el punto marca que el precio está en o bajo esa media, como dato.']
     ]],
     ['Tu cuenta',[
@@ -8296,6 +8515,8 @@ function renderCapital(){
   var _comprometido=0;
   try{ _comprometido=InvestFx.sumUsd(S.portfolio||[],function(h){return (h.sh||0)*(h.cost||0);},function(h){return assetCcy(h.t);},FX_ASSET).total; }catch(e){}
   var capDisponible=Math.max(0,(S.capital||0)-_comprometido);
+  var capCash=0;
+  try{ var _bk=ledgerBook(); if(_bk.usesCash) capCash=Math.max(0,_bk.cash); }catch(e){}
   var results=S.capitalResults;
   var loading=S.capitalLoading;
   var totalPct=tickers.reduce(function(s,x){return s+x.pct;},0);
@@ -8323,6 +8544,8 @@ function renderCapital(){
         '<div class="calc-field"><label for="cap-monthly">Monto a repartir (USD)</label>'+
         '<input id="cap-monthly" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto" value="'+(monthly>0?monthly:'')+'" aria-describedby="cap-err" oninput="capSetErr()"/>'+
         (capDisponible>0?'<button type="button" class="linkbtn" onclick="capUsarDisponible('+capDisponible+')">Usar tu capital disponible ('+fmtUSD(capDisponible,0)+')</button>':'')+
+        (capCash>0?'<button type="button" class="linkbtn" onclick="capUsarDisponible('+capCash+')">Usar tu efectivo ('+fmtUSD(capCash,0)+')</button>':'')+
+        (monthly>0?'<button type="button" class="linkbtn" onclick="openModal(\'addtrade\',{type:\'deposit\',amount:'+monthly+',ccy:\'USD\'})">Registrar este monto como depósito</button>':'')+
         '</div>'+
         '<details class="capx-opt"'+(S.capOptOpen?' open':'')+' ontoggle="S.capOptOpen=this.open">'+
           '<summary>Opciones: <b>'+cadLbl+'</b> · <b>'+esc(CAP_LADDER_LABELS[capLadderKey()]||'')+'</b> <span class="linkbtn">Cambiar</span></summary>'+
@@ -8379,7 +8602,7 @@ function renderCapital(){
 
   document.getElementById('main').innerHTML=
     '<div class="fos-module-header"><div><div class="fos-module-sub">Reparte un monto entre los tickers que eliges, en tramos según sus medias de 20, 50, 100 y 200 días</div></div></div>'+
-    '<div class="port-wrap pv cap">'+form+tkSec+resSec+
+    '<div class="port-wrap pv cap">'+capDepositBanner()+form+tkSec+resSec+
     '<p class="port-muted">Herramienta educativa de cálculo. Los tickers, los porcentajes y el reparto de los tramos los defines tú. Las medias y el RSI se muestran como datos, no como instrucciones de compra ni recomendación de inversión. Datos con posible retraso.</p>'+
     '</div>';
 }
@@ -8989,6 +9212,7 @@ async function _sbLoadUserDataImpl(authUser){
     S.demoMode=false;
     S.watchlist=watch;
     loadTrades();loadAlerts();
+    ledgerSync();
     fetchFXLatam();
     // F1-07: consent gate — only active when CONSENT_GATE_ENABLED is true.
     // When false, no query to public.consents is made and no modal is shown.

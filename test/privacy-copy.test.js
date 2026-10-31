@@ -39,7 +39,7 @@ describe('privacy.html · analítica con PostHog', () => {
     expect(p).toMatch(/reclamo ante la autoridad de protección de datos de tu país/);
   });
   it('tiene fecha de actualización de hoy', () => {
-    expect(p).toMatch(/Última actualización: 30 de octubre de 2026 · Versión 2\.5/);
+    expect(p).toMatch(/Última actualización: 31 de octubre de 2026 · Versión 2\.6/);
   });
 });
 

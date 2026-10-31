@@ -55,3 +55,6 @@ Estado de los archivos de esta carpeta (ninguno figura en `supabase_migrations.s
 - `20261019160000_portfolio_holdings_fx_at_cost.sql`: FIN-12, aplicada el 19-oct-2026 con `supabase db query --linked -f`
   (dry run previo). Columna `portfolio_holdings.fx_at_cost` (moneda por 1 USD al comprar, null = desconocido),
   check > 0 y `grant update (fx_at_cost)` a `authenticated` (en esta tabla el UPDATE se otorga por columna).
+- `20261031120000_invest_operations.sql`: libro de operaciones (efectivo, total aportado, DRIP, bonos). **Sin aplicar.**
+  Tabla nueva con RLS por cuenta y grants explícitos; hasta aplicarla la app guarda solo en el navegador. Después de
+  aplicarla, sumar `public.invest_operations` a `financeos-app/supabase/tests/acl-esperada.json`.
