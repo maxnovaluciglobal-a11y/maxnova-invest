@@ -90,6 +90,9 @@ describe('integración en app/index.html', () => {
     expect(fn).toContain("sb.auth.signOut({scope:'local'})");
     expect(fn).not.toMatch(/sb\.auth\.signOut\(\)/);
   });
+  it('ningún cierre de sesión de Invest revoca la sesión de MOY IQ', () => {
+    expect(html).not.toMatch(/sb\.auth\.signOut\(\)/);
+  });
   it('el listener de sesión no recarga en medio del canje', () => {
     const start = html.indexOf('sb.auth.onAuthStateChange(function(event,session){');
     expect(html.slice(start, start + 120)).toContain('if(_handoffBusy) return;');

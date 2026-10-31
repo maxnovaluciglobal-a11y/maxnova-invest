@@ -6513,7 +6513,7 @@ async function confirmDeleteAccount(){
     // Los datos de Invest ya no existen en el servidor: cerrar sesión y volver
     // a la landing (la cuenta de acceso sigue viva para MOY IQ).
     if(typeof stopBoot==='function') stopBoot();
-    try{ await sb.auth.signOut(); }catch(e){}
+    try{ await sb.auth.signOut({scope:'local'}); }catch(e){}
     S.user=null;
     window.location.href='/';
   }catch(e){
@@ -9212,7 +9212,9 @@ async function doGoogleAuth(){
 
 async function logout(){
   if(typeof stopBoot==="function") stopBoot();
-  await sb.auth.signOut();
+  // scope local: el global (por defecto) revoca todas las sesiones de la cuenta, y la de
+  // MOY IQ es una de ellas (cuenta compartida, verificado contra Auth el 30-oct-2026).
+  await sb.auth.signOut({scope:'local'});
   _sbLoadUserDataGuard.clear(); // limpia el guard de de-dup — el proximo login (mismo u otro usuario) debe cargar fresco
   S.user=null;S.page="dash";
   LIVE={};REBAL.targets={};DIVS.data={};

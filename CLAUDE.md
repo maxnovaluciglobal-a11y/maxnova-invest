@@ -22,6 +22,15 @@ Skew Protection está activa en el proyecto (12 h) pero no fija versiones en est
 Supabase Auth es el mismo proyecto que MOY IQ, así que el captcha de Auth no se prende sin esto. Orden de
 encendido en `financeos-app/docs/turnstile.md`.
 
+## Entrada desde MOY IQ (módulo Inversiones, 30-oct-2026)
+
+`app/lib/handoff.js` carga antes que todo y borra de la URL `#handoff=<token_hash>&uid=…&aporte=…`. `consumeHandoff()`
+abre una sesión propia con `verifyOtp` (el token lo emite la Edge Function `invest-handoff`, en `financeos-app`). Misma
+cuenta: no canjea. Otra cuenta: `signOut({scope:'local'})` y canjea. Vencido: login normal con aviso. **Todo `signOut` de
+este repo va con `scope:'local'`**: el global revoca también la sesión de MOY IQ (cuenta compartida). Los aportes llegan
+como suma, se muestran en Hoy (`handoffAporteBanner`) y solo se escriben con "Ir a Aportes". `financeos-app` copia la
+valuación de `app/lib/fx.js` en `src/utils/investValuation.js`: si cambia acá, cambia allá.
+
 ## Qué es
 
 PWA de análisis de inversiones para LATAM (`app/index.html`). Landing en `index.html` +
