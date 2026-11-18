@@ -2,6 +2,11 @@
 
 Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest** de
 MAXNOVA & Luci LLC — `invest.moyiq.app`).
+**Rebrand Entrega 1 (17-nov-2026, D14 + D9/D18 mantenimiento):** el producto se llama
+**moyiq · Inversiones** ("Inversiones de moyiq" en texto corrido; antes MOY IQ Invest). Versión de
+mantenimiento: paleta congelada, nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y
+`CACHE` del SW. El newsletter no se renombra acá (D20, Fase 4). Las menciones a "MOY IQ" que siguen
+en este archivo y en `DESIGN.md`/`PRODUCT.md`/migraciones son históricas.
 **Beta pública gratuita desde el 08-oct-2026**: estuvo en pausa del 12-sep al 08-oct y el
 relanzamiento v2 ya está en `main` (plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).
 Su rol (producto, sección de MOY IQ o canal) se decide en el checkpoint del 5-nov (D-08 de la
@@ -177,14 +182,18 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
-- **Colores (BRD-4, 20-oct-2026):** `/tokens.css` es una copia literal de
-  `financeos-app/src/styles/tokens.css`; no se edita aquí (se edita allá y se vuelve a copiar,
-  ver `financeos-app/docs/tokens-de-diseno.md`). Cada HTML lo carga antes de su `<style>` y
-  sus variables apuntan a la paleta (`var(--navy)`…); el modo oscuro usa las superficies de la
-  app. `test/brd4-shared-tokens.test.js` falla si la copia difiere o aparece un hex fuera de la
-  paleta sin motivo (lista `INVEST_ONLY`).
-- **Ícono (BRD-7):** aguja en Latón (`#B8863B` sobre Navy, `#8A6329` sobre fondo claro), nunca
-  verde. PNG y maskable se regeneran con `sh tools/icons/build.sh`.
+- **Colores (BRD-4 → D9 congelado, 17-nov-2026):** la paleta vive en `/tokens-v2.css`, copia
+  **congelada** de la paleta v2 (Navy/Latón). Ya **no** se sincroniza con
+  `financeos-app/src/styles/tokens.css` (la app migra a la marca nueva; Invest quedó en
+  mantenimiento por D18). No copiar el archivo nuevo de la app encima. Las 9 páginas lo cargan con
+  `?v=N` antes de su `<style>`; `test/brd4-shared-tokens.test.js` fija su SHA-256 y sigue
+  verificando que no aparezcan hex fuera de la paleta (lista `INVEST_ONLY`). Si Invest vuelve a
+  desarrollarse: migrar a tokens v3 en un despliegue propio (`validacion/03-revision-invest.md`, A1).
+- **Ícono y logo (rebrand Entrega 1):** logotipo moyiq inline (`<symbol id="moyiq">`, currentColor:
+  blanco sobre Navy, negro sobre claro; en la app `MOYIQ_LOGO`). Íconos = set oficial (lupa al 44 %
+  sobre morado `#3C2282`), copiados con `sh tools/icons/build.sh` desde
+  `financeos-workspace/branding/rebrand-2026-11/iconos-app/`. Al cambiarlos, subir `?v=` en los
+  `<link>`, el manifest y `CACHE` en `sw.js` (cache-first para íconos y tokens).
 - **ARS (UXP-8):** `/api/fx-ars` trae el dólar MEP y el oficial de DolarApi (caché de 3 h en el
   edge, cita obligatoria "DolarApi https://dolarapi.com" en `datos-y-licencias.html`). El MEP es
   el valor por defecto; sin MEP la app usa el oficial de `/api/fx-latam` y lo indica.
@@ -316,3 +325,6 @@ Segunda verificación de la RLS (la primera fue el 13-sep). Método transversal:
 - RLS de `portfolio_holdings`, `watchlist`, `consents`, `profiles` **re-confirmada con dump de `pg_policies`**: las 4 con RLS ON y aislamiento por usuario (`auth.uid() = user_id`; en `profiles`, `= id`), 11 policies, sin fuga. Rol `{public}` pero sin riesgo (`auth.uid()` es null para anon → 0 filas).
 - **Esas 4 tablas, que existían solo en el dashboard, quedaron versionadas** en `supabase/migrations/20261018120000_rls_moyiq_unversioned_tables.sql` (idempotente, validada). Pendiente aparte: capturar su DDL de columnas (`pg_dump --schema-only`) para reconstrucción total.
 - `stripe-webhook` y `check-plan` verifican firma/JWT; `delete-account` usa el JWT como única identidad; las api de mercado no filtran keys. Sin vulnerabilidad.
+
+## Kits de terceros y repos públicos (17-nov-2026)
+Este repo es **público** hasta que se ejecute D-06/D16 (pasar a privado, decidido el 17-nov-2026). **Ningún archivo, captura exportada, componente ni código copiado línea a línea de kits pagos (UI8: Keel, Marlow, Pennwise, etc.) entra acá**: su licencia prohíbe redistribuirlos en repos públicos. Las fuentes OFL (Inter) sí. Una futura app Expo nace en un repo privado. Plan: `../../04 - Marca y Diseno/rebrand-startup-2026-11/PLAN.md`.
