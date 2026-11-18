@@ -1,7 +1,8 @@
-// BRD-7: el diferenciador del ícono de Invest es la aguja en Latón (#B8863B sobre Navy,
-// #8A6329 sobre fondo claro), nunca verde. Los PNG se regeneran con tools/icons/build.sh
-// desde icon.svg y tools/icons/icon-maskable.svg; el maskable deja el dial dentro de la
-// zona segura (círculo de radio 40 % del lado).
+// BRD-7 → rebrand Entrega 1 (17-nov-2026): el ícono de Inversiones de moyiq es el oficial de la
+// marca nueva, la lupa (isotipo) blanca al 44 % del lado sobre morado #3C2282, centrada ópticamente.
+// Antes era el dial Navy con aguja en Latón. Los archivos se copian del set de
+// financeos-workspace/branding/rebrand-2026-11/iconos-app/ con tools/icons/build.sh; el maskable
+// deja la lupa dentro de la zona segura (círculo de radio 40 % del lado).
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { inflateSync } from "node:zlib";
@@ -32,51 +33,67 @@ function decodePng(b) {
   return { w, h, at: (x, y) => [0, 1, 2].map((i) => px[y * stride + x * bpp + i]) };
 }
 
-const NAVY = [20, 33, 61];
-const PNGS = ["icon-32.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png"];
+const MORADO = [60, 34, 130];
+const PNGS = [["icon-32.png", 32], ["apple-touch-icon.png", 180], ["icon-192.png", 192], ["icon-512.png", 512],
+  ["icon-maskable-192.png", 192], ["icon-maskable-512.png", 512]];
+const near = (a, b, t = 30) => a.reduce((s, v, i) => s + Math.abs(v - b[i]), 0) <= t;
 
-describe("BRD-7: ícono de Invest con aguja en Latón", () => {
-  it.each(PNGS)("%s: fondo Navy, ningún píxel verde y la aguja en Latón", (f) => {
+describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
+  it.each(PNGS)("%s: tamaño exacto, fondo morado, lupa blanca, sin Navy, Latón ni verde", (f, size) => {
     const img = decodePng(buf(f));
-    expect(img.at(0, 0)).toEqual(NAVY);
-    let green = 0, brass = 0;
+    expect([img.w, img.h]).toEqual([size, size]);
+    expect(near(img.at(0, 0), MORADO, 6)).toBe(true);
+    let white = 0, old = 0, green = 0;
     for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
-      const [r, g, b] = img.at(x, y);
+      const px = img.at(x, y), [r, g, b] = px;
+      if (r > 245 && g > 245 && b > 245) white++;
+      if (near(px, [20, 33, 61], 12) || near(px, [184, 134, 59], 24)) old++;
       if (g > r + 25 && g > b + 10) green++;
-      if (Math.abs(r - 184) < 12 && Math.abs(g - 134) < 12 && Math.abs(b - 59) < 12) brass++;
     }
+    expect(white).toBeGreaterThan(0);
+    expect(old).toBe(0);
     expect(green).toBe(0);
-    expect(brass).toBeGreaterThan(0);
   });
 
-  it.each(["icon-maskable-192.png", "icon-maskable-512.png"])("%s: todo el dial queda dentro de la zona segura", (f) => {
+  it.each(["icon-maskable-192.png", "icon-maskable-512.png"])("%s: toda la lupa queda dentro de la zona segura", (f) => {
     const img = decodePng(buf(f));
     const c = img.w / 2, safe = 0.4 * img.w;
     let far = 0;
     for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
-      const d = img.at(x, y).reduce((s, v, i) => s + Math.abs(v - NAVY[i]), 0);
-      if (d > 30 && Math.hypot(x + 0.5 - c, y + 0.5 - c) > safe * 0.9) far++;
+      if (!near(img.at(x, y), MORADO) && Math.hypot(x + 0.5 - c, y + 0.5 - c) > safe * 0.9) far++;
     }
     expect(far).toBe(0);
   });
 
-  it("los SVG llevan la aguja en Latón y el manifest separa any y maskable", () => {
-    for (const f of ["icon.svg", "favicon.svg", "tools/icons/icon-maskable.svg"]) {
+  it("los SVG son los de la marca nueva y el manifest separa any y maskable, con ?v= y el nombre nuevo", () => {
+    for (const f of ["icon.svg", "favicon.svg"]) {
       const s = read(f);
-      expect(s, f).toMatch(/L 72\.52 37 L 48 46\.54 Z" fill="#B8863B"/);
-      expect(s, f).not.toMatch(/#5FA98C|#356E57|#74C2A3/i);
+      expect(s, f).toContain("#3C2282");
+      expect(s, f).not.toMatch(/#B8863B|#14213D|#5FA98C|#356E57|#74C2A3/i);
     }
+    expect(read("icon.svg")).toContain('aria-label="moyiq"');
     const m = JSON.parse(read("manifest.webmanifest"));
+    expect(m.name).toBe("moyiq Inversiones");
+    expect(m.short_name).toBe("Inversiones");
     const mask = m.icons.filter((i) => i.purpose === "maskable").map((i) => i.src);
-    expect(mask).toEqual(["/icon-maskable-192.png", "/icon-maskable-512.png"]);
-    for (const i of m.icons) if (i.purpose === "any") expect(i.src).not.toMatch(/maskable/);
+    expect(mask).toEqual(["/icon-maskable-192.png?v=2", "/icon-maskable-512.png?v=2"]);
+    for (const i of m.icons) {
+      expect(i.src).toMatch(/\?v=\d+$/);
+      if (i.purpose === "any") expect(i.src).not.toMatch(/maskable/);
+    }
   });
 
-  it("en las páginas, la aguja del logotipo es Latón base sobre Navy y Latón 700 sobre fondo claro", () => {
+  it("en las páginas, el logotipo es el SVG moyiq (currentColor), sin el dial ni la placa IQ", () => {
     for (const f of ["index.html", "faq.html", "estado-mercado.html", "perfil-inversor.html", "privacy.html", "terms.html", "datos-y-licencias.html", "docs/novedades.html"]) {
       const s = read(f);
-      expect(s.match(/style="fill:var\(--needle,#B8863B\)"/g), f).toHaveLength(2);
-      expect(s, f).toContain(".lockup:not(.on-dark) .dial{--needle:var(--laton-700)}");
+      expect(s, f).toContain('<symbol id="moyiq" viewBox="87.94 136.94 547.16 189.52">');
+      expect(s, f).toContain('<g fill="currentColor">');
+      expect(s, f).toMatch(/class="lockup on-dark" aria-label="Inversiones de moyiq, inicio"><svg class="logo"[^>]*><use href="#moyiq"\/><\/svg><span class="suffix">Inversiones<\/span>/);
+      expect(s, f).toContain(".lockup.on-dark{color:#FFFFFF}");
+      expect(s, f).not.toMatch(/id="dial"|href="#dial"|class="iq"/);
     }
+    const app = read("app/index.html");
+    expect(app).toContain("const MOYIQ_LOGO='<svg class=\"moyiq-logo\"");
+    expect(app).not.toMatch(/MOY IQ <b>Invest<\/b>/);
   });
 });

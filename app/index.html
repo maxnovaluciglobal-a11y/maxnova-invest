@@ -15,11 +15,11 @@
 <meta name="robots" content="noindex, follow"/>
 <!-- Logo de marca FinanceOS Pro. Antes el favicon era un SVG de relleno con las
      letras "FI" sobre el verde antiguo, que ya ni siquiera es color de marca. -->
-<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png"/>
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png?v=2"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2"/>
 <!-- PWA -->
-<link rel="manifest" href="/manifest.webmanifest"/>
+<link rel="manifest" href="/manifest.webmanifest?v=2"/>
 <meta name="theme-color" content="#14213D" id="meta-theme"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -733,7 +733,11 @@ tr:last-child td { border-bottom: none; }
 .wv3-auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .wv3-auth-icon{width:34px;height:34px;border-radius:var(--r-md);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .wv3-auth-name{font-size:15px;color:var(--text)}
-.wv3-auth-name b{color:var(--grn);font-weight:700}
+.wv3-auth-name{display:flex;align-items:center;gap:10px}
+.wv3-auth-name b{color:var(--text2);font-weight:500;padding-left:10px;border-left:1px solid currentColor;line-height:1.1}
+/* Logo moyiq en versiones del manual: negro sobre claro, blanco sobre oscuro (rebrand Entrega 1). */
+.moyiq-logo{display:block;height:24px;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0;color:#000000}
+[data-theme="dark"] .moyiq-logo{color:#FFFFFF}
 .wv3-tabs{display:grid;grid-template-columns:1fr 1fr;position:relative;background:var(--bg2);border-radius:var(--r-md);padding:4px;margin-bottom:20px}
 .wv3-tab-slider{position:absolute;top:4px;bottom:4px;width:calc(50% - 4px);background:var(--card);border-radius:var(--r-sm);box-shadow:0 2px 8px rgba(0,0,0,.28);transition:transform .25s cubic-bezier(.4,0,.2,1);pointer-events:none}
 .wv3-tab-slider.r{transform:translateX(calc(100% + 4px))}
@@ -1271,6 +1275,9 @@ body.no-auth .skip-link { display:none; }
 .side-brand { display:flex; align-items:center; gap:10px; min-height:44px; padding:0 8px 8px; color:var(--side-fg-strong); font-size:14px; white-space:nowrap; }
 .side-brand img { width:28px; height:28px; border-radius:var(--r-sm); flex-shrink:0; display:block; }
 .side-brand b { font-weight:600; color:var(--side-mark); }
+.side-brand .side-lbl { display:flex; align-items:center; gap:8px; }
+.side-brand .moyiq-logo { height:22px; color:#FFFFFF; }
+body:not(.side-collapsed) .side-brand img { display:none; }
 .side-nav, .side-tk { list-style:none; margin:0; padding:0; }
 .side-nav { display:flex; flex-direction:column; gap:2px; padding-bottom:12px; }
 .side-item {
@@ -2218,6 +2225,9 @@ const PLANS={
 // plan "beta" sin importar profiles.plan, y la app no ofrece pagos. El cobro
 // vuelve cuando se cumpla el disparador del plan de relanzamiento
 // (00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md).
+// Logotipo moyiq (manual de marca v2.1, SVG derivado en financeos-workspace/branding/rebrand-2026-11/
+// derivados-svg/). Hereda el color (currentColor): blanco sobre Navy, negro sobre fondo claro.
+const MOYIQ_LOGO='<svg class="moyiq-logo" viewBox="87.94 136.94 547.16 189.52" role="img" aria-label="moyiq" focusable="false"><g fill="currentColor"><path d="M 390.59375 326.449219 L 385.828125 326.453125 C 377.894531 325.355469 371.960938 318.253906 373.355469 310.117188 C 373.898438 306.960938 375.773438 304.25 378.136719 302.0625 L 399.175781 282.582031 C 378.636719 276.097656 365.183594 259.144531 364.46875 237.691406 L 364.464844 180.414062 L 394.699219 180.46875 L 394.773438 237.101562 C 395.910156 245.4375 401.542969 252.171875 409.601562 254.515625 C 422.496094 258.265625 436.40625 249.289062 436.503906 237.238281 L 436.882812 190.503906 C 436.921875 185.894531 440.195312 182.144531 444.378906 180.878906 C 449.457031 179.34375 454.726562 179.269531 459.707031 181.066406 C 463.765625 182.527344 466.746094 186.371094 466.75 190.800781 L 466.765625 238.097656 C 466.773438 253.746094 459.207031 267.035156 447.9375 277.460938 L 399.363281 322.394531 C 396.867188 324.707031 393.710938 325.882812 390.59375 326.449219"/><path d="M 299.558594 208.34375 C 286.070312 210.3125 277.164062 222.886719 279.234375 235.992188 C 281.289062 249.003906 293.488281 257.972656 306.546875 256.066406 C 319.65625 254.148438 328.8125 241.925781 326.933594 228.816406 C 325.058594 215.746094 313.011719 206.382812 299.558594 208.34375 M 284.488281 282.472656 C 255.628906 271.789062 241.808594 239.414062 253.5625 211.414062 C 265.324219 183.402344 298.097656 170.554688 325.84375 183.609375 C 351.84375 195.84375 363.5625 226.269531 352.578125 252.722656 C 341.621094 279.109375 311.648438 292.527344 284.488281 282.472656"/><path d="M 543.023438 236.550781 C 540.953125 223.445312 549.859375 210.867188 563.347656 208.902344 C 576.804688 206.9375 588.847656 216.304688 590.722656 229.375 C 592.605469 242.484375 583.445312 254.707031 570.335938 256.621094 C 557.277344 258.53125 545.078125 249.558594 543.023438 236.550781 M 634.835938 299.75 C 634.332031 296.398438 632.421875 293.363281 630.019531 290.902344 L 617.625 278.199219 L 607.378906 267.808594 C 611.046875 263.570312 614.117188 258.703125 616.367188 253.277344 C 627.355469 226.824219 615.632812 196.402344 589.636719 184.167969 C 561.886719 171.113281 529.117188 183.960938 517.355469 211.972656 C 505.597656 239.972656 519.417969 272.347656 548.277344 283.03125 C 558.835938 286.941406 569.8125 287.289062 579.9375 284.722656 L 609.65625 315.542969 C 613.851562 319.898438 620.519531 320.351562 625.984375 318.042969 C 631.097656 315.886719 634.628906 310.703125 635.070312 304.941406 L 635.097656 301.484375 Z M 634.835938 299.75"/><path d="M 505.746094 282.730469 L 476.179688 282.949219 L 476.183594 190.507812 C 477.1875 180.746094 487.609375 178.960938 496.367188 180.582031 C 501.664062 181.566406 505.324219 185.605469 505.765625 191.101562 Z M 505.746094 282.730469"/><path d="M 488.523438 138.402344 C 498.167969 136.9375 506.695312 143.546875 508.117188 152.78125 C 509.5625 162.171875 503.09375 170.925781 493.691406 172.367188 C 484.457031 173.78125 475.695312 167.417969 474.171875 158.148438 C 472.65625 148.917969 478.886719 139.867188 488.523438 138.402344"/><path d="M 241.714844 282.929688 L 211.753906 282.832031 L 211.644531 226.71875 C 211.136719 222.351562 209.429688 218.480469 206.273438 215.53125 C 196.898438 206.347656 179.433594 212.765625 179.1875 226.167969 C 179.1875 226.167969 178.820312 282.910156 178.820312 282.910156 C 171.367188 282.921875 158.296875 282.921875 150.847656 282.910156 L 150.46875 226.167969 C 150.222656 212.765625 132.761719 206.34375 123.386719 215.53125 C 120.230469 218.480469 118.519531 222.351562 118.011719 226.71875 L 117.914062 282.832031 L 87.941406 282.929688 L 88.003906 222.492188 C 89.230469 183.574219 137.765625 165.8125 164.828125 192.863281 C 191.914062 165.804688 240.429688 183.585938 241.65625 222.492188 Z M 241.714844 282.929688"/></g></svg>';
 var INVEST_BETA=true;
 
 const DEF_WATCH=window.InvestDemo.DEMO_WATCH;
@@ -3624,7 +3634,7 @@ function sideHtml(){
     return '<li><button type="button" class="side-item" data-dest="'+d.id+'" onclick="goDest(\''+d.id+'\')" title="'+d.label+' (Alt+'+(i+1)+')">'+
       icon(d.icon)+'<span class="side-lbl">'+d.label+'</span></button></li>';
   }).join('');
-  return '<div class="side-brand"><img src="/icon-192.png" alt="" width="28" height="28"/><span class="side-lbl">MOY IQ <b>Invest</b></span></div>'+
+  return '<div class="side-brand"><img src="/icon-192.png?v=2" alt="moyiq" width="28" height="28"/><span class="side-lbl">'+MOYIQ_LOGO+'<b>Inversiones</b></span></div>'+
     '<ul class="side-nav">'+items+'</ul>'+
     '<section class="side-list" aria-labelledby="side-list-h">'+
       '<h2 class="side-h" id="side-list-h">Tu lista</h2>'+
@@ -4813,7 +4823,7 @@ function renderWelcome(){
     // ── COLUMNA DERECHA ──
     '<div class="wv3-right">'+
     '<div class="wv3-auth-card">'+
-    '<div class="wv3-auth-logo"><div class="wv3-auth-icon"><img src="/icon-192.png" alt="" width="26" height="26" style="display:block;width:100%;height:100%;object-fit:contain"/></div><div class="wv3-auth-name">MOY IQ <b>Invest</b></div></div>'+
+    '<div class="wv3-auth-name">'+MOYIQ_LOGO+'<b>Inversiones</b></div></div>'+
     // Tabs
     '<div class="wv3-tabs">'+
     '<div id="wv3-slider" class="wv3-tab-slider"></div>'+

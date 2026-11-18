@@ -1,11 +1,17 @@
 #!/bin/sh
-# Regenera los PNG del ícono de Invest desde los SVG (BRD-7). Requiere rsvg-convert y ImageMagick.
-# Uso: sh tools/icons/build.sh (desde la raíz del repo)
+# Íconos de Inversiones de moyiq (rebrand Entrega 1, 17-nov-2026): ya no se dibujan acá.
+# Se copian del set oficial generado desde el isotipo (lupa al 44 % del lado, centrada
+# ópticamente, sobre morado #3C2282), en financeos-workspace/branding/rebrand-2026-11/iconos-app/
+# (generador: _fuente/generar.py). Uso: sh tools/icons/build.sh (desde la raíz del repo).
+# Después de copiar, subir ?v= en los <link> de las 9 páginas y en manifest.webmanifest.
 set -e
-png() { rsvg-convert -w "$2" -h "$2" "$1" -o "$3.tmp.png"; magick "$3.tmp.png" -background '#14213D' -alpha remove -alpha off -strip "PNG24:$3"; rm "$3.tmp.png"; }
-png icon.svg 32 icon-32.png
-png icon.svg 180 apple-touch-icon.png
-png icon.svg 192 icon-192.png
-png icon.svg 512 icon-512.png
-png tools/icons/icon-maskable.svg 192 icon-maskable-192.png
-png tools/icons/icon-maskable.svg 512 icon-maskable-512.png
+I="../financeos-workspace/branding/rebrand-2026-11/iconos-app"
+[ -d "$I" ] || { echo "No encuentro $I (repo hermano financeos-workspace)"; exit 1; }
+cp "$I/favicon.svg" favicon.svg
+cp "$I/icono-morado.svg" icon.svg
+cp "$I/png/morado/icono-32.png" icon-32.png
+cp "$I/apple-touch-icon.png" apple-touch-icon.png
+cp "$I/png/morado/icono-192.png" icon-192.png
+cp "$I/png/morado/icono-512.png" icon-512.png
+cp "$I/png/morado/maskable-192.png" icon-maskable-192.png
+cp "$I/png/morado/maskable-512.png" icon-maskable-512.png
