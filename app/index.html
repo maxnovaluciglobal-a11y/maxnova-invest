@@ -8,7 +8,7 @@
 <!-- Preconnect for critical origins -->
 <link rel="preconnect" href="https://nelwgbcddwiaimzbcuas.supabase.co"/>
 <!-- Fuentes self-hosted (/fonts.css, las mismas de la landing). Nunca Google Fonts. -->
-<link rel="preload" href="/fonts/ibm-plex-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/fonts/InterVariable-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="stylesheet" href="/fonts.css"/>
 <!-- SEO & GEO -->
 <!-- Relanzamiento v2: la app no se indexa (la landing publica es /). -->
@@ -20,21 +20,20 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2"/>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.webmanifest?v=2"/>
-<meta name="theme-color" content="#14213D" id="meta-theme"/>
+<meta name="theme-color" content="#3C2282" id="meta-theme"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Inversiones"/>
 <link rel="canonical" href="https://invest.moyiq.app/app"/>
 <meta name="author" content="MAXNOVA &amp; LUCI Global LLC"/>
-<link rel="stylesheet" href="/tokens-v2.css?v=1"/>
+<link rel="stylesheet" href="/tokens-v3.css?v=1"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   moyiq · Inversiones — paleta congelada (D9, tokens-v2.css); la app moyiq tiene su propio sistema
-   MAXNOVA & LUCI Global LLC · v2.2
-   Tipografía: IBM Plex Sans (texto y cifras tabulares, --num) + IBM Plex Mono solo
-   para tickers y códigos (M1, 21-oct-2026)
-   Paleta: mismos tokens que FinanceOS globals.css
+   moyiq · Inversiones — tokens v3.1 de la app (/tokens-v3.css, violeta nivel 3; oscuro grafito)
+   MAXNOVA & LUCI Global LLC · v2.3 (18-nov-2026)
+   Tipografía: Inter (una sola familia, D2); cifras con tabular-nums (.num, --num).
+   Mono del sistema solo para teclas y la lista de tickers editable.
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Fonts loaded async via <link> in <head> — no render-blocking @import */
@@ -58,79 +57,70 @@ input, select, textarea { font-size: 16px; }
 }
 
 /* ── TOKENS ── */
+/* Paleta: /tokens-v3.css (moyiq v3.1, copia literal de financeos-app/src/styles/tokens.css, 18-nov-2026).
+   Aquí solo los nombres propios de Inversiones, cada uno apuntando a un semántico v3 por ROL: cambian
+   solos entre claro (blanco, morado 50, violeta de acción) y oscuro (grafito, D6). Ningún hex de marca
+   se define acá (test/brd4-shared-tokens.test.js). */
 :root {
-  /* Colores — modo claro (idéntico a FinanceOS light) */
-  /* ── Marca: azul tinta ───────────────────────────────────────────────
-     Era verde, el mismo hex que la ganancia. Compartir color con la semantica
-     hacia que el color no dijera nada: boton y "+$400" eran identicos. Verde y
-     rojo quedan reservados a resultado (--pos/--neg), y la marca se mueve a un
-     hue que no compite con el P&L. Los nombres --grn* se conservan a proposito:
-     renombrar 260 usos anadiria riesgo sin cambiar nada visual. */
-  /* ── Paleta de marca moyiq ("El Instrumento") — alineada a financeos-app ── */
-  --grn:       var(--navy); /* marca/estructura */
-  /* Superficies solidas de CTA: Latón, SIEMPRE con texto Navy encima (nunca
-     blanco — falla AA sobre Latón). Ver los 3 usos de --grn-solid más abajo,
-     ya migrados a color:var(--grn) en vez de color:#fff. */
-  --grn-solid: var(--laton);
-  --grn-bg:    rgba(20,33,61,0.07);
-  --grn-lt:    rgba(20,33,61,0.14);
+  /* Marca / estructura: nav activo, enlaces, "dónde estás". Los nombres --grn* se conservan a propósito
+     (260 usos): son marca, no "verde". Verde y rojo quedan para el resultado (--pos/--neg). */
+  --grn:       var(--color-brand-text);
+  /* Acción principal sólida: morado 700 con blanco (12,05:1); en oscuro morado 300 con grafito. */
+  --grn-solid:    var(--btn-primary-bg);
+  --grn-solid-fg: var(--btn-primary-fg);
+  --grn-bg:    var(--color-brand-subtle);
+  --grn-lt:    var(--color-brand-muted);
 
-  /* --laton y --laton-700 vienen de /tokens-v2.css (paleta v2 congelada, D9). */
+  /* Cifras: Inter con tnum/lnum (.num), una sola familia (D2). */
+  --num:       var(--font-sans);
 
-  /* M1 (21-oct-2026): cifras en IBM Plex Sans con tabular-nums lining-nums.
-     Plex Sans ya trae digitos tabulares (los 10 miden 600 unidades, igual que
-     Mono) sin los huecos de Mono en "." y ",". Mono queda para tickers,
-     ISIN y codigos. */
-  --num:       var(--sans);
+  --red:       var(--color-over-text);
+  --red-bg:    var(--color-over-bg);
+  --red-lt:    var(--color-over-bg);   /* hover de quitar */
 
-  --red:       var(--error);
-  --red-bg:    rgba(162,62,46,0.08);
-  --red-lt:    #F3DAD5;
+  --amber:     var(--color-warn-text);
+  --amber-bg:  var(--color-warn-bg);
 
-  --amber:     var(--warning-800);
-  --amber-bg:  rgba(201,122,61,0.12);
-
-  /* Alias de fondos/bordes de estado usados en .sigb/.rtab y badges inline.
-     Antes se referenciaban sin definir (--gbg/--gborder/--ambg/--amborder)
-     y caian a `initial` -> cajas sin fondo ni borde. */
+  /* Alias de fondos/bordes de estado usados en .sigb/.rtab y badges inline. */
   --gbg:       var(--grn-bg);
   --gborder:   var(--grn-lt);
   --ambg:      var(--amber-bg);
   --amborder:  var(--amber);
 
-  /* ── Semantica de resultado ──────────────────────────────────────────
-     Ganancia y perdida. Verde = único color positivo/éxito del brand book;
-     rojo/error para pérdida. Convención universal en finanzas, no cambia. */
-  --pos:       var(--verde-800);
-  --neg:       var(--error);
+  /* Resultado: ganancia y pérdida (texto); las marcas de gráfico usan --color-income/--color-over. */
+  --pos:       var(--color-income-text);
+  --neg:       var(--color-over-text);
 
   /* Aliases usados en JS inline styles */
-  --green:     var(--verde-800);
-  --orange:    var(--warning-800); /* aviso: AA (≥4,6) sobre su fondo en todas las superficies (A11Y-2) */
-  --orange-bg: rgba(201,122,61,0.12);
+  --green:     var(--color-income-text);
+  --orange:    var(--color-warn-text);   /* aviso: AA sobre su fondo en todas las superficies (A11Y-2) */
+  --orange-bg: var(--color-warn-bg);
 
-  --blue:      var(--info-800);
-  --blue-bg:   rgba(91,122,153,0.12);
+  /* "Informativo" / en curso: v3 no tiene azul; va en el texto de marca (capa de compatibilidad de la app). */
+  --blue:      var(--color-brand-text);
+  --blue-bg:   var(--color-brand-subtle);
 
-  /* Superficies — Papel */
-  --bg:        var(--papel);
-  --bg2:       var(--papel-000);
-  --card:      var(--papel-000);
-  --card2:     var(--papel);
-  --card3:     var(--sur2);
-  --card4:     var(--papel-200);
+  /* Superficies: hoja blanca (grafito en oscuro); menús, fichas y modales elevados; controles en morado 50. */
+  --bg:        var(--color-bg);
+  --bg2:       var(--color-bg);
+  --card:      var(--color-surface-raised);
+  --card2:     var(--color-fill);
+  --card3:     var(--color-fill);   /* hover y estados elevados: el texto secundario sigue en ≥ 4,5:1 encima (con el escalón "presionado" bajaba a 3,9) */
+  --card4:     var(--color-divider-strong);   /* veladura sin texto: esqueletos, brillo de carga, pista de rango */
 
-  /* Texto — Navy */
-  /* --tm/--th de /tokens-v2.css: cambian solos en oscuro. */
-  --text:      var(--tm);
-  --text2:     var(--th);
-  --text3:     var(--th);
-  --bright:    var(--navy);
+  /* Texto: grafito para leer, gris para ordenar (D3). */
+  --text:      var(--text-subtle);
+  --text2:     var(--text-secondary);
+  --text3:     var(--text-secondary);
+  --bright:    var(--text-primary);
 
   /* Bordes */
-  --border:    var(--brd);
-  --border2:   var(--brd2);
-  --border3:   rgba(20,33,61,0.24);
+  --border:    var(--color-divider);
+  --border2:   var(--color-divider-strong);
+  --border3:   var(--color-border-field);   /* 3:1 o más (1.4.11): hover de controles y líneas de referencia */
+
+  /* Gráficos: el dato por rol, nunca un color de marca directo. */
+  --chart-ma:  var(--cat-2);   /* medias móviles (20 y 200 días) */
 
   /* Sombras */
   --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
@@ -164,54 +154,12 @@ input, select, textarea { font-size: 16px; }
   --sp-16: 32px;
   --sp-20: 40px;
   --sp-24: 48px;
-
-  /* Sidebar */
 }
 
 /* ── DARK MODE ── */
-/* Superficies, texto y bordes del modo oscuro de financeos-app (/tokens-v2.css, BRD-4).
-   Solo quedan valores propios de Inversiones donde el de la app no llega a AA aquí:
-   el rojo de pérdida (#C96856 da 4,2:1 sobre --sur2) y sus tintes. */
+/* Grafito (D6): los semánticos de /tokens-v3.css ya cambian solos con [data-theme="dark"]. Acá solo
+   lo que no es color: sombras más hondas. */
 [data-theme="dark"] {
-  --grn:       var(--papel); /* Papel como "primario" claro sobre el fondo oscuro */
-  --grn-solid: var(--accent-dark); /* Latón para datos/CTA sobre oscuro — texto Navy encima */
-  --grn-bg:    rgba(241,238,230,0.08);
-  --grn-lt:    rgba(241,238,230,0.16);
-
-  --laton:      var(--accent-dark);
-  --laton-700:  var(--laton-300);
-
-  /* Rojo de pérdida en oscuro: AA en fondo, superficie y estados elevados (≥6:1; A11Y-12). */
-  --red:       #E59580;
-  --red-bg:    rgba(212,115,95,0.16);
-  --red-lt:    #4A2A22;
-
-  --amber:     var(--warning-dark);
-  --amber-bg:  rgba(224,151,90,0.16);
-
-  --pos:       var(--verde-dark);
-  --neg:       var(--red);
-
-  --green:     var(--verde-dark);
-  --orange:    var(--warning-dark);
-  --orange-bg: rgba(224,151,90,0.16);
-
-  --blue:      var(--info-dark);
-  --blue-bg:   rgba(137,166,194,0.16);
-
-  /* Fondo + tres niveles (--sur/--sur2/--sur3 de la app); card4 es una veladura
-     para pistas y esqueletos de carga. */
-  --bg:        #0E1628;   /* = --bg oscuro de /tokens-v2.css (familia Navy, UI-L1) */
-  --bg2:       var(--sur);
-  --card:      var(--sur);
-  --card2:     var(--sur2);
-  --card3:     var(--sur3);
-  --card4:     var(--brd2);
-
-  --bright:    var(--papel-000);
-
-  --border3:   rgba(228,223,209,0.26);
-
   --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
   --shadow-md: 0 4px 12px rgba(0,0,0,.4);
   --shadow-lg: 0 8px 24px rgba(0,0,0,.5);
@@ -228,7 +176,7 @@ button, input, select, textarea { font-family: inherit; }
 html { font-size:14px; -webkit-text-size-adjust:100%; }
 
 body {
-  font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
   line-height: 1.5;
   color: var(--text);
@@ -275,12 +223,12 @@ body {
   margin-bottom:6px;
 }
 .ph h1, .ph h2 {
-  /* Mismo titulo de pagina que .fos-module-title (Instrument Sans serif): antes eran
-     3 estilos distintos (Inter 24, Inter 26, Instrument Sans 27) y el H1 cambiaba de
+  /* Mismo titulo de pagina que .fos-module-title: antes eran
+     3 estilos distintos y el H1 cambiaba de
      familia/tamano al moverse entre modulos. El h2 es para _ph() llamado con
      tag:'h2' — secciones que viven dentro de una pagina mas grande con su
      propio h1 (ej. Screener/Comparador dentro de Investigar), mismo look. */
-  font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 27px;
   font-weight: 600;
   color: var(--bright);
@@ -397,7 +345,7 @@ tr:last-child td { border-bottom: none; }
   color: var(--text2);
   font-size: 12px;
   font-weight: 500;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   cursor: pointer;
   transition: border-color .12s cubic-bezier(.23,1,.32,1),
               color .12s cubic-bezier(.23,1,.32,1),
@@ -415,10 +363,10 @@ tr:last-child td { border-bottom: none; }
   border-radius: var(--r-sm);
   border: none;
   background: var(--grn-solid);
-  color: #14213D;
+  color: var(--grn-solid-fg);
   font-size: 12px;
   font-weight: 600;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   cursor: pointer;
   transition: background .12s, transform .1s;
   white-space: nowrap;
@@ -435,7 +383,7 @@ tr:last-child td { border-bottom: none; }
   border-radius: var(--r-sm);
   padding:8px 10px;
   font-size: 12px;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--sans);
   color: var(--bright);
   outline: none;
   transition: border-color .12s;
@@ -708,7 +656,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-badge{display:inline-flex;align-items:center;gap:8px;background:var(--grn-bg);border:1px solid var(--grn-lt);border-radius:var(--r-xl);padding:4px 12px;align-self:flex-start}
 .wv3-badge span{font-size:11px;color:var(--grn);}
 .wv3-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0}
-.wv3-h1{font-family:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--bright);letter-spacing:-.03em;line-height:1.15;margin:0}
+.wv3-h1{font-family:var(--sans);font-size:clamp(28px,4.5vw,46px);font-weight:700;color:var(--bright);letter-spacing:-.03em;line-height:1.15;margin:0}
 .wv3-sub{font-size:15px;color:var(--text2);line-height:1.7;max-width:480px;margin:0}
 .wv3-ctx-label{font-size:11px;color:var(--text3);margin-bottom:8px}
 .wv3-ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -719,7 +667,7 @@ tr:last-child td { border-bottom: none; }
 
 .wv3-score-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px}
 .wv3-score-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.wv3-score-ticker{font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--bright)}
+.wv3-score-ticker{font-size:11px;font-weight:700;font-family:var(--sans);color:var(--bright)}
 
 .wv3-scores-note{font-size:11px;color:var(--text3);margin-top:6px}
 .wv3-feats{display:flex;flex-direction:column;gap:12px}
@@ -735,9 +683,8 @@ tr:last-child td { border-bottom: none; }
 .wv3-auth-name{font-size:15px;color:var(--text)}
 .wv3-auth-name{display:flex;align-items:center;gap:10px}
 .wv3-auth-name b{color:var(--text2);font-weight:500;padding-left:10px;border-left:1px solid currentColor;line-height:1.1}
-/* Logo moyiq en versiones del manual: negro sobre claro, blanco sobre oscuro (rebrand Entrega 1). */
-.moyiq-logo{display:block;height:24px;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0;color:#000000}
-[data-theme="dark"] .moyiq-logo{color:#FFFFFF}
+/* Logo moyiq en versiones del manual (v3 --logo-fg): morado sobre blanco, blanco sobre grafito. */
+.moyiq-logo{display:block;height:24px;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0;color:var(--logo-fg)}
 .wv3-tabs{display:grid;grid-template-columns:1fr 1fr;position:relative;background:var(--bg2);border-radius:var(--r-md);padding:4px;margin-bottom:20px}
 .wv3-tab-slider{position:absolute;top:4px;bottom:4px;width:calc(50% - 4px);background:var(--card);border-radius:var(--r-sm);box-shadow:0 2px 8px rgba(0,0,0,.28);transition:transform .25s cubic-bezier(.4,0,.2,1);pointer-events:none}
 .wv3-tab-slider.r{transform:translateX(calc(100% + 4px))}
@@ -759,7 +706,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-forgot{text-align:right;margin-top:4px}
 .wv3-forgot a{font-size:11px;color:var(--grn);text-decoration:none}
 .wv3-forgot a:hover{text-decoration:underline}
-.wv3-submit{width:100%;border-radius:var(--r-md);padding:12px;font-size:13px;font-weight:600;color:#14213D;background:var(--grn-solid);border:none;cursor:pointer;transition:opacity .15s,transform .08s;box-shadow:0 6px 20px -8px var(--grn);font-family:inherit}
+.wv3-submit{width:100%;border-radius:var(--r-md);padding:12px;font-size:13px;font-weight:600;color:var(--grn-solid-fg);background:var(--grn-solid);border:none;cursor:pointer;transition:opacity .15s,transform .08s;box-shadow:0 6px 20px -8px var(--grn);font-family:inherit}
 .wv3-submit:hover{opacity:.9;transform:translateY(-1px)}
 .wv3-submit:active{transform:scale(.98)}
 .wv3-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
@@ -772,7 +719,7 @@ tr:last-child td { border-bottom: none; }
 .wv3-check-txt{font-size:12px;color:var(--text2);line-height:1.5}
 .wv3-check-txt a{color:var(--grn);text-decoration:none;cursor:pointer}
 .wv3-pricing{margin-top:14px;font-size:12px;color:var(--text2);line-height:1.9}
-.wv3-ctx-val .trend-tag{font-family:'IBM Plex Sans',system-ui,sans-serif}
+.wv3-ctx-val .trend-tag{font-family:var(--sans)}
 .wv3-pricing > div{display:flex;align-items:center;justify-content:center;gap:6px}
 .wv3-pricing .ico,.wv3-disc .ico{width:14px;height:14px;flex-shrink:0}
 .wv3-pricing .wv3-grn{color:var(--grn)}
@@ -848,16 +795,16 @@ tr:last-child td { border-bottom: none; }
 .toast.error { background:var(--neg); }
 .toast.info { background:var(--blue); }
 .toast.warning { background:var(--amber); }
-.toast-undo { margin-left:auto; flex-shrink:0; background:rgba(241,238,230,.2); border:none; color:inherit; font-weight:700; font-size:11px; padding:8px 12px; border-radius:var(--r-sm); cursor:pointer; }
-.toast-undo:hover { background:rgba(241,238,230,.32); }
+.toast-undo { margin-left:auto; flex-shrink:0; background:rgb(255 255 255 / .2); border:none; color:inherit; font-weight:700; font-size:11px; padding:8px 12px; border-radius:var(--r-sm); cursor:pointer; }
+.toast-undo:hover { background:rgb(255 255 255 / .32); }
 
 /* ── @MEDIA PRINT (Radar PDF) ── */
 @media print {
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  body{background:#FFFFFF!important;color:#14213D!important;font-size:10pt!important}
+  body{background:#FFFFFF!important;color:#1C1D21!important;font-size:10pt!important}
   .sb, .dov, .drw {display:none!important}
   .main{margin:0!important}
-  .cb{break-inside:avoid;page-break-inside:avoid;border:0.5pt solid #E4DFD1!important;border-radius:5pt!important}
+  .cb{break-inside:avoid;page-break-inside:avoid;border:0.5pt solid #CDD0D4!important;border-radius:5pt!important}
   
   @page{size:A4;margin:18mm 15mm 14mm}
 }
@@ -897,7 +844,7 @@ tr:last-child td { border-bottom: none; }
 /* Igual que .fos-module-crumb (10px MAYUSCULA con letter-spacing): antes el
    breadcrumb del dashboard era 11px minuscula y no matcheaba al resto. */
 .dash-page-breadcrumb { font-size: 11px; color: var(--text3); margin-bottom:var(--sp-3); }
-.dash-page-title { font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0; line-height: 1.12; letter-spacing: -.01em; }
+.dash-page-title { font-family: var(--sans); font-size: 27px; font-weight: 600; color: var(--bright); margin:0; line-height: 1.12; letter-spacing: -.01em; }
 
 /* .dash-quick/.dash-quick-b (4 accesos rapidos Motor/Indicadores/Riesgo/
    Screener a la altura del titulo) se eliminaron el 13-sep-2026 junto con su
@@ -910,13 +857,11 @@ tr:last-child td { border-bottom: none; }
 .fos-table tr:last-child td { border-bottom: none; }
 .fos-table tr:hover td { background: var(--card3); }
 
-/* Serif display SOLO en el titulo de modulo. El contraste serif-title /
-   sans-body / mono-datos es lo que da jerarquia de tres niveles y evita que la
-   app lea como "dashboard tecnico". Instrument Sans ya es fuente de marca (la landing). */
-.fos-module-title { font-family: 'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size: 27px; font-weight: 600; color: var(--bright); margin:0 0 var(--sp-3); line-height: 1.12; letter-spacing: -.01em; }
+/* Titulo de modulo: Inter 600 (una sola familia, D2); la jerarquia la dan tamano y peso. */
+.fos-module-title { font-family: var(--sans); font-size: 27px; font-weight: 600; color: var(--bright); margin:0 0 var(--sp-3); line-height: 1.12; letter-spacing: -.01em; }
 .fos-module-title em { font-style: italic; }
 .fos-module-crumb { font-size: 11px; color: var(--text3); margin-bottom:var(--sp-3); }
-.fos-module-sub { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: var(--text2); margin:0; line-height: 1.5; }
+.fos-module-sub { font-family: var(--sans); font-size: 13px; color: var(--text2); margin:0; line-height: 1.5; }
 /* ── DASHBOARD v2 ── */
 
 /* Fila heroe del dashboard: P&L Total domina (1.7fr, 34px) + 4 apoyos. */
@@ -979,7 +924,7 @@ tr:last-child td { border-bottom: none; }
 .btn-r {
   padding:6px 14px; border-radius: var(--r-sm);
   background: var(--red-bg); border: 1px solid var(--red-lt);
-  color: var(--red); font-size: 11px; font-family: 'IBM Plex Sans', sans-serif;
+  color: var(--red); font-size: 11px; font-family: var(--sans);
   cursor: pointer; transition: background .12s;
 }
 .btn-r:hover { background: var(--red-lt); }
@@ -1045,13 +990,12 @@ tr:last-child td { border-bottom: none; }
    Piezas nuevas: cifras en Plex Mono, prosa en Plex Sans, radios <= 12px. */
 .num { font-family:var(--num); font-variant-numeric:tabular-nums lining-nums; }
 /* Código de moneda junto a una cifra en otra moneda (CLP 63.190): palabra en Sans. */
-.ccy { font-family:'IBM Plex Sans',system-ui,sans-serif; font-size:.8em; font-weight:500; letter-spacing:0; color:var(--text3); }
+.ccy { font-family:var(--sans); font-size:.8em; font-weight:500; letter-spacing:0; color:var(--text3); }
 .fx-note { font-size:12px; color:var(--text3); }
-.cap-mark { color:var(--laton-700); font-weight:700; }
+.cap-mark { color:var(--color-brand-text); font-weight:700; }
 
-.demo-ribbon { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--laton); border-radius:var(--r-md); box-shadow:var(--shadow-sm); }
-.demo-ribbon-tag { font-size:12px; font-weight:700; color:var(--grn); background:var(--laton); padding:3px 8px; border-radius:var(--r-sm); }
-[data-theme="dark"] .demo-ribbon-tag { color:var(--navy); }
+.demo-ribbon { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; padding:10px 14px; margin:0 0 16px; background:var(--card); border:1px solid var(--color-action); border-radius:var(--r-md); box-shadow:var(--shadow-sm); }
+.demo-ribbon-tag { font-size:12px; font-weight:700; color:var(--text-on-accent); background:var(--color-accent); padding:3px 8px; border-radius:var(--r-sm); }
 .demo-ribbon-txt { flex:1 1 220px; font-size:13px; color:var(--text); line-height:1.5; }
 .demo-ribbon .btn, .demo-ribbon .btn-big, .seed-banner .btn, .seed-banner .btn-big { min-height:44px; }
 .seed-banner { display:flex; flex-wrap:wrap; gap:14px 20px; align-items:center; padding:16px 18px; margin:0 0 18px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); }
@@ -1065,8 +1009,8 @@ tr:last-child td { border-bottom: none; }
 .first-run-paths { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
 .first-run-path { display:flex; flex-direction:column; align-items:flex-start; gap:4px; text-align:left; min-height:88px; padding:16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--r-md); color:var(--bright); cursor:pointer; font:inherit; transition:border-color .15s ease, background-color .15s ease; }
 .first-run-path:hover { border-color:var(--grn); }
-.first-run-path:focus-visible { outline:2px solid var(--laton); outline-offset:2px; }
-.first-run-path.primary { background:var(--laton); border-color:var(--laton); color:#14213D; }
+.first-run-path:focus-visible { outline:2px solid var(--color-focus); outline-offset:2px; }
+.first-run-path.primary { background:var(--grn-solid); border-color:var(--grn-solid); color:var(--grn-solid-fg); }
 .first-run-path-t { font-size:15px; font-weight:600; }
 .first-run-path-d { font-size:13px; opacity:.85; line-height:1.4; }
 @media (max-width:767px){ .first-run-paths { grid-template-columns:1fr; } .first-run-path { min-height:64px; } .first-run { margin-top:8px; } }
@@ -1101,8 +1045,8 @@ tr:last-child td { border-bottom: none; }
 .onb { max-width:440px; text-align:left; }
 .onb-dots { display:flex; gap:6px; margin-bottom:20px; }
 .onb-dots span { flex:1; height:3px; border-radius:2px; background:var(--border2); }
-.onb-dots span.on { background:var(--laton); }
-.onb-ico { width:40px; height:40px; color:var(--laton-700); margin-bottom:12px; }
+.onb-dots span.on { background:var(--color-action); }
+.onb-ico { width:40px; height:40px; color:var(--color-brand-text); margin-bottom:12px; }
 .onb-ico .ico { width:100%; height:100%; }
 .onb h2 { font-size:20px; margin:0 0 8px; color:var(--bright); text-wrap:balance; }
 .onb p { font-size:14px; color:var(--text2); line-height:1.6; margin:0 0 22px; }
@@ -1179,27 +1123,31 @@ body.no-auth .legal-foot { display:none; }
 :root {
   --side-w: 232px;
   --side-wc: 64px;
-  --side-bg: var(--navy);
-  --side-fg: rgba(241,238,230,.76);
-  --side-fg-strong: var(--papel-000);
-  --side-line: rgba(241,238,230,.12);
-  --side-hover: rgba(241,238,230,.07);
-  --side-act: rgba(184,134,59,.18);
-  --side-mark: var(--laton);
-  --side-pos: var(--verde-dark);
-  --side-neg: #F0A493;
+  /* Barra lateral en la franja de marca (morado 800, --color-brand-solid) con lima para "dónde estás"
+     (11,4:1); texto blanco 76 % (9,0:1), ganancia y pérdida en los tonos de dato del oscuro (≥ 6,5:1). */
+  --side-bg: var(--color-brand-solid);
+  --side-fg: rgb(255 255 255 / .76);
+  --side-fg-strong: var(--color-brand-solid-fg);
+  --side-line: rgb(255 255 255 / .12);
+  --side-hover: rgb(255 255 255 / .07);
+  --side-act: rgb(208 240 110 / .14);
+  --side-act-ring: rgb(208 240 110 / .35);
+  --side-mark: var(--color-accent);
+  --side-pos: var(--green-300);
+  --side-neg: var(--red-300);
   --content-max: 1200px;
   --content-px: 24px;
   --topbar-h: 60px;
   --mbar-h: 60px;
 }
 [data-theme="dark"] {
-  /* Dos niveles en oscuro: fondo #0E1628 y una sola superficie (--sur, Navy) para
-     la barra lateral, la ficha, menús y paneles, separada por una línea fina. */
+  /* Oscuro (grafito, D6): la barra es la superficie (gris 800) separada por una línea fina; "dónde estás"
+     en el texto de marca del oscuro (morado 200, 8,1:1). */
   --side-bg: var(--card);
   --side-line: var(--border2);
-  --side-act: rgba(204,154,82,.16);
-  --side-mark: var(--accent-dark);
+  --side-act: var(--color-brand-subtle);
+  --side-act-ring: var(--color-brand-muted);
+  --side-mark: var(--color-brand-text);
 }
 @media (max-width: 1023px) { :root { --content-px: 16px; } }
 
@@ -1276,7 +1224,7 @@ body.no-auth .skip-link { display:none; }
 .side-brand img { width:28px; height:28px; border-radius:var(--r-sm); flex-shrink:0; display:block; }
 .side-brand b { font-weight:600; color:var(--side-mark); }
 .side-brand .side-lbl { display:flex; align-items:center; gap:8px; }
-.side-brand .moyiq-logo { height:22px; color:#FFFFFF; }
+.side-brand .moyiq-logo { height:22px; color:var(--side-fg-strong); }
 body:not(.side-collapsed) .side-brand img { display:none; }
 .side-nav, .side-tk { list-style:none; margin:0; padding:0; }
 .side-nav { display:flex; flex-direction:column; gap:2px; padding-bottom:12px; }
@@ -1290,7 +1238,7 @@ body:not(.side-collapsed) .side-brand img { display:none; }
 .side-item .ico { width:20px; height:20px; }
 .side-item:hover { background:var(--side-hover); color:var(--side-fg-strong); }
 /* Destino actual: chip Latón de fondo + icono Latón + negrita (sin franja lateral). */
-.side-item.act { background:var(--side-act); color:var(--side-fg-strong); font-weight:600; box-shadow:inset 0 0 0 1px rgba(184,134,59,.35); }
+.side-item.act { background:var(--side-act); color:var(--side-fg-strong); font-weight:600; box-shadow:inset 0 0 0 1px var(--side-act-ring); }
 .side-item.act .ico { color:var(--side-mark); }
 .side-list { border-top:1px solid var(--side-line); padding:14px 0 8px; }
 .side-h { margin:0 0 6px; padding:0 12px; font-size:12px; font-weight:600; color:var(--side-fg); letter-spacing:.2px; }
@@ -1334,7 +1282,7 @@ body:not(.no-auth) .topbar {
 }
 .gs-in::placeholder { color:var(--text3); }
 .gs-in:focus { border-color:var(--bright); box-shadow:0 0 0 3px var(--grn-bg); }
-.gs-kbd { position:absolute; right:10px; padding:1px 7px; border:1px solid var(--border2); border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text3); pointer-events:none; }
+.gs-kbd { position:absolute; right:10px; padding:1px 7px; border:1px solid var(--border2); border-radius:4px; font-family:var(--mono); font-size:11px; color:var(--text3); pointer-events:none; }
 .gs-in:focus ~ .gs-kbd { display:none; }
 .gs-close { display:none; }
 .gs-list {
@@ -1376,7 +1324,7 @@ body:not(.no-auth) .topbar {
 .pagehead { display:none; }
 body:not(.no-auth) .pagehead { display:block; }
 .pagehead-in { max-width:var(--content-max); margin:0 auto; padding:24px var(--content-px) 0; }
-.pg-title { margin:0; font-family:'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.01em; color:var(--bright); }
+.pg-title { margin:0; font-family:var(--sans); font-size:28px; font-weight:600; line-height:1.15; letter-spacing:-.01em; color:var(--bright); }
 .pagehead:not(.has-tabs) .pagehead-in { padding-bottom:4px; }
 /* Un solo componente de pestañas: .ptab para destinos y .tab para filtros
    internos (Tendencia, periodos del Comparador), que eran botones sin estilo. */
@@ -1389,7 +1337,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .ptab { min-height:44px; padding:0 14px; font-size:14px; font-weight:500; }
 .ptab:hover { color:var(--bright); }
 .ptab.act { color:var(--bright); font-weight:600; }
-.ptab.act::after { content:''; position:absolute; left:10px; right:10px; bottom:-1px; height:3px; border-radius:2px 2px 0 0; background:var(--laton); }
+.ptab.act::after { content:''; position:absolute; left:10px; right:10px; bottom:-1px; height:3px; border-radius:2px 2px 0 0; background:var(--tabbar-pill); }
 .tab {
   min-height:32px; padding:0 12px; margin:0 4px 4px 0; font-size:12px; font-weight:500;
   border:1px solid var(--border2); border-radius:var(--r-sm); background:var(--card);
@@ -1411,7 +1359,7 @@ body:not(.no-auth) .pagehead { display:block; }
   }
   body:not(.no-auth) .appcol { padding-bottom:calc(var(--mbar-h) + env(safe-area-inset-bottom, 0px)); }
   /* Movil: titulo del destino en la franja, buscador a pantalla completa. */
-  .tb-dest { display:block; flex:1; min-width:0; font-family:'Instrument Sans', 'IBM Plex Sans', system-ui, sans-serif; font-size:20px; font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tb-dest { display:block; flex:1; min-width:0; font-family:var(--sans); font-size:20px; font-weight:600; color:var(--bright); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .gs { display:none; }
   .tb-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:none; border-radius:var(--r-md); background:transparent; color:var(--bright); cursor:pointer; flex-shrink:0; }
   .tb-icon .ico { width:20px; height:20px; }
@@ -1448,25 +1396,24 @@ body:not(.no-auth) .pagehead { display:block; }
 .mob-tab .ico { width:22px; height:22px; }
 .mob-tab span { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .mob-tab.act { color:var(--bright); font-weight:600; }
-.mob-tab.act::before { content:''; position:absolute; top:0; left:22%; right:22%; height:3px; border-radius:0 0 2px 2px; background:var(--laton); }
+.mob-tab.act::before { content:''; position:absolute; top:0; left:22%; right:22%; height:3px; border-radius:0 0 2px 2px; background:var(--tabbar-pill); }
 @media (max-width: 1023px) {
   body:not(.no-auth) #toast-container { bottom:calc(var(--mbar-h) + 16px + env(safe-area-inset-bottom, 0px)); }
 }
 /* La ficha del activo (hoja inferior en movil) va por encima de la barra. */
-.dov { z-index:200; backdrop-filter:none; background:rgba(13,23,48,.38); }
-[data-theme="dark"] .dov { background:rgba(4,8,18,.6); }
+.dov { z-index:200; backdrop-filter:none; background:var(--color-scrim); }
 .drw { z-index:210; }
 
 /* ── PORTAFOLIO · fase 2 (Posiciones, Movimientos, Dividendos, Objetivos) ── */
 .pv .pos { color: var(--pos); }
 .pv .neg { color: var(--neg); }
 
-.warn-tag { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 500; }
+.warn-tag { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-family: var(--sans); font-weight: 500; }
 .warn-tag .ico { width: 14px; height: 14px; }
 .pv .num { font-family: var(--num); font-variant-numeric: tabular-nums lining-nums; }
 .port-wrap { display: flex; flex-direction: column; gap: 16px; }
 .port-wrap > * { margin: 0; min-width: 0; max-width: 100%; }
-.pv .fos-table th { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text2); }
+.pv .fos-table th { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text2); }
 .linkbtn { background: none; border: none; padding: 0; min-height: 32px; font: inherit; color: var(--blue); text-decoration: underline; cursor: pointer; }
 .port-muted { font-size: 12px; line-height: 1.55; color: var(--text2); margin: 0; }
 .port-h2 { margin: 8px 0 0; font-size: 16px; font-weight: 600; color: var(--bright); }
@@ -1609,7 +1556,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .rb-grid > div > .btn { align-self: flex-start; min-height: 44px; }
 @media (max-width: 1023px) { .rb-grid { grid-template-columns: 1fr; } }
 .rb-ctl { display: flex; align-items: center; gap: 8px; }
-.rb-ctl input[type=range] { width: 120px; accent-color: var(--laton); }
+.rb-ctl input[type=range] { width: 120px; accent-color: var(--color-action); }
 .rb-ctl .inp { width: 64px; min-height: 36px; padding: 4px 6px; }
 @media (max-width: 560px) { .rb-ctl input[type=range] { display: none; } .rb-table th, .rb-table td { padding: 8px 6px; } }
 .rb-wait { padding: 12px 16px; font-size: 13px; line-height: 1.5; color: var(--text); background: var(--orange-bg); border-radius: var(--r-md); }
@@ -1635,7 +1582,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .li-rp { font-size: 12px; color: var(--text2); }
 .li-bell { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 8px; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--card); color: var(--text2); font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; }
 .li-bell:hover { border-color: var(--border3); color: var(--bright); }
-.li-bell.on { color: var(--bright); border-color: var(--laton); background: var(--grn-bg); }
+.li-bell.on { color: var(--bright); border-color: var(--color-action); background: var(--grn-bg); }
 .li-bell .ico { width: 15px; height: 15px; }
 @media (pointer: coarse) { .li-bell { min-height: 44px; } }
 .li-stack .ps-l2 { align-items: center; }
@@ -1646,7 +1593,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .scr-form { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(110px, 1fr)); gap: 12px; align-items: end; padding: 16px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--r-md); }
 .scr-f { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text2); min-width: 0; }
 .scr-f .inp { width: 100%; min-height: 40px; }
-.scr-f textarea.inp { font-family: 'IBM Plex Mono', monospace; font-size: 13px; resize: vertical; }
+.scr-f textarea.inp { font-family: var(--mono); font-size: 13px; resize: vertical; }
 .scr-acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
 .scr-acts .btn-big { width: auto; padding: 0 22px; min-height: 44px; }
 .scr-acts .btn { min-height: 44px; }
@@ -1830,8 +1777,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .mkt-spark { display: block; width: 100%; height: 76px; margin-top: 10px; }
 .mkt-key-l { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 6px 0 0; font-size: 12px; color: var(--text2); }
 .mkt-key-l > span { display: inline-flex; align-items: center; gap: 6px; }
-.mkt-key { display: inline-block; width: 16px; height: 0; border-top: 2px solid var(--bright); }
-.mkt-key.k-ma, .mkt-key.k-20 { border-top-color: var(--laton); }
+.mkt-key { display: inline-block; width: 16px; height: 0; border-top: 2px solid var(--chart-net); }
 .mkt-key.k-ma2 { border-top-style: dashed; }
 .mkt-key.k-bb { border-top: 1px dashed var(--border3); }
 .drw-key { margin-top: 8px; }
@@ -1859,7 +1805,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .calc-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px 16px; }
 .calc-fields .calc-field { margin-bottom: 0; }
 .calc-picks { margin: 0; }
-.calc-picks .li-chips .tab { margin: 0; font-family: 'IBM Plex Mono', monospace; }
+.calc-picks .li-chips .tab { margin: 0; font-family: var(--sans); }
 .calc-result { min-height: 0; display: flex; flex-direction: column; gap: 16px; }
 .calc-empty { min-height: 140px; padding: 16px; background: var(--card); border: 1px dashed var(--border2); border-radius: var(--r-md); }
 .calc-r { margin: 0; }
@@ -1874,7 +1820,7 @@ body:not(.no-auth) .pagehead { display:block; }
 .cap-ctl .li-chips .tab { margin: 0; }
 .cap-tks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .cap-tk { display: flex; align-items: center; gap: 6px; padding: 4px 4px 4px 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--r-sm); font-size: 13px; color: var(--text2); }
-.cap-tk-t { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--bright); min-width: 44px; }
+.cap-tk-t { font-family: var(--sans); font-weight: 600; color: var(--bright); min-width: 44px; }
 .cap-tk .inp { width: 64px; min-height: 36px; padding: 4px 6px; }
 .cap-add { display: flex; flex-wrap: wrap; gap: 8px; }
 .cap-add .inp { width: 120px; min-height: 40px; }
@@ -1937,7 +1883,7 @@ details.capx-opt .cap-ctl + .cap-ctl { margin-top: 12px; }
 .cc-list dt { font-size: 13px; font-weight: 600; color: var(--bright); }
 .cc-list dd, .sc-list dd { margin: 0; font-size: 13px; color: var(--text2); line-height: 1.5; }
 .sc-list > div { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
-kbd { display: inline-block; padding: 2px 7px; background: var(--card2); border: 1px solid var(--border2); border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--bright); }
+kbd { display: inline-block; padding: 2px 7px; background: var(--card2); border: 1px solid var(--border2); border-radius: 4px; font-family: var(--mono); font-size: 12px; color: var(--bright); }
 @media (max-width: 639px) { .pv .fos-table th { white-space: normal; } .pv .fos-table:not(.port-table) th, .pv .fos-table:not(.port-table) td { padding: 8px 6px; } }
 
 /* ── REVISIÓN DE CIERRE · cifra protagonista, tablas a sangre, una sola tabla ── */
@@ -1945,7 +1891,7 @@ kbd { display: inline-block; padding: 2px 7px; background: var(--card2); border:
 .hero-l { font-size: 14px; font-weight: 500; color: var(--text2); }
 .hero-v { font-family: var(--num); font-variant-numeric: tabular-nums lining-nums; font-size: 54px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; color: var(--bright); }
 .hero-v.neg { color: var(--neg); }
-.hero-u { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 20px; font-weight: 500; letter-spacing: 0; color: var(--text2); margin-left: 10px; }
+.hero-u { font-family: var(--sans); font-size: 20px; font-weight: 500; letter-spacing: 0; color: var(--text2); margin-left: 10px; }
 .hero-u0 { margin-left: 0; font-size: 22px; color: var(--bright); }
 .hero-s { font-size: 14px; color: var(--text2); line-height: 1.5; }
 .hero-row { display: flex; flex-wrap: wrap; gap: 6px 28px; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--border2); font-size: 14px; color: var(--text2); line-height: 1.5; }
@@ -1978,12 +1924,12 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 .set-danger .btn-r { color: var(--neg); border-color: color-mix(in srgb, var(--neg) 40%, transparent); }
 
 /* Solo cifras en Mono */
-.toast { font-family: 'IBM Plex Sans', system-ui, sans-serif !important; font-size: 13px !important; }
-.fresh-tag { font-family: 'IBM Plex Sans', system-ui, sans-serif; display: inline-flex; align-items: center; gap: 5px; }
+.toast { font-family: var(--sans) !important; font-size: 13px !important; }
+.fresh-tag { font-family: var(--sans); display: inline-flex; align-items: center; gap: 5px; }
 .fresh-tag .ico { width: 14px; height: 14px; }
 .live-badge .ico { width: 14px; height: 14px; }
 .lb-short { display: none; }
-.port-stop::placeholder, .inp::placeholder { font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+.port-stop::placeholder, .inp::placeholder { font-family: var(--sans); }
 .warn-tag { display: inline; margin-left: 2px; }
 .warn-tag .ico { vertical-align: -2px; margin-right: 4px; }
 .side-fresh { margin: 6px 0 0; padding: 0 12px; font-size: 11px; line-height: 1.4; color: var(--side-fg); opacity: .8; }
@@ -2003,21 +1949,21 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 .cmp-sug li { border-bottom: 1px solid var(--border); }
 .cmp-sug .btn { border: none !important; background: none !important; border-radius: 0 !important; flex-direction: row !important; align-items: baseline !important; justify-content: space-between; gap: 8px; min-height: 44px; padding: 8px 0 !important; }
 .cmp-sug .btn:hover b { text-decoration: underline; }
-.mkt-key.k-ma { border-top-color: var(--blue); border-top-style: dashed; }
-.mkt-key.k-20 { border-top-color: var(--blue); }
+.mkt-key.k-ma { border-top-color: var(--chart-ma); border-top-style: dashed; }
+.mkt-key.k-20 { border-top-color: var(--chart-ma); }
 .tab[disabled] { opacity: .45; cursor: default; }
 .fos-table tbody th { border-bottom: 1px solid var(--border) !important; }
 .fos-table tbody tr:last-child th, .fos-table tbody tr:last-child td { border-bottom: none !important; }
 .fos-table tbody tr:last-child td, .fos-table tbody tr:last-child th { border-bottom: 1px solid var(--border) !important; }
-.live-badge { font-family: 'IBM Plex Sans', system-ui, sans-serif !important; }
+.live-badge { font-family: var(--sans) !important; }
 .live-badge .num { font-family: var(--num); }
 
 .mkt-figs { margin-top: 4px; }
 .peso-c { text-align: right; }
 .peso-w { display: block; text-align: right; max-width: none; margin-top: 2px; }
 .cmp-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; flex-shrink: 0; }
-:root { --cmp2: #6F8FB3; --cmp3: #8A8676; --cmp4: var(--info-800); }
-[data-theme="dark"] { --cmp2: var(--info-dark); --cmp3: var(--th); --cmp4: #C7D3E0; }
+/* Series 2–4 del Comparador: categóricas v3 (cambian solas con el tema); la 1 es --bright. */
+:root { --cmp2: var(--cat-2); --cmp3: var(--cat-7); --cmp4: var(--cat-5); }
 </style>
 </head>
 <body>
@@ -3076,7 +3022,21 @@ function loadLWScript(){
 }
 
 // '#RRGGBB' (o '#RGB') → rgba con transparencia; si no es hex, lo devuelve igual.
+// Color de un token (/tokens-v3.css) en la forma que entienden canvas y lightweight-charts:
+// el navegador lo serializa como rgb()/rgba() con comas (v3 escribe "rgb(r g b / a)", que la
+// librería no lee). Sin token, el respaldo (hex de la paleta v3).
+function cssColor(name,fallback){
+  var v=(getComputedStyle(document.documentElement).getPropertyValue(name)||'').trim();
+  if(!v||!document.body) return v||fallback;
+  var p=cssColor._p;
+  if(!p){ p=cssColor._p=document.createElement('i'); p.setAttribute('aria-hidden','true'); p.style.display='none'; }
+  if(!p.isConnected) document.body.appendChild(p);
+  p.style.color=''; p.style.color=v;
+  return getComputedStyle(p).color||fallback;
+}
 function hexAlpha(c,a){
+  var r=/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i.exec(String(c||'').trim());
+  if(r) return 'rgba('+r[1]+','+r[2]+','+r[3]+','+a+')';
   var m=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(c||'').trim()); if(!m) return c;
   var h=m[1].length===3?m[1].replace(/./g,'$&$&'):m[1];
   return 'rgba('+parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16)+','+a+')';
@@ -3095,22 +3055,22 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
     if(!bars.length) return;
 
     // I07: colores de la paleta (--pos/--neg) y atribución en el pie, no sobre el gráfico.
-    var _cs=getComputedStyle(document.documentElement);
-    var _tok=function(n,f){ var v=(_cs.getPropertyValue(n)||'').trim(); return v||f; };
-    var bgColor=_tok('--card','#FAF8F2');
-    var textColor=_tok('--text2','#63604F');
-    var gridColor=_tok('--border','rgba(20,33,61,0.10)');
-    var posC=_tok('--pos','#356E57'), negC=_tok('--neg','#A23E2E');
-    // Medias en Navy (tinta) y Latón, bandas y ejes en tinta tenue: nada de los
-    // rojo/verde/violeta por defecto de la librería. Volumen desaturado.
-    var inkC=_tok('--bright','#14213D'), latonC=_tok('--laton','#B8863B');
-    var bandC=_tok('--border3','rgba(20,33,61,0.24)'), axisC=_tok('--border2','rgba(20,33,61,0.18)');
+    // Colores de /tokens-v3.css por rol (--chart-*, --color-income/--color-over): nada de los
+    // rojo/verde/violeta por defecto de la librería. Medias: 20 y 200 en --chart-ma, 50 en tinta;
+    // bandas en gris, volumen desaturado.
+    var _tok=cssColor;
+    var bgColor=_tok('--card','#FFFFFF');
+    var textColor=_tok('--chart-axis','#6B6F78');
+    var gridColor=_tok('--chart-grid','#E6E7EA');
+    var posC=_tok('--color-income','#17975F'), negC=_tok('--color-over','#E5484D');
+    var inkC=_tok('--chart-net','#1C1D21'), maC=_tok('--chart-ma','#8169C6');
+    var bandC=_tok('--chart-prev','#A3A7AE'), axisC=_tok('--border2','#CDD0D4');
     var volUp=hexAlpha(posC,0.32), volDn=hexAlpha(negC,0.32);
 
     _lwChartMain=LW.createChart(mainEl,{
       width:mainEl.clientWidth||mainEl.offsetWidth||300,
       height:210,
-      layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"'IBM Plex Sans',system-ui,sans-serif",fontSize:11,attributionLogo:false},
+      layout:{background:{type:'solid',color:bgColor},textColor:textColor,fontFamily:"InterVariable,Inter,system-ui,sans-serif",fontSize:11,attributionLogo:false},
       localization:{locale:LOC,priceFormatter:(function(){ var d=InvestFx.decimalsFor(assetCcy(dTicker||'')); return function(p){ return (+p).toLocaleString(LOC,{minimumFractionDigits:d,maximumFractionDigits:d}); }; })()},
       grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
       crosshair:{mode:LW.CrosshairMode.Normal},
@@ -3129,7 +3089,7 @@ function renderLWCharts(hist,sma20,sma50,bbArr,sma200){
 
     var s20Data=bars.map(function(d,i){return sma20[i]!=null?{time:d.ts,value:sma20[i]}:null;}).filter(Boolean);
     if(s20Data.length){
-      var s20s=chart.addLineSeries({color:_tok('--blue','#3E5A78'),lineWidth:1.5,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      var s20s=chart.addLineSeries({color:maC,lineWidth:1.5,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
       s20s.setData(s20Data);
     }
     var s50Data=bars.map(function(d,i){return sma50[i]!=null?{time:d.ts,value:sma50[i]}:null;}).filter(Boolean);
@@ -4201,9 +4161,8 @@ function drawSPYMiniChart(regime){
     function xOf(i){return 1+(W-2)*(i/(closes.length-1));}
     function yOf(v){return H-4-(H-8)*((v-minP)/rng);}
     // SMA200 line
-    var _cs2=getComputedStyle(document.documentElement);
-    var _ink=(_cs2.getPropertyValue('--bright')||'').trim()||'#14213D', _lat=(_cs2.getPropertyValue('--laton')||'').trim()||'#B8863B';
-    var _sl=(_cs2.getPropertyValue('--blue')||'').trim()||'#3E5A78'; ctx.beginPath(); ctx.strokeStyle=_sl; ctx.lineWidth=1.5; if(ctx.setLineDash) ctx.setLineDash([5,3]);
+    var _ink=cssColor('--chart-net','#1C1D21');
+    var _sl=cssColor('--chart-ma','#8169C6'); ctx.beginPath(); ctx.strokeStyle=_sl; ctx.lineWidth=1.5; if(ctx.setLineDash) ctx.setLineDash([5,3]);
     var firstSma=true;
     smaArr.forEach(function(v,i){
       if(v==null) return;
@@ -4732,8 +4691,7 @@ function globeBgStart(){
     R=Math.min(W,H)*0.42;
   }
   function tinte(){
-    var cs=getComputedStyle(document.documentElement);
-    return (cs.getPropertyValue('--grn')||'#14213D').trim();
+    return cssColor('--grn','#3C2282');
   }
   var col=tinte();
 
@@ -4832,7 +4790,7 @@ function renderWelcome(){
     '</div>'+
     // Google — mismo botón sirve para iniciar sesión o crear cuenta (Supabase
     // crea el usuario solo si no existe), no hace falta duplicarlo por panel.
-    '<button type="button" class="wv3-google-btn" onclick="doGoogleAuth()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text1);font-size:13px;font-weight:500;cursor:pointer;margin:14px 0 12px">'+
+    '<button type="button" class="wv3-google-btn" onclick="doGoogleAuth()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--bright);font-size:13px;font-weight:500;cursor:pointer;margin:14px 0 12px">'+
     '<svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24 24 0 0 0 0 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.9l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>'+
     'Continuar con Google'+
     '</button>'+
@@ -5371,7 +5329,7 @@ function dashAllocBar(port,totals){
   // port: posiciones ya convertidas a USD (portUsd); cur es el precio en vivo.
   port.forEach(function(h){ var v=h.sh*(h.cur||h.cost); var k={Stock:'Acciones',ETF:'ETF',Crypto:'Cripto'}[h.type]||'Otros'; by[k]=(by[k]||0)+v; tot+=v; });
   if(!(tot>0)) return '';
-  var col={'Acciones':'var(--grn)','ETF':'var(--laton)','Cripto':'var(--blue)','Otros':'var(--text3)'};
+  var col={'Acciones':'var(--cat-1)','ETF':'var(--cat-2)','Cripto':'var(--cat-7)','Otros':'var(--cat-5)'};
   var keys=Object.keys(by).sort(function(a,b){return by[b]-by[a];});
   return '<div class="m10-alloc"><div class="m10-h">Asignación por tipo</div>'+
     '<div class="m10-bar" role="img" aria-label="'+keys.map(function(k){return k+' '+Math.round(by[k]/tot*100)+' %';}).join(', ')+'">'+
@@ -7267,7 +7225,7 @@ function renderCorrelationMatrix(port){
   var cellW=Math.max(52,Math.floor(260/n));
 
   var header='<tr><td style="width:'+cellW+'px"></td>'+tickers.map(function(t){
-    return '<th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px;text-align:center;width:'+cellW+'px">'+esc(t)+'</th>';
+    return '<th style="font-size:11px;color:var(--text3);font-family:var(--sans);padding:3px;text-align:center;width:'+cellW+'px">'+esc(t)+'</th>';
   }).join('')+'</tr>';
 
   var bodyRows=tickers.map(function(ta,i){
@@ -7279,7 +7237,7 @@ function renderCorrelationMatrix(port){
       var tc=r===null?'var(--text3)':'var(--bright)';
       return '<td style="background:'+bg+';border:1px solid var(--border);text-align:center;font-size:11px;color:'+tc+';font-family:var(--num);font-variant-numeric:tabular-nums lining-nums;padding:6px">'+txt+'</td>';
     }).join('');
-    return '<tr><th style="font-size:11px;color:var(--text3);font-family:\'IBM Plex Mono\',monospace;padding:3px 8px 3px 0;text-align:right">'+esc(ta)+'</th>'+cells+'</tr>';
+    return '<tr><th style="font-size:11px;color:var(--text3);font-family:var(--sans);padding:3px 8px 3px 0;text-align:right">'+esc(ta)+'</th>'+cells+'</tr>';
   }).join('');
 
   return '<div class="port-corr">'+
@@ -8090,7 +8048,7 @@ function installPWA(){
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:420px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
-    '<h2 style="margin:0;font-family:\'Instrument Sans\',\'IBM Plex Sans\',system-ui,sans-serif;font-weight:600;font-size:18px">Instalar la app</h2>'+
+    '<h2 style="margin:0;font-family:var(--sans);font-weight:600;font-size:18px">Instalar la app</h2>'+
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0">'+pasos+'</p>'+
@@ -8186,7 +8144,7 @@ function renderCompSection(){
     var step=rng>80?20:rng>40?10:5;
     for(var v=Math.ceil(minY/step)*step; v<=maxY; v+=step){
       var y=yS(v).toFixed(1);
-      grid+="<line x1='0' y1='"+y+"' x2='"+(W-70)+"' y2='"+y+"' stroke='var(--border"+(v===0?"3":"")+")' stroke-width='1'/><text x='"+(W-66)+"' y='"+(+y+3)+"' fill='var(--text2)' font-size='10' font-family='IBM Plex Sans,system-ui,sans-serif' font-variant-numeric='tabular-nums'>"+(v>0?'+':'')+v+" %</text>";
+      grid+="<line x1='0' y1='"+y+"' x2='"+(W-70)+"' y2='"+y+"' stroke='var(--border"+(v===0?"3":"")+")' stroke-width='1'/><text x='"+(W-66)+"' y='"+(+y+3)+"' fill='var(--text2)' font-size='10' font-family='InterVariable,Inter,system-ui,sans-serif' font-variant-numeric='tabular-nums'>"+(v>0?'+':'')+v+" %</text>";
     }
     var spySvg=spy?"<polyline points='"+spy.map(function(y,i){return xS(i,spy.length).toFixed(1)+','+yS(y).toFixed(1);}).join(' ')+"' fill='none' stroke='var(--text2)' stroke-width='1.5' stroke-dasharray='5,3'/>":'';
     var lines=series.map(function(s){
@@ -8907,7 +8865,7 @@ function themeIsDark(){ return document.documentElement.getAttribute('data-theme
 function applyTheme(){
   var t=themeStored(), dark=t?t==='dark':themeSystemDark();
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
-  var m=document.getElementById('meta-theme'); if(m) m.setAttribute('content',dark?'#0E1628':'#14213D');
+  var m=document.getElementById('meta-theme'); if(m) m.setAttribute('content',dark?'#1C1D21':'#3C2282');
   return dark;
 }
 var THEME_SUN='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -8968,7 +8926,7 @@ function toggleDisclaimer(){
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:520px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
-    '<h2 style="margin:0;font-family:\'Instrument Sans\',\'IBM Plex Sans\',system-ui,sans-serif;font-weight:600;font-size:18px">Aviso importante</h2>'+
+    '<h2 style="margin:0;font-family:var(--sans);font-weight:600;font-size:18px">Aviso importante</h2>'+
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">Inversiones de moyiq no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
@@ -9102,7 +9060,7 @@ function showConsentGate(userId){
         '<span>Entiendo que Inversiones de moyiq es una herramienta educativa de análisis. No proporciona asesoría financiera personalizada, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso y toda inversión implica riesgo.</span></label>'+
         '</div>'+
         (errMsg?'<div style="background:var(--red-bg);border:1px solid var(--red-lt);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--red)">'+errMsg+'</div>':'')+
-        '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--grn-solid);color:#14213D;font-size:14px;font-weight:700;min-height:44px;cursor:not-allowed;opacity:.55;transition:.2s">Confirmar y continuar</button>'+
+        '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--grn-solid);color:var(--grn-solid-fg);font-size:14px;font-weight:700;min-height:44px;cursor:not-allowed;opacity:.55;transition:.2s">Confirmar y continuar</button>'+
         '<div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center">MAXNOVA & LUCI Global LLC</div>'+
         '</div></div>';
     }

@@ -1,0 +1,420 @@
+/* tokens-v3.css — COPIA LITERAL de financeos-app/src/styles/tokens.css (moyiq v3.1, 18-nov-2026).
+   Invest pasa a la paleta violeta (decisión del 18-nov-2026, revierte D9). No editar esta copia:
+   editar el de la app y volver a copiar todo lo que está debajo de este comentario, con
+     { head -n 5 tokens-v3.css; cat ../financeos-app/src/styles/tokens.css; } > t && mv t tokens-v3.css
+   y actualizar APP_TOKENS_SHA256 en test/brd4-shared-tokens.test.js (el test compara el cuerpo con ese hash). */
+/* src/styles/tokens.css — tokens de diseño de moyiq v3.1 (Entrega 1 · Identidad, nov-2026).
+   Libro de marca de Descentric v2.1 + línea 07 "Claridad con lupa", nivel 3 · Violeta pleno
+   (D13), oscuro sobre grafito (D6). Fuente de los valores:
+   04 - Marca y Diseno/rebrand-startup-2026-11/ (CATALOGO-OPCIONES.md, investigacion/tokens-moyiq-v3.css,
+   validacion/tipografia-moyiq.css, validacion/02-revision-plan.md §A1).
+
+   Es el ÚNICO lugar de la app donde se definen colores (BRD-4 / BRD-10). Tres capas:
+     1. Primitivos   --purple-*, --gray-*, --lime-*, --green-*, --red-*, --amber-*, degradados,
+                     espacio, radios, movimiento. Valores crudos: ningún componente los usa directo.
+     2. Semánticos   --color-*, --text-*, --on-grad-*, --chart-*, --cat-*, --type-*. Cambian entre
+                     claro y oscuro.
+     3. Componente   --btn-*, --field-*, --card-*, --hero-*, --tabbar-*, --action-*… Leen semánticos.
+   Al final, la capa de COMPATIBILIDAD: los nombres viejos de rol (--tx, --grn, --sur…) apuntan a los
+   semánticos nuevos. Los nombres de marca vieja (--navy, --laton, --papel…) NO existen más: sus 173
+   usos se resolvieron por rol (fondo de marca, texto, acento, borde, foco). Retirar la capa de
+   compatibilidad en la Entrega 2 (fecha objetivo: 27-feb-2027).
+
+   src/styles/tokens.js repite los hex para lo que no lee CSS (PDF, metadatos, colores guardados);
+   tokens.test.js falla si se desalinean o si aparece un hex fuera de la paleta en src/;
+   contrast.test.js compone las superposiciones (lupa, chips, alfas) sobre los degradados y falla
+   con un par bajo 4,5 (texto) o 3 (objetos). */
+
+/* ═════════════════════════════ 1. PRIMITIVOS ═════════════════════════════ */
+:root {
+  /* Morado moyiq (manual 3.4). Base = 700. */
+  --purple-50:  #F4F1FB;
+  --purple-100: #E6E0F5;
+  --purple-200: #CBBFEA;
+  --purple-300: #A897DA;
+  --purple-400: #8169C6;
+  --purple-500: #6045AE;
+  --purple-600: #4D3299;
+  --purple-700: #3C2282;
+  --purple-800: #2D1964;
+  --purple-900: #1E1044;
+  /* Violeta de acción (nivel 3): "+" y pestaña activa. Blanco encima 6,02:1.
+     En oscuro baja a #7A21FF 2,88:1 sobre morado/grafito (falla 1.4.11): se aclara a 400-acción. */
+  --violet-500: #7A21FF;
+  --violet-400: #9A5CFF;   /* derivado (revisión A1.5): blanco encima 3,93; sobre #2A2C31 3,56 */
+
+  /* Grises fríos (manual 3.4). 900 = Grafito. */
+  --gray-0:   #FFFFFF;
+  --gray-50:  #FAFAFA;
+  --gray-100: #F3F4F5;
+  --gray-200: #E6E7EA;
+  --gray-300: #CDD0D4;
+  --gray-400: #A3A7AE;
+  --gray-500: #878B93;
+  --gray-600: #6B6F78;
+  --gray-700: #3F4249;
+  --gray-800: #2A2C31;
+  --gray-900: #1C1D21;
+
+  /* Lima: logro, progreso, CTA sobre violeta. Nunca texto sobre claro (1,28:1);
+     como texto, solo grande sobre Impulso o cualquiera sobre Profundidad (9,99). */
+  --lime-400: #D0F06E;
+
+  /* Colores de dato (catálogo §2: el manual los marca "propuesta"). */
+  --green-300: #47C292;   /* derivado: texto de ingreso en oscuro (≥ 4,5 sobre relleno y tinte) */
+  --green-500: #1FB57A;   /* punto/fondo; barra de ingreso en oscuro */
+  --green-600: #17975F;   /* derivado: barra o línea de ingreso sobre claro (3,34 sobre morado 50) */
+  --green-700: #0E7A50;   /* texto de ingreso sobre claro (5,36) */
+  --red-300:   #F09598;   /* derivado: texto de exceso en oscuro (≥ 4,5 sobre relleno y tinte) */
+  --red-400:   #F07A7E;   /* exceso en oscuro: barra, punto, fondo de borrar (catálogo) */
+  --red-500:   #E5484D;   /* punto/barra de exceso sobre claro (3,51 sobre morado 50) */
+  --red-700:   #C2272D;   /* texto de exceso sobre claro (5,80); fondo sólido con blanco encima */
+  --amber-500: #F5A524;   /* punto; aviso en oscuro */
+  --amber-600: #B07414;   /* derivado: barra de aviso sobre claro (3,52 sobre morado 50) */
+  --amber-700: #9A5B00;   /* texto de aviso sobre claro (5,43) */
+  --teal-600:  #0E8C8C;   /* 7.º tono categórico (fuera de la escala; v3 cat-7) */
+  --teal-400:  #2BB3B3;
+  /* Tintes de dato (claro ≈ funcional al 8–10 % sobre blanco; oscuro, sobre grafito),
+     calibrados para que el gris secundario siga en ≥ 4,5 encima. */
+  --green-tint:      #E9F8F2;
+  --red-tint:        #FDF0F0;
+  --amber-tint:      #FEF6E9;
+  --green-tint-dark: #243A35;
+  --red-tint-dark:   #3F2C30;
+  --amber-tint-dark: #403829;
+
+  /* Paradas de los degradados (manual 3.2). Se nombran sueltas para que
+     contrast.test.js pueda medir cada punto. */
+  --impulso-0:     #2D1D59;
+  --impulso-59:    #8620D0;
+  --impulso-100:   #7A21FF;
+  --profundidad-0:   #2D1D59;
+  --profundidad-100: #3C0097;
+  --gr-impulso:     linear-gradient(74deg, var(--impulso-0) 0%, var(--impulso-59) 59%, var(--impulso-100) 100%);
+  --gr-profundidad: linear-gradient(75deg, var(--profundidad-0) 0%, var(--profundidad-100) 100%);
+  --gr-senal:       linear-gradient(78deg, #2F01B0 0%, #4D12AC 44%, #391E63 100%);
+
+  /* Tipografía: Inter 4.1 (rsms), una sola familia (D2). Autohospedada (public/fonts.css). */
+  --font-sans: InterVariable, Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; /* solo claves, IBAN, ISO */
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600;
+
+  /* Espacio: línea base de 4 px (manual 4.2). */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px;
+
+  /* Radios (D7, manual 5.1): tarjeta 16, botón 12. */
+  --radius-xs: 4px;     /* barras de progreso, marcas de gráfico */
+  --radius-sm: 8px;     /* ícono de categoría, tooltips */
+  --radius-md: 12px;    /* botones, campos, toasts */
+  --radius-lg: 16px;    /* tarjetas, héroe, modales */
+  --radius-xl: 24px;    /* borde superior de hojas */
+  --radius-pill: 999px; /* chips, segmentado, etiquetas */
+
+  /* Movimiento (sin cambios de valor respecto del sistema anterior). */
+  --ease:      cubic-bezier(.22,.61,.36,1);
+  --ease-out:  cubic-bezier(.23,1,.32,1);
+  --dur:       .18s;
+  --dur-instrument-settle: 900ms;   /* barrido del IQ Score */
+  --ease-instrument:       cubic-bezier(.22,1,.36,1);
+  --dur-value-update:      550ms;   /* cifra a nuevo valor, nunca vuelve a cero antes */
+  --dur-surface-enter:     220ms;
+  --dur-surface-exit:      150ms;
+  --dur-press:             80ms;
+  --ease-spring:           var(--ease-instrument);
+  --dur-spring:            420ms;
+  --dur-spring-exit:       240ms;
+  --dur-alert-pulse:       1200ms;
+}
+
+/* ═════════════════════════════ 2. SEMÁNTICOS · CLARO (nivel 3) ═════════════════════════════ */
+:root, [data-theme="light"] {
+  color-scheme: light;
+
+  /* Superficies. Nivel 3: la hoja de contenido es blanca y las tarjetas van en morado 50
+     (prototipo 07 ?violeta=3: --sheet-bg #FFF, --sheet-card #F4F1FB). */
+  --color-bg:             var(--gray-0);
+  --color-surface:        var(--purple-50);    /* tarjetas */
+  --color-surface-raised: var(--gray-0);       /* hojas, menús, popovers (se separan con sombra) */
+  --color-fill:           var(--purple-50);    /* control secundario, track, campo */
+  --color-fill-pressed:   var(--purple-100);
+  --color-divider:        var(--purple-100);   /* decorativo */
+  --color-divider-strong: var(--gray-300);
+  --color-border-field:   var(--gray-500);     /* 3,42 sobre blanco · 3,06 sobre morado 50 (1.4.11) */
+  --color-scrim:          rgb(28 29 33 / .48);
+
+  /* Texto: grafito para leer, gris para ordenar (D3: etiquetas en gris 600, no 400). */
+  --text-primary:   var(--gray-900);
+  --text-subtle:    var(--gray-700);   /* párrafo secundario (antes --tm) */
+  --text-secondary: var(--gray-600);   /* meta, etiquetas, ayudas (antes --th) */
+  --text-disabled:  var(--gray-400);
+  --text-on-brand:  var(--gray-0);
+  --text-on-accent: var(--gray-900);   /* sobre lima 13,13 */
+
+  /* Marca */
+  --color-brand:         var(--purple-700);  /* acción principal (blanco encima 12,05) */
+  --color-brand-hover:   var(--purple-800);
+  --color-brand-text:    var(--purple-700);  /* enlaces, "dónde estás" */
+  --color-brand-subtle:  var(--purple-50);
+  --color-brand-muted:   var(--purple-100);
+  --color-brand-solid:   var(--purple-800);  /* franjas de marca (demo, aviso de versión) */
+  --color-brand-solid-fg: var(--gray-0);     /* 14,64 sobre morado 800 */
+  --color-focus:         var(--purple-500);  /* anillo 2 px */
+  --color-accent:        var(--lime-400);
+  --color-action:        var(--violet-500);  /* "+" y pestaña activa (nivel 3) */
+  --color-action-fg:     var(--gray-0);
+
+  /* Dato (nunca marca). Un gasto normal va en tinta con "−" (D5). */
+  --color-income:      var(--green-600);
+  --color-income-text: var(--green-700);
+  --color-income-bg:   var(--green-tint);
+  --color-over:        var(--red-500);
+  --color-over-text:   var(--red-700);
+  --color-over-bg:     var(--red-tint);
+  --color-over-solid:  var(--red-700);       /* fondo con blanco encima (deslizar para borrar) */
+  --color-on-over:     var(--gray-0);
+  --color-warn:        var(--amber-600);
+  --color-warn-text:   var(--amber-700);
+  --color-warn-bg:     var(--amber-tint);
+
+  /* Sobre degradado (Impulso / Profundidad). Revisión A1: secundario al 92 %;
+     lima como texto solo grande; lupa recortada ≤ 6 % y nunca detrás de cifras;
+     línea del ritmo ideal ≥ 70 %. */
+  --on-grad-text:      var(--gray-0);
+  --on-grad-text-2:    rgb(255 255 255 / .92);
+  --on-grad-chip:      rgb(255 255 255 / .10);   /* 14 % pasa sin lupa (4,87) pero no con ella debajo (4,30) */
+  --on-grad-ideal:     rgb(255 255 255 / .70);
+  --on-grad-track:     rgb(255 255 255 / .22);
+  --on-grad-accent:    var(--lime-400);
+  --on-grad-loupe:     .06;
+
+  /* Gráficos por rol */
+  --chart-income:  var(--green-600);
+  --chart-expense: var(--purple-700);
+  --chart-net:     var(--gray-900);
+  --chart-prev:    var(--gray-400);
+  --chart-axis:    var(--gray-600);
+  --chart-grid:    var(--gray-200);
+  --cat-1: var(--purple-700); --cat-2: var(--purple-400); --cat-3: var(--green-600); --cat-4: var(--amber-600);
+  --cat-5: var(--gray-600);   --cat-6: var(--red-500);    --cat-7: var(--teal-600);  --cat-8: var(--purple-300);
+
+  /* Elevación con tinte morado */
+  --elev-1: 0 1px 2px rgb(30 16 68 / .06), 0 1px 3px rgb(30 16 68 / .04);
+  --elev-2: 0 2px 6px rgb(30 16 68 / .06), 0 8px 24px rgb(30 16 68 / .08);
+  --elev-3: 0 12px 32px rgb(30 16 68 / .14), 0 2px 8px rgb(30 16 68 / .06);
+}
+
+/* ═════════════════════════════ 2. SEMÁNTICOS · OSCURO (grafito, D6) ═════════════════════════════ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg:             var(--gray-900);
+  --color-surface:        var(--gray-800);
+  --color-surface-raised: var(--gray-800);
+  --color-fill:           rgb(250 250 250 / .06);
+  --color-fill-pressed:   rgb(250 250 250 / .12);
+  --color-divider:        rgb(250 250 250 / .08);
+  --color-divider-strong: rgb(250 250 250 / .18);
+  --color-border-field:   var(--gray-500);     /* 4,93 sobre grafito · 4,09 sobre 800 */
+  --color-scrim:          rgb(0 0 0 / .6);
+
+  --text-primary:   var(--gray-50);
+  --text-subtle:    var(--gray-300);
+  --text-secondary: var(--gray-400);
+  --text-disabled:  var(--gray-600);
+  --text-on-brand:  var(--gray-900);
+  --text-on-accent: var(--gray-900);
+
+  /* Acento del oscuro: morado 300 (catálogo §2). Botón en morado 300 con texto grafito. */
+  --color-brand:         var(--purple-300);
+  --color-brand-hover:   var(--purple-200);
+  --color-brand-text:    var(--purple-200);  /* 8,10 sobre #2A2C31; 5,48 sobre el chip elegido */
+  --color-brand-subtle:  rgb(168 151 218 / .12);
+  --color-brand-muted:   rgb(168 151 218 / .22);
+  --color-brand-solid:   var(--purple-800);
+  --color-brand-solid-fg: var(--gray-0);
+  --color-focus:         var(--purple-300);
+  --color-accent:        var(--lime-400);
+  --color-action:        var(--violet-400);  /* A1.5: #7A21FF no llega a 3:1 en oscuro */
+  --color-action-fg:     var(--gray-0);
+
+  --color-income:      var(--green-500);
+  --color-income-text: var(--green-300);
+  --color-income-bg:   var(--green-tint-dark);
+  --color-over:        var(--red-400);
+  --color-over-text:   var(--red-300);
+  --color-over-bg:     var(--red-tint-dark);
+  --color-over-solid:  var(--red-400);
+  --color-on-over:     var(--gray-900);
+  --color-warn:        var(--amber-500);
+  --color-warn-text:   var(--amber-500);
+  --color-warn-bg:     var(--amber-tint-dark);
+
+  --chart-income:  var(--green-500);
+  --chart-expense: var(--purple-300);
+  --chart-net:     var(--gray-50);
+  --chart-prev:    var(--gray-500);
+  --chart-axis:    var(--gray-400);
+  --chart-grid:    rgb(250 250 250 / .10);
+  --cat-1: var(--purple-300); --cat-2: var(--purple-200); --cat-3: var(--green-500); --cat-4: var(--amber-500);
+  --cat-5: var(--gray-400);   --cat-6: var(--red-400);    --cat-7: var(--teal-400);  --cat-8: var(--purple-100);
+
+  --elev-1: none;
+  --elev-2: 0 0 0 1px rgb(250 250 250 / .06);
+  --elev-3: 0 12px 32px rgb(0 0 0 / .5), 0 0 0 1px rgb(250 250 250 / .08);
+}
+
+/* ═════════════════════════════ 2b. TIPOGRAFÍA SEMÁNTICA ═════════════════════════════
+   Escala oficial (validacion/tipografia-moyiq.css): base Texto 15, razón 1,25, alturas de
+   línea en la grilla de 4. La pantalla de la app es siempre móvil (≤ 900 px y dentro del
+   marco de la app): por eso la escala móvil es la de base y la de escritorio sube display/h1. */
+:root {
+  --type-display: 2.75rem;  --type-display-lh: 3rem;     --type-display-w: 500; --type-display-tr: -.04em;   /* 44/48 */
+  --type-h1:      1.75rem;  --type-h1-lh:      2rem;     --type-h1-w: 500;      --type-h1-tr: -.03em;        /* 28/32 */
+  --type-h2:      1.25rem;  --type-h2-lh:      1.75rem;  --type-h2-w: 500;      --type-h2-tr: -.02em;        /* 20/28 */
+  --type-h3:      1.125rem; --type-h3-lh:      1.5rem;   --type-h3-w: 600;      --type-h3-tr: -.015em;       /* 18/24 */
+  --type-cifra-xl: 3.5rem;  --type-cifra-xl-lh: 3.5rem;  --type-cifra-xl-w: 600; --type-cifra-xl-tr: -.05em;  /* 56/56 */
+  --type-cifra-l: 2.75rem;  --type-cifra-l-lh: 3rem;     --type-cifra-l-w: 600; --type-cifra-l-tr: -.04em;   /* 44/48 */
+  --type-cifra:   1.75rem;  --type-cifra-lh:   2rem;     --type-cifra-w: 600;   --type-cifra-tr: -.02em;     /* 28/32 */
+  --type-lead:    1.125rem; --type-lead-lh:    1.75rem;  --type-lead-w: 400;    --type-lead-tr: -.01em;      /* 18/28 */
+  --type-body:    .9375rem; --type-body-lh:    1.5rem;   --type-body-w: 400;    --type-body-tr: 0;           /* 15/24 */
+  --type-small:   .8125rem; --type-small-lh:   1.25rem;  --type-small-w: 400;   --type-small-tr: 0;          /* 13/20 */
+  --type-etiqueta: .6875rem; --type-etiqueta-lh: 1rem;   --type-etiqueta-w: 500; --type-etiqueta-tr: .06em;  /* 11/16 MAYÚS. */
+  --type-tab:     .6875rem; --type-tab-lh:     1rem;     --type-tab-w: 500;     --type-tab-tr: 0;            /* 11/16 */
+  --type-dec: .5em; --type-dec-tr: -.02em;   /* decimales a la mitad solo en cifra-l y cifra-xl */
+}
+@media (min-width: 901px) {
+  :root {
+    --type-display: 4rem;    --type-display-lh: 4rem;   --type-display-tr: -.05em;    /* 64/64 manual */
+    --type-h1:      2.25rem; --type-h1-lh:      2.5rem; --type-h1-tr: -.035em;        /* 36/40 manual */
+    --type-h2:      1.5rem;  --type-h2-lh:      2rem;   --type-h2-tr: -.025em;        /* 24/32 */
+  }
+}
+
+/* ═════════════════════════════ 3. COMPONENTE ═════════════════════════════ */
+:root {
+  /* Botón (D7: radio 12) */
+  --btn-radius: var(--radius-md);
+  --btn-primary-bg: var(--color-brand);       --btn-primary-fg: var(--text-on-brand);
+  --btn-primary-bg-hover: var(--color-brand-hover);
+  --btn-danger-bg: var(--color-over-solid);   --btn-danger-fg: var(--color-on-over);
+
+  /* Campo */
+  --field-radius: var(--radius-md);
+  --field-bg: var(--color-fill);
+  --field-border: var(--color-border-field);
+  --field-border-focus: var(--color-focus);
+
+  /* Tarjeta (D7: radio 16). Nivel 3: plana, en morado 50 sobre la hoja blanca. */
+  --card-bg: var(--color-surface); --card-radius: var(--radius-lg); --card-shadow: none;
+
+  /* Héroe sobre degradado (tarjeta de saldo, splash) */
+  --hero-bg: var(--gr-profundidad); --hero-fg: var(--on-grad-text); --hero-fg-muted: var(--on-grad-text-2);
+
+  /* "+" y pestaña activa (nivel 3) */
+  --action-bg: var(--color-action); --action-fg: var(--color-action-fg);
+  --action-shadow: 0 10px 22px -10px rgb(122 33 255 / .7);
+  --tabbar-fg: var(--text-secondary);
+  --tabbar-fg-active: var(--color-action);
+  --tabbar-pill: var(--color-action);
+  --tabbar-icon-active: var(--color-action-fg);
+
+  /* Logotipo e isotipo (manual pág. 10: morado sobre blanco, blanco sobre grafito) */
+  --logo-fg: var(--purple-700);
+
+  /* Hoja inferior */
+  --sheet-radius: var(--radius-xl);
+
+  /* Medidor */
+  --meter-track: var(--color-brand-muted); --meter-fill: var(--color-brand);
+
+  /* Foco */
+  --focus-ring: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-focus);
+}
+[data-theme="dark"] {
+  --logo-fg: var(--gray-0);
+  --action-shadow: 0 10px 22px -10px rgb(0 0 0 / .6);
+  --tabbar-fg-active: var(--purple-200);   /* etiqueta activa: 8,10 sobre #2A2C31 */
+  --card-shadow: none;
+}
+
+/* ═════════════ COMPATIBILIDAD (Entrega 1 → se retira en la Entrega 2) ═════════════
+   Nombres de ROL del sistema anterior que siguen en ~4.000 var() de la app. Apuntan a
+   los semánticos nuevos y cambian solos con el tema. */
+:root, [data-theme="light"], [data-theme="dark"] {
+  --bg:   var(--color-bg);
+  --sur:  var(--color-surface);
+  --sur2: var(--color-fill);
+  --sur3: var(--color-fill-pressed);
+  --brd:  var(--color-divider);
+  --brd2: var(--color-divider-strong);
+  --field-brd: var(--color-border-field);
+  --tx:   var(--text-primary);
+  --tm:   var(--text-subtle);
+  --th:   var(--text-secondary);
+
+  --grn:      var(--color-brand-text);   /* marca / estructura */
+  --grn-bg:   var(--color-brand-subtle);
+  --grn-lt:   var(--color-brand-muted);
+  --grn-tint: var(--color-brand-subtle);
+
+  --red:     var(--color-over-text);   --red-bg:    var(--color-over-bg);
+  --amb:     var(--color-warn-text);   --amb-bg:    var(--color-warn-bg);
+  --blu:     var(--color-brand-text);  --blu-bg:    var(--color-brand-subtle);  /* enlaces y "en curso" */
+  --accent:  var(--color-income-text); --accent-bg: var(--color-income-bg);
+  --accent2: var(--color-brand-text);
+  --pos:  var(--color-income-text); --pos-bg:  var(--color-income-bg);
+  --neg:  var(--color-over-text);   --neg-bg:  var(--color-over-bg);
+  --warn: var(--color-warn-text);   --warn-bg: var(--color-warn-bg);
+  --info: var(--color-brand-text);  --info-bg: var(--color-brand-subtle);
+
+  --box-bg:     var(--card-bg);
+  --box-sh:     var(--card-shadow);
+  --fill:       var(--color-fill);
+  --fill-2:     var(--color-fill-pressed);
+  --seg-on:     var(--color-surface-raised);
+  --seg-on-sh:  var(--elev-1);
+  --chip-on-bg: var(--color-brand);
+  --chip-on-tx: var(--text-on-brand);
+  --bar-bg:     color-mix(in srgb, var(--color-surface-raised) 88%, transparent);
+  --bar-blur:   saturate(1.6) blur(20px);
+
+  --sans:    var(--font-sans);
+  --display: var(--font-sans);
+  --num:     var(--font-sans);
+  --mono:    var(--font-mono);
+
+  --r:       var(--radius-md);   /* botones (12) */
+  --rl:      var(--radius-lg);   /* tarjetas (16) */
+  --rs:      var(--radius-xs);
+  --rxl:     var(--radius-lg);   /* modales y destacadas (16) */
+  --r-sheet: var(--sheet-radius);
+  --r-pill:  var(--radius-pill);
+
+  --sh-1: var(--elev-1);
+  --sh-2: var(--elev-2);
+  --sh-3: var(--elev-3);
+
+  /* Escala vieja en rem (se migra a --type-* por lotes en la Entrega 2). */
+  --fs-row:  .9375rem;
+  --fs-meta: .8125rem;
+  --fs-xs:   .6875rem;   /* piso de legibilidad (REC-N6): nada de texto bajo 11 px */
+  --fs-sm:   .75rem;
+  --fs-md:   .875rem;
+  --fs-lg:   1.125rem;
+  --fs-xl:   1.375rem;
+  --fs-2xl:  1.75rem;
+  --fs-3xl:  2.25rem;
+  --fs-hero: clamp(42px, 9vw, 54px);
+  --sp-1: var(--space-1); --sp-2: var(--space-2); --sp-3: var(--space-3); --sp-4: var(--space-4);
+  --sp-5: var(--space-5); --sp-6: var(--space-6); --sp-8: var(--space-8);
+}
+[data-theme="dark"] {
+  --seg-on: var(--purple-500);   /* opción elegida: blanco/grafito-50 encima 7,1 */
+  --seg-on-sh: none;
+}
+
+/* Resorte con overshoot apenas visible (amortiguación .82, ~1,3 %). */
+@supports (transition-timing-function: linear(0, 1)) {
+  :root { --ease-spring: linear(0, 0.051, 0.169, 0.313, 0.458, 0.59, 0.702, 0.793, 0.863, 0.916, 0.953, 0.978, 0.994, 1.004, 1.009, 1.011, 1.011, 1.01, 1.009, 1.007, 1.005, 1.004, 1); }
+}

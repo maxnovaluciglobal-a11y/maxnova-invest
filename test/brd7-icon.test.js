@@ -89,7 +89,8 @@ describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
       expect(s, f).toContain('<symbol id="moyiq" viewBox="87.94 136.94 547.16 189.52">');
       expect(s, f).toContain('<g fill="currentColor">');
       expect(s, f).toMatch(/class="lockup on-dark" aria-label="Inversiones de moyiq, inicio"><svg class="logo"[^>]*><use href="#moyiq"\/><\/svg><span class="suffix">Inversiones<\/span>/);
-      expect(s, f).toContain(".lockup.on-dark{color:#FFFFFF}");
+      expect(s, f).toContain(".lockup.on-dark{color:var(--on-deep)}");
+      expect(s, f).toContain("--on-deep:var(--gray-0)");
       expect(s, f).not.toMatch(/id="dial"|href="#dial"|class="iq"/);
     }
     const app = read("app/index.html");

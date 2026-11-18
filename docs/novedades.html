@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://invest.moyiq.app/docs/novedades.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
 <link rel="manifest" href="/manifest.webmanifest?v=2"/>
-<meta name="theme-color" content="#14213D"/>
+<meta name="theme-color" content="#1E1044"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/docs/novedades.html"/>
 <meta property="og:title" content="Novedades — moyiq · Inversiones"/>
@@ -17,43 +17,47 @@
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
-<link rel="stylesheet" href="/tokens-v2.css?v=1"/>
+<link rel="stylesheet" href="/tokens-v3.css?v=1"/>
 <style>
 :root{
-  /* Paleta: /tokens-v2.css (paleta v2 congelada, D9). Aquí solo los tonos propios de estas páginas. */
-  --navy-200:#B9C0CF;
-  
-  --text:var(--navy);--text2:var(--navy-400);
-  --hair:rgba(20,33,61,.14);--hair-on-navy:rgba(241,238,230,.14);
-  --display:'Instrument Sans','IBM Plex Sans',system-ui,sans-serif;
-  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  /* Paleta: /tokens-v3.css (moyiq v3.1, copia literal de la app). Aquí solo los roles de estas páginas,
+     todos desde primitivos y semánticos v3. Franjas oscuras de marca en morado 900 / degradados, como moyiq.app. */
+  --deep:var(--purple-900);--deep-2:var(--purple-800);   /* nav, tarjetas y avisos sobre fondo oscuro */
+  --on-deep:var(--gray-0);--on-deep-2:rgb(255 255 255 / .78);   /* 10,8:1 sobre morado 900; 8,0 sobre Profundidad */
+  --on-deep-accent:var(--lime-400);--on-deep-pos:var(--green-300);   /* lima solo sobre morado 900/Profundidad (≥ 10:1) */
+  --cta-bg:var(--lime-400);--cta-fg:var(--text-on-accent);   /* CTA lima con tinta (13,1:1), nunca blanco */
+  --accent-text:var(--color-brand-text);
+  --text:var(--text-primary);--text2:var(--text-subtle);
+  --hair:var(--color-divider);--hair-on-deep:rgb(255 255 255 / .14);
+  --display:var(--font-sans);
+  --body:var(--font-sans);
+  --mono:var(--font-mono);
   color-scheme:light;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--papel-000);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:var(--laton-700);text-underline-offset:3px}
-:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
-.nav :focus-visible{outline-color:#F1EEE6}
-.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--papel);color:var(--navy);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+body{background:var(--color-bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-text);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px;border-radius:4px}
+.nav :focus-visible{outline-color:var(--on-deep)}
+.skip{position:absolute;left:16px;top:-60px;z-index:200;background:var(--color-surface);color:var(--text);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
 .skip:focus{top:12px}
 .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
 .narrow{max-width:760px}
-.lockup{display:inline-flex;align-items:center;gap:.4em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;color:#000000;text-decoration:none;white-space:nowrap}
+.lockup{display:inline-flex;align-items:center;gap:.4em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;color:var(--logo-fg);text-decoration:none;white-space:nowrap}
 .lockup .logo{display:block;height:max(20px,1.2em);width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.86em;letter-spacing:0;color:var(--text2);padding-left:.4em;border-left:1px solid currentColor;line-height:1.1}
 /* Logo moyiq: versión blanca sobre Navy (15,9:1), negra sobre fondo claro (versiones del manual). */
-.lockup.on-dark{color:#FFFFFF}
-.lockup.on-dark .suffix{color:var(--navy-200)}
+.lockup.on-dark{color:var(--on-deep)}
+.lockup.on-dark .suffix{color:var(--on-deep-2)}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:8px;font-family:var(--body);font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;border:0;white-space:nowrap}
-.btn-cta{background:var(--laton);color:var(--navy)}
-.btn-cta:hover{box-shadow:inset 0 0 0 2px rgba(20,33,61,.25)}
-.nav{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:1px solid var(--hair-on-navy)}
+.btn-cta{background:var(--cta-bg);color:var(--cta-fg)}
+.btn-cta:hover{box-shadow:inset 0 0 0 2px rgb(28 29 33 / .25)}
+.nav{position:sticky;top:0;z-index:100;background:var(--deep);border-bottom:1px solid var(--hair-on-deep)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
 .nav-r{display:flex;align-items:center;gap:4px}
-.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--navy-200);font-size:15px;font-weight:500;text-decoration:none}
-.nav-r a.lnk:hover{color:#F1EEE6}
+.nav-r a.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;color:var(--on-deep-2);font-size:15px;font-weight:500;text-decoration:none}
+.nav-r a.lnk:hover{color:var(--on-deep)}
 @media (max-width:640px){.nav-r a.lnk{display:none}}
 @media (max-width:400px){.nav .lockup{font-size:16px}.nav .btn{padding:0 12px;font-size:14px}}
 
@@ -66,19 +70,19 @@ main{padding:clamp(40px,7vh,80px) 0 clamp(64px,10vh,112px)}
 .doc p{margin-bottom:14px}
 .doc ul{margin:0 0 14px 20px}
 .doc li{margin-bottom:6px}
-.doc strong{color:var(--navy);font-weight:600}
-.callout{padding:16px 20px;border-radius:12px;background:var(--papel);margin:8px 0 16px}
+.doc strong{color:var(--text);font-weight:600}
+.callout{padding:16px 20px;border-radius:12px;background:var(--color-surface);margin:8px 0 16px}
 .callout p:last-child{margin-bottom:0}
-footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
+footer{background:var(--color-surface);padding:32px 0 calc(24px + env(safe-area-inset-bottom));font-size:14px;color:var(--text2)}
 .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center}
 .foot ul{list-style:none;display:flex;flex-wrap:wrap;gap:0 20px}
 .foot a{display:inline-flex;align-items:center;min-height:40px;color:var(--text2)}
-.foot a:hover{color:var(--navy)}
+.foot a:hover{color:var(--text)}
 .entry{padding:28px 0;border-bottom:1px solid var(--hair)}
 .entry:first-of-type:not(.entry-main){padding-top:0}
-.entry .date{font-family:var(--mono);font-size:13px;color:var(--laton-700);margin-bottom:4px}
+.entry .date{font-family:var(--mono);font-size:13px;color:var(--accent-text);margin-bottom:4px}
 .entry h2{margin-top:0}
-.entry-main{padding:24px;border-radius:12px;background:#fff;border:1px solid var(--hair);margin-bottom:8px}
+.entry-main{padding:24px;border-radius:12px;background:var(--color-bg);border:1px solid var(--hair);margin-bottom:8px}
 .entry-main + .entry{border-top:0}
 .doc code{font-family:var(--mono);font-size:.92em}
 .doc .callout{margin-top:32px}

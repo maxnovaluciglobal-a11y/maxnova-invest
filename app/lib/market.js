@@ -8,7 +8,7 @@
 //   (fracción). Finnhub los manda en % (30,5) y FMP en fracción (0,305); la
 //   ficha los multiplicaba por 100 dos veces (ROE de AMZN 3.050 %).
 // - fundTags: sector, industria y país sin repetidos ni vacíos.
-// - corrShade: una sola escala Navy/pizarra por intensidad para la matriz de
+// - corrShade: una sola escala de marca (morado) por intensidad para la matriz de
 //   correlación (el rojo queda para pérdidas y riesgo).
 // No tocan DOM ni red.
 

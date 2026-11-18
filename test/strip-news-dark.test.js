@@ -53,19 +53,20 @@ describe('noticias con foto', () => {
 });
 
 describe('modo oscuro en dos niveles', () => {
-  it('la barra lateral oscura usa la superficie, no Navy', () => {
-    const dark = css.slice(css.indexOf('[data-theme="dark"] {\n  /* Dos niveles'));
+  it('la barra lateral oscura usa la superficie (grafito), no un color de marca', () => {
+    const dark = css.slice(css.indexOf('[data-theme="dark"] {\n  /* Oscuro (grafito, D6): la barra'));
     const block = dark.slice(0, dark.indexOf('}'));
     expect(block).toContain('--side-bg: var(--card);');
-    expect(block).not.toContain('#14213D');
+    expect(block).not.toMatch(/#[0-9A-Fa-f]{6}/);
   });
-  it('en claro la barra sigue en Navy', () => {
-    expect(css).toMatch(/:root \{\s*--side-w: 232px;\s*--side-wc: 64px;\s*--side-bg: var\(--navy\);/);
+  it('en claro la barra va en la franja de marca (morado 800) con lima para "dónde estás"', () => {
+    expect(css).toMatch(/--side-bg: var\(--color-brand-solid\);/);
+    expect(css).toMatch(/--side-mark: var\(--color-accent\);/);
   });
 });
 
 describe('matriz de correlación', () => {
-  it('sin rojo/amarillo/verde de estado: una escala Navy/pizarra', () => {
+  it('sin rojo/amarillo/verde de estado: una sola escala de marca', () => {
     const c = fn('corrColor');
     expect(c).not.toMatch(/239,68,68|234,179,8|34,197,94|--neg|--red|--amber/);
     expect(c).toContain('var(--blue)');
@@ -73,14 +74,14 @@ describe('matriz de correlación', () => {
 });
 
 describe('tanda Hoy, Aportes y tema (oct-2026)', () => {
-  const darkBlock = css.slice(css.indexOf('[data-theme="dark"] {\n  --grn:'), css.indexOf('/* ── RESET'));
-  it('rojo de pérdida AA en oscuro y superficies del modo oscuro de la app (BRD-4)', () => {
-    expect(darkBlock).toContain('--neg:       var(--red);');
-    expect(darkBlock).toContain('--red:       #E59580;');
-    expect(darkBlock).toContain('--bg:        #0E1628;');
-    expect(darkBlock).toContain('--card:      var(--sur);');
-    expect(darkBlock).toContain('--card2:     var(--sur2);');
-    expect(darkBlock).not.toContain('#C96856');
+  const tokBlock = css.slice(css.indexOf('/* ── TOKENS ── */'), css.indexOf('/* ── RESET'));
+  it('pérdida y superficies por semántico v3: el oscuro (grafito) sale de /tokens-v3.css (BRD-4)', () => {
+    expect(tokBlock).toContain('--neg:       var(--color-over-text);');
+    expect(tokBlock).toContain('--red:       var(--color-over-text);');
+    expect(tokBlock).toContain('--bg:        var(--color-bg);');
+    expect(tokBlock).toContain('--card:      var(--color-surface-raised);');
+    expect(tokBlock).toContain('--card2:     var(--color-fill);');
+    expect(tokBlock).not.toMatch(/#C96856|#E59580|#0E1628/);
   });
   it('botón de tema en la franja, con aria-pressed, entre frescura y cuenta', () => {
     const tb = fn('renderTopbar');
