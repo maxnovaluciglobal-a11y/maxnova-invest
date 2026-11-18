@@ -4,8 +4,9 @@ Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest
 MAXNOVA & Luci LLC — `invest.moyiq.app`).
 **Rebrand Entrega 1 (17-nov-2026, D14 + D9/D18 mantenimiento):** el producto se llama
 **moyiq · Inversiones** ("Inversiones de moyiq" en texto corrido; antes MOY IQ Invest). Versión de
-mantenimiento: paleta congelada, nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y
-`CACHE` del SW. El newsletter no se renombra acá (D20, Fase 4). **Fecha de vigencia de las legales:** vive solo en `tools/vigencia.json`
+mantenimiento: nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y `CACHE` del SW.
+**Paleta violeta e Inter (18-nov-2026, revierte D9):** Invest usa los tokens v3.1 de la app (`/tokens-v3.css`,
+violeta nivel 3, oscuro grafito) e Inter; ya no hay Navy/Latón/Papel ni IBM Plex (ver "Colores" en Gotchas). El newsletter no se renombra acá (D20, Fase 4). **Fecha de vigencia de las legales:** vive solo en `tools/vigencia.json`
 (`null` = pendiente; términos, privacidad y los dos resúmenes de `app/index.html` muestran FECHA-DEL-DESPLIEGUE en un
 `<span data-vigencia>`). El día del push a `main`, en el mismo commit: `node tools/set-vigencia.mjs AAAA-MM-DD && RELEASE=1 npm test`.
 `test/legal-rebrand.test.js` falla en `main` o con `RELEASE=1` si queda algún marcador (el push despliega sin correr tests).
@@ -70,10 +71,10 @@ ver `organizacion_naming_pendientes`); el proyecto real de Vercel es `invest-moy
 ## Diseño visual (21-oct-2026, aprobado por Walter: M1, M10, L3, L4)
 
 Reglas en `DESIGN.md` y en la guía de marca (`financeos-workspace/branding/CLAUDE.md`):
-- **Cifras en IBM Plex Sans tabular** (`--num`, definido en el `:root` de `app/index.html`
-  porque `tokens.css` es copia literal de la app; `.num` con `tabular-nums lining-nums`).
-  Héroe en Plex Sans 600. **Plex Mono solo para tickers y códigos.** Signo U+2212 y
-  U+202F antes de %. Cada % de ganancia o pérdida lleva flecha dibujada (`dirPct`, `dirPp`).
+- **Cifras en Inter tabular** (desde el 18-nov-2026; antes IBM Plex Sans): `--num` = `--font-sans`
+  de `/tokens-v3.css`; `.num` con `tabular-nums lining-nums`. Héroe en Inter 600. Una sola familia
+  (D2): los tickers van en Inter; mono del sistema (`--mono`) solo para teclas y la lista de
+  tickers editable. Signo U+2212 y U+202F antes de %. Cada % de ganancia o pérdida lleva flecha dibujada (`dirPct`, `dirPp`).
 - **Portafolio:** entre 1024 y 1279 px se ocultan Entrada, Peso y Stop (`.pc-x`); desde
   Portafolio la ficha abre en "Mi posición" (`openDrawer(t, precio, 'mine')`).
 - **Hoy › Valor en el tiempo:** `app/lib/portfolio-history.js` (tests en
@@ -81,8 +82,8 @@ Reglas en `DESIGN.md` y en la guía de marca (`financeos-workspace/branding/CLAU
   `CCY=X` para el tipo de cambio de cada día. Es el valor de las posiciones de HOY: no
   incluye compras, ventas ni dividendos (lo dice el pie). Comparación: SPY o ECH (Yahoo no
   publica el IPSA: `^IPSA` da 404). Nada de botones de compra o venta ni UI teñida por el mercado.
-- **Fuentes:** Plex Sans es un subset propio (`fonts/ibm-plex-sans-var-*.woff2`) del
-  variable completo de IBM con `pyftsubset --layout-features='*'`; detalle en `fonts.css`.
+- **Fuentes:** Inter 4.1, los mismos `fonts/InterVariable-latin(-ext).woff2` (+ licencia OFL) que
+  `financeos-app/public/fonts/`; detalle en `fonts.css`. Nunca Google Fonts.
 
 ## Infraestructura compartida con MOY IQ — NO documentado hasta ahora
 
@@ -187,15 +188,22 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
-- **Colores (BRD-4 → D9 congelado, 17-nov-2026):** la paleta vive en `/tokens-v2.css`, copia
-  **congelada** de la paleta v2 (Navy/Latón). Ya **no** se sincroniza con
-  `financeos-app/src/styles/tokens.css` (la app migra a la marca nueva; Invest quedó en
-  mantenimiento por D18). No copiar el archivo nuevo de la app encima. Las 9 páginas lo cargan con
-  `?v=N` antes de su `<style>`; `test/brd4-shared-tokens.test.js` fija su SHA-256 y sigue
-  verificando que no aparezcan hex fuera de la paleta (lista `INVEST_ONLY`). Si Invest vuelve a
-  desarrollarse: migrar a tokens v3 en un despliegue propio (`validacion/03-revision-invest.md`, A1).
+- **Colores (BRD-4, v3.1 desde el 18-nov-2026; `tokens-v2.css` Navy/Latón retirado):** la paleta vive en
+  `/tokens-v3.css`, **copia literal** de `financeos-app/src/styles/tokens.css` con 5 líneas de cabecera.
+  Las 9 páginas lo cargan con `?v=N` antes de su `<style>` y solo agregan nombres propios que apuntan a
+  semánticos v3 por rol: en la app `--grn` = `--color-brand-text`, `--grn-solid` = botón primario,
+  `--card*`/`--bg` = superficies, `--pos/--neg` = textos de dato, barra lateral en `--color-brand-solid`
+  (morado 800) con lima para "dónde estás"; en las públicas `--deep` (morado 900, nav y tarjetas sobre
+  oscuro), héroe en `--gr-impulso`, franjas oscuras en `--gr-profundidad`, CTA lima con tinta
+  (`--cta-bg/--cta-fg`, nunca blanco). Los gráficos leen `--chart-*`/`--color-income`/`--color-over` con
+  `cssColor()` (normaliza a `rgb()` con comas para lightweight-charts). `test/brd4-shared-tokens.test.js`
+  compara el cuerpo con un SHA-256 guardado (y con el archivo de la app si `../financeos-app` está al
+  lado; no hay CI). Para resincronizar: `{ head -n 5 tokens-v3.css; cat ../financeos-app/src/styles/tokens.css; } > t && mv t tokens-v3.css`,
+  nuevo hash en `APP_TOKENS_SHA256`, `?v=` en las 9 páginas y `CACHE` en `sw.js`. Guardas: `brd10-palette`,
+  `a11y-contrast` (pares AA en claro/oscuro y sobre los degradados) y `rebrand-violeta` (sin
+  `--navy/--laton/--papel`, sin Plex).
 - **Ícono y logo (rebrand Entrega 1):** logotipo moyiq inline (`<symbol id="moyiq">`, currentColor:
-  blanco sobre Navy, negro sobre claro; en la app `MOYIQ_LOGO`). Íconos = set oficial (lupa al 44 %
+  blanco sobre la franja morada, `--logo-fg` sobre claro; en la app `MOYIQ_LOGO`). Íconos = set oficial (lupa al 44 %
   sobre morado `#3C2282`), copiados con `sh tools/icons/build.sh` desde
   `financeos-workspace/branding/rebrand-2026-11/iconos-app/`. Al cambiarlos, subir `?v=` en los
   `<link>`, el manifest y `CACHE` en `sw.js` (cache-first para íconos y tokens).
@@ -203,7 +211,7 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
   edge, cita obligatoria "DolarApi https://dolarapi.com" en `datos-y-licencias.html`). El MEP es
   el valor por defecto; sin MEP la app usa el oficial de `/api/fx-latam` y lo indica.
 - **Relanzamiento v2 · beta pública gratuita (oct-2026, reemplaza el modo pausa T06):**
-  - `index.html` es la landing de la beta (hero Navy, cuerpo Papel-000). `faq`,
+  - `index.html` es la landing de la beta (hero en Impulso, cuerpo blanco, como moyiq.app). `faq`,
     `perfil-inversor` y `estado-mercado` volvieron a la raíz; `_pausa/` queda como archivo
     (bloqueado por `.vercelignore` y redirect). `/app` vuelve a servirse (rewrite) con
     `X-Robots-Tag: noindex`; las páginas públicas ya no llevan noindex.

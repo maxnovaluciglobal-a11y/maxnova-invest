@@ -1,6 +1,6 @@
 ---
 name: MOY IQ Invest
-description: Honest figures on Papel, structure in Navy, Latón only where you act or where you are.
+description: Honest figures on white, structure in moyiq violet (v3.1 tokens), lime only where you act on dark. Front-matter colors below are historical (Navy/Latón, pre 18-nov-2026).
 colors:
   navy: "#14213D"
   navy-deep: "#0D1730"
@@ -158,6 +158,17 @@ components:
 ---
 
 # Design System: MOY IQ Invest
+
+> **Update 18-nov-2026 — moyiq v3.1 palette and Inter.** The colors and type in the front matter and in the
+> Colors/Typography sections below (Navy, Latón, Papel, IBM Plex, Instrument Sans) are **historical**. Invest
+> now loads `/tokens-v3.css`, a literal copy of `financeos-app/src/styles/tokens.css` (violet level 3; dark
+> mode on graphite #1C1D21), and Inter for words and figures (tabular numerals). Mapping by role: Navy ink →
+> `--text-primary`; Navy rail → `--color-brand-solid` (purple 800) with lime `--color-accent` for "where you
+> are"; Latón primary action → `--btn-primary-bg` (purple 700, white text) in the app and lime with ink text
+> (`--lime-400` / `--text-on-accent`) as the CTA on dark public pages; Papel grounds → white `--color-bg` and
+> `--color-surface` (purple 50); public hero → Impulso gradient, dark bands → Profundidad, nav → purple 900.
+> Charts read `--chart-*`, `--color-income`, `--color-over`. The structural rules (lines not boxes, one hero
+> figure, states as icon plus word, no pills outside chips) still apply. Rules and guards: `CLAUDE.md` ("Colores").
 
 ## Overview
 
