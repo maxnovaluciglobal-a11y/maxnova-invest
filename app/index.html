@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- moyiq Inversiones v2.3 (rebrand Entrega 1, nov-2026; antes MOY IQ Invest v2.2 y MAXNOVA Invest v2.1) -->
+<!DOCTYPE html><!-- moyiq · Inversiones v2.3 (rebrand Entrega 1, nov-2026; antes MOY IQ Invest v2.2 y MAXNOVA Invest v2.1) -->
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="/tokens-v2.css?v=1"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   moyiq Inversiones — Sistema de diseño alineado con FinanceOS Pro
+   moyiq · Inversiones — paleta congelada (D9, tokens-v2.css); la app moyiq tiene su propio sistema
    MAXNOVA & LUCI Global LLC · v2.2
    Tipografía: IBM Plex Sans (texto y cifras tabulares, --num) + IBM Plex Mono solo
    para tickers y códigos (M1, 21-oct-2026)
@@ -2205,7 +2205,7 @@ window.addEventListener('unhandledrejection', function(ev){
 
 
 // ═══════════════════════════════════════════════════════════════
-// moyiq Inversiones — Real market data · Clean build
+// moyiq · Inversiones — Real market data · Clean build
 // ═══════════════════════════════════════════════════════════════
 
 // ── FEATURE FLAGS ──────────────────────────────────────────────
@@ -4674,7 +4674,7 @@ function renderSettings(){
     sec('contacto','Contacto',
       row('Escríbenos','Dudas, errores o ideas.','<a class="btn" href="mailto:invest@moyiq.app">'+icon('mail')+' invest@moyiq.app</a>')+
       row('Ayuda','Preguntas frecuentes y atajos de teclado.','<button type="button" class="btn" onclick="setPage(\'help\')">Abrir ayuda</button>'))+
-    '<p class="port-muted">moyiq Inversiones · análisis educativo · no es asesoría financiera.</p>'+
+    '<p class="port-muted">moyiq · Inversiones · análisis educativo · no es asesoría financiera.</p>'+
     '</div>';
 }
 
@@ -4909,7 +4909,7 @@ function openTCModal(tab){
     'con el retraso de cada una: cada precio muestra la hora que informa la fuente. Pueden tener errores. Son para tu uso personal: no se pueden copiar ni redistribuir.<br><br>'+
     '<b style="color:var(--bright)">Beta pública gratuita</b><br>'+
     'Sin pagos ni tarjeta. Si algún día hay planes pagos, te avisamos por correo antes.<br><br>'+
-    '<span style="color:var(--text3)">Texto completo: <a href="/terms.html" target="_blank" rel="noopener" style="color:var(--blue)">Términos de uso</a> (versión 2.2, vigente desde FECHA-DEL-DESPLIEGUE) · MAXNOVA &amp; LUCI Global LLC, Doral, Florida, EE.&nbsp;UU.</span>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/terms.html" target="_blank" rel="noopener" style="color:var(--blue)">Términos de uso</a> (versión 2.2, vigente desde <span data-vigencia="pendiente">FECHA-DEL-DESPLIEGUE</span>) · MAXNOVA &amp; LUCI Global LLC, Doral, Florida, EE.&nbsp;UU.</span>'+
     '</div>';
 
   var ppContent=
@@ -4918,14 +4918,14 @@ function openTCModal(tab){
     '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
     '<b style="color:var(--bright)">Qué guardamos</b><br>'+
     'Tu correo, tu nombre si lo das, el portafolio y la lista de seguimiento que ingresas, tu regla de riesgo y los días en que abres la app. '+
-    'Tus posiciones de inversión se guardan en nuestro servidor para traer precios y verlas en cualquier dispositivo. '+
+    'Tus posiciones de inversión se guardan en nuestro servidor para que puedas verlas en cualquier dispositivo. Para traer precios solo se consultan los símbolos. '+
     'No pedimos datos bancarios ni de tarjeta.<br><br>'+
     '<b style="color:var(--bright)">Con quién</b><br>'+
     'Supabase (base de datos y acceso), Vercel (alojamiento), PostHog (medición de uso con un identificador interno, sin tu correo), Resend (correos), Cloudflare (verificación contra robots y reenvío de correos) y Google (Gmail de soporte y acceso con Google, si lo eliges), todos en EE.&nbsp;UU. '+
     'Las fuentes de precios no reciben datos tuyos. Las imágenes de noticias las carga tu navegador desde el sitio que las publica. No vendemos datos.<br><br>'+
     '<b style="color:var(--bright)">Tus derechos</b><br>'+
     'Puedes borrar tus datos de Inversiones desde Configuración, y pedir acceso, corrección, portabilidad u oposición escribiendo a invest@moyiq.app.<br><br>'+
-    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.7, vigente desde FECHA-DEL-DESPLIEGUE).</span>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.7, vigente desde <span data-vigencia="pendiente">FECHA-DEL-DESPLIEGUE</span>).</span>'+
     '</div>';
 
   var content=isTc?tcContent:ppContent;
@@ -4941,7 +4941,7 @@ function openTCModal(tab){
   el.innerHTML=
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:80vh;max-height:80dvh;display:flex;flex-direction:column">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0">'+
-    '<div style="font-size:12px;color:var(--text2)">moyiq Inversiones</div>'+
+    '<div style="font-size:12px;color:var(--text2)">moyiq · Inversiones</div>'+
     '<button onclick="document.getElementById(\'tc-modal-overlay\').remove()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 0 2px" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<div style="padding:16px 20px 0">'+tabs+'</div>'+
@@ -8086,7 +8086,7 @@ function installPWA(){
     ? 'En Safari: toca el botón <b>Compartir</b> (el cuadro con la flecha) y elige <b>«Agregar a inicio»</b>.'
     : /Firefox/.test(ua)
       ? 'Firefox de escritorio no instala apps web. Ábrela en <b>Chrome</b> o <b>Edge</b> y usa el icono de instalar de la barra de direcciones.'
-      : 'En Chrome o Edge: busca el ícono <b>Instalar</b> al final de la barra de direcciones, o abre el menú del navegador y elige <b>Instalar moyiq Inversiones</b>.';
+      : 'En Chrome o Edge: busca el ícono <b>Instalar</b> al final de la barra de direcciones, o abre el menú del navegador y elige <b>Instalar moyiq · Inversiones</b>.';
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:420px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
@@ -9086,7 +9086,7 @@ function showConsentGate(userId){
       document.getElementById('mroot').innerHTML=
         '<div class="overlay" onclick="" style="z-index:600">'+
         '<div class="modal" style="max-width:480px" onclick="event.stopPropagation()">'+
-        '<div style="font-size:15px;font-weight:700;color:var(--bright);margin-bottom:8px">moyiq Inversiones — Confirmación de uso</div>'+
+        '<div style="font-size:15px;font-weight:700;color:var(--bright);margin-bottom:8px">moyiq · Inversiones — Confirmación de uso</div>'+
         '<p style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px">'+
         'Antes de continuar, necesitamos que confirmes que leíste y aceptas las condiciones principales de uso de Inversiones de moyiq.'+
         '</p>'+
@@ -9594,7 +9594,7 @@ initTheme();
 renderDisclaimer();
 
 (async function boot(){
-  document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando moyiq Inversiones...</div>';
+  document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando moyiq · Inversiones...</div>';
   await consumeHandoff();
   // Timeout de 10s: igual que doLogin (mas arriba), si getSession() se cuelga
   // (intercambio OAuth interrumpido, proyecto Supabase pausado, storage de auth

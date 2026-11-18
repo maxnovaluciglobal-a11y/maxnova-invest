@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Términos de uso · moyiq Inversiones</title>
+<title>Términos de uso — moyiq · Inversiones</title>
 <meta name="description" content="Términos de uso de Inversiones de moyiq: herramienta educativa en beta pública gratuita. No es bróker ni asesoría financiera."/>
 <link rel="canonical" href="https://invest.moyiq.app/terms.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#14213D"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/terms.html"/>
-<meta property="og:title" content="Términos de uso · moyiq Inversiones"/>
+<meta property="og:title" content="Términos de uso — moyiq · Inversiones"/>
 <meta property="og:description" content="Términos de uso de Inversiones de moyiq: herramienta educativa en beta pública gratuita. No es bróker ni asesoría financiera."/>
 <meta property="og:site_name" content="moyiq · Inversiones"/>
 <link rel="preload" as="style" href="/fonts.css"/>
@@ -41,7 +41,7 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
 .narrow{max-width:760px}
 .lockup{display:inline-flex;align-items:center;gap:.4em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;color:#000000;text-decoration:none;white-space:nowrap}
-.lockup .logo{display:block;height:1.2em;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
+.lockup .logo{display:block;height:max(20px,1.2em);width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.86em;letter-spacing:0;color:var(--text2);padding-left:.4em;border-left:1px solid currentColor;line-height:1.1}
 /* Logo moyiq: versión blanca sobre Navy (15,9:1), negra sobre fondo claro (versiones del manual). */
 .lockup.on-dark{color:#FFFFFF}
@@ -101,8 +101,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 <main id="main">
   <article class="wrap doc">
     <h1>Términos de uso</h1>
-    <!-- TODO(despliegue): reemplazar FECHA-DEL-DESPLIEGUE por la fecha real del push a main (es la fecha de vigencia). test/legal-rebrand.test.js lo exige con PREDEPLOY=1. -->
-    <p class="meta">Vigente desde: FECHA-DEL-DESPLIEGUE · Versión 2.2 (la versión 2.1 del 19 de octubre de 2026 cambia solo el nombre del producto)</p>
+    <!-- Fecha de vigencia: tools/vigencia.json; se fija con node tools/set-vigencia.mjs AAAA-MM-DD el día del push a main. -->
+    <p class="meta">Vigente desde: <span data-vigencia="pendiente">FECHA-DEL-DESPLIEGUE</span> · Versión 2.2 (la versión 2.1 del 19 de octubre de 2026 cambia solo el nombre del producto)</p>
     <p class="meta"><strong>MOY IQ Invest ahora es Inversiones de moyiq; el responsable y el tratamiento no cambian.</strong></p>
 
     <h2>1. Descripción del servicio</h2>

@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Política de privacidad · moyiq Inversiones</title>
-<meta name="description" content="Qué datos guarda moyiq Inversiones, dónde, para qué y cómo eliminarlos. Tu portafolio se guarda en tu cuenta para sincronizarlo; no vendemos datos."/>
+<title>Política de privacidad — moyiq · Inversiones</title>
+<meta name="description" content="Qué datos guarda Inversiones de moyiq, dónde, para qué y cómo eliminarlos. Tu portafolio se guarda en tu cuenta para sincronizarlo; no vendemos datos."/>
 <link rel="canonical" href="https://invest.moyiq.app/privacy.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
 <link rel="manifest" href="/manifest.webmanifest?v=2"/>
 <meta name="theme-color" content="#14213D"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/privacy.html"/>
-<meta property="og:title" content="Política de privacidad · moyiq Inversiones"/>
-<meta property="og:description" content="Qué datos guarda moyiq Inversiones, dónde, para qué y cómo eliminarlos. Tu portafolio se guarda en tu cuenta para sincronizarlo; no vendemos datos."/>
+<meta property="og:title" content="Política de privacidad — moyiq · Inversiones"/>
+<meta property="og:description" content="Qué datos guarda Inversiones de moyiq, dónde, para qué y cómo eliminarlos. Tu portafolio se guarda en tu cuenta para sincronizarlo; no vendemos datos."/>
 <meta property="og:site_name" content="moyiq · Inversiones"/>
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
@@ -41,7 +41,7 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
 .narrow{max-width:760px}
 .lockup{display:inline-flex;align-items:center;gap:.4em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;color:#000000;text-decoration:none;white-space:nowrap}
-.lockup .logo{display:block;height:1.2em;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
+.lockup .logo{display:block;height:max(20px,1.2em);width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.86em;letter-spacing:0;color:var(--text2);padding-left:.4em;border-left:1px solid currentColor;line-height:1.1}
 /* Logo moyiq: versión blanca sobre Navy (15,9:1), negra sobre fondo claro (versiones del manual). */
 .lockup.on-dark{color:#FFFFFF}
@@ -101,8 +101,8 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
 <main id="main">
   <article class="wrap doc">
     <h1>Política de privacidad</h1>
-    <!-- TODO(despliegue): reemplazar FECHA-DEL-DESPLIEGUE por la fecha real del push a main (es la fecha de vigencia). test/legal-rebrand.test.js lo exige con PREDEPLOY=1. -->
-    <p class="meta">Vigente desde: FECHA-DEL-DESPLIEGUE · Versión 2.7 (la versión 2.6 del 31 de octubre de 2026 cambia solo el nombre del producto y el texto de la sección 4)</p>
+    <!-- Fecha de vigencia: tools/vigencia.json; se fija con node tools/set-vigencia.mjs AAAA-MM-DD el día del push a main. -->
+    <p class="meta">Vigente desde: <span data-vigencia="pendiente">FECHA-DEL-DESPLIEGUE</span> · Versión 2.7 (la versión 2.6 del 31 de octubre de 2026 cambia solo el nombre del producto y el texto de la sección 4)</p>
     <p class="meta"><strong>MOY IQ Invest ahora es Inversiones de moyiq; el responsable y el tratamiento no cambian.</strong></p>
 
     <h2>1. Responsable del tratamiento</h2>
@@ -130,7 +130,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
     </ul>
 
     <h2>4. Dónde se guardan tus datos</h2>
-    <p>Tus posiciones de inversión se guardan en nuestro servidor para traer precios y verlas en cualquier dispositivo. Se guardan en tu cuenta (Supabase), con cifrado en reposo en el servidor; no tienen cifrado de extremo a extremo. Los movimientos que registras en la app moyiq son distintos: siguen solo en tu dispositivo.</p>
+    <p>Tus posiciones de inversión se guardan en nuestro servidor para que puedas verlas en cualquier dispositivo. Para traer precios solo se consultan los símbolos. Se guardan en tu cuenta (Supabase), con cifrado en reposo en el servidor; no tienen cifrado de extremo a extremo. Los movimientos que registras en la app moyiq son distintos: siguen solo en tu dispositivo.</p>
     <p>El sistema de acceso (correo y contraseña) es el mismo que usa moyiq, dentro del mismo proyecto de Supabase. Los datos de cada app se guardan por separado, y las reglas de seguridad a nivel de fila (RLS) hacen que cada cuenta solo pueda leer sus propios registros.</p>
 
     <h2>5. Proveedores que tratan datos y transferencias</h2>

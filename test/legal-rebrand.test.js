@@ -1,13 +1,15 @@
 // Rebrand Entrega 1 (D14, D18 mantenimiento, D19): las legales cambian con el despliegue de la marca.
 // Términos 2.2 y privacidad 2.7 dicen el nombre nuevo, que el responsable y el tratamiento no cambian,
 // y el texto preciso de dónde viven las posiciones. La fecha de vigencia es la del despliegue:
-// `PREDEPLOY=1 npx vitest run test/legal-rebrand.test.js` falla mientras quede FECHA-DEL-DESPLIEGUE.
+// Esa fecha vive en un solo lugar, tools/vigencia.json, y se fija con `node tools/set-vigencia.mjs AAAA-MM-DD`.
+// En la rama main o con RELEASE=1, `npm test` falla mientras quede FECHA-DEL-DESPLIEGUE (B1, revisión 18-nov).
 import { describe, it, expect } from "vitest";
+import * as vig from "../tools/vigencia.mjs";
 import { readFileSync } from "node:fs";
 
 const read = (f) => readFileSync(new URL("../" + f, import.meta.url), "utf8");
 const NOTE = "MOY IQ Invest ahora es Inversiones de moyiq; el responsable y el tratamiento no cambian.";
-const D19 = "Tus posiciones de inversión se guardan en nuestro servidor para traer precios y verlas en cualquier dispositivo.";
+const D19 = "Tus posiciones de inversión se guardan en nuestro servidor para que puedas verlas en cualquier dispositivo. Para traer precios solo se consultan los símbolos.";
 
 describe("legales del rebrand", () => {
   it("términos 2.2 y privacidad 2.7 con la línea del cambio de nombre", () => {
@@ -27,7 +29,18 @@ describe("legales del rebrand", () => {
     expect(read("app/index.html")).toContain("Inversiones de moyiq no es un br\\u00f3ker");
   });
 
-  it.runIf(process.env.PREDEPLOY)("antes de desplegar: no queda FECHA-DEL-DESPLIEGUE", () => {
-    for (const f of ["terms.html", "privacy.html", "app/index.html"]) expect(read(f), f).not.toContain("FECHA-DEL-DESPLIEGUE");
+  it("cada <span data-vigencia> coincide con tools/vigencia.json", () => {
+    const fecha = vig.leer();
+    expect(fecha === null || vig.esFechaValida(fecha), `vigencia.json: ${fecha}`).toBe(true);
+    for (const f of ["terms.html", "privacy.html", "app/index.html"]) expect(read(f), f).toMatch(new RegExp(vig.SPAN.source));
+    for (const f of vig.publicados()) {
+      for (const m of read(f).matchAll(vig.SPAN)) expect(m[0], f).toBe(vig.spanEsperado(fecha));
+    }
+  });
+
+  it.skipIf(!vig.esPublicacion())("en main o con RELEASE=1: fecha fijada y ningún marcador FECHA-DEL-DESPLIEGUE", () => {
+    expect(vig.leer(), "tools/vigencia.json sin fecha: node tools/set-vigencia.mjs AAAA-MM-DD").toBeTruthy();
+    const quedan = vig.publicados().filter((f) => vig.MARCADORES.some((mk) => read(f).includes(mk)));
+    expect(quedan).toEqual([]);
   });
 });
