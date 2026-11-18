@@ -1,3 +1,10 @@
+/* tokens-v2.css — COPIA CONGELADA (D9 + D18, 17-nov-2026).
+   Invest quedó en mantenimiento (la medición del corte dio 0 cuentas externas con uso), así que
+   conserva la paleta v2 (Navy/Latón) aunque financeos-app migre su tokens.css a la marca nueva.
+   Ya NO se sincroniza con financeos-app/src/styles/tokens.css: no copiar el archivo nuevo encima.
+   Si Invest vuelve a desarrollarse, se migra a los tokens v3 en un despliegue propio
+   (validacion/03-revision-invest.md, A1). Debajo, el texto original tal como se congeló. */
+
 /* src/styles/tokens.css
    Tokens de diseño de MOY IQ: paleta, tipografía, radios, espaciado, sombras y
    movimiento, en claro y en oscuro. Es el ÚNICO lugar de la app donde se

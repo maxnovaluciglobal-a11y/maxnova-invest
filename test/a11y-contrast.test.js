@@ -7,9 +7,9 @@ import { resolve } from 'node:path';
 const html = readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 const lightBlock = html.slice(0, html.indexOf('/* ── DARK MODE ── */'));
 const darkBlock = html.slice(html.indexOf('[data-theme="dark"] {\n  --grn:'), html.indexOf('/* ── RESET'));
-// Los tokens de Invest apuntan a /tokens.css (BRD-4): se resuelve var(--x) primero en el
-// bloque de Invest y después en tokens.css (claro: :root; oscuro: [data-theme="dark"] sobre :root).
-const tokensCss = readFileSync(resolve(__dirname, '../tokens.css'), 'utf8');
+// Los tokens de Invest apuntan a /tokens-v2.css (BRD-4, congelado por D9): se resuelve var(--x) primero en el
+// bloque de Invest y después en tokens-v2.css (claro: :root; oscuro: [data-theme="dark"] sobre :root).
+const tokensCss = readFileSync(resolve(__dirname, '../tokens-v2.css'), 'utf8');
 const tkLight = tokensCss.slice(0, tokensCss.indexOf('[data-theme="dark"]'));
 const tkDark = tokensCss.slice(tokensCss.indexOf('[data-theme="dark"]'));
 const rawOf = (block, name) => {

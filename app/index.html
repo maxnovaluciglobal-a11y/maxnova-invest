@@ -27,7 +27,7 @@
 <meta name="apple-mobile-web-app-title" content="Invest"/>
 <link rel="canonical" href="https://invest.moyiq.app/app"/>
 <meta name="author" content="MAXNOVA &amp; LUCI Global LLC"/>
-<link rel="stylesheet" href="/tokens.css"/>
+<link rel="stylesheet" href="/tokens-v2.css?v=1"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
    MOY IQ INVEST — Sistema de diseño alineado con FinanceOS Pro
@@ -75,7 +75,7 @@ input, select, textarea { font-size: 16px; }
   --grn-bg:    rgba(20,33,61,0.07);
   --grn-lt:    rgba(20,33,61,0.14);
 
-  /* --laton y --laton-700 vienen de /tokens.css (copia de financeos-app, BRD-4). */
+  /* --laton y --laton-700 vienen de /tokens-v2.css (paleta v2 congelada, D9). */
 
   /* M1 (21-oct-2026): cifras en IBM Plex Sans con tabular-nums lining-nums.
      Plex Sans ya trae digitos tabulares (los 10 miden 600 unidades, igual que
@@ -121,7 +121,7 @@ input, select, textarea { font-size: 16px; }
   --card4:     var(--papel-200);
 
   /* Texto — Navy */
-  /* --tm/--th de /tokens.css: cambian solos en oscuro. */
+  /* --tm/--th de /tokens-v2.css: cambian solos en oscuro. */
   --text:      var(--tm);
   --text2:     var(--th);
   --text3:     var(--th);
@@ -169,7 +169,7 @@ input, select, textarea { font-size: 16px; }
 }
 
 /* ── DARK MODE ── */
-/* Superficies, texto y bordes del modo oscuro de financeos-app (/tokens.css, BRD-4).
+/* Superficies, texto y bordes del modo oscuro de financeos-app (/tokens-v2.css, BRD-4).
    Solo quedan valores propios de Invest donde el de la app no llega a AA aquí:
    el rojo de pérdida (#C96856 da 4,2:1 sobre --sur2) y sus tintes. */
 [data-theme="dark"] {
@@ -201,7 +201,7 @@ input, select, textarea { font-size: 16px; }
 
   /* Fondo + tres niveles (--sur/--sur2/--sur3 de la app); card4 es una veladura
      para pistas y esqueletos de carga. */
-  --bg:        #0E1628;   /* = --bg oscuro de /tokens.css (familia Navy, UI-L1) */
+  --bg:        #0E1628;   /* = --bg oscuro de /tokens-v2.css (familia Navy, UI-L1) */
   --bg2:       var(--sur);
   --card:      var(--sur);
   --card2:     var(--sur2);

@@ -10,7 +10,7 @@
 //    online, cache offline; evita servir el build viejo una recarga extra).
 //  - Iconos same-origin: CACHE-FIRST con revalidacion.
 //  - Todo lo demas same-origin (incl. /api/*): passthrough.
-const CACHE = 'maxnova-v11';
+const CACHE = 'moyiq-invest-v12';
 const CORE = ['/', '/app'];
 
 function isAppHtml(path) {
@@ -21,7 +21,7 @@ function isCacheableAsset(path) {
          path === '/apple-touch-icon.png' ||
          path === '/favicon.svg' ||
          path === '/icon.svg' ||
-         path === '/tokens.css' ||
+         path === '/tokens-v2.css' ||
          path === '/manifest.webmanifest';
 }
 

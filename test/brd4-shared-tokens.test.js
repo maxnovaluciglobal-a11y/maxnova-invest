@@ -1,19 +1,26 @@
-// BRD-4: Invest usa la misma paleta que la app. /tokens.css es una copia literal de
-// financeos-app/src/styles/tokens.css (no se edita aquí: se edita allá y se vuelve a copiar,
-// ver financeos-app/docs/tokens-de-diseno.md). Cada página la carga antes de su <style> y
-// ya no redefine los colores de marca; solo quedan tonos propios de Invest con su motivo.
+// BRD-4: Invest usa una sola paleta, la de /tokens-v2.css. Cada página la carga antes de su
+// <style> y no redefine los colores de marca; solo quedan tonos propios de Invest con su motivo.
+//
+// D9 + D18 (17-nov-2026): CONGELADO POR MANTENIMIENTO. Hasta esta fecha /tokens.css era una copia
+// literal de financeos-app/src/styles/tokens.css y este test exigía igualdad con la app. La app
+// migra su tokens.css a la marca nueva y la medición del corte dio 0 cuentas externas con uso de
+// Invest, así que Invest queda en mantenimiento con la paleta v2 (Navy/Latón) congelada en
+// /tokens-v2.css. El test ya NO compara con la app: exige que la copia congelada no cambie (hash).
+// Si Invest vuelve a desarrollarse, se migra a los tokens v3 en un despliegue propio
+// (rebrand-startup-2026-11/validacion/03-revision-invest.md, A1) y este bloque se reescribe.
 import { describe, it, expect } from "vitest";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 const read = (f) => readFileSync(new URL("../" + f, import.meta.url), "utf8");
 const PAGES = ["app/index.html", "index.html", "faq.html", "estado-mercado.html", "perfil-inversor.html",
   "privacy.html", "terms.html", "datos-y-licencias.html", "docs/novedades.html"];
-const TOKENS = read("tokens.css");
-const APP_TOKENS = new URL("../../financeos-app/src/styles/tokens.css", import.meta.url);
+const TOKENS = read("tokens-v2.css");
+const FROZEN_SHA256 = "8f18672b69ca0762a433d4ba7607dc87341a874929d559b4c80cd2bc3babb38e";
 
 const TOKEN_DEF = /(--[\w-]+)\s*:\s*(#[0-9a-fA-F]{6})\b/g;
 const PALETTE = new Set([...TOKENS.matchAll(TOKEN_DEF)].map((m) => m[2].toUpperCase()));
-// Primitivos de marca de tokens.css (bloque "Paleta de marca"): ninguna página los redefine.
+// Primitivos de marca de tokens-v2.css (bloque "Paleta de marca"): ninguna página los redefine.
 const PRIMITIVES = (() => {
   const a = TOKENS.indexOf("Paleta de marca"), b = TOKENS.indexOf("Light theme");
   return [...TOKENS.slice(a, b).matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]);
@@ -32,17 +39,24 @@ const INVEST_ONLY = {
   "#C7D3E0": "serie 4 del Comparador (oscuro)",
 };
 
-describe("BRD-4: tokens compartidos con la app", () => {
-  it("tokens.css es la copia literal de financeos-app (si el repo hermano está disponible)", () => {
+describe("BRD-4: paleta v2 congelada (D9, mantenimiento)", () => {
+  it("tokens-v2.css es la copia congelada y no cambió", () => {
+    expect(TOKENS).toContain("COPIA CONGELADA (D9 + D18");
     expect(TOKENS).toContain("Es el ÚNICO lugar de la app donde se");
-    if (existsSync(APP_TOKENS)) expect(TOKENS).toBe(readFileSync(APP_TOKENS, "utf8"));
+    expect(TOKENS).toContain("--navy:        #14213D;");
+    expect(createHash("sha256").update(TOKENS).digest("hex"), "tokens-v2.css está congelado: no se edita").toBe(FROZEN_SHA256);
   });
 
-  it.each(PAGES)("%s carga /tokens.css antes de su primer <style>", (f) => {
+  it("ya no existe /tokens.css en Invest (evita sincronizar por error la paleta nueva de la app)", () => {
+    expect(() => read("tokens.css")).toThrow();
+  });
+
+  it.each(PAGES)("%s carga /tokens-v2.css versionado antes de su primer <style>", (f) => {
     const s = read(f);
-    const link = s.indexOf('<link rel="stylesheet" href="/tokens.css"/>');
+    const link = s.search(/<link rel="stylesheet" href="\/tokens-v2\.css\?v=\d+"\/>/);
     expect(link).toBeGreaterThan(-1);
     expect(link).toBeLessThan(s.indexOf("<style>"));
+    expect(s).not.toContain('href="/tokens.css"');
   });
 
   // En oscuro, Invest puede apuntar un primitivo a otro de la paleta (--laton: var(--accent-dark)),
@@ -71,10 +85,11 @@ describe("BRD-4: tokens compartidos con la app", () => {
     expect(app).toContain("dark?'#0E1628':'#14213D'");
   });
 
-  it("el service worker guarda /tokens.css para que la app no pierda los colores sin conexión", () => {
+  // Entrega 1 (rebrand): el CACHE sube para que el SW nuevo borre el caché con la marca vieja.
+  it("el service worker guarda /tokens-v2.css para que la app no pierda los colores sin conexión", () => {
     const sw = read("sw.js");
-    expect(sw).toContain("path === '/tokens.css'");
-    expect(sw).toMatch(/const CACHE = 'maxnova-v(\d+)'/);
-    expect(+sw.match(/maxnova-v(\d+)/)[1]).toBeGreaterThanOrEqual(9);
+    expect(sw).toContain("path === '/tokens-v2.css'");
+    expect(sw).toMatch(/const CACHE = 'moyiq-invest-v(\d+)'/);
+    expect(+sw.match(/moyiq-invest-v(\d+)/)[1]).toBeGreaterThanOrEqual(12);
   });
 });
