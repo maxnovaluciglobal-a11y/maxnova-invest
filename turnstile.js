@@ -5,7 +5,7 @@
    con el service role: { rpc, args, turnstileToken? } y responde el mismo status y JSON
    que la RPC.
 
-   El login de /app (Supabase Auth, proyecto compartido con MOY IQ) usa el mismo widget para
+   El login de /app (Supabase Auth, proyecto compartido con moyiq) usa el mismo widget para
    mandar options.captchaToken cuando se prenda el captcha de Supabase Auth.
 
    SITE_KEY es la clave PÚBLICA del widget `moyiq-forms`. Vacía = sin widget ni script de

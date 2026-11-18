@@ -1,5 +1,5 @@
 // SEG-5 (parte Invest): Invest borra solo sus datos; la cuenta es la misma de
-// MOY IQ y el borrado total vive en app.moyiq.app/delete-account. Cada texto
+// moyiq y el borrado total vive en app.moyiq.app/delete-account. Cada texto
 // tiene que decir exactamente eso y llevar al enlace.
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -19,8 +19,8 @@ describe('borrado unificado (SEG-5)', () => {
   });
   it('Ajustes tiene las dos acciones y dice qué borra cada una', () => {
     const a = read('app/index.html');
-    expect(a).toContain("row('Eliminar mis datos de Invest','Borra solo lo de Invest");
-    expect(a).toContain("row('Eliminar la cuenta','Borra la cuenta de acceso y todos tus datos de MOY IQ y de Invest a la vez.");
+    expect(a).toContain("row('Eliminar mis datos de Inversiones','Borra solo lo de Inversiones");
+    expect(a).toContain("row('Eliminar la cuenta','Borra la cuenta de acceso y todos tus datos de moyiq y de Inversiones a la vez.");
     expect(a).toMatch(/href="https:\/\/app\.moyiq\.app\/delete-account" target="_blank" rel="noopener">Eliminar la cuenta<span class="sr-only">/);
   });
   it('lo que la privacidad dice que borra Invest coincide con las tablas del endpoint', () => {
@@ -28,9 +28,9 @@ describe('borrado unificado (SEG-5)', () => {
     const tables = JSON.parse(api.match(/USER_DATA_TABLES = (\[[^\]]+\])/)[1].replace(/'/g, '"'));
     expect(tables).toEqual(['portfolio_holdings', 'invest_operations', 'watchlist', 'consents', 'trial_emails', 'invest_activity_days']);
     expect(api).toMatch(/deleteRows\('profiles', userId, 'id'\)/);
-    expect(read('privacy.html')).toMatch(/borra de inmediato tu portafolio, operaciones, lista de seguimiento, perfil, consentimientos, días de actividad y registro de correos del período de prueba de Invest\. No toca tus datos de MOY IQ\./);
+    expect(read('privacy.html')).toMatch(/borra de inmediato tu portafolio, operaciones, lista de seguimiento, perfil, consentimientos, días de actividad y registro de correos del período de prueba de Inversiones\. No toca tus datos de moyiq\./);
   });
-  it('el modal de borrado aclara que la cuenta y los datos de MOY IQ siguen', () => {
-    expect(read('app/index.html')).toContain('Tu cuenta de acceso no se borra, porque es la misma de MOY IQ, y tus datos de MOY IQ tampoco.');
+  it('el modal de borrado aclara que la cuenta y los datos de moyiq siguen', () => {
+    expect(read('app/index.html')).toContain('Tu cuenta de acceso no se borra, porque es la misma de moyiq, y tus datos de moyiq tampoco.');
   });
 });

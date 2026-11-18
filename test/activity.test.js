@@ -1,6 +1,6 @@
 // C-10 / INV-3 (auditoría 360, 19-oct-2026): medir los usuarios activos por semana de Invest para el
 // checkpoint del 5-nov (disparador de cobro: 100 WAU). Antes no se podía: login y `profiles` se
-// comparten con MOY IQ. Una llamada por cuenta, por día y por dispositivo a invest_record_activity().
+// comparten con moyiq. Una llamada por cuenta, por día y por dispositivo a invest_record_activity().
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

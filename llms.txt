@@ -1,4 +1,6 @@
-# MOY IQ Invest
+# moyiq · Inversiones
+
+Also known as: MOY IQ Invest (former name, until Nov 2026), moyiq invest, moyiq · Investments. "Inversiones" (Investments) is the investing section of moyiq.
 
 > Educational tool for Spanish-speaking investors to track a portfolio, size each position with their own risk rule, and read technical indicators explained in plain Spanish. Free public beta since the relaunch on 2026-10-08. Not a broker, does not execute orders, does not give investment advice.
 
@@ -27,7 +29,7 @@ Stock and ETF prices come from Yahoo Finance, crypto from CoinGecko and the Chil
 
 ## Data and accounts
 
-The Invest portfolio is stored in the user's account (Supabase) to sync it. Login is shared with MOY IQ (same email and password); each app keeps its data separately. Deleting Invest data is self-service and immediate (Settings → Delete my Invest data); the shared login is kept and can be deleted through MOY IQ (support@moyiq.app).
+Investment positions are stored on our server, in the user's account (Supabase), to fetch prices and show them on any device. Login is shared with moyiq (same email and password); each app keeps its data separately. Deleting the Inversiones data is self-service and immediate (Settings → "Eliminar mis datos de Inversiones"); the shared login is kept and can be deleted through moyiq (support@moyiq.app).
 
 ## Disclaimer
 
@@ -36,4 +38,4 @@ Educational tool. It does not constitute financial or tax advice, nor a recommen
 ## Company
 
 MAXNOVA & LUCI Global LLC. Support: invest@moyiq.app
-Sister product: MOY IQ, a personal finance app whose data lives on the user's device — https://moyiq.app
+Main product: moyiq, a personal finance app whose data lives on the user's device — https://moyiq.app

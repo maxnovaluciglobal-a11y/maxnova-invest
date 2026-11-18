@@ -201,7 +201,7 @@
     return { paid: paid, paidSh: paidSh, bonusSh: bonusSh, units: paidSh + bonusSh - sold, avgPaid: paidSh > 0 ? paid / paidSh : 0 };
   }
 
-  // Cuánto de lo marcado este mes en MOY IQ falta registrar como depósito. MOY IQ manda la
+  // Cuánto de lo marcado este mes en moyiq falta registrar como depósito. moyiq manda la
   // suma del mes: sin esto, entrar dos veces contaría el mismo dinero dos veces.
   function aportePending(a, ops, month) {
     if (!a) return null;

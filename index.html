@@ -6,7 +6,7 @@
 <!-- Relanzamiento v2 (8-oct-2026): beta pública gratuita. La landing anterior
      (con planes pagos y nota agregada por activo) sigue archivada en
      _pausa/index.full.html solo como registro; no restaurar su copy. -->
-<title>MOY IQ Invest · Portafolio, riesgo e indicadores en español</title>
+<title>moyiq · Inversiones (antes MOY IQ Invest): portafolio, riesgo e indicadores en español</title>
 <meta name="description" content="Sigue tu portafolio, define cuánto arriesgas por operación y lee RSI, MACD y medias móviles explicados en español. Beta pública gratuita. No somos bróker."/>
 <link rel="canonical" href="https://invest.moyiq.app/"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
@@ -15,17 +15,17 @@
 <meta name="theme-color" content="#14213D"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/"/>
-<meta property="og:title" content="MOY IQ Invest · Entiende tu portafolio antes de mover un peso"/>
+<meta property="og:title" content="moyiq · Inversiones · Entiende tu portafolio antes de mover un peso"/>
 <meta property="og:description" content="Portafolio, regla de riesgo e indicadores técnicos explicados en español. Beta pública gratuita, sin tarjeta. Herramienta educativa: no somos bróker."/>
-<meta property="og:image" content="https://invest.moyiq.app/og-invest.png"/>
+<meta property="og:image" content="https://invest.moyiq.app/og-invest.png?v=2"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:locale" content="es_419"/>
-<meta property="og:site_name" content="MOY IQ Invest"/>
+<meta property="og:site_name" content="moyiq · Inversiones"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="MOY IQ Invest · Entiende tu portafolio antes de mover un peso"/>
+<meta name="twitter:title" content="moyiq · Inversiones · Entiende tu portafolio antes de mover un peso"/>
 <meta name="twitter:description" content="Portafolio, regla de riesgo e indicadores técnicos explicados en español. Beta pública gratuita, sin tarjeta."/>
-<meta name="twitter:image" content="https://invest.moyiq.app/og-invest.png"/>
+<meta name="twitter:image" content="https://invest.moyiq.app/og-invest.png?v=2"/>
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
 <noscript><link href="/fonts.css" rel="stylesheet"/></noscript>
@@ -33,7 +33,8 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "MOY IQ Invest",
+  "name": "moyiq · Inversiones",
+  "alternateName": ["MOY IQ Invest", "moyiq invest", "moyiq Inversiones"],
   "url": "https://invest.moyiq.app/",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Web",
@@ -48,18 +49,18 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "¿Cuánto cuesta MOY IQ Invest?",
+    { "@type": "Question", "name": "¿Cuánto cuesta Inversiones de moyiq?",
       "acceptedAnswer": { "@type": "Answer", "text": "Nada durante la beta pública: todas las funciones están abiertas y no pedimos tarjeta. Cuando haya planes pagos, te avisamos antes y lo que usas hoy no se pierde." } },
     { "@type": "Question", "name": "¿Los precios están al día?",
       "acceptedAnswer": { "@type": "Answer", "text": "Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el tipo de cambio de Yahoo Finance (para el peso chileno, mindicador.cl cuando responde). Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente." } },
-    { "@type": "Question", "name": "¿Invest me dice qué comprar o vender?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Invest te ayuda a entender lo que ya tienes y cuánto arriesgas." } },
+    { "@type": "Question", "name": "¿Inversiones me dice qué comprar o vender?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Inversiones te ayuda a entender lo que ya tienes y cuánto arriesgas." } },
     { "@type": "Question", "name": "¿Por qué no hay una nota de 0 a 100 por activo?",
       "acceptedAnswer": { "@type": "Answer", "text": "Porque una sola cifra se lee como una calificación de compra. Cada indicador muestra su valor, su rango de referencia y una frase en español simple. Por ejemplo: RSI 58, zona neutral (30–70)." } },
     { "@type": "Question", "name": "¿Qué mercados puedo seguir?",
       "acceptedAnswer": { "@type": "Answer", "text": "Acciones y ETF de Estados Unidos (por ejemplo AAPL), de la Bolsa de Santiago con el sufijo .SN (como SQM-B.SN) y de Buenos Aires con el sufijo .BA, incluidos los CEDEAR (como AAPL.BA), además de bitcoin y ether. Puedes ver las cifras en USD, CLP, MXN, COP, ARS o PEN. En pesos argentinos puedes elegir el dólar MEP (el valor por defecto, de DolarApi) o el oficial; la app muestra la fuente y la hora de la cotización y, si el MEP no está disponible, usa el oficial y lo indica." } },
     { "@type": "Question", "name": "¿Dónde se guarda mi portafolio?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas." } }
+      "acceptedAnswer": { "@type": "Answer", "text": "Tu portafolio de Inversiones se guarda en tu cuenta (Supabase) para sincronizarlo; la app moyiq funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas." } }
   ]
 }
 </script>
@@ -251,7 +252,7 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .beta-foot p b{color:var(--papel);font-weight:600}
 .price0{font-family:var(--body);font-variant-numeric:tabular-nums lining-nums;font-size:15px;color:var(--accent-dark)}
 
-/* Perfil + MOY IQ */
+/* Perfil + moyiq */
 .duo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px}
 @media (max-width:900px){.duo{grid-template-columns:minmax(0,1fr)}}
 .panel{border-radius:12px;padding:clamp(24px,3vw,40px)}
@@ -313,7 +314,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         <li><a href="/perfil-inversor.html">Tu perfil de inversor</a></li>
         <li><a href="#beta">Beta gratis</a></li>
         <li><a href="#faq">FAQ</a></li>
-        <li><a href="https://moyiq.app" rel="noopener">MOY IQ <span aria-hidden="true">↗</span></a></li>
+        <li><a href="https://moyiq.app" rel="noopener">moyiq <span aria-hidden="true">↗</span></a></li>
       </ul>
     </nav>
     <div class="nav-right">
@@ -371,7 +372,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
     </div>
   </section>
 
-  <section class="proof" aria-label="Lo que Invest es y no es">
+  <section class="proof" aria-label="Lo que Inversiones de moyiq es y no es">
     <div class="wrap">
       <ul>
         <li><strong>No ejecutamos órdenes</strong><span>Tú decides y operas en tu bróker.</span></li>
@@ -385,9 +386,9 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
     <div class="wrap how">
       <div>
         <h2 class="h2" id="how-title">Primero decides cuánto puedes perder. Después, cuánto compras.</h2>
-        <p class="lead">Invest parte de tu propia regla de riesgo, no de una opinión sobre el activo. Con tu capital, tu porcentaje máximo por operación y tu stop, calcula el tamaño de la posición y te avisa si se lleva demasiado peso de tu portafolio.</p>
+        <p class="lead">Inversiones parte de tu propia regla de riesgo, no de una opinión sobre el activo. Con tu capital, tu porcentaje máximo por operación y tu stop, calcula el tamaño de la posición y te avisa si se lleva demasiado peso de tu portafolio.</p>
         <ol class="steps">
-          <li><div><h3>Registra lo que ya tienes</h3><p>Cargas tus posiciones a mano: ticker, cantidad y precio. Invest no se conecta a tu bróker.</p></div></li>
+          <li><div><h3>Registra lo que ya tienes</h3><p>Cargas tus posiciones a mano: ticker, cantidad y precio. Inversiones de moyiq no se conecta a tu bróker.</p></div></li>
           <li><div><h3>Define tu regla de riesgo</h3><p>Por ejemplo, no arriesgar más del 2&nbsp;% del capital en una sola operación, y que ninguna posición pase del 25&nbsp;% del portafolio.</p></div></li>
           <li><div><h3>Lee cada indicador por separado</h3><p>RSI, MACD, medias móviles y volumen, cada uno con su rango y una frase en español simple, sin notas agregadas.</p></div></li>
         </ol>
@@ -430,7 +431,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         <div class="no">
           <h3>No te sirve si…</h3>
           <ul>
-            <li><b>Buscas señales de compra o venta.</b> Invest describe lo que muestran los datos; no te dice qué hacer.</li>
+            <li><b>Buscas señales de compra o venta.</b> Inversiones describe lo que muestran los datos; no te dice qué hacer.</li>
             <li><b>Quieres operar desde aquí.</b> No somos bróker: registras tus posiciones a mano.</li>
             <li><b>Necesitas cotizaciones sin ningún retraso.</b> Usamos fuentes gratuitas y cada precio dice qué tan actual es.</li>
           </ul>
@@ -484,18 +485,18 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
     </div>
   </section>
 
-  <section class="sec" aria-label="Perfil de inversor y MOY IQ">
+  <section class="sec" aria-label="Perfil de inversor y moyiq">
     <div class="wrap duo">
       <div class="panel quiz">
         <p class="meta">6 preguntas · 2 minutos · sin cuenta</p>
         <h3>¿No sabes cuánto riesgo tolerar? Empieza por tu perfil.</h3>
-        <p>Un cuestionario corto sobre tu horizonte, cómo reaccionas ante una caída y qué buscas. El resultado es orientativo y te sirve para fijar tu regla de riesgo en Invest.</p>
+        <p>Un cuestionario corto sobre tu horizonte, cómo reaccionas ante una caída y qué buscas. El resultado es orientativo y te sirve para fijar tu regla de riesgo en Inversiones.</p>
         <a href="/perfil-inversor.html" class="btn btn-line">Descubre tu perfil (2 min)</a>
       </div>
       <div class="panel moy">
         <span class="lockup" aria-label="moyiq"><svg class="logo" viewBox="87.94 136.94 547.16 189.52" aria-hidden="true"><use href="#moyiq"/></svg></span>
-        <p>¿También llevas tu presupuesto? MOY IQ es nuestra app de finanzas personales: gastos, deudas y metas. Sus datos viven en tu dispositivo. El plan Starter es gratis.</p>
-        <a class="go" href="https://moyiq.app" rel="noopener">Conoce MOY IQ <span aria-hidden="true">&nbsp;↗</span></a>
+        <p>¿También llevas tu presupuesto? moyiq es nuestra app de finanzas personales: gastos, deudas y metas. Sus datos viven en tu dispositivo. El plan Starter es gratis.</p>
+        <a class="go" href="https://moyiq.app" rel="noopener">Conoce moyiq <span aria-hidden="true">&nbsp;↗</span></a>
       </div>
     </div>
   </section>
@@ -509,7 +510,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
       </div>
       <div class="faq">
         <details>
-          <summary>¿Cuánto cuesta MOY IQ Invest?</summary>
+          <summary>¿Cuánto cuesta Inversiones de moyiq?</summary>
           <p>Nada durante la beta pública: todas las funciones están abiertas y no pedimos tarjeta. Cuando haya planes pagos, te avisamos antes y lo que usas hoy no se pierde.</p>
         </details>
         <details>
@@ -517,8 +518,8 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
           <p>Los precios de acciones y ETF vienen de Yahoo Finance, los de cripto de CoinGecko y el tipo de cambio de Yahoo Finance (para el peso chileno, mindicador.cl cuando responde). Son fuentes gratuitas y pueden tener retraso. Por eso cada precio muestra su estado: «Al día · hh:mm», «Retraso N min · hh:mm» o «Sin conexión · hh:mm», calculado con la hora que informa la fuente.</p>
         </details>
         <details>
-          <summary>¿Invest me dice qué comprar o vender?</summary>
-          <p>No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Invest te ayuda a entender lo que ya tienes y cuánto arriesgas.</p>
+          <summary>¿Inversiones me dice qué comprar o vender?</summary>
+          <p>No. No somos bróker, no ejecutamos órdenes y no damos recomendaciones. Registras tus posiciones a mano y operas en tu propio bróker. Inversiones te ayuda a entender lo que ya tienes y cuánto arriesgas.</p>
         </details>
         <details>
           <summary>¿Por qué no hay una nota de 0 a 100 por activo?</summary>
@@ -530,7 +531,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
         </details>
         <details>
           <summary>¿Dónde se guarda mi portafolio?</summary>
-          <p>Tu portafolio de Invest se guarda en tu cuenta (Supabase) para sincronizarlo; MOY IQ funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas.</p>
+          <p>Tu portafolio de Inversiones se guarda en tu cuenta (Supabase) para sincronizarlo; la app moyiq funciona distinto: sus datos viven en tu dispositivo. Cada cuenta solo puede leer sus propias filas.</p>
         </details>
       </div>
     </div>
@@ -575,7 +576,7 @@ footer{background:var(--papel);padding:48px 0 calc(32px + env(safe-area-inset-bo
           <li><a href="/privacy.html">Privacidad</a></li>
           <li><a href="/datos-y-licencias.html">Datos y licencias</a></li>
           <li><a href="mailto:invest@moyiq.app">invest@moyiq.app</a></li>
-          <li><a href="https://moyiq.app" rel="noopener">MOY IQ <span aria-hidden="true">↗</span></a></li>
+          <li><a href="https://moyiq.app" rel="noopener">moyiq <span aria-hidden="true">↗</span></a></li>
         </ul>
       </nav>
     </div>

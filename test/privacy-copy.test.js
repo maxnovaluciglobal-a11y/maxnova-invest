@@ -39,7 +39,7 @@ describe('privacy.html · analítica con PostHog', () => {
     expect(p).toMatch(/reclamo ante la autoridad de protección de datos de tu país/);
   });
   it('tiene fecha de actualización de hoy', () => {
-    expect(p).toMatch(/Última actualización: 31 de octubre de 2026 · Versión 2\.6/);
+    expect(p).toMatch(/Vigente desde: (FECHA-DEL-DESPLIEGUE|\d{1,2} de \S+ de 20\d\d) · Versión 2\.7/);
   });
 });
 
@@ -68,11 +68,11 @@ describe('privacy.html · Chile, Brasil y proveedores (LEG-5, LEG-13, C-36)', ()
 
 describe('privacy.html · días de actividad (C-10)', () => {
   it('dice que guarda el día en que abres la app, asociado a la cuenta, para contar a las personas activas', () => {
-    expect(p).toMatch(/guardamos en nuestra base de datos, asociado a tu cuenta, cada día en que abres la app de Invest con tu sesión iniciada/);
+    expect(p).toMatch(/guardamos en nuestra base de datos, asociado a tu cuenta, cada día en que abres la app de Inversiones con tu sesión iniciada/);
     expect(p).toMatch(/cuántas personas la usan cada semana/);
   });
-  it('y que "Eliminar mis datos de Invest" también los borra (api/delete-account.js lo hace)', () => {
-    expect(p).toMatch(/perfil, consentimientos, días de actividad y registro de correos del período de prueba de Invest/);
+  it('y que "Eliminar mis datos de Inversiones" también los borra (api/delete-account.js lo hace)', () => {
+    expect(p).toMatch(/perfil, consentimientos, días de actividad y registro de correos del período de prueba de Inversiones/);
     expect(read('api/delete-account.js')).toContain("'invest_activity_days'");
   });
 });

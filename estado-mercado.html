@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Estado del mercado hoy · MOY IQ Invest</title>
+<title>Estado del mercado hoy · moyiq Inversiones</title>
 <meta name="description" content="Índices de EE.UU., volatilidad (VIX), oro, petróleo, bitcoin y dólar en Chile y LATAM en un vistazo. Gratis y sin cuenta. Datos de fuentes gratuitas, con posible retraso."/>
 <link rel="canonical" href="https://invest.moyiq.app/estado-mercado.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
@@ -11,13 +11,13 @@
 <meta name="theme-color" content="#14213D"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/estado-mercado.html"/>
-<meta property="og:title" content="Estado del mercado hoy · MOY IQ Invest"/>
+<meta property="og:title" content="Estado del mercado hoy · moyiq Inversiones"/>
 <meta property="og:description" content="Índices, volatilidad (VIX) y tipos de cambio LATAM en un vistazo. Gratis, sin cuenta, con la hora de cada consulta."/>
-<meta property="og:image" content="https://invest.moyiq.app/og-invest.png"/>
+<meta property="og:image" content="https://invest.moyiq.app/og-invest.png?v=2"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:locale" content="es_419"/>
-<meta property="og:site_name" content="MOY IQ Invest"/>
+<meta property="og:site_name" content="moyiq · Inversiones"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <link rel="preload" as="style" href="/fonts.css"/>
 <link href="/fonts.css" rel="stylesheet" media="print" onload="this.media='all'"/>
@@ -392,7 +392,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
   document.getElementById('btnShare').addEventListener('click', function(){
     if (!LIVE_STATE){ showToast('Espera a que carguen los datos.'); return; }
     var url = shareUrl(LIVE_STATE);
-    var text = 'Estado del mercado · MOY IQ Invest';
+    var text = 'Estado del mercado · moyiq Inversiones';
     if (navigator.share){
       navigator.share({ title: text, text: text, url: url }).catch(function(){});
     } else if (navigator.clipboard && navigator.clipboard.writeText){

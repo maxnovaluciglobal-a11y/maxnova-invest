@@ -72,7 +72,7 @@ describe('resumen legal dentro de la app', () => {
     expect(modal).not.toMatch(/Stripe|15 minutos|cookies de sesión|señales|Miami|Junio 2026/);
   });
   it('remite a las versiones vigentes', () => {
-    expect(modal).toContain('versión 2.1, 19 de octubre de 2026');
-    expect(modal).toContain('versión 2.6, 31 de octubre de 2026');
+    expect(modal).toContain('versión 2.2, vigente desde ');
+    expect(modal).toContain('versión 2.7, vigente desde ');
   });
 });

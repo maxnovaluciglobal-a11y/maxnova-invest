@@ -1,6 +1,6 @@
 // api/delete-account.js — Vercel Edge Function
 // Deletes ALL of a user's Invest data, permanently and immediately. It does NOT
-// delete the login (auth.users): that account is shared with MOY IQ since
+// delete the login (auth.users): that account is shared with moyiq since
 // 14-sep-2026 (same Supabase project). See the note above the final return.
 // Replaces the manual process privacy.html described before this commit (see
 // git log "Fix Pro pricing and soften deletion promise in legal pages", 12-sep-2026).
@@ -21,9 +21,9 @@
 //      (days the app was opened, for the weekly-active count) — every row with
 //      user_id = this user.
 //   3. The profiles row itself (id = this user). `profiles` is Invest-only;
-//      MOY IQ does not use it.
+//      moyiq does not use it.
 //   (4. Removed in relaunch v2: deleting the auth.users row. It is shared with
-//       MOY IQ; account deletion goes through MOY IQ / support@moyiq.app.)
+//       moyiq; account deletion goes through moyiq / support@moyiq.app.)
 //
 // `licenses` is NOT touched: it's keyed by Stripe session id / customer email
 // for one-time FinanceOS-app purchases, not by this app's user id — it isn't
@@ -184,10 +184,10 @@ export default async function handler(req) {
   }
 
   // Relaunch v2 (oct-2026): the auth.users row is NOT deleted anymore. Since
-  // 14-sep-2026 Invest and MOY IQ share the same Supabase project and auth, so
-  // deleting it here would also lock the person out of MOY IQ. This endpoint
+  // 14-sep-2026 Invest and moyiq share the same Supabase project and auth, so
+  // deleting it here would also lock the person out of moyiq. This endpoint
   // removes only Invest's own data; deleting the shared account (and all of
-  // its MOY IQ + Invest data) is https://app.moyiq.app/delete-account (SEG-5).
+  // its moyiq + Invest data) is https://app.moyiq.app/delete-account (SEG-5).
   console.log(`[delete-account] Invest data of ${userId} deleted (shared auth user kept).`);
   return json({ ok: true, scope: 'invest_data', authUserDeleted: false, steps }, 200, req);
 }

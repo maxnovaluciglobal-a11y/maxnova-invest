@@ -8,7 +8,7 @@
 // - identify(posthog, user): lo único que se manda es el id interno de la cuenta.
 // - scrubEvent(ev): último filtro de cada evento (before_send). Quita correo, nombre y plan,
 //   tacha correos escritos en texto y recorta las direcciones al origen y la ruta (un enlace de
-//   acceso trae el token en el #hash y un enlace de MOY IQ trae el monto en la consulta).
+//   acceso trae el token en el #hash y un enlace de moyiq trae el monto en la consulta).
 //
 // `ip: false` está por claridad: desde posthog-js 1.x la opción no tiene efecto. Que PostHog no
 // guarde la IP es un ajuste del proyecto en PostHog ("Discard client IP data").

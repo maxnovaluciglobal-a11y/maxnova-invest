@@ -91,7 +91,7 @@ describe('REC-N4: borrar la cuenta con timeout', () => {
     await p;
     expect(els['da-err'].style.display).toBe('block');
     expect(els['da-err'].textContent).toMatch(/no respondió a tiempo/);
-    expect(els['da-btn'].textContent).toBe('Eliminar mis datos de Invest');
+    expect(els['da-btn'].textContent).toBe('Eliminar mis datos de Inversiones');
     expect(els['da-btn'].disabled).toBe(false);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
@@ -102,6 +102,6 @@ describe('REC-N4: borrar la cuenta con timeout', () => {
     await run();
     expect(opts.signal).toBeInstanceOf(AbortSignal);
     expect(els['da-err'].textContent).toMatch(/no respondió a tiempo/);
-    expect(els['da-btn'].textContent).toBe('Eliminar mis datos de Invest');
+    expect(els['da-btn'].textContent).toBe('Eliminar mis datos de Inversiones');
   });
 });

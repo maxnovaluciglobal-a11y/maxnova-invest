@@ -1,10 +1,10 @@
 // app/lib/handoff.js
 //
-// Entrada desde MOY IQ (módulo Inversiones): la app abre
+// Entrada desde moyiq (módulo Inversiones): la app abre
 // /app/#handoff=<token_hash>&uid=<id>[&aporte=<suma>&ccy=<moneda>&n=<cantidad>&usd=<suma en USD>].
 // El token es de un solo uso (Edge Function invest-handoff, en financeos-app) y se
 // canjea con verifyOtp para abrir una sesión propia de Invest. Nunca es el refresh
-// token de MOY IQ: compartirlo haría que Auth revocara las dos sesiones.
+// token de moyiq: compartirlo haría que Auth revocara las dos sesiones.
 //
 // Este archivo carga ANTES que PostHog y Supabase: al evaluarse lee el fragmento y lo
 // borra de la URL, para que el token no llegue a ningún evento, al historial ni a la
@@ -61,7 +61,7 @@
     return "switch";
   }
 
-  // Monto en USD para Planificar › Aportes: el que calculó MOY IQ con su tasa con
+  // Monto en USD para Planificar › Aportes: el que calculó moyiq con su tasa con
   // fecha o, si no vino, la conversión de Invest. Sin tasa, null: nunca 1:1.
   function aporteUsd(a, toUsd) {
     if (!a) return null;

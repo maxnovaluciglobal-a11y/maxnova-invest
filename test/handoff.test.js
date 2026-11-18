@@ -1,4 +1,4 @@
-// Entrada desde MOY IQ (módulo Inversiones): token de un solo uso en el fragmento.
+// Entrada desde moyiq (módulo Inversiones): token de un solo uso en el fragmento.
 import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -38,7 +38,7 @@ describe('plan', () => {
 
 describe('aporteUsd', () => {
   const toUsd = (v, c) => (c === 'CLP' ? v / 950 : null);
-  it('prefiere el monto en USD que calculó MOY IQ', () => {
+  it('prefiere el monto en USD que calculó moyiq', () => {
     expect(aporteUsd({ amount: 9500, ccy: 'CLP', usd: 11 }, toUsd)).toBe(11);
   });
   it('USD va directo', () => { expect(aporteUsd({ amount: 10, ccy: 'USD' }, toUsd)).toBe(10); });
@@ -85,12 +85,12 @@ describe('integración en app/index.html', () => {
     expect(boot.indexOf('await consumeHandoff()')).toBeLessThan(boot.indexOf('sb.auth.getSession()'));
     expect(boot.indexOf('await consumeHandoff()')).toBeGreaterThan(0);
   });
-  it('cambia de cuenta solo en este navegador: un signOut global cerraría MOY IQ', () => {
+  it('cambia de cuenta solo en este navegador: un signOut global cerraría moyiq', () => {
     const fn = html.slice(html.indexOf('async function consumeHandoff'), html.indexOf('// ── STARTUP'));
     expect(fn).toContain("sb.auth.signOut({scope:'local'})");
     expect(fn).not.toMatch(/sb\.auth\.signOut\(\)/);
   });
-  it('ningún cierre de sesión de Invest revoca la sesión de MOY IQ', () => {
+  it('ningún cierre de sesión de Invest revoca la sesión de moyiq', () => {
     expect(html).not.toMatch(/sb\.auth\.signOut\(\)/);
   });
   it('el listener de sesión no recarga en medio del canje', () => {
@@ -108,7 +108,7 @@ describe('integración en app/index.html', () => {
     const close = html.slice(html.indexOf('function handoffAporteClose'), html.indexOf('function handoffAporteGo'));
     expect(close).not.toContain('setAporte');
   });
-  it('la vuelta a MOY IQ entra a la app, no a la landing', () => {
+  it('la vuelta a moyiq entra a la app, no a la landing', () => {
     expect(html).not.toMatch(/href[=:]["']https:\/\/app\.moyiq\.app["']/);
     expect(html.match(/https:\/\/app\.moyiq\.app\/app\//g).length).toBeGreaterThanOrEqual(3);
   });

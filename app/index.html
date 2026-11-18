@@ -1,10 +1,10 @@
-<!DOCTYPE html><!-- MOY IQ Invest v2.2 (rebrand from MAXNOVA Invest v2.1) -->
+<!DOCTYPE html><!-- moyiq Inversiones v2.3 (rebrand Entrega 1, nov-2026; antes MOY IQ Invest v2.2 y MAXNOVA Invest v2.1) -->
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,interactive-widget=resizes-content"/>
-<title>MOY IQ Invest · App</title>
-<meta name="description" content="App de MOY IQ Invest: portafolio, indicadores técnicos explicados y calculadora con tu regla de riesgo. Beta pública gratuita. Herramienta educativa, no asesoría financiera."/>
+<title>moyiq · Inversiones · App</title>
+<meta name="description" content="App de Inversiones de moyiq: portafolio, indicadores técnicos explicados y calculadora con tu regla de riesgo. Beta pública gratuita. Herramienta educativa, no asesoría financiera."/>
 <!-- Preconnect for critical origins -->
 <link rel="preconnect" href="https://nelwgbcddwiaimzbcuas.supabase.co"/>
 <!-- Fuentes self-hosted (/fonts.css, las mismas de la landing). Nunca Google Fonts. -->
@@ -24,13 +24,13 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Invest"/>
+<meta name="apple-mobile-web-app-title" content="Inversiones"/>
 <link rel="canonical" href="https://invest.moyiq.app/app"/>
 <meta name="author" content="MAXNOVA &amp; LUCI Global LLC"/>
 <link rel="stylesheet" href="/tokens-v2.css?v=1"/>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   MOY IQ INVEST — Sistema de diseño alineado con FinanceOS Pro
+   moyiq Inversiones — Sistema de diseño alineado con FinanceOS Pro
    MAXNOVA & LUCI Global LLC · v2.2
    Tipografía: IBM Plex Sans (texto y cifras tabulares, --num) + IBM Plex Mono solo
    para tickers y códigos (M1, 21-oct-2026)
@@ -66,7 +66,7 @@ input, select, textarea { font-size: 16px; }
      rojo quedan reservados a resultado (--pos/--neg), y la marca se mueve a un
      hue que no compite con el P&L. Los nombres --grn* se conservan a proposito:
      renombrar 260 usos anadiria riesgo sin cambiar nada visual. */
-  /* ── Paleta de marca MOY IQ ("El Instrumento") — alineada a financeos-app ── */
+  /* ── Paleta de marca moyiq ("El Instrumento") — alineada a financeos-app ── */
   --grn:       var(--navy); /* marca/estructura */
   /* Superficies solidas de CTA: Latón, SIEMPRE con texto Navy encima (nunca
      blanco — falla AA sobre Latón). Ver los 3 usos de --grn-solid más abajo,
@@ -170,7 +170,7 @@ input, select, textarea { font-size: 16px; }
 
 /* ── DARK MODE ── */
 /* Superficies, texto y bordes del modo oscuro de financeos-app (/tokens-v2.css, BRD-4).
-   Solo quedan valores propios de Invest donde el de la app no llega a AA aquí:
+   Solo quedan valores propios de Inversiones donde el de la app no llega a AA aquí:
    el rojo de pérdida (#C96856 da 4,2:1 sobre --sur2) y sus tintes. */
 [data-theme="dark"] {
   --grn:       var(--papel); /* Papel como "primario" claro sobre el fondo oscuro */
@@ -2023,8 +2023,8 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <body>
 <noscript>
 <main style="max-width:720px;margin:0 auto;padding:32px 20px;font-family:system-ui,sans-serif;line-height:1.6">
-<h1>MOY IQ Invest necesita JavaScript</h1>
-<p>Activa JavaScript para usar la app. Invest es gratis durante la beta pública. Herramienta educativa: no es asesoría financiera ni ejecuta órdenes.</p>
+<h1>Inversiones de moyiq necesita JavaScript</h1>
+<p>Activa JavaScript para usar la app. Inversiones de moyiq es gratis durante la beta pública. Herramienta educativa: no es asesoría financiera ni ejecuta órdenes.</p>
 </main>
 </noscript>
 <!-- Sprite de iconos. Linea de 1.5px sobre viewBox 24 y stroke=currentColor:
@@ -2059,7 +2059,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
 <g id="i-trash"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></g>
 <g id="i-warning"><path d="M12 3.5L2.5 20h19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".9"/></g>
 <g id="i-close"><path d="M6 6l12 12M18 6L6 18"/></g>
-<!-- Extendidos para conceptos de Invest sin equivalente en el set de MOY IQ (mismo
+<!-- Extendidos para conceptos de Invest sin equivalente en el set de moyiq (mismo
      estilo feather/outline que el resto de este archivo, no el arco+tick+pivote de
      financeos-app — mezclar dos vocabularios geometricos seria peor que mantener
      emoji). Trading tecnico: RSI, MACD, volumen, robot IA, macro global, banco/Fed,
@@ -2095,7 +2095,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
      temas, y el upsell queda donde ya existe: freeBanner() y el modal interno,
      que solo aparecen en plan free. -->
 <!-- La franja de suite ocupaba 34px fijos en todas las pantallas para un solo
-     enlace. El enlace se movio junto al engranaje del nav; "Invest" era
+     enlace. El enlace se movio junto al engranaje del nav; "Inversiones" era
      redundante con la marca de la barra. -->
 <a class="skip-link" href="#main">Saltar al contenido</a>
 <div class="app">
@@ -2123,7 +2123,7 @@ thead th, .fos-table th { background: transparent !important; border-bottom: 1px
      window.supabase quedaba undefined y el login se colgaba. Same-origin es tan
      fiable como el propio index.html. Actualizar: descargar de nuevo el UMD de
      @supabase/supabase-js@2 a vendor-supabase.js. -->
-<!-- Primero: borra de la URL el token de entrada desde MOY IQ antes de que cargue nada más. -->
+<!-- Primero: borra de la URL el token de entrada desde moyiq antes de que cargue nada más. -->
 <script src="/app/lib/handoff.js"></script>
 <script src="/vendor-supabase.js"></script>
 <script src="/turnstile.js"></script>
@@ -2205,7 +2205,7 @@ window.addEventListener('unhandledrejection', function(ev){
 
 
 // ═══════════════════════════════════════════════════════════════
-// MOY IQ INVEST — Real market data · Clean build
+// moyiq Inversiones — Real market data · Clean build
 // ═══════════════════════════════════════════════════════════════
 
 // ── FEATURE FLAGS ──────────────────────────────────────────────
@@ -3279,7 +3279,7 @@ function mImportCsv(mr){
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" role="dialog" aria-labelledby="csv-ttl" style="max-width:420px" onclick="event.stopPropagation()">'+
     '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 id="csv-ttl">Importar posiciones</h2>'+
-    '<p class="msub">Sube un CSV con las columnas Ticker, Unidades y Entrada (precio de compra). Tipo y Stop son opcionales. El CSV que exporta Invest sirve tal cual.</p>'+
+    '<p class="msub">Sube un CSV con las columnas Ticker, Unidades y Entrada (precio de compra). Tipo y Stop son opcionales. El CSV que exporta Inversiones de moyiq sirve tal cual.</p>'+
     '<input type="file" accept=".csv,text/csv" class="inp ifu" onchange="csvRead(this.files&&this.files[0])"/>'+
     errs+preview+
     '<button class="btn-big" style="width:100%;margin-top:12px" '+((st.rows&&st.rows.length)?'':'disabled ')+'onclick="csvImport()">'+((st.rows&&st.rows.length)?'Importar '+st.rows.length+(st.rows.length===1?' posición':' posiciones'):'Elige un archivo')+'</button>'+
@@ -3641,7 +3641,7 @@ function sideHtml(){
       '<div id="side-list-body"></div>'+
     '</section>'+
     '<div class="side-foot">'+
-      '<a class="side-item" href="https://app.moyiq.app/app/" target="_blank" rel="noopener" title="Abrir MOY IQ Finanzas en otra pestaña">'+icon('link')+'<span class="side-lbl">Finanzas</span><span class="sr-only"> (abre otra pestaña)</span></a>'+
+      '<a class="side-item" href="https://app.moyiq.app/app/" target="_blank" rel="noopener" title="Abrir moyiq en otra pestaña">'+icon('link')+'<span class="side-lbl">Finanzas</span><span class="sr-only"> (abre otra pestaña)</span></a>'+
       '<button type="button" class="side-item" id="side-toggle" onclick="sideToggle()" aria-controls="sb">'+
         '<svg class="ico side-chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>'+
         '<span class="side-lbl">Contraer</span></button>'+
@@ -4643,9 +4643,9 @@ function renderSettings(){
     '<div class="port-wrap pv set">'+
     sec('cuenta','Cuenta y plan',
       row('Correo',u?esc(u.email):'—','')+
-      row('Plan','Invest es gratis durante la beta pública. Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.','<span class="li-word">'+icon('check','ico-inline')+'Beta gratuita</span>'))+
+      row('Plan','Inversiones de moyiq es gratis durante la beta pública. Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.','<span class="li-word">'+icon('check','ico-inline')+'Beta gratuita</span>'))+
     sec('regla','Tu regla de riesgo',
-      '<p class="set-p">Es el único lugar donde se definen. Los usan Posiciones, Hoy y la Calculadora. Son tus números: Invest no los propone ni se conecta a ningún bróker.</p>'+
+      '<p class="set-p">Es el único lugar donde se definen. Los usan Posiciones, Hoy y la Calculadora. Son tus números: Inversiones de moyiq no los propone ni se conecta a ningún bróker.</p>'+
       '<form class="set-grid" id="set-rule" novalidate onsubmit="event.preventDefault();saveRuleSettings()">'+
       field('set-capital','Capital de referencia (USD)','type="number" inputmode="decimal" min="0" step="any" placeholder="Define tu capital" value="'+(S.capital>0?S.capital:'')+'"','Se guarda en tu cuenta.')+
       field('set-risk','Riesgo por operación (% del capital)','type="number" inputmode="decimal" min="0.1" max="10" step="0.25" value="'+riskRulePct()+'"','Cuánto aceptas perder si una posición toca su stop. De 0,1 % a 10 %.')+
@@ -4669,12 +4669,12 @@ function renderSettings(){
         '<input type="file" id="backup-file" accept="application/json,.json" hidden onchange="importBackup(this.files[0])"/>'))+
     sec('riesgo','Zona de riesgo',
       row('Cerrar sesión','Sale de tu cuenta en este navegador.','<button type="button" class="btn" onclick="logout()">Cerrar sesión</button>')+
-      (u?row('Eliminar mis datos de Invest','Borra solo lo de Invest: portafolio, operaciones, lista, perfil y consentimientos. Tu cuenta de acceso es la misma de MOY IQ y sigue activa.','<button type="button" class="btn btn-r" onclick="openModal(\'delacct\')">'+icon('trash')+' Eliminar datos</button>'):'')+
-      (u?row('Eliminar la cuenta','Borra la cuenta de acceso y todos tus datos de MOY IQ y de Invest a la vez. Se hace en MOY IQ, con este mismo correo.','<a class="btn btn-r" href="https://app.moyiq.app/delete-account" target="_blank" rel="noopener">Eliminar la cuenta<span class="sr-only"> (se abre MOY IQ en otra pestaña)</span></a>'):''),'set-danger')+
+      (u?row('Eliminar mis datos de Inversiones','Borra solo lo de Inversiones: portafolio, operaciones, lista, perfil y consentimientos. Tu cuenta de acceso es la misma de moyiq y sigue activa.','<button type="button" class="btn btn-r" onclick="openModal(\'delacct\')">'+icon('trash')+' Eliminar datos</button>'):'')+
+      (u?row('Eliminar la cuenta','Borra la cuenta de acceso y todos tus datos de moyiq y de Inversiones a la vez. Se hace en moyiq, con este mismo correo.','<a class="btn btn-r" href="https://app.moyiq.app/delete-account" target="_blank" rel="noopener">Eliminar la cuenta<span class="sr-only"> (se abre moyiq en otra pestaña)</span></a>'):''),'set-danger')+
     sec('contacto','Contacto',
       row('Escríbenos','Dudas, errores o ideas.','<a class="btn" href="mailto:invest@moyiq.app">'+icon('mail')+' invest@moyiq.app</a>')+
       row('Ayuda','Preguntas frecuentes y atajos de teclado.','<button type="button" class="btn" onclick="setPage(\'help\')">Abrir ayuda</button>'))+
-    '<p class="port-muted">MOY IQ Invest · análisis educativo · no es asesoría financiera.</p>'+
+    '<p class="port-muted">moyiq Inversiones · análisis educativo · no es asesoría financiera.</p>'+
     '</div>';
 }
 
@@ -4854,7 +4854,7 @@ function renderWelcome(){
     // Se registran al crear la cuenta para que el gate no se repita al entrar.
     '<label class="wv3-check-row"><input id="rdisc-tc" type="checkbox" required/><span class="wv3-check-txt">Acepto los <a onclick="openTCModal(\'tc\');return false;" href="#">Términos de Uso</a>.</span></label>'+
     '<label class="wv3-check-row"><input id="rdisc-pp" type="checkbox" required/><span class="wv3-check-txt">Acepto la <a onclick="openTCModal(\'pp\');return false;" href="#">Política de Privacidad</a>.</span></label>'+
-    '<label class="wv3-check-row"><input id="rdisc" type="checkbox" required/><span class="wv3-check-txt">Entiendo que Invest es una herramienta educativa: no es asesoría financiera, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso.</span></label>'+
+    '<label class="wv3-check-row"><input id="rdisc" type="checkbox" required/><span class="wv3-check-txt">Entiendo que Inversiones de moyiq es una herramienta educativa: no es asesoría financiera, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso.</span></label>'+
     '<div id="rerr" class="wv3-err" role="alert" aria-live="polite"></div>'+
     '<button id="rbtn" class="wv3-submit" onclick="doRegister()">Crear cuenta gratis</button>'+
     '</div>'+
@@ -4898,10 +4898,10 @@ function openTCModal(tab){
   var isTc=tab!=='pp';
   // Resumen fiel de /terms.html y /privacy.html: lo vinculante son esas páginas (versión y fecha abajo).
   var tcContent=
-    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de uso de MOY IQ Invest (resumen)</h3>'+
+    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Términos de uso de Inversiones de moyiq (resumen)</h3>'+
     '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
     '<b style="color:var(--bright)">Herramienta informativa, no asesoría</b><br>'+
-    'Invest muestra datos de mercado, hace cálculos con los datos y las reglas que tú ingresas y explica qué mide cada indicador. '+
+    'Inversiones de moyiq muestra datos de mercado, hace cálculos con los datos y las reglas que tú ingresas y explica qué mide cada indicador. '+
     'No evalúa tu situación, no te dice qué comprar, vender o mantener, no ejecuta órdenes ni custodia dinero. '+
     'No estamos registrados como asesores de inversión ante ningún regulador. Invertir implica riesgo de pérdida.<br><br>'+
     '<b style="color:var(--bright)">Datos de mercado</b><br>'+
@@ -4909,21 +4909,23 @@ function openTCModal(tab){
     'con el retraso de cada una: cada precio muestra la hora que informa la fuente. Pueden tener errores. Son para tu uso personal: no se pueden copiar ni redistribuir.<br><br>'+
     '<b style="color:var(--bright)">Beta pública gratuita</b><br>'+
     'Sin pagos ni tarjeta. Si algún día hay planes pagos, te avisamos por correo antes.<br><br>'+
-    '<span style="color:var(--text3)">Texto completo: <a href="/terms.html" target="_blank" rel="noopener" style="color:var(--blue)">Términos de uso</a> (versión 2.1, 19 de octubre de 2026) · MAXNOVA &amp; LUCI Global LLC, Doral, Florida, EE.&nbsp;UU.</span>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/terms.html" target="_blank" rel="noopener" style="color:var(--blue)">Términos de uso</a> (versión 2.2, vigente desde FECHA-DEL-DESPLIEGUE) · MAXNOVA &amp; LUCI Global LLC, Doral, Florida, EE.&nbsp;UU.</span>'+
     '</div>';
 
   var ppContent=
-    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Política de privacidad de MOY IQ Invest (resumen)</h3>'+
+    '<h3 style="margin:0 0 14px;font-size:15px;color:var(--bright)">Política de privacidad de Inversiones de moyiq (resumen)</h3>'+
+    '<p style="font-size:12px;color:var(--text2);margin:-6px 0 12px">MOY IQ Invest ahora es Inversiones de moyiq; el responsable y el tratamiento no cambian.</p>'+
     '<div style="font-size:12px;color:var(--text2);line-height:1.7;">'+
     '<b style="color:var(--bright)">Qué guardamos</b><br>'+
     'Tu correo, tu nombre si lo das, el portafolio y la lista de seguimiento que ingresas, tu regla de riesgo y los días en que abres la app. '+
+    'Tus posiciones de inversión se guardan en nuestro servidor para traer precios y verlas en cualquier dispositivo. '+
     'No pedimos datos bancarios ni de tarjeta.<br><br>'+
     '<b style="color:var(--bright)">Con quién</b><br>'+
     'Supabase (base de datos y acceso), Vercel (alojamiento), PostHog (medición de uso con un identificador interno, sin tu correo), Resend (correos), Cloudflare (verificación contra robots y reenvío de correos) y Google (Gmail de soporte y acceso con Google, si lo eliges), todos en EE.&nbsp;UU. '+
     'Las fuentes de precios no reciben datos tuyos. Las imágenes de noticias las carga tu navegador desde el sitio que las publica. No vendemos datos.<br><br>'+
     '<b style="color:var(--bright)">Tus derechos</b><br>'+
-    'Puedes borrar tus datos de Invest desde Configuración, y pedir acceso, corrección, portabilidad u oposición escribiendo a invest@moyiq.app.<br><br>'+
-    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.6, 31 de octubre de 2026).</span>'+
+    'Puedes borrar tus datos de Inversiones desde Configuración, y pedir acceso, corrección, portabilidad u oposición escribiendo a invest@moyiq.app.<br><br>'+
+    '<span style="color:var(--text3)">Texto completo: <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--blue)">Política de privacidad</a> (versión 2.7, vigente desde FECHA-DEL-DESPLIEGUE).</span>'+
     '</div>';
 
   var content=isTc?tcContent:ppContent;
@@ -4939,7 +4941,7 @@ function openTCModal(tab){
   el.innerHTML=
     '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:80vh;max-height:80dvh;display:flex;flex-direction:column">'+
     '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0">'+
-    '<div style="font-size:12px;color:var(--text2)">MOY IQ Invest</div>'+
+    '<div style="font-size:12px;color:var(--text2)">moyiq Inversiones</div>'+
     '<button onclick="document.getElementById(\'tc-modal-overlay\').remove()" style="background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:0 0 2px" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
     '<div style="padding:16px 20px 0">'+tabs+'</div>'+
@@ -5398,15 +5400,15 @@ function dashCtxHtml(r,v,done){
   return body+'<button type="button" class="linkbtn" onclick="goDest(\'mercado\')">Ver mercado</button>';
 }
 
-// ── PUENTE CON MOY IQ (I09) ─────────────────────────────────────
-// Invest no lee los datos de MOY IQ (viven en el dispositivo de la persona).
+// ── PUENTE CON moyiq (I09) ─────────────────────────────────────
+// Invest no lee los datos de moyiq (viven en el dispositivo de la persona).
 // La persona escribe cuánto puede aportar y va a Planificar › Aportes con ese
-// monto, que ya llega repartido. MOY IQ puede enlazar a invest.moyiq.app/app?aporte=410.
+// monto, que ya llega repartido. moyiq puede enlazar a invest.moyiq.app/app?aporte=410.
 function dashAporteCard(){
   var m=S.capitalPlan&&S.capitalPlan.monthly>0?S.capitalPlan.monthly:'';
   return '<form class="m10-aporte" novalidate onsubmit="aporteGo(event)" aria-labelledby="aporte-h">'+
     '<div><h2 class="port-h2" id="aporte-h">¿Cuánto puedes aportar este mes?</h2>'+
-    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app/app/" target="_blank" rel="noopener">MOY IQ Finanzas</a>, usa lo que te sobró. Repartir te lleva a Planificar › Aportes con el reparto calculado.</p></div>'+
+    '<p>Si llevas tus gastos en <a href="https://app.moyiq.app/app/" target="_blank" rel="noopener">moyiq</a>, usa lo que te sobró. Repartir te lleva a Planificar › Aportes con el reparto calculado.</p></div>'+
     '<div class="m10-aporte-f"><label class="sr-only" for="aporte-in">Aporte del mes en USD</label>'+
     '<input id="aporte-in" class="inp num" type="number" inputmode="decimal" min="0" step="any" placeholder="Monto (USD)" value="'+m+'" aria-describedby="aporte-err" oninput="aporteClearErr()"/>'+
     '<button class="btn-big" type="submit">Repartir</button>'+
@@ -5442,7 +5444,7 @@ function aporteGo(e){
   setPage('capital');
   loadCapitalData();
 }
-// ?aporte=410 en la URL (enlace desde MOY IQ): precarga el monto, abre Aportes y reparte.
+// ?aporte=410 en la URL (enlace desde moyiq): precarga el monto, abre Aportes y reparte.
 function applyAporteParam(){
   try{
     var qp=new URLSearchParams(window.location.search);
@@ -5451,11 +5453,11 @@ function applyAporteParam(){
     qp.delete('aporte');
     var q=qp.toString();
     history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
-    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); S.aporteDeposit={amount:parseFloat(v),ccy:'USD',usd:parseFloat(v),n:1}; setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde MOY IQ'); }
+    if(S.user&&setAporte(v)){ track('bridge_aporte',{src:'url'}); S.aporteDeposit={amount:parseFloat(v),ccy:'USD',usd:parseFloat(v),n:1}; setPage('capital'); loadCapitalData(); showToast('Aporte de $'+fmt(parseFloat(v))+' cargado desde moyiq'); }
   }catch(e){}
 }
 
-// Aportes marcados en MOY IQ (entrada con #aporte=, módulo Inversiones). Llega solo la
+// Aportes marcados en moyiq (entrada con #aporte=, módulo Inversiones). Llega solo la
 // suma, sin descripciones, y nada se guarda hasta que la persona lo pide: el aviso se
 // puede cerrar y "Ir a Aportes" entra al flujo de siempre.
 function handoffAporteBanner(){
@@ -5466,7 +5468,7 @@ function handoffAporteBanner(){
   var monto=a.ccy&&a.ccy!=='USD'?esc(a.ccy)+' '+a.amount.toLocaleString(LOC):fmtUSD(a.amount,2);
   var aprox=usd&&a.ccy!=='USD'?' (≈ '+fmtUSD(usd,0)+')':'';
   return '<section class="seed-banner" aria-labelledby="ho-aporte-t">'+
-    '<div class="seed-banner-body"><div class="seed-banner-t" id="ho-aporte-t">Aportes de este mes en MOY IQ</div>'+
+    '<div class="seed-banner-body"><div class="seed-banner-t" id="ho-aporte-t">Aportes de este mes en moyiq</div>'+
     '<div class="seed-banner-d">Marcaste '+cant+' por <span class="num">'+monto+aprox+'</span>. Puedes repartirlos y sumarlos a tu efectivo en Planificar › Aportes. No se guarda nada hasta que lo confirmes.</div></div>'+
     '<div class="seed-banner-acts"><button type="button" class="btn-big" onclick="handoffAporteGo()">Ir a Aportes</button>'+
     '<button type="button" class="btn" onclick="handoffAporteClose()">Ahora no</button></div></section>';
@@ -5481,7 +5483,7 @@ function handoffAporteGo(){
   track('bridge_aporte',{src:'handoff'});
   if(usd&&setAporte(usd)){
     setPage('capital'); loadCapitalData();
-    showToast('Aporte de '+fmtUSD(usd,2)+' cargado desde MOY IQ');
+    showToast('Aporte de '+fmtUSD(usd,2)+' cargado desde moyiq');
   } else {
     setPage('capital');
     showToast('Sin tipo de cambio para '+(a.ccy||'esa moneda')+': escribe el monto en USD');
@@ -5985,19 +5987,19 @@ function dashCashBlock(){
     '<button type="button" class="linkbtn" onclick="setPage(\'bitacora\')">Ver en Movimientos</button></div>'+
     ledgerBand(B)+ledgerNotes(B)+'</section>';
 }
-// Aporte que llegó desde MOY IQ: se ofrece registrarlo; nada se escribe sin confirmar.
+// Aporte que llegó desde moyiq: se ofrece registrarlo; nada se escribe sin confirmar.
 function capDepositBanner(){
   var a=S.aporteDeposit;
   var p=a?InvestLedger.aportePending(a,S.trades,localDay().slice(0,7)):null;
   if(!p||!(p.amount>0)) return '';
-  return '<section class="seed-banner" aria-labelledby="cap-dep-t"><div class="seed-banner-body"><div class="seed-banner-t" id="cap-dep-t">Aporte marcado en MOY IQ</div>'+
+  return '<section class="seed-banner" aria-labelledby="cap-dep-t"><div class="seed-banner-body"><div class="seed-banner-t" id="cap-dep-t">Aporte marcado en moyiq</div>'+
     '<div class="seed-banner-d">Puedes sumarlo a tu efectivo como un depósito de <span class="num">'+pxHtml(p.amount,p.ccy)+'</span>. No se guarda nada hasta que lo confirmes.</div></div>'+
     '<div class="seed-banner-acts"><button type="button" class="btn-big" onclick="capDepositOpen()">Registrar depósito</button>'+
     '<button type="button" class="btn" onclick="S.aporteDeposit=null;renderMain()">Ahora no</button></div></section>';
 }
 function capDepositOpen(){
   var p=InvestLedger.aportePending(S.aporteDeposit,S.trades,localDay().slice(0,7));
-  if(p) openModal('addtrade',{type:'deposit',amount:p.amount,ccy:p.ccy,note:'Aporte desde MOY IQ',source:'moyiq'});
+  if(p) openModal('addtrade',{type:'deposit',amount:p.amount,ccy:p.ccy,note:'Aporte desde moyiq',source:'moyiq'});
 }
 function mvDate(d){ if(!d) return '—'; var x=new Date(d+'T12:00:00'); return isNaN(x)?esc(d):x.toLocaleDateString(LOC,{day:'numeric',month:'short',year:'numeric'}); }
 function renderBitacora(){
@@ -6654,27 +6656,27 @@ function renderModal(){
 // Requiere escribir "ELIMINAR" para habilitar el boton: es una accion
 // irreversible que borra portfolio, watchlist, consentimientos y el perfil de
 // Invest. Desde el relanzamiento v2 NO borra la cuenta de acceso: es compartida
-// con MOY IQ (mismo Supabase Auth); el borrado total es https://app.moyiq.app/delete-account.
+// con moyiq (mismo Supabase Auth); el borrado total es https://app.moyiq.app/delete-account.
 function mDelAccount(mr){
   var email=(S.user&&S.user.email)?esc(S.user.email):'';
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" style="max-width:440px" onclick="event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="da-tit">'+
     '<button class="mx" onclick="closeModal()" aria-label="Cerrar">'+icon('close')+'</button>'+
-    '<h2 id="da-tit" style="color:var(--red)">Eliminar mis datos de Invest</h2>'+
+    '<h2 id="da-tit" style="color:var(--red)">Eliminar mis datos de Inversiones</h2>'+
     '<p class="msub">'+(email?'Cuenta: <b style="color:var(--bright)">'+email+'</b><br>':'')+
     'Esta acción es <b style="color:var(--bright)">irreversible</b>. Se borra de inmediato, para siempre:</p>'+
     '<ul style="font-size:12px;color:var(--text2);margin:-12px 0 16px 18px;line-height:1.7">'+
       '<li>Tu portafolio, tus operaciones y tu lista de seguimiento</li>'+
-      '<li>Tu perfil y consentimientos de Invest</li>'+
-      '<li>Los días en que abriste Invest y el registro de correos del período de prueba</li>'+
-      '<li>Cualquier suscripción de Invest que quedara activa (se cancela)</li>'+
+      '<li>Tu perfil y consentimientos de Inversiones</li>'+
+      '<li>Los días en que abriste Inversiones y el registro de correos del período de prueba</li>'+
+      '<li>Cualquier suscripción de Inversiones que quedara activa (se cancela)</li>'+
     '</ul>'+
-    '<p style="font-size:12px;color:var(--text2);margin:-6px 0 14px;line-height:1.6">Tu cuenta de acceso no se borra, porque es la misma de MOY IQ, y tus datos de MOY IQ tampoco. Para eliminar la cuenta y todos tus datos de las dos apps a la vez, usa <a href="https://app.moyiq.app/delete-account" target="_blank" rel="noopener" style="color:var(--bright);text-decoration:underline">app.moyiq.app/delete-account</a>.</p>'+
+    '<p style="font-size:12px;color:var(--text2);margin:-6px 0 14px;line-height:1.6">Tu cuenta de acceso no se borra, porque es la misma de moyiq, y tus datos de moyiq tampoco. Para eliminar la cuenta y todos tus datos de las dos apps a la vez, usa <a href="https://app.moyiq.app/delete-account" target="_blank" rel="noopener" style="color:var(--bright);text-decoration:underline">app.moyiq.app/delete-account</a>.</p>'+
     '<div id="da-err" class="err" style="display:none;color:var(--red);font-size:12px;margin-bottom:10px"></div>'+
     '<label class="lb" for="da-confirm">Escribe <b style="color:var(--bright)">ELIMINAR</b> para confirmar</label>'+
     '<input id="da-confirm" class="inp ifu" autocomplete="off" spellcheck="false" oninput="daSync()" onkeydown="if(event.key===\'Enter\'){var b=document.getElementById(\'da-btn\');if(b&&!b.disabled)confirmDeleteAccount();}" placeholder="ELIMINAR" style="margin-top:6px"/>'+
     '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">'+
     '<button class="btn" onclick="closeModal()">Cancelar</button>'+
-    '<button id="da-btn" class="btn btn-r" disabled onclick="confirmDeleteAccount()">Eliminar mis datos de Invest</button>'+
+    '<button id="da-btn" class="btn btn-r" disabled onclick="confirmDeleteAccount()">Eliminar mis datos de Inversiones</button>'+
     '</div>'+
     '</div></div>';
 }
@@ -6701,14 +6703,14 @@ async function confirmDeleteAccount(){
       throw new Error(data.error||'No se pudieron eliminar tus datos. Intenta de nuevo o escribe a invest@moyiq.app.');
     }
     // Los datos de Invest ya no existen en el servidor: cerrar sesión y volver
-    // a la landing (la cuenta de acceso sigue viva para MOY IQ).
+    // a la landing (la cuenta de acceso sigue viva para moyiq).
     if(typeof stopBoot==='function') stopBoot();
     try{ await sb.auth.signOut({scope:'local'}); }catch(e){}
     S.user=null;
     window.location.href='/';
   }catch(e){
     if(err){ err.textContent=e.message||'Error de conexión. Intenta de nuevo.'; err.style.display='block'; }
-    if(btn){ btn.textContent='Eliminar mis datos de Invest'; daSync(); }
+    if(btn){ btn.textContent='Eliminar mis datos de Inversiones'; daSync(); }
   }
 }
 
@@ -8012,7 +8014,7 @@ function showShortcuts(){
     '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="sc-ttl" style="max-width:400px" onclick="event.stopPropagation()">'+
     '<button class="mx" onclick="document.getElementById(\'mroot\').innerHTML=\'\'" aria-label="Cerrar">'+icon('close')+'</button>'+
     '<h2 id="sc-ttl">Atajos de teclado</h2>'+
-    '<p class="msub">Para moverte por Invest sin usar el puntero.</p>'+
+    '<p class="msub">Para moverte por Inversiones sin usar el puntero.</p>'+
     '<dl class="sc-list">'+rows.map(function(r){ return '<div><dt><kbd>'+r[0]+'</kbd></dt><dd>'+r[1]+'</dd></div>'; }).join('')+'</dl>'+
     '</div></div>';
   var m=document.querySelector('#mroot .mx'); if(m) m.focus();
@@ -8028,7 +8030,7 @@ function renderHelp(){
     ]],
     ['Datos e indicadores',[
       ['¿Qué significa "Al día", "Retraso" o "Sin conexión"?','Cada precio muestra la hora que informa la fuente (Yahoo Finance para acciones y ETF, CoinGecko para cripto). "Al día": el precio tiene 2 minutos o menos. "Retraso N min": llega con ese atraso. "Mercado cerrado": es el último precio de la sesión. "Sin conexión": no se pudo actualizar y ves el último dato guardado.'],
-      ['¿Qué significan las medias, el RSI, el MACD y el ATR?','Medias de 50 y 200 días: el promedio del precio en esos plazos; sobre ellas, la tendencia de ese plazo es alcista. RSI (14): escala de 0 a 100; entre 30 y 70 es zona neutral. MACD: el histograma sobre cero indica impulso de corto plazo positivo. ATR (14): cuánto se mueve el precio en un día típico. Invest no combina estos datos en una nota y ninguno es una recomendación de compra o venta.'],
+      ['¿Qué significan las medias, el RSI, el MACD y el ATR?','Medias de 50 y 200 días: el promedio del precio en esos plazos; sobre ellas, la tendencia de ese plazo es alcista. RSI (14): escala de 0 a 100; entre 30 y 70 es zona neutral. MACD: el histograma sobre cero indica impulso de corto plazo positivo. ATR (14): cuánto se mueve el precio en un día típico. Inversiones de moyiq no combina estos datos en una nota y ninguno es una recomendación de compra o venta.'],
       ['¿Qué mide la correlación?','Cómo se movieron juntas las variaciones diarias de dos activos, comparando los mismos días: 1 es igual, 0 es independiente y −1 es opuesto. Se calcula sobre variaciones y no sobre precios, porque dos precios que suben en el mismo período parecen ir juntos aunque se muevan distinto cada día. Dos posiciones con correlación alta suben y bajan juntas, así que diversifican poco.']
     ]],
     ['Riesgo y planificación',[
@@ -8039,7 +8041,7 @@ function renderHelp(){
     ]],
     ['Tu cuenta',[
       ['¿Dónde se guardan mis datos?','Tus posiciones, tu lista y tu capital se guardan en tu cuenta. Las alertas, los movimientos, los planes guardados y tu límite de concentración se guardan solo en este navegador.'],
-      ['¿Invest usa inteligencia artificial?','No. Todo lo que ves son cálculos con datos históricos y con tus propios datos.'],
+      ['¿Inversiones de moyiq usa inteligencia artificial?','No. Todo lo que ves son cálculos con datos históricos y con tus propios datos.'],
       ['¿Cuánto cuesta?','Nada mientras dure la beta pública. Si más adelante hay planes pagos, te avisamos antes por correo y lo que usas hoy no se pierde.']
     ]]
   ];
@@ -8084,7 +8086,7 @@ function installPWA(){
     ? 'En Safari: toca el botón <b>Compartir</b> (el cuadro con la flecha) y elige <b>«Agregar a inicio»</b>.'
     : /Firefox/.test(ua)
       ? 'Firefox de escritorio no instala apps web. Ábrela en <b>Chrome</b> o <b>Edge</b> y usa el icono de instalar de la barra de direcciones.'
-      : 'En Chrome o Edge: busca el ícono <b>Instalar</b> al final de la barra de direcciones, o abre el menú del navegador y elige <b>Instalar MOY IQ Invest</b>.';
+      : 'En Chrome o Edge: busca el ícono <b>Instalar</b> al final de la barra de direcciones, o abre el menú del navegador y elige <b>Instalar moyiq Inversiones</b>.';
   var mr=document.getElementById('mroot');
   mr.innerHTML='<div class="overlay" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()" style="max-width:420px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
@@ -8957,7 +8959,7 @@ function renderDisclaimer(){
   if(!f) return;
   if(!S.user){ f.innerHTML=''; return; }
   if(f.firstChild) return;
-  f.innerHTML='<p>Herramienta educativa. No constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida. No somos bróker ni ejecutamos órdenes.<button type="button" onclick="toggleDisclaimer()">Ver aviso</button></p>';
+  f.innerHTML='<p><strong>Inversiones de moyiq no es bróker ni asesor: no ejecuta operaciones ni custodia dinero.</strong> Herramienta educativa: no constituye asesoría financiera ni recomendación de compra o venta. Invertir implica riesgo de pérdida.<button type="button" onclick="toggleDisclaimer()">Ver aviso</button></p>';
 }
 
 
@@ -8969,7 +8971,7 @@ function toggleDisclaimer(){
     '<h2 style="margin:0;font-family:\'Instrument Sans\',\'IBM Plex Sans\',system-ui,sans-serif;font-weight:600;font-size:18px">Aviso importante</h2>'+
     '<button onclick="closeModal()" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" aria-label="Cerrar">'+icon('close')+'</button>'+
     '</div>'+
-    '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">MOY IQ Invest no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
+    '<p style="font-size:12px;color:var(--text2);line-height:1.7;margin:0 0 12px"><strong style="color:var(--bright)">Inversiones de moyiq no es un br\u00f3ker, no ejecuta \u00f3rdenes ni custodia fondos.</strong> An\u00e1lisis educativo basado en datos hist\u00f3ricos \u2014 no constituye asesor\u00eda financiera ni garant\u00eda de rentabilidad. Consulta con un asesor certificado antes de invertir.</p>'+
     '<p style="font-size:12px;color:var(--text3);line-height:1.7;margin:0 0 12px">Precios: Yahoo Finance y CoinGecko (con retraso variable; cada precio muestra su hora) \u00b7 Cripto: <a href="https://www.coingecko.com/en/api" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none">Powered by CoinGecko API</a> \u00b7 Fundamentos: Finnhub y Financial Modeling Prep \u00b7 MAXNOVA & LUCI Global LLC</p>'+
     '<div style="display:flex;gap:14px"><a href="/datos-y-licencias.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Datos y licencias</a><a href="/terms.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">T\u00e9rminos de uso</a><a href="/privacy.html" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">Pol\u00edtica de privacidad</a></div>'+
     '</div></div>';
@@ -9084,20 +9086,20 @@ function showConsentGate(userId){
       document.getElementById('mroot').innerHTML=
         '<div class="overlay" onclick="" style="z-index:600">'+
         '<div class="modal" style="max-width:480px" onclick="event.stopPropagation()">'+
-        '<div style="font-size:15px;font-weight:700;color:var(--bright);margin-bottom:8px">MOY IQ Invest — Confirmación de uso</div>'+
+        '<div style="font-size:15px;font-weight:700;color:var(--bright);margin-bottom:8px">moyiq Inversiones — Confirmación de uso</div>'+
         '<p style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px">'+
-        'Antes de continuar, necesitamos que confirmes que leíste y aceptas las condiciones principales de uso de MOY IQ Invest.'+
+        'Antes de continuar, necesitamos que confirmes que leíste y aceptas las condiciones principales de uso de Inversiones de moyiq.'+
         '</p>'+
         '<div style="text-align:left;display:flex;flex-direction:column;gap:14px;margin-bottom:20px">'+
         '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-tc" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
-        '<span>Acepto los Términos de Uso de MOY IQ Invest.</span></label>'+
+        '<span>Acepto los Términos de Uso de Inversiones de moyiq.</span></label>'+
         '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-pp" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
         '<span>Acepto la Política de Privacidad.</span></label>'+
         '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;min-height:44px">'+
         '<input type="checkbox" id="cg-inv" onchange="cgCheck()" style="margin-top:2px;flex-shrink:0">'+
-        '<span>Entiendo que MOY IQ Invest es una herramienta educativa de análisis. No proporciona asesoría financiera personalizada, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso y toda inversión implica riesgo.</span></label>'+
+        '<span>Entiendo que Inversiones de moyiq es una herramienta educativa de análisis. No proporciona asesoría financiera personalizada, no es un bróker y no ejecuta órdenes. Los datos pueden tener retraso y toda inversión implica riesgo.</span></label>'+
         '</div>'+
         (errMsg?'<div style="background:var(--red-bg);border:1px solid var(--red-lt);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--red)">'+errMsg+'</div>':'')+
         '<button id="cg-btn" disabled onclick="cgConfirm(\''+userId+'\')" style="width:100%;padding:11px;border-radius:var(--r-md);border:none;background:var(--grn-solid);color:#14213D;font-size:14px;font-weight:700;min-height:44px;cursor:not-allowed;opacity:.55;transition:.2s">Confirmar y continuar</button>'+
@@ -9302,7 +9304,7 @@ function wv3TogglePwd(inputId, btnId){
     btn.setAttribute('aria-label','Mostrar contraseña');
   }
 }
-// SEG-7: captcha de Supabase Auth (proyecto compartido con MOY IQ). Con la site key de
+// SEG-7: captcha de Supabase Auth (proyecto compartido con moyiq). Con la site key de
 // turnstile.js, login, registro y recuperar contraseña mandan options.captchaToken; sin
 // clave el token es '' y las llamadas quedan como antes. Cada token sirve una sola vez.
 var invAuthTs = null;
@@ -9413,7 +9415,7 @@ async function doRegister(){
   var res;
   try{
     // emailRedirectTo: sin esto, el correo de confirmacion cae al Site URL
-    // unico del proyecto (compartido con MOY IQ) en vez de invest.moyiq.app —
+    // unico del proyecto (compartido con moyiq) en vez de invest.moyiq.app —
     // el auth-email-hook de financeos-app detecta la marca por este valor,
     // igual que ya hace resetPasswordForEmail (linea ~11284).
     res=await withTimeout(sb.auth.signUp({email:e,password:p,options:invWithCaptcha({data:{name:name},emailRedirectTo:window.location.origin},await invCaptchaToken())}),15000);
@@ -9464,7 +9466,7 @@ async function doGoogleAuth(){
 async function logout(){
   if(typeof stopBoot==="function") stopBoot();
   // scope local: el global (por defecto) revoca todas las sesiones de la cuenta, y la de
-  // MOY IQ es una de ellas (cuenta compartida, verificado contra Auth el 30-oct-2026).
+  // moyiq es una de ellas (cuenta compartida, verificado contra Auth el 30-oct-2026).
   await sb.auth.signOut({scope:'local'});
   _sbLoadUserDataGuard.clear(); // limpia el guard de de-dup — el proximo login (mismo u otro usuario) debe cargar fresco
   S.user=null;S.page="dash";
@@ -9549,11 +9551,11 @@ async function sbRmWatch(ticker){
   if(res.error) console.error("sbRmWatch failed",res.error);
 }
 
-// ── ENTRADA DESDE MOY IQ (invest-handoff) ─────────────────────
+// ── ENTRADA DESDE moyiq (invest-handoff) ─────────────────────
 // app/lib/handoff.js ya sacó el token de la URL. Con un token válido se abre una sesión
 // propia de Invest; las tablas de consentimiento y onboarding siguen igual porque todo
 // pasa antes del arranque normal. Vencido o usado: queda el login de siempre.
-// signOut con scope local: el global revocaría también la sesión de esa cuenta en MOY IQ.
+// signOut con scope local: el global revocaría también la sesión de esa cuenta en moyiq.
 // Mientras dura, onAuthStateChange no actúa: su SIGNED_OUT recargaría la página y
 // perdería el token.
 var _handoffBusy=false;
@@ -9592,7 +9594,7 @@ initTheme();
 renderDisclaimer();
 
 (async function boot(){
-  document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando MOY IQ Invest...</div>';
+  document.getElementById('main').innerHTML='<div class="dload"><div class="spin"></div>Cargando moyiq Inversiones...</div>';
   await consumeHandoff();
   // Timeout de 10s: igual que doLogin (mas arriba), si getSession() se cuelga
   // (intercambio OAuth interrumpido, proyecto Supabase pausado, storage de auth
@@ -9611,7 +9613,7 @@ renderDisclaimer();
   if(S.user&&S.handoffAporte&&S.page!=='dash') setPage('dash');
   if(S.handoffFailed){
     S.handoffFailed=false;
-    showToast('Tu acceso desde MOY IQ venció. Inicia sesión para continuar.','error');
+    showToast('Tu acceso desde moyiq venció. Inicia sesión para continuar.','error');
   }
 
   // ── Retorno post-pago de Stripe ──

@@ -196,7 +196,7 @@ describe("dividendos reinvertidos y bonos", () => {
   });
 });
 
-describe("aporte desde MOY IQ", () => {
+describe("aporte desde moyiq", () => {
   const a = { amount: 410, ccy: "USD", usd: 410 };
   it("sin depósitos previos propone todo", () => {
     expect(L.aportePending(a, [], "2026-10")).toEqual({ amount: 410, ccy: "USD" });
