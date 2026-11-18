@@ -73,7 +73,7 @@ describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
     }
     expect(read("icon.svg")).toContain('aria-label="moyiq"');
     const m = JSON.parse(read("manifest.webmanifest"));
-    expect(m.name).toBe("moyiq Inversiones");
+    expect(m.name).toBe("moyiq · Inversiones");
     expect(m.short_name).toBe("Inversiones");
     const mask = m.icons.filter((i) => i.purpose === "maskable").map((i) => i.src);
     expect(mask).toEqual(["/icon-maskable-192.png?v=2", "/icon-maskable-512.png?v=2"]);

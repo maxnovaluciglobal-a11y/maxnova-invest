@@ -5,7 +5,12 @@ MAXNOVA & Luci LLC — `invest.moyiq.app`).
 **Rebrand Entrega 1 (17-nov-2026, D14 + D9/D18 mantenimiento):** el producto se llama
 **moyiq · Inversiones** ("Inversiones de moyiq" en texto corrido; antes MOY IQ Invest). Versión de
 mantenimiento: paleta congelada, nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y
-`CACHE` del SW. El newsletter no se renombra acá (D20, Fase 4). Las menciones a "MOY IQ" que siguen
+`CACHE` del SW. El newsletter no se renombra acá (D20, Fase 4). **Fecha de vigencia de las legales:** vive solo en `tools/vigencia.json`
+(`null` = pendiente; términos, privacidad y los dos resúmenes de `app/index.html` muestran FECHA-DEL-DESPLIEGUE en un
+`<span data-vigencia>`). El día del push a `main`, en el mismo commit: `node tools/set-vigencia.mjs AAAA-MM-DD && RELEASE=1 npm test`.
+`test/legal-rebrand.test.js` falla en `main` o con `RELEASE=1` si queda algún marcador (el push despliega sin correr tests).
+Textos: "moyiq · Inversiones" como nombre del sitio y en títulos ("X — moyiq · Inversiones"), "Inversiones de moyiq" en
+prosa; `short_name` y `apple-mobile-web-app-title` siguen en "Inversiones" a secas (límite de largo en la pantalla de inicio). Las menciones a "MOY IQ" que siguen
 en este archivo y en `DESIGN.md`/`PRODUCT.md`/migraciones son históricas.
 **Beta pública gratuita desde el 08-oct-2026**: estuvo en pausa del 12-sep al 08-oct y el
 relanzamiento v2 ya está en `main` (plan en `../../00 - Gestion/auditorias/2026-10-ux/04-PLAN-RELANZAMIENTO-INVEST.md`).

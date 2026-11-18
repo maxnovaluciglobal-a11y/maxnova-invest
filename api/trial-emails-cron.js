@@ -19,7 +19,7 @@ const CRON_SECRET = process.env.CRON_SECRET;
 
 const APP_URL = 'https://invest.moyiq.app';
 // Rebrand Entrega 1: cambia solo el nombre visible; la dirección se mantiene (entregabilidad).
-const FROM = 'moyiq Inversiones <invest@moyiq.app>';
+const FROM = 'Inversiones de moyiq <invest@moyiq.app>';
 
 // Which day-marks trigger which template
 const SCHEDULE = { 1: 'welcome', 7: 'midpoint', 12: 'urgency', 14: 'lastday' };

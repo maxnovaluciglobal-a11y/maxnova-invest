@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Estado del mercado hoy · moyiq Inversiones</title>
+<title>Estado del mercado hoy — moyiq · Inversiones</title>
 <meta name="description" content="Índices de EE.UU., volatilidad (VIX), oro, petróleo, bitcoin y dólar en Chile y LATAM en un vistazo. Gratis y sin cuenta. Datos de fuentes gratuitas, con posible retraso."/>
 <link rel="canonical" href="https://invest.moyiq.app/estado-mercado.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"/>
@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#14213D"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://invest.moyiq.app/estado-mercado.html"/>
-<meta property="og:title" content="Estado del mercado hoy · moyiq Inversiones"/>
+<meta property="og:title" content="Estado del mercado hoy — moyiq · Inversiones"/>
 <meta property="og:description" content="Índices, volatilidad (VIX) y tipos de cambio LATAM en un vistazo. Gratis, sin cuenta, con la hora de cada consulta."/>
 <meta property="og:image" content="https://invest.moyiq.app/og-invest.png?v=2"/>
 <meta property="og:image:width" content="1200"/>
@@ -47,7 +47,7 @@ a{color:var(--laton-700);text-underline-offset:3px}
 .wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
 .narrow{max-width:760px}
 .lockup{display:inline-flex;align-items:center;gap:.4em;min-height:44px;font-family:var(--display);font-weight:600;font-size:18px;color:#000000;text-decoration:none;white-space:nowrap}
-.lockup .logo{display:block;height:1.2em;width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
+.lockup .logo{display:block;height:max(20px,1.2em);width:auto;aspect-ratio:547.16/189.52;flex-shrink:0}
 .lockup .suffix{font-family:var(--body);font-weight:500;font-size:.86em;letter-spacing:0;color:var(--text2);padding-left:.4em;border-left:1px solid currentColor;line-height:1.1}
 /* Logo moyiq: versión blanca sobre Navy (15,9:1), negra sobre fondo claro (versiones del manual). */
 .lockup.on-dark{color:#FFFFFF}
@@ -392,7 +392,7 @@ footer{background:var(--papel);padding:32px 0 calc(24px + env(safe-area-inset-bo
   document.getElementById('btnShare').addEventListener('click', function(){
     if (!LIVE_STATE){ showToast('Espera a que carguen los datos.'); return; }
     var url = shareUrl(LIVE_STATE);
-    var text = 'Estado del mercado · moyiq Inversiones';
+    var text = 'Estado del mercado — moyiq · Inversiones';
     if (navigator.share){
       navigator.share({ title: text, text: text, url: url }).catch(function(){});
     } else if (navigator.clipboard && navigator.clipboard.writeText){
