@@ -37,7 +37,8 @@ encendido en `financeos-app/docs/turnstile.md`.
 
 `app/lib/handoff.js` carga antes que todo y borra de la URL `#handoff=<token_hash>&uid=…&aporte=…`. `consumeHandoff()`
 abre una sesión propia con `verifyOtp` (el token lo emite la Edge Function `invest-handoff`, en `financeos-app`). Misma
-cuenta: no canjea. Otra cuenta: `signOut({scope:'local'})` y canjea. Vencido: login normal con aviso. **Todo `signOut` de
+cuenta: no canjea. Sin sesión u otra cuenta (SEC-N1, login CSRF): canjea en un cliente sin `persistSession`, muestra "Vas a entrar
+como a•••@dominio" (Continuar / No soy yo) y solo al confirmar hace `signOut({scope:'local'})` (si había otra) y `setSession`. Vencido: login normal con aviso. **Todo `signOut` de
 este repo va con `scope:'local'`**: el global revoca también la sesión de MOY IQ (cuenta compartida). Los aportes llegan
 como suma, se muestran en Hoy (`handoffAporteBanner`) y solo se escriben con "Ir a Aportes". `financeos-app` copia la
 valuación de `app/lib/fx.js` en `src/utils/investValuation.js`: si cambia acá, cambia allá.
