@@ -7,6 +7,10 @@
 export const ALLOWED_ORIGINS = [
   'https://invest.moyiq.app',
   'https://app.moyiq.app',
+  // App nativa de moyiq (Capacitor, INV-N13): iOS sirve la web desde capacitor://localhost
+  // (sin iosScheme) y Android desde https://localhost (androidScheme: https).
+  'capacitor://localhost',
+  'https://localhost',
 ];
 
 // Despliegues de vista previa del team de Vercel (solo el team puede crear ese sufijo)

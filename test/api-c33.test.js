@@ -65,6 +65,28 @@ describe('control de origen', () => {
       expect((await h(req('/api/quote?ticker=AAPL', o))).status).toBe(200);
     }
   });
+  // INV-N13: la app nativa de moyiq (Capacitor) llama con Origin capacitor://localhost (iOS)
+  // y https://localhost (Android); antes recibía 403 y mostraba todo al costo y sin FX.
+  it.each(ENDPOINTS)('%s: la app nativa (capacitor://localhost, https://localhost) pasa', async (name, path) => {
+    routes.push([/./, () => YAHOO_CHART()]);
+    const h = await load(name);
+    for (const o of ['capacitor://localhost', 'https://localhost']) {
+      const res = await h(req(path, o));
+      expect(res.status).not.toBe(403);
+    }
+  });
+  it('la app nativa recibe su propio Access-Control-Allow-Origin', async () => {
+    routes.push([/yahoo/, () => YAHOO_CHART()]);
+    const h = await load('quote');
+    for (const o of ['capacitor://localhost', 'https://localhost']) {
+      const res = await h(req('/api/quote?ticker=AAPL', o));
+      expect(res.status).toBe(200);
+      expect(res.headers.get('access-control-allow-origin')).toBe(o);
+    }
+    for (const o of ['http://localhost', 'capacitor://evil', 'https://localhost:8443']) {
+      expect((await h(req('/api/quote?ticker=AAPL', o))).status).toBe(403);
+    }
+  });
 });
 
 describe('formato sin cambios para el newsletter', () => {
