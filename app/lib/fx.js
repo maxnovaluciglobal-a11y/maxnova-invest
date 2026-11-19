@@ -31,7 +31,19 @@
     BA: "ARS", // Buenos Aires
     LM: "PEN", // Lima
     CL: "COP", // Colombia
+    // INV-N23: Europa, Canadá y Japón (las tasas llegan de /api/fx-latam).
+    DE: "EUR", F: "EUR", BE: "EUR", MU: "EUR", SG: "EUR", DU: "EUR", HM: "EUR", // Alemania
+    MC: "EUR", // BME (Madrid)
+    PA: "EUR", AS: "EUR", BR: "EUR", LS: "EUR", MI: "EUR", HE: "EUR", VI: "EUR", IR: "EUR",
+    L: "GBp", // Londres cotiza en peniques
+    SW: "CHF", ST: "SEK", OL: "NOK", CO: "DKK",
+    TO: "CAD", V: "CAD",
+    T: "JPY",
   };
+
+  // Submonedas que Yahoo usa en algunas bolsas: 100 peniques = 1 GBP, 100 cents = 1 ZAR,
+  // 100 agorot = 1 ILS. Su tasa por USD es la de la moneda mayor por 100.
+  var MINOR_CCY = { GBp: "GBP", ZAc: "ZAR", ILA: "ILS" };
 
   // Monedas que se muestran sin decimales.
   var NO_DECIMALS = { CLP: true, COP: true, JPY: true, KRW: true };
@@ -60,12 +72,16 @@
   }
 
   // Unidades de ccy por 1 USD, o null si no hay tasa usable.
+  // GBp/ZAc/ILA: si no vino su tasa propia, se deriva de la mayor (GBP x 100).
   function rateOf(ccy, rates) {
     var c = normCcy(ccy);
     if (!c) return null;
     if (c === "USD") return 1;
     var r = rates ? Number(rates[c]) : NaN;
-    return isFinite(r) && r > 0 ? r : null;
+    if (isFinite(r) && r > 0) return r;
+    var major = MINOR_CCY[c];
+    var m = major && rates ? Number(rates[major]) : NaN;
+    return isFinite(m) && m > 0 ? m * 100 : null;
   }
 
   // Monto en ccy -> USD. null si falta la tasa o el monto no es un numero.

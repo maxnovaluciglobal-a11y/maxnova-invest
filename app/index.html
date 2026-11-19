@@ -2575,7 +2575,7 @@ async function fetchFXLatam(){
   _fxFetched=true;
   fetchFXArs();
   try{
-    var cacheKey='mv_fx_latam2';
+    var cacheKey='mv_fx_latam3'; // v3: trae EUR, GBP y otras (INV-N23)
     var cached=null;
     try{cached=JSON.parse(localStorage.getItem(cacheKey)||'null');}catch(e){}
     if(cached&&cached.rates&&(Date.now()-cached.ts)<FX_CACHE_TTL){

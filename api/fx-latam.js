@@ -1,6 +1,6 @@
 // api/fx-latam.js — Vercel Edge Function
 // Returns live USD → LATAM currency rates via Yahoo Finance
-// Currencies: CLP, MXN, COP, ARS, PEN, BRL
+// Currencies: CLP, MXN, COP, ARS, PEN, BRL + EUR, GBP, CHF, SEK, NOK, DKK, CAD, JPY (INV-N23)
 // sources[ccy] = 'fallback' marks a hardcoded rate (Yahoo failed). The app uses
 // those only for the display-currency selector, never to convert an asset's
 // price to USD. BRL has no hardcoded fallback: if Yahoo fails it is omitted.
@@ -15,6 +15,17 @@ const PAIRS = {
   ARS: 'USDARS=X',
   PEN: 'USDPEN=X',
   BRL: 'USDBRL=X',
+  // INV-N23: monedas de Europa, Canadá y Japón para valorizar acciones de esas bolsas
+  // (SAP.DE en EUR, VOD.L en GBp). Sin respaldo fijo: si Yahoo falla, se omiten y la
+  // posición queda "sin tipo de cambio", nunca 1:1.
+  EUR: 'USDEUR=X',
+  GBP: 'USDGBP=X',
+  CHF: 'USDCHF=X',
+  SEK: 'USDSEK=X',
+  NOK: 'USDNOK=X',
+  DKK: 'USDDKK=X',
+  CAD: 'USDCAD=X',
+  JPY: 'USDJPY=X',
 };
 
 const FALLBACKS = { CLP: 960, MXN: 17.3, COP: 4200, ARS: 1060, PEN: 3.75 }; // updated Jul 2026 — ARS es tipo oficial BCRA

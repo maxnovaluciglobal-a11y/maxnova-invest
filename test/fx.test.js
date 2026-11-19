@@ -40,11 +40,45 @@ describe("currencyOf", () => {
     expect(currencyOf("BRK-B")).toBe("USD");
   });
   it("sufijo desconocido sin cotización = moneda desconocida", () => {
-    expect(currencyOf("VOD.L")).toBe(null);
+    expect(currencyOf("XYZ.QQ")).toBe(null);
   });
-  it("respeta GBp (peniques) en vez de convertirlo con GBP", () => {
+  it("respeta GBp (peniques): no se convierte 1:1 con la tasa de GBP", () => {
     expect(currencyOf("VOD.L", "GBp")).toBe("GBp");
-    expect(rateOf("GBp", { GBP: 0.8 })).toBe(null);
+    expect(rateOf("GBp", { GBP: 0.8 })).toBe(80);
+  });
+});
+
+describe("INV-N23: monedas europeas, CAD y JPY", () => {
+  const EU = { EUR: 0.92, GBP: 0.79, CHF: 0.88, SEK: 10.5, CAD: 1.37, JPY: 150 };
+  it("infiere la moneda por el sufijo de las bolsas europeas", () => {
+    expect(currencyOf("SAP.DE")).toBe("EUR");
+    expect(currencyOf("SAN.MC")).toBe("EUR");
+    expect(currencyOf("MC.PA")).toBe("EUR");
+    expect(currencyOf("ASML.AS")).toBe("EUR");
+    expect(currencyOf("VOD.L")).toBe("GBp");
+    expect(currencyOf("NESN.SW")).toBe("CHF");
+    expect(currencyOf("VOLV-B.ST")).toBe("SEK");
+    expect(currencyOf("SHOP.TO")).toBe("CAD");
+    expect(currencyOf("7203.T")).toBe("JPY");
+  });
+  it("una acción en EUR suma al total en USD", () => {
+    const t = portfolioTotals([{ t: "SAP.DE", sh: 10, cost: 184 }], () => ({ price: 230, changePct: 0 }), (x) => currencyOf(x, "EUR"), EU);
+    expect(t.excluded).toBe(0);
+    expect(t.value).toBeCloseTo(2300 / 0.92, 6);
+    expect(t.cost).toBeCloseTo(1840 / 0.92, 6);
+  });
+  it("VOD.L en peniques: 7.200 GBp = 72 GBP, no 7.200 GBP", () => {
+    expect(toUsd(7200, "GBp", EU)).toBeCloseTo(72 / 0.79, 6);
+    expect(fromUsd(72 / 0.79, "GBp", EU)).toBeCloseTo(7200, 6);
+  });
+  it("ZAc e ILA se derivan de ZAR e ILS; sin la mayor, quedan sin tasa", () => {
+    expect(rateOf("ZAc", { ZAR: 18 })).toBe(1800);
+    expect(rateOf("ILA", { ILS: 3.7 })).toBe(370);
+    expect(rateOf("ZAc", EU)).toBe(null);
+    expect(rateOf("GBp", {})).toBe(null);
+  });
+  it("una tasa propia de la submoneda manda sobre la derivada", () => {
+    expect(rateOf("GBp", { GBp: 81, GBP: 0.79 })).toBe(81);
   });
 });
 

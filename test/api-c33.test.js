@@ -103,6 +103,28 @@ describe('formato sin cambios para el newsletter', () => {
   });
 });
 
+describe('INV-N23: /api/fx-latam con monedas europeas', () => {
+  it('trae EUR, GBP, CHF, SEK, NOK, DKK, CAD y JPY de Yahoo', async () => {
+    routes.push([/USDEUR=X/, () => YAHOO_CHART(0.92)], [/USDGBP=X/, () => YAHOO_CHART(0.79)], [/yahoo/, () => YAHOO_CHART(7)]);
+    const body = await (await (await load('fx-latam'))(req('/api/fx-latam'))).json();
+    expect(body.rates.EUR).toBe(0.92);
+    expect(body.rates.GBP).toBe(0.79);
+    for (const c of ['CHF', 'SEK', 'NOK', 'DKK', 'CAD', 'JPY']) {
+      expect(body.rates[c]).toBe(7);
+      expect(body.sources[c]).toBe('yahoo');
+    }
+  });
+  it('si Yahoo falla, no inventa un respaldo fijo para esas monedas', async () => {
+    routes.push([/USD(EUR|GBP|CHF|SEK|NOK|DKK|CAD|JPY)=X/, () => json({}, 500)], [/yahoo/, () => YAHOO_CHART(950)]);
+    const body = await (await (await load('fx-latam'))(req('/api/fx-latam'))).json();
+    for (const c of ['EUR', 'GBP', 'CHF', 'SEK', 'NOK', 'DKK', 'CAD', 'JPY']) {
+      expect(body.rates[c]).toBeUndefined();
+      expect(body.sources[c]).toBeUndefined();
+    }
+    expect(body.rates.MXN).toBe(950);
+  });
+});
+
 describe('/api/earnings', () => {
   const FH_EARN = [
     { actual: 1.85, estimate: 1.8, period: '2026-06-30', quarter: 3, year: 2026, symbol: 'AAPL' },
