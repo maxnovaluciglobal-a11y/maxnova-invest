@@ -586,6 +586,13 @@ tr:last-child td { border-bottom: none; }
 
 /* ── GRID LAYOUTS ── */
 
+/* SEC-N1: confirmación de la cuenta antes de canjear el acceso desde moyiq */
+.handoff-confirm { max-width:420px; margin:56px auto; padding:24px; background:var(--card); border:0.5px solid var(--border2); border-radius:var(--r-sm); font-family:var(--sans); }
+.handoff-confirm h1 { font-size:16px; font-weight:600; color:var(--bright); margin:0 0 8px; line-height:1.4; }
+.handoff-confirm .hc-who { overflow-wrap:anywhere; }
+.handoff-confirm p { font-size:13px; color:var(--text2); line-height:1.6; margin:0 0 16px; }
+.handoff-confirm .hc-act { display:flex; gap:10px; flex-wrap:wrap; }
+
 .dload {
   display: flex; align-items: center; justify-content: center;
   gap:10px; padding:40px;
@@ -9517,6 +9524,25 @@ async function sbRmWatch(ticker){
 // Mientras dura, onAuthStateChange no actúa: su SIGNED_OUT recargaría la página y
 // perdería el token.
 var _handoffBusy=false;
+// SEC-N1: "Vas a entrar como a•••@dominio" con Continuar / No soy yo. Resuelve true o false.
+function confirmHandoffAccount(email,closesCurrent){
+  return new Promise(function(resolve){
+    var main=document.getElementById('main');
+    if(!main){ resolve(false); return; }
+    var who=InvestHandoff.maskEmail(email);
+    main.innerHTML='<div class="handoff-confirm" role="dialog" aria-modal="true" aria-labelledby="hc-ttl" aria-describedby="hc-desc">'+
+      '<h1 id="hc-ttl">'+(who?'Vas a entrar como <span class="hc-who">'+esc(who)+'</span>':'Vas a entrar con la cuenta de este enlace')+'</h1>'+
+      '<p id="hc-desc">Este enlace abre Inversiones con una cuenta de moyiq. Continúa solo si es tu cuenta.'+
+        (closesCurrent?' La sesión que tienes abierta en este navegador se va a cerrar.':'')+'</p>'+
+      '<div class="hc-act"><button type="button" class="btn-big" id="hc-ok">Continuar</button>'+
+      '<button type="button" class="btn" id="hc-no">No soy yo</button></div>'+
+      '</div>';
+    var done=function(v){ main.innerHTML='<div class="dload"><div class="spin"></div>Cargando moyiq · Inversiones...</div>'; resolve(v); };
+    document.getElementById('hc-ok').onclick=function(){ done(true); };
+    document.getElementById('hc-no').onclick=function(){ done(false); };
+    try{ document.getElementById('hc-ok').focus(); }catch(e){}
+  });
+}
 async function consumeHandoff(){
   var h=window.__investHandoff;
   window.__investHandoff=null;
@@ -9532,12 +9558,28 @@ async function consumeHandoff(){
     }catch(e){/* sin sesión legible: se intenta canjear */}
     var act=InvestHandoff.plan(cur,h.uid);
     if(act==='skip') return;
+    // SEC-N1 (login CSRF): cualquiera puede mandar un enlace con el token de su propia cuenta.
+    // El token se canjea en un cliente aparte que no guarda nada, así la sesión de este
+    // navegador no cambia hasta que la persona confirma la cuenta que se va a abrir.
+    var chk=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'mv-handoff-check'}});
+    var res=await withTimeout(chk.auth.verifyOtp({token_hash:h.token,type:'magiclink'}),10000);
+    if(res&&res.error) throw res.error;
+    var ses=res&&res.data&&res.data.session;
+    if(!ses||!ses.user||!ses.access_token||!ses.refresh_token) throw new Error('handoff_no_session');
+    var ok=await confirmHandoffAccount(ses.user.email,act==='switch');
+    if(!ok){
+      // "No soy yo": se revoca esa sesión y el aporte del enlace se descarta.
+      try{ await withTimeout(chk.auth.signOut({scope:'local'}),8000); }catch(e){}
+      S.handoffAporte=null;
+      track('handoff_rejected');
+      return;
+    }
     if(act==='switch'){
       await withTimeout(sb.auth.signOut({scope:'local'}),8000);
       try{ localStorage.removeItem('mv_prices_cache'); }catch(e){}
     }
-    var res=await withTimeout(sb.auth.verifyOtp({token_hash:h.token,type:'magiclink'}),10000);
-    if(res&&res.error) throw res.error;
+    var set=await withTimeout(sb.auth.setSession({access_token:ses.access_token,refresh_token:ses.refresh_token}),10000);
+    if(set&&set.error) throw set.error;
     track('handoff_ok');
   }catch(e){
     S.handoffFailed=true;

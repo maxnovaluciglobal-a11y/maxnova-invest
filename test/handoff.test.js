@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { parseFragment, plan, aporteUsd, capture } from '../app/lib/handoff.js';
+import { parseFragment, plan, maskEmail, aporteUsd, capture } from '../app/lib/handoff.js';
 
 const html = readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 const TOKEN = 'a'.repeat(56);
@@ -34,6 +34,48 @@ describe('plan', () => {
   it('misma cuenta, no hace falta', () => { expect(plan(UID, UID)).toBe('skip'); });
   it('otra cuenta, cambia', () => { expect(plan('otra', UID)).toBe('switch'); });
   it('sin saber de quién es, conserva la sesión', () => { expect(plan('otra', null)).toBe('skip'); });
+});
+
+describe('maskEmail (SEC-N1)', () => {
+  it('deja la primera letra y el dominio', () => {
+    expect(maskEmail('ana.perez@gmail.com')).toBe('a\u2022\u2022\u2022@gmail.com');
+    expect(maskEmail(' x@moyiq.app ')).toBe('x\u2022\u2022\u2022@moyiq.app');
+  });
+  it('sin correo válido no inventa uno', () => {
+    expect(maskEmail(null)).toBeNull();
+    expect(maskEmail('')).toBeNull();
+    expect(maskEmail('@dominio.com')).toBeNull();
+    expect(maskEmail('ana@')).toBeNull();
+  });
+});
+
+describe('SEC-N1: no canjea en silencio el token de otra cuenta', () => {
+  const fn = html.slice(html.indexOf('async function consumeHandoff'), html.indexOf('// ── STARTUP'));
+  it('canjea en un cliente que no guarda la sesión ni la refresca', () => {
+    expect(fn).toMatch(/createClient\(SB_URL,SB_KEY,\{auth:\{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false/);
+    expect(fn).not.toContain('sb.auth.verifyOtp(');
+  });
+  it('pide confirmar la cuenta antes de cerrar la sesión actual o abrir la nueva', () => {
+    const ask = fn.indexOf('await confirmHandoffAccount(');
+    expect(ask).toBeGreaterThan(fn.indexOf('chk.auth.verifyOtp('));
+    expect(ask).toBeLessThan(fn.indexOf("sb.auth.signOut({scope:'local'})"));
+    expect(ask).toBeLessThan(fn.indexOf('sb.auth.setSession('));
+  });
+  it('"No soy yo" revoca la sesión del enlace, descarta el aporte y deja la cuenta actual', () => {
+    const no = fn.slice(fn.indexOf('if(!ok){'), fn.indexOf("if(act==='switch'){"));
+    expect(no).toContain("chk.auth.signOut({scope:'local'})");
+    expect(no).toContain('S.handoffAporte=null');
+    expect(no).toContain('return;');
+    expect(no).not.toContain('sb.auth.');
+  });
+  it('la confirmación muestra el correo enmascarado y dos salidas', () => {
+    const dlg = html.slice(html.indexOf('function confirmHandoffAccount'), html.indexOf('async function consumeHandoff'));
+    expect(dlg).toContain('InvestHandoff.maskEmail(email)');
+    expect(dlg).toContain('esc(who)');
+    expect(dlg).toContain('Vas a entrar como');
+    expect(dlg).toContain('>Continuar<');
+    expect(dlg).toContain('>No soy yo<');
+  });
 });
 
 describe('aporteUsd', () => {
@@ -81,7 +123,7 @@ describe('integración en app/index.html', () => {
   });
   it('canjea con verifyOtp antes del arranque normal', () => {
     const boot = html.slice(html.indexOf('(async function boot(){'));
-    expect(html).toContain("sb.auth.verifyOtp({token_hash:h.token,type:'magiclink'})");
+    expect(html).toContain("chk.auth.verifyOtp({token_hash:h.token,type:'magiclink'})");
     expect(boot.indexOf('await consumeHandoff()')).toBeLessThan(boot.indexOf('sb.auth.getSession()'));
     expect(boot.indexOf('await consumeHandoff()')).toBeGreaterThan(0);
   });

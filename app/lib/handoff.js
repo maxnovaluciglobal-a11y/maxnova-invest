@@ -55,10 +55,22 @@
   //   verify: no hay sesión, se canjea.
   //   skip:   ya está la cuenta correcta, el token no hace falta.
   //   switch: hay otra cuenta; se cierra esa, solo en este navegador, y se canjea.
+  // En verify y switch el token se canjea primero en un cliente que no guarda nada y la
+  // sesión solo se abre si la persona confirma la cuenta (SEC-N1, app/index.html).
   function plan(currentUid, targetUid) {
     if (!currentUid) return "verify";
     if (!targetUid || currentUid === targetUid) return "skip";
     return "switch";
+  }
+
+  // SEC-N1: el enlace puede venir de otra persona (login CSRF). Antes de abrir la sesión se
+  // muestra la cuenta del token, enmascarada: "a•••@dominio.com". null si no hay un correo
+  // con forma válida.
+  function maskEmail(email) {
+    var s = String(email || "").trim();
+    var at = s.lastIndexOf("@");
+    if (at < 1 || at === s.length - 1) return null;
+    return s.charAt(0) + "\u2022\u2022\u2022" + s.slice(at);
   }
 
   // Monto en USD para Planificar › Aportes: el que calculó moyiq con su tasa con
@@ -81,7 +93,7 @@
     return got;
   }
 
-  var api = { parseFragment: parseFragment, plan: plan, aporteUsd: aporteUsd, capture: capture };
+  var api = { parseFragment: parseFragment, plan: plan, maskEmail: maskEmail, aporteUsd: aporteUsd, capture: capture };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof root !== "undefined") {
     root.InvestHandoff = api;
