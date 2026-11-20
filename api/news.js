@@ -1,6 +1,10 @@
 // api/news.js — Vercel Edge Function
 // Fetches live financial news from Yahoo Finance Search API (includes thumbnails)
 // Usage: GET /api/news?tickers=SPY,NVDA,AAPL
+//        POST /api/news  {"tickers":["SPY","NVDA"]}  (Content-Type: application/json)
+// El POST existe para que los tickers del usuario no viajen en la URL (quedan en
+// logs de acceso, historial y Referer). Las dos formas pasan por el mismo filtro
+// (regex, 12 como máximo) y comparten la caché en memoria de 10 minutos.
 export const config = { runtime: 'edge' };
 
 function hoursAgo(ts) {
@@ -41,37 +45,109 @@ function bestImage(thumbnail) {
   return best?.url || null;
 }
 
-import { ALLOWED_ORIGINS, rejectForeignOrigin } from './_lib/origin.js';
+import { ALLOWED_ORIGINS, isAllowedOrigin, rejectForeignOrigin } from './_lib/origin.js';
+
+export const DEFAULT_TICKERS = 'SPY,QQQ,NVDA,AAPL,AMZN,META,MSFT,GLD';
+export const MAX_TICKERS = 12;
+export const MAX_BODY_BYTES = 2048;
+export const CACHE_TTL_MS = 600_000;
+
+// Acepta una cadena "A,B,C" o un arreglo; devuelve la lista limpia unida por comas.
+export function normalizeTickers(input) {
+  const list = Array.isArray(input) ? input : String(input ?? '').split(',');
+  return list
+    .filter(t => typeof t === 'string')
+    .map(t => t.trim().toUpperCase())
+    .filter(t => /^[\^A-Z0-9\-=\.]{1,15}$/.test(t))
+    .slice(0, MAX_TICKERS)
+    .join(',') || 'SPY,QQQ,NVDA,AAPL';
+}
+
+// Caché por instancia: el CDN no guarda respuestas a POST, así que sin esto cada
+// POST iría a Yahoo. GET y POST con los mismos tickers comparten la entrada.
+const cache = new Map();
+const CACHE_MAX = 200;
+function cacheGet(key) {
+  const hit = cache.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.at > CACHE_TTL_MS) { cache.delete(key); return null; }
+  return hit.body;
+}
+function cacheSet(key, body) {
+  if (cache.size >= CACHE_MAX) cache.delete(cache.keys().next().value);
+  cache.set(key, { at: Date.now(), body });
+}
+
+async function readTickersFromBody(req) {
+  const type = (req.headers.get('content-type') || '').toLowerCase();
+  if (!type.startsWith('application/json')) return { error: 'unsupported_media_type', status: 415 };
+  const len = Number(req.headers.get('content-length') || 0);
+  if (len > MAX_BODY_BYTES) return { error: 'payload_too_large', status: 413 };
+  let text;
+  try { text = await req.text(); } catch { return { error: 'invalid_body', status: 400 }; }
+  if (text.length > MAX_BODY_BYTES) return { error: 'payload_too_large', status: 413 };
+  let body;
+  try { body = text ? JSON.parse(text) : {}; } catch { return { error: 'invalid_json', status: 400 }; }
+  if (body === null || typeof body !== 'object' || Array.isArray(body)) return { error: 'invalid_body', status: 400 };
+  const raw = body.tickers;
+  if (raw !== undefined && typeof raw !== 'string' && !Array.isArray(raw)) return { error: 'invalid_tickers', status: 400 };
+  return { raw: raw === undefined || (Array.isArray(raw) && raw.length === 0) || raw === '' ? DEFAULT_TICKERS : raw };
+}
 
 export default async function handler(req) {
   const origin = req.headers.get('origin') || '';
   const corsHeaders = {
-    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Origin': isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '600',
     'Vary': 'Origin',
   };
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders });
   const blocked = rejectForeignOrigin(req);
   if (blocked) return blocked;
 
-  const { searchParams } = new URL(req.url);
-  const rawTickers = searchParams.get('tickers') || 'SPY,QQQ,NVDA,AAPL,AMZN,META,MSFT,GLD';
-  const tickers = rawTickers
-    .split(',')
-    .map(t => t.trim().toUpperCase())
-    .filter(t => /^[\^A-Z0-9\-=\.]{1,15}$/.test(t))
-    .slice(0, 12)
-    .join(',') || 'SPY,QQQ,NVDA,AAPL';
+  const isPost = req.method === 'POST';
+  if (!isPost && req.method !== 'GET' && req.method !== 'HEAD') {
+    return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json', 'Allow': 'GET, POST, OPTIONS', 'Cache-Control': 'no-store', ...corsHeaders },
+    });
+  }
 
+  let rawTickers;
+  if (isPost) {
+    const parsed = await readTickersFromBody(req);
+    if (parsed.error) {
+      return new Response(JSON.stringify({ error: parsed.error, items: [] }), {
+        status: parsed.status,
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...corsHeaders },
+      });
+    }
+    rawTickers = parsed.raw;
+  } else {
+    rawTickers = new URL(req.url).searchParams.get('tickers') || DEFAULT_TICKERS;
+  }
+  const tickers = normalizeTickers(rawTickers);
+
+  // GET: caché pública del CDN, como antes. POST: el CDN no la usa; se marca privada
+  // para que ningún intermediario guarde una respuesta pedida con los tickers del usuario.
+  const cacheControl = isPost
+    ? 'private, max-age=600'
+    : 'public, s-maxage=600, stale-while-revalidate=1200';
   const respond = (body, status = 200) =>
     new Response(JSON.stringify(body), {
       status,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200',
+        'Cache-Control': cacheControl,
         ...corsHeaders,
       },
     });
+
+  const cached = cacheGet(tickers);
+  if (cached) return respond(cached);
+  const respondAndCache = (body) => { if (body.items && body.items.length) cacheSet(tickers, body); return respond(body); };
 
   try {
     // Yahoo Finance Search API returns news with thumbnails in one call
@@ -108,11 +184,11 @@ export default async function handler(req) {
       image: bestImage(n.thumbnail),
     }));
 
-    return respond({ items, fetchedAt: Date.now() });
+    return respondAndCache({ items, fetchedAt: Date.now() });
   } catch (e) {
     // Fallback to RSS if Search API fails
     try {
-      const rssUrl = `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${tickers}&region=US&lang=en-US`;
+      const rssUrl = `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${encodeURIComponent(tickers)}&region=US&lang=en-US`;
       const rssRes = await fetch(rssUrl, {
         signal: AbortSignal.timeout(6000),
         headers: { 'User-Agent': 'FINANCEOS/1.0' },
@@ -152,7 +228,7 @@ export default async function handler(req) {
         };
       }).filter(n => n.title);
 
-      return respond({ items, fetchedAt: Date.now(), fallback: true });
+      return respondAndCache({ items, fetchedAt: Date.now(), fallback: true });
     } catch (e2) {
       return respond({ error: e2.message, items: [] });
     }
