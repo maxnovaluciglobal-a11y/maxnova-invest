@@ -7,6 +7,8 @@
 export const ALLOWED_ORIGINS = [
   'https://invest.moyiq.app',
   'https://app.moyiq.app',
+  // Demo pública de moyiq: muestra Inversiones con cotizaciones reales sobre datos de ejemplo.
+  'https://demo.moyiq.app',
   // App nativa de moyiq (Capacitor, INV-N13): iOS sirve la web desde capacitor://localhost
   // (sin iosScheme) y Android desde https://localhost (androidScheme: https).
   'capacitor://localhost',
