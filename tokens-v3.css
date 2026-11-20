@@ -283,12 +283,39 @@
   --type-tab:     .6875rem; --type-tab-lh:     1rem;     --type-tab-w: 500;     --type-tab-tr: 0;            /* 11/16 */
   --type-dec: .5em; --type-dec-tr: -.02em;   /* decimales a la mitad solo en cifra-l y cifra-xl */
 }
+@media (max-width: 360px) {
+  :root { --type-cifra-xl: 3rem; --type-cifra-xl-lh: 3rem; }   /* cifra del Inicio: 48 a ≤ 360 px */
+}
 @media (min-width: 901px) {
   :root {
     --type-display: 4rem;    --type-display-lh: 4rem;   --type-display-tr: -.05em;    /* 64/64 manual */
     --type-h1:      2.25rem; --type-h1-lh:      2.5rem; --type-h1-tr: -.035em;        /* 36/40 manual */
     --type-h2:      1.5rem;  --type-h2-lh:      2rem;   --type-h2-tr: -.025em;        /* 24/32 */
   }
+}
+
+/* ═════════════════════════════ 2c. ESCALA DE TEXTO DE LA APP (19-nov-2026) ═════════════════════════════
+   Aprobada por Walter para toda la app (auditoria-2026-11-19-movil/AUDITORIA-MOVIL.md §5):
+   una sola escala para iOS y Android, sacada de la HIG (tamaño por defecto) y cruzada con
+   Material 3. En rem (raíz al 100 %) para que siga el tamaño de letra del usuario.
+   Tres pesos: 400, 600 y 700; 500 solo en --t-caption (barra de pestañas, insignias, ejes).
+   Piso de lectura: 13 (--t-footnote). Nada que se lea va más chico.
+   Uso: font-size: var(--t-body); line-height: var(--t-body-lh); o la clase .t-<rol> de globals.css. */
+:root {
+  --t-large-title: 2.125rem;  --t-large-title-lh: 2.5625rem;  /* 34/41 700 · título de pestaña */
+  --t-title:       1.75rem;   --t-title-lh:       2.125rem;   /* 28/34 700 · sub-pantalla y hoja */
+  --t-title-2:     1.375rem;  --t-title-2-lh:     1.75rem;    /* 22/28 700 · sección, tarjeta grande */
+  --t-headline:    1.0625rem; --t-headline-lh:    1.375rem;   /* 17/22 600 · fila principal, montos, botones */
+  --t-body:        1.0625rem; --t-body-lh:        1.375rem;   /* 17/22 400 · párrafos */
+  --t-callout:     1rem;      --t-callout-lh:     1.3125rem;  /* 16/21 400 · campos (16 evita el zoom de iOS) */
+  --t-subhead:     .9375rem;  --t-subhead-lh:     1.25rem;    /* 15/20 400 · secundario de fila, descripciones */
+  --t-footnote:    .8125rem;  --t-footnote-lh:    1.125rem;   /* 13/18 400 · fechas, notas, ayudas (piso) */
+  --t-caption:     .6875rem;  --t-caption-lh:     .8125rem;   /* 11/13 500 · solo pestañas, insignias, ejes */
+  --t-hero:        3.5rem;    --t-hero-lh:        3.5rem;     /* 56/56 600 · cifra del Inicio */
+  --fw-bold: 700;
+}
+@media (max-width: 360px) {
+  :root { --t-hero: 3rem; --t-hero-lh: 3rem; }   /* 48 en teléfonos de 360 o menos */
 }
 
 /* ═════════════════════════════ 3. COMPONENTE ═════════════════════════════ */
@@ -314,10 +341,25 @@
   /* "+" y pestaña activa (nivel 3) */
   --action-bg: var(--color-action); --action-fg: var(--color-action-fg);
   --action-shadow: 0 10px 22px -10px rgb(122 33 255 / .7);
-  --tabbar-fg: var(--text-secondary);
+  /* A11Y-N3 (19-nov-2026): las etiquetas se miden contra la cápsula
+     translúcida con la escena morada detrás (contrast.test.js §3). Gris 600
+     daba 3,7:1 sobre el morado; gris 700, 6,9. El violeta de acción no llega
+     a 4,5 como texto sobre la píldora activa: la etiqueta activa va en morado
+     700 (6,8) y el ícono y la píldora siguen en violeta (objeto, ≥ 3). */
+  --tabbar-fg: var(--text-subtle);
   --tabbar-fg-active: var(--color-action);
+  --tabbar-label-active: var(--color-brand-text);
   --tabbar-pill: var(--color-action);
   --tabbar-icon-active: var(--color-action-fg);
+  /* Cápsula flotante (19-nov-2026, aprobada por Walter): material translúcido
+     con desenfoque, trazo de medio punto y sombra suave con tinte morado. La
+     pestaña activa es una píldora rellena en tinte de acción (Gocash/Rial). */
+  --tabbar-bg: color-mix(in srgb, var(--color-surface-raised) 82%, transparent);
+  --tabbar-blur: saturate(1.8) blur(24px);
+  --tabbar-border: rgb(30 16 68 / .08);
+  --tabbar-shadow: 0 10px 30px -6px rgb(30 16 68 / .22), 0 2px 6px rgb(30 16 68 / .08);
+  --tabbar-active-bg: color-mix(in srgb, var(--color-action) 13%, transparent);
+  --tabbar-radius: 30px;
 
   /* Logotipo e isotipo (manual pág. 10: morado sobre blanco, blanco sobre grafito) */
   --logo-fg: var(--purple-700);
@@ -335,6 +377,14 @@
   --logo-fg: var(--gray-0);
   --action-shadow: 0 10px 22px -10px rgb(0 0 0 / .6);
   --tabbar-fg-active: var(--purple-200);   /* etiqueta activa: 8,10 sobre #2A2C31 */
+  --tabbar-label-active: var(--purple-200);
+  /* A11Y-N3: con lima detrás, gris 400 al 85 % daba 3,86. Gris 300 y material
+     al 90 % mantienen ≥ 4,5 sobre cualquier fondo (contrast.test.js §3). */
+  --tabbar-fg: var(--text-subtle);
+  --tabbar-bg: color-mix(in srgb, var(--color-surface-raised) 90%, transparent);
+  --tabbar-border: rgb(250 250 250 / .10);
+  --tabbar-shadow: 0 12px 32px -6px rgb(0 0 0 / .55), 0 2px 6px rgb(0 0 0 / .3);
+  --tabbar-active-bg: rgb(168 151 218 / .20);
   --card-shadow: none;
 }
 
@@ -395,17 +445,17 @@
   --sh-2: var(--elev-2);
   --sh-3: var(--elev-3);
 
-  /* Escala vieja en rem (se migra a --type-* por lotes en la Entrega 2). */
-  --fs-row:  .9375rem;
-  --fs-meta: .8125rem;
-  --fs-xs:   .6875rem;   /* piso de legibilidad (REC-N6): nada de texto bajo 11 px */
-  --fs-sm:   .75rem;
-  --fs-md:   .875rem;
-  --fs-lg:   1.125rem;
-  --fs-xl:   1.375rem;
-  --fs-2xl:  1.75rem;
-  --fs-3xl:  2.25rem;
-  --fs-hero: clamp(42px, 9vw, 54px);
+  /* Escala vieja: desde el 19-nov-2026 apunta a la escala de la app (2c). */
+  --fs-row:  var(--t-headline);
+  --fs-meta: var(--t-subhead);
+  --fs-xs:   var(--t-caption);   /* piso de legibilidad (REC-N6): nada de texto bajo 11 px */
+  --fs-sm:   var(--t-footnote);
+  --fs-md:   var(--t-subhead);
+  --fs-lg:   var(--t-headline);
+  --fs-xl:   var(--t-title-2);
+  --fs-2xl:  var(--t-title);
+  --fs-3xl:  var(--t-large-title);
+  --fs-hero: var(--t-hero);
   --sp-1: var(--space-1); --sp-2: var(--space-2); --sp-3: var(--space-3); --sp-4: var(--space-4);
   --sp-5: var(--space-5); --sp-6: var(--space-6); --sp-8: var(--space-8);
 }
