@@ -17,6 +17,19 @@ function buildHeaders(req) {
   };
 }
 
+const PERIOD_RANGES = { '3y': 3 };
+
+// Parámetro de período para Yahoo: los rangos nativos van como range=, los que Yahoo
+// no conoce (3y) como period1/period2 en segundos.
+export function yahooSpan(range, nowMs = Date.now()) {
+  const years = PERIOD_RANGES[range];
+  if (!years) return `range=${range}`;
+  const end = new Date(nowMs);
+  const start = new Date(nowMs);
+  start.setUTCFullYear(start.getUTCFullYear() - years);
+  return `period1=${Math.floor(start.getTime() / 1000)}&period2=${Math.floor(end.getTime() / 1000)}`;
+}
+
 export default async function handler(req) {
   const HEADERS = buildHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -41,14 +54,16 @@ export default async function handler(req) {
   }
 
   // Validate range and interval to prevent abuse
-  const validRanges    = ['1d','5d','1mo','3mo','6mo','1y','2y','5y'];
+  // '3y' no existe en Yahoo (devuelve 400): se pide por period1/period2. Antes el
+  // período "3A" de Comparar pedía '5y' y mostraba cinco años rotulados como tres.
+  const validRanges    = ['1d','5d','1mo','3mo','6mo','1y','2y','3y','5y'];
   const validIntervals = ['1m','5m','15m','1h','1d','1wk','1mo'];
   if (!validRanges.includes(range) || !validIntervals.includes(interval)) {
     return new Response(JSON.stringify({ error: 'invalid range or interval' }), { status: 400, headers: HEADERS });
   }
 
   try {
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=${interval}&range=${range}`;
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=${interval}&${yahooSpan(range)}`;
 
     const res = await fetch(url, {
       headers: {

@@ -2626,12 +2626,12 @@ function _cacheSet(key,data){
   }catch(e){}
 }
 
-function fetchWithTimeout(url,ms){
+function fetchWithTimeout(url,ms,opts){
   ms=ms||8000;
   return new Promise(function(resolve,reject){
     var ctrl=new AbortController();
     var timer=setTimeout(function(){ctrl.abort();reject(new Error('Timeout '+ms+'ms'));},ms);
-    fetch(url,{signal:ctrl.signal}).then(function(r){clearTimeout(timer);resolve(r);}).catch(function(e){clearTimeout(timer);reject(e);});
+    fetch(url,Object.assign({},opts||{},{signal:ctrl.signal})).then(function(r){clearTimeout(timer);resolve(r);}).catch(function(e){clearTimeout(timer);reject(e);});
   });
 }
 
@@ -6271,7 +6271,8 @@ async function fetchLiveNews(){
       if(!_USE_EDGE) throw new Error('edge_unavailable');
       var tickers=['SPY','QQQ','NVDA','AAPL','AMZN','META','MSFT','GLD','BTC-USD'];
       S.portfolio.slice(0,5).forEach(function(h){if(tickers.indexOf(h.t)<0)tickers.unshift(h.t);});
-      var res=await fetchWithTimeout('/api/news?tickers='+tickers.slice(0,12).join(','),8000);
+      // Por POST: las posiciones del usuario no viajan en la URL (logs, historial).
+      var res=await fetchWithTimeout('/api/news',8000,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tickers:tickers.slice(0,12)})});
       if(!res.ok) throw new Error('news api '+res.status);
       var data=await res.json();
       if(data.items&&data.items.length){
@@ -8208,7 +8209,7 @@ async function compLoad(){
   COMP.tickers=COMP.tickers.filter(function(t){return t&&t.trim().length>0;});
   if(COMP.tickers.length<2){showToast('Selecciona al menos 2 tickers','warning');return;}
   COMP.loading=true;COMP.data={};COMP.spy=null;COMP.missing=[];renderComp();
-  var rangeMap={30:'1mo',60:'3mo',90:'3mo',130:'6mo',365:'1y',1095:'5y'}; // 2mo y 3y no existen en Yahoo: devolvian 400
+  var rangeMap={30:'1mo',60:'3mo',90:'3mo',130:'6mo',365:'1y',1095:'3y'}; // 2mo no existe en Yahoo; 3y lo resuelve /api/history con period1/period2
   var rng=rangeMap[COMP.range]||'3mo';
   try{
     var promises=COMP.tickers.map(function(t){
