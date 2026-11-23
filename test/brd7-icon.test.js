@@ -1,5 +1,6 @@
 // BRD-7 → rebrand Entrega 1 (17-nov-2026): el ícono de Inversiones de moyiq es el oficial de la
-// marca nueva, la lupa (isotipo) blanca al 44 % del lado sobre morado #3C2282, centrada ópticamente.
+// marca nueva, la lupa (isotipo) blanca al 44 % del lado, centrada ópticamente. Desde el 23-nov-2026
+// (opción A) el fondo es el degradado Impulso 74° #2D1D59 → #8620D0 → #7A21FF (antes morado plano #3C2282).
 // Antes era el dial Navy con aguja en Latón. Los archivos se copian del set de
 // financeos-workspace/branding/rebrand-2026-11/iconos-app/ con tools/icons/build.sh; el maskable
 // deja la lupa dentro de la zona segura (círculo de radio 40 % del lado).
@@ -33,16 +34,19 @@ function decodePng(b) {
   return { w, h, at: (x, y) => [0, 1, 2].map((i) => px[y * stride + x * bpp + i]) };
 }
 
-const MORADO = [60, 34, 130];
+const IMPULSO_0 = [45, 29, 89], IMPULSO_100 = [122, 33, 255];
+const isWhite = ([r, g, b]) => r > 200 && g > 200 && b > 200;
 const PNGS = [["icon-32.png", 32], ["apple-touch-icon.png", 180], ["icon-192.png", 192], ["icon-512.png", 512],
   ["icon-maskable-192.png", 192], ["icon-maskable-512.png", 512]];
 const near = (a, b, t = 30) => a.reduce((s, v, i) => s + Math.abs(v - b[i]), 0) <= t;
 
-describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
-  it.each(PNGS)("%s: tamaño exacto, fondo morado, lupa blanca, sin Navy, Latón ni verde", (f, size) => {
+describe("Ícono de Inversiones de moyiq (lupa sobre Impulso)", () => {
+  it.each(PNGS)("%s: tamaño exacto, fondo Impulso, lupa blanca, sin Navy, Latón ni verde", (f, size) => {
     const img = decodePng(buf(f));
     expect([img.w, img.h]).toEqual([size, size]);
-    expect(near(img.at(0, 0), MORADO, 6)).toBe(true);
+    // 74°: arranca abajo a la izquierda y termina arriba a la derecha.
+    expect(near(img.at(0, img.h - 1), IMPULSO_0, 40)).toBe(true);
+    expect(near(img.at(img.w - 1, 0), IMPULSO_100, 40)).toBe(true);
     let white = 0, old = 0, green = 0;
     for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
       const px = img.at(x, y), [r, g, b] = px;
@@ -60,7 +64,7 @@ describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
     const c = img.w / 2, safe = 0.4 * img.w;
     let far = 0;
     for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
-      if (!near(img.at(x, y), MORADO) && Math.hypot(x + 0.5 - c, y + 0.5 - c) > safe * 0.9) far++;
+      if (isWhite(img.at(x, y)) && Math.hypot(x + 0.5 - c, y + 0.5 - c) > safe * 0.9) far++;
     }
     expect(far).toBe(0);
   });
@@ -68,7 +72,7 @@ describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
   it("los SVG son los de la marca nueva y el manifest separa any y maskable, con ?v= y el nombre nuevo", () => {
     for (const f of ["icon.svg", "favicon.svg"]) {
       const s = read(f);
-      expect(s, f).toContain("#3C2282");
+      expect(s, f).toMatch(/#2D1D59[\s\S]*#8620D0[\s\S]*#7A21FF/);
       expect(s, f).not.toMatch(/#B8863B|#14213D|#5FA98C|#356E57|#74C2A3/i);
     }
     expect(read("icon.svg")).toContain('aria-label="moyiq"');
@@ -76,7 +80,7 @@ describe("Ícono de Inversiones de moyiq (lupa sobre morado)", () => {
     expect(m.name).toBe("moyiq · Inversiones");
     expect(m.short_name).toBe("Inversiones");
     const mask = m.icons.filter((i) => i.purpose === "maskable").map((i) => i.src);
-    expect(mask).toEqual(["/icon-maskable-192.png?v=2", "/icon-maskable-512.png?v=2"]);
+    expect(mask).toEqual(["/icon-maskable-192.png?v=3", "/icon-maskable-512.png?v=3"]);
     for (const i of m.icons) {
       expect(i.src).toMatch(/\?v=\d+$/);
       if (i.purpose === "any") expect(i.src).not.toMatch(/maskable/);

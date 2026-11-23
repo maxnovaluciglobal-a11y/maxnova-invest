@@ -24,7 +24,7 @@ const PAGES = ["app/index.html", "index.html", "faq.html", "estado-mercado.html"
 const TOKENS = read("tokens-v3.css");
 const HEADER_LINES = 5;
 const BODY = TOKENS.split("\n").slice(HEADER_LINES).join("\n");
-const APP_TOKENS_SHA256 = "582bf4d8c4abf0a2222462500e3d393ae713147730f9a4d2648121bdcfee4f82";
+const APP_TOKENS_SHA256 = "68c4ecbd5a27a408538b686affce62bff845cd41d13e3badcd6e06c147e274d4";
 const APP_TOKENS = fileURLToPath(new URL("../../financeos-app/src/styles/tokens.css", import.meta.url));
 
 const TOKEN_DEF = /(--[\w-]+)\s*:\s*(#[0-9a-fA-F]{6})\b/g;

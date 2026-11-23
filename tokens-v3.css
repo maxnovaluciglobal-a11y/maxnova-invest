@@ -336,7 +336,7 @@
   --card-bg: var(--color-surface); --card-radius: var(--radius-lg); --card-shadow: none;
 
   /* Héroe sobre degradado (tarjeta de saldo, splash) */
-  --hero-bg: var(--gr-profundidad); --hero-fg: var(--on-grad-text); --hero-fg-muted: var(--on-grad-text-2);
+  --hero-bg: var(--gr-impulso); --hero-fg: var(--on-grad-text); --hero-fg-muted: var(--on-grad-text-2);
 
   /* "+" y pestaña activa (nivel 3) */
   --action-bg: var(--color-action); --action-fg: var(--color-action-fg);
