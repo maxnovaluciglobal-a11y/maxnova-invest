@@ -189,6 +189,11 @@ local (que de por sí nunca se re-ejecutó, ver sección de migraciones más aba
 
 - `vercel.json` tiene `outputDirectory: "."` — los assets estáticos van en la **raíz** del
   repo, no en `dist/` ni `public/` (excepto lo que ya vive en `public/`).
+- **404 y favicon (C11, auditoría de branding viejo, 23-nov-2026):** `404.html` en la raíz es la página
+  de error con marca (Vercel la sirve en cualquier ruta inexistente: solo rutas absolutas, `noindex`, sin
+  analítica); `/favicon.ico` se reescribe a `/icon-32.png` (lupa blanca sobre #3C2282). Prueba:
+  `test/c11-c6-branding-viejo.test.js`. Los redirects 308 de invest.moyiq.app hacia la sección
+  Inversiones de la app (C6) se agregan recién cuando esa sección se publique.
 - **Colores (BRD-4, v3.1 desde el 18-nov-2026; `tokens-v2.css` Navy/Latón retirado):** la paleta vive en
   `/tokens-v3.css`, **copia literal** de `financeos-app/src/styles/tokens.css` con 5 líneas de cabecera.
   Las 9 páginas lo cargan con `?v=N` antes de su `<style>` y solo agregan nombres propios que apuntan a
