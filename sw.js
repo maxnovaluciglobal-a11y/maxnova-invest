@@ -1,88 +1,40 @@
-// MAXNOVA Service Worker
-// REGLA DE ORO: solo se interceptan peticiones SAME-ORIGIN. Interceptar un
-// <script> cross-origin (p.ej. el UMD de Supabase en cdn.jsdelivr.net) rompia su
-// carga con "unknown error fetching the script" -> window.supabase quedaba
-// undefined -> el cliente sb era null -> el login se colgaba en "Entrando...".
-// Las CDNs y fuentes las maneja el navegador directamente (passthrough).
+// Service worker "kill switch" de invest.moyiq.app (23-nov-2026).
 //
-// Estrategia same-origin:
-//  - HTML de la app (/app, /index.html, navegaciones): NETWORK-FIRST (fresco
-//    online, cache offline; evita servir el build viejo una recarga extra).
-//  - Iconos same-origin: CACHE-FIRST con revalidacion.
-//  - Todo lo demas same-origin (incl. /api/*): passthrough.
-const CACHE = 'moyiq-invest-v13';
-const CORE = ['/', '/app'];
+// Inversiones ya vive dentro de la app (https://app.moyiq.app/app/) y este
+// sitio redirige ahí con 308 (vercel.json). Quien instaló la PWA vieja tiene un
+// service worker en /sw.js (caché 'moyiq-invest-vN') que servía el shell desde
+// la caché y, sin conexión o con la caché caliente, nunca vería la redirección.
+//
+// Este archivo lo reemplaza: el navegador lo baja al revisar actualizaciones
+// (sw.js va con Cache-Control: no-cache y NO se redirige), lo instala sin
+// esperar, borra todas las cachés, se desregistra y lleva las pestañas abiertas
+// a la app. No intercepta nada (sin listener de fetch): todo va directo a la red.
+var TARGET = 'https://app.moyiq.app/app/?open=invest-resumen';
 
-function isAppHtml(path) {
-  return path === '/' || path === '/app' || path.endsWith('/index.html');
-}
-function isCacheableAsset(path) {
-  return /\/icon-(maskable-)?\d+\.png$/.test(path) ||
-         path === '/apple-touch-icon.png' ||
-         path === '/favicon.svg' ||
-         path === '/icon.svg' ||
-         path === '/tokens-v3.css' ||
-         path === '/manifest.webmanifest';
-}
+// Páginas que siguen vivas en este dominio: una pestaña abierta en ellas no se
+// mueve (la app enlaza a datos-y-licencias, y los legales siguen publicados).
+var KEEP = ['/datos-y-licencias.html', '/terms.html', '/privacy.html', '/404.html'];
 
-self.addEventListener('install', function(e) {
-  e.waitUntil(caches.open(CACHE).then(function(cache) { return cache.addAll(CORE); }));
+self.addEventListener('install', function () {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', function(e) {
+self.addEventListener('activate', function (e) {
   e.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(keys.filter(function(k){return k!==CACHE;}).map(function(k){return caches.delete(k);}));
-    })
+    caches.keys()
+      .then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k); })); })
+      .catch(function () { /* sin Cache Storage: no hay nada que borrar */ })
+      .then(function () { return self.registration.unregister(); })
+      .catch(function () { /* ya desregistrado */ })
+      .then(function () { return self.clients.matchAll({ type: 'window' }); })
+      .then(function (list) {
+        return Promise.all((list || []).map(function (c) {
+          var path = '';
+          try { path = new URL(c.url).pathname; } catch (err) { path = ''; }
+          if (KEEP.indexOf(path) !== -1 || path.indexOf('/api/') === 0) return null;
+          return c.navigate(TARGET).catch(function () { return null; });
+        }));
+      })
+      .catch(function () { /* navegador sin clients.navigate: la próxima carga ya va por la red */ })
   );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', function(e) {
-  if(e.request.method !== 'GET') return;
-
-  var u;
-  try { u = new URL(e.request.url); } catch(err) { return; }
-
-  // NUNCA interceptar cross-origin: CDNs (supabase, lightweight-charts), Google
-  // Fonts, etc. las resuelve el navegador. Esto es lo que rompia el login.
-  if(u.origin !== self.location.origin) return;
-
-  var path = u.pathname;
-
-  // App HTML: network-first (fresco online, cache offline).
-  if(isAppHtml(path)) {
-    e.respondWith(
-      fetch(e.request).then(function(response) {
-        if(response && response.status === 200) {
-          var clone = response.clone();
-          caches.open(CACHE).then(function(cache){ cache.put(e.request, clone); });
-        }
-        return response;
-      }).catch(function(){
-        var fallback = path.indexOf('/app') === 0 ? '/app' : '/';
-        return caches.match(e.request).then(function(c){ return c || caches.match(fallback); });
-      })
-    );
-    return;
-  }
-
-  // Iconos same-origin: cache-first con revalidacion en segundo plano.
-  if(isCacheableAsset(path)) {
-    e.respondWith(
-      caches.match(e.request).then(function(cached) {
-        var fetchPromise = fetch(e.request).then(function(response) {
-          if(response && response.status === 200) {
-            var clone = response.clone();
-            caches.open(CACHE).then(function(cache){ cache.put(e.request, clone); });
-          }
-          return response;
-        }).catch(function(){ return cached; });
-        return cached || fetchPromise;
-      })
-    );
-    return;
-  }
-  // Resto same-origin (incl. /api/*): passthrough.
 });

@@ -3,18 +3,68 @@
   "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ':(exclude)test' ':(exclude)tools' ':(exclude)supabase' ':(exclude)_pausa' ':(exclude)*.md' ':(exclude).impeccable' ':(exclude).gitignore'",
   "redirects": [
     {
+      "source": "/",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/landing",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/app",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/app/(.*)",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/faq.html",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/perfil-inversor.html",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/estado-mercado.html",
+      "destination": "https://app.moyiq.app/app/?open=invest-mercado",
+      "permanent": true
+    },
+    {
+      "source": "/docs",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
+      "source": "/docs/(.*)",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "permanent": true
+    },
+    {
       "source": "/_pausa",
-      "destination": "/",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
       "permanent": false
     },
     {
       "source": "/_pausa/(.*)",
-      "destination": "/",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
       "permanent": false
     },
     {
       "source": "/(.*)\\.md",
-      "destination": "/",
+      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
       "permanent": false
     }
   ],
@@ -22,14 +72,6 @@
     {
       "source": "/favicon.ico",
       "destination": "/icon-32.png"
-    },
-    {
-      "source": "/app",
-      "destination": "/app/index.html"
-    },
-    {
-      "source": "/landing",
-      "destination": "/index.html"
     }
   ],
   "headers": [

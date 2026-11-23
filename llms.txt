@@ -4,7 +4,7 @@ Also known as: MOY IQ Invest (former name, until Nov 2026), moyiq invest, moyiq 
 
 > Educational tool for Spanish-speaking investors to track a portfolio, size each position with their own risk rule, and read technical indicators explained in plain Spanish. Free public beta since the relaunch on 2026-10-08. Not a broker, does not execute orders, does not give investment advice.
 
-URL: https://invest.moyiq.app
+URL: https://app.moyiq.app/app/?open=invest-resumen (since 2026-11-23 Inversiones is a section inside the moyiq app; https://invest.moyiq.app and its pages redirect there)
 Language: Spanish
 Status: free public beta (relaunch v2, 2026-10-08). No card required, no paid plans on sale. If paid plans exist in the future, users will be notified in advance and what they use today is kept.
 
@@ -21,11 +21,13 @@ Status: free public beta (relaunch v2, 2026-10-08). No card required, no paid pl
 
 Stock and ETF prices come from Yahoo Finance, crypto from CoinGecko and the Chilean "dólar observado" from mindicador.cl. These are free sources and can be delayed. Each price in the app shows its state ("Al día · hh:mm", "Retraso N min · hh:mm", "Mercado cerrado · hh:mm" or "Sin conexión · hh:mm"), computed from the timestamp the source reports.
 
-## Free pages (no account)
+## Pages on invest.moyiq.app
 
-- Investor profile quiz: https://invest.moyiq.app/perfil-inversor.html — 6 questions, about 2 minutes, conservative / moderate / aggressive. Indicative only.
-- Market status: https://invest.moyiq.app/estado-mercado.html — US indices, VIX and USD → LATAM exchange rates, with the time of each query.
-- FAQ: https://invest.moyiq.app/faq.html
+The former landing, FAQ, investor profile quiz and market status pages redirect to the Inversiones section of the app (market status: https://app.moyiq.app/app/?open=invest-mercado). Still published here:
+
+- Data sources and licenses: https://invest.moyiq.app/datos-y-licencias.html
+- Terms: https://invest.moyiq.app/terms.html
+- Privacy: https://invest.moyiq.app/privacy.html
 
 ## Data and accounts
 

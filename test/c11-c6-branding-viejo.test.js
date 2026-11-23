@@ -1,7 +1,7 @@
 // Auditoría de branding viejo (23-nov-2026). C11: un 404 con marca moyiq (antes caía la página
 // genérica de Vercel, sin <title>) y /favicon.ico servido con el ícono vigente (lupa sobre #3C2282).
 // C6 (parcial): el <title> y el og:title de la landing ya no dicen "(antes MOY IQ Invest)".
-// Los redirects de invest.moyiq.app hacia la app quedan para cuando se publique la sección nueva.
+// Los redirects de invest.moyiq.app hacia la app están en test/c6-redirect-to-app.test.js.
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 

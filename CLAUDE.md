@@ -2,6 +2,13 @@
 
 Guía para Claude Code al trabajar en este repo (`invest-web`, producto **Invest** de
 MAXNOVA & Luci LLC — `invest.moyiq.app`).
+**Redirigido a la app (23-nov-2026, C6 de la auditoría de branding):** Inversiones vive dentro de
+`app.moyiq.app/app/?open=invest-*`. `vercel.json` redirige con 308 `/`, `/landing`, `/index.html`, `/app`, `/app/*`,
+`/faq.html`, `/perfil-inversor.html`, `/estado-mercado.html` (→ `invest-mercado`) y `/docs/*`. Siguen vivos `/api/*` (la app
+los usa), `/datos-y-licencias.html`, `/terms.html`, `/privacy.html`, `/404.html`, íconos, fuentes, `robots.txt`, `sitemap.xml`
+y `llms.txt`. `sw.js` es un kill switch (borra cachés, se desregistra, lleva a la app): **no redirigirlo nunca** (el
+navegador no acepta redirects al actualizar un SW). Test: `test/c6-redirect-to-app.test.js`. Lo que sigue abajo sobre la
+landing y la app de `/app` es histórico.
 **Rebrand Entrega 1 (17-nov-2026, D14 + D9/D18 mantenimiento):** el producto se llama
 **moyiq · Inversiones** ("Inversiones de moyiq" en texto corrido; antes MOY IQ Invest). Versión de
 mantenimiento: nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y `CACHE` del SW.

@@ -99,11 +99,13 @@ describe("BRD-4: paleta v3.1 compartida con la app (/tokens-v3.css)", () => {
     expect(app).toContain("dark?'#1C1D21':'#3C2282'");
   });
 
-  it("el service worker guarda /tokens-v3.css y su CACHE subió para soltar la marca vieja", () => {
+  // Desde el 23-nov-2026 (C6) sw.js es un kill switch: no guarda nada y borra
+  // todas las cachés, incluidas las 'moyiq-invest-vN' con tokens viejos
+  // (ver test/c6-redirect-to-app.test.js).
+  it("el service worker ya no sirve CSS desde caché y borra las cachés viejas", () => {
     const sw = read("sw.js");
-    expect(sw).toContain("path === '/tokens-v3.css'");
     expect(sw).not.toContain("tokens-v2");
-    expect(sw).toMatch(/const CACHE = 'moyiq-invest-v(\d+)'/);
-    expect(+sw.match(/moyiq-invest-v(\d+)/)[1]).toBeGreaterThanOrEqual(13);
+    expect(sw).not.toMatch(/caches\.open|cache\.put/);
+    expect(sw).toMatch(/caches\.keys\(\)[\s\S]*caches\.delete\(k\)/);
   });
 });
