@@ -9,10 +9,11 @@ export const ALLOWED_ORIGINS = [
   'https://app.moyiq.app',
   // Demo pública de moyiq: muestra Inversiones con cotizaciones reales sobre datos de ejemplo.
   'https://demo.moyiq.app',
-  // App nativa de moyiq (Capacitor, INV-N13): iOS sirve la web desde capacitor://localhost
-  // (sin iosScheme) y Android desde https://localhost (androidScheme: https).
-  'capacitor://localhost',
-  'https://localhost',
+  // App nativa de moyiq (Capacitor, INV-N13): iOS sirve la web desde
+  // capacitor://native.moyiq.app y Android desde https://native.moyiq.app (hostname
+  // propio desde el 24-nov-2026 para que corra Turnstile; antes, localhost).
+  'capacitor://native.moyiq.app',
+  'https://native.moyiq.app',
 ];
 
 // Despliegues de vista previa del team de Vercel (solo el team puede crear ese sufijo)

@@ -22,16 +22,16 @@ beforeEach(() => {
 afterEach(() => { globalThis.fetch = realFetch; });
 
 describe('origen: demo y app nativa de moyiq', () => {
-  it('acepta demo.moyiq.app, capacitor://localhost y https://localhost', async () => {
+  it('acepta demo.moyiq.app, capacitor://native.moyiq.app y https://native.moyiq.app', async () => {
     const { isAllowedOrigin } = await import('../api/_lib/origin.js');
-    for (const o of ['https://demo.moyiq.app', 'capacitor://localhost', 'https://localhost', 'https://app.moyiq.app', 'https://invest.moyiq.app']) {
+    for (const o of ['https://demo.moyiq.app', 'capacitor://native.moyiq.app', 'https://native.moyiq.app', 'https://app.moyiq.app', 'https://invest.moyiq.app']) {
       expect(isAllowedOrigin(o)).toBe(true);
     }
   });
   it('rechaza imitaciones y variantes', async () => {
     const { isAllowedOrigin } = await import('../api/_lib/origin.js');
     for (const o of ['http://demo.moyiq.app', 'https://demo.moyiq.app.evil.example', 'https://evil-demo.moyiq.app',
-      'https://demo.moyiq.app:8443', 'http://localhost', 'http://localhost:5173', 'capacitor://evil', 'https://localhost:8443', 'null', '']) {
+      'https://demo.moyiq.app:8443', 'http://localhost', 'http://localhost:5173', 'capacitor://evil', 'https://localhost:8443', 'capacitor://localhost', 'https://localhost', 'null', '']) {
       expect(isAllowedOrigin(o)).toBe(false);
     }
   });
@@ -123,11 +123,11 @@ describe('/api/news por POST', () => {
   });
   it('el preflight permite POST con Content-Type', async () => {
     const h = (await load('news')).default;
-    const res = await h(new Request('https://invest.moyiq.app/api/news', { method: 'OPTIONS', headers: { origin: 'capacitor://localhost' } }));
+    const res = await h(new Request('https://invest.moyiq.app/api/news', { method: 'OPTIONS', headers: { origin: 'capacitor://native.moyiq.app' } }));
     expect(res.status).toBe(204);
     expect(res.headers.get('access-control-allow-methods')).toContain('POST');
     expect(res.headers.get('access-control-allow-headers')).toContain('Content-Type');
-    expect(res.headers.get('access-control-allow-origin')).toBe('capacitor://localhost');
+    expect(res.headers.get('access-control-allow-origin')).toBe('capacitor://native.moyiq.app');
   });
   it('otros métodos reciben 405', async () => {
     const h = (await load('news')).default;
