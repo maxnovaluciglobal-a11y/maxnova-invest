@@ -39,9 +39,12 @@ function httpUrl(u) {
 
 function bestImage(thumbnail) {
   if (!thumbnail?.resolutions?.length) return null;
-  // prefer largest resolution, avoid tiny icons
-  const sorted = [...thumbnail.resolutions].sort((a, b) => (b.width || 0) - (a.width || 0));
-  const best = sorted.find(r => (r.width || 0) >= 200) || sorted[0];
+  // La miniatura se dibuja a 72×54 (144 px en pantallas 2x): la resolución más
+  // chica que llegue a 150 px de ancho alcanza y pesa mucho menos que el
+  // original (algunos originales pesan ~3 MB y el proxy /api/img los rechaza).
+  // Si ninguna llega, la más grande disponible.
+  const sorted = [...thumbnail.resolutions].sort((a, b) => (a.width || 0) - (b.width || 0));
+  const best = sorted.find(r => (r.width || 0) >= 150) || sorted[sorted.length - 1];
   return best?.url || null;
 }
 
