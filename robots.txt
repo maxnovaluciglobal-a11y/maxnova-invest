@@ -2,7 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /app
-Disallow: /_pausa/
+
+# invest.moyiq.app solo sirve las APIs de datos de la app de moyiq, "Datos y licencias" y los
+# legales históricos (con noindex). La portada y las páginas viejas redirigen con 308 a
+# https://moyiq.app/inversiones: no se bloquean, para que los buscadores vean el redirect.
 
 # AI crawlers — explicitly allowed (GEO)
 User-agent: GPTBot

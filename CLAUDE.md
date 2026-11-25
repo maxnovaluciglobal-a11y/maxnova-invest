@@ -9,6 +9,13 @@ los usa), `/datos-y-licencias.html`, `/terms.html`, `/privacy.html`, `/404.html`
 y `llms.txt`. `sw.js` es un kill switch (borra cachés, se desregistra, lleva a la app): **no redirigirlo nunca** (el
 navegador no acepta redirects al actualizar un SW). Test: `test/c6-redirect-to-app.test.js`. Lo que sigue abajo sobre la
 landing y la app de `/app` es histórico.
+**Coherencia web (25-nov-2026, b2/c2/d aprobados por Walter):** `/`, `/index.html`, `/landing`, `/faq.html`, `/perfil-inversor.html`,
+`/estado-mercado.html`, `/docs*`, `/_pausa*` y `/*.md` redirigen con 308 a `https://moyiq.app/inversiones` (la página indexable de la
+función); `/app` y `/app/*` siguen yendo a la app. `estado-mercado` va a la página y no a `invest-mercado` porque quien llega desde un
+buscador no tiene sesión (la app lo dejaría en el login) y la página sí describe Mercado. `privacy.html` y `terms.html` quedan como
+**versión histórica**: aviso visible arriba, `noindex, follow` (meta y `X-Robots-Tag`), nav y pie hacia moyiq.app y fuera del sitemap;
+pasar sus cláusulas a los textos de moyiq.app y redirigirlas espera la revisión del abogado (c3). El sitemap solo lista
+`datos-y-licencias.html` (sigue viva: la usa el monitor de uptime) y `llms.txt` es una ficha corta que remite a `moyiq.app/llms.txt`.
 **Rebrand Entrega 1 (17-nov-2026, D14 + D9/D18 mantenimiento):** el producto se llama
 **moyiq · Inversiones** ("Inversiones de moyiq" en texto corrido; antes MOY IQ Invest). Versión de
 mantenimiento: nombre, logo, íconos, legales (términos 2.2, privacidad 2.7) y `CACHE` del SW.

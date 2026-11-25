@@ -4,17 +4,17 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/index.html",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/landing",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
@@ -29,43 +29,43 @@
     },
     {
       "source": "/faq.html",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/perfil-inversor.html",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/estado-mercado.html",
-      "destination": "https://app.moyiq.app/app/?open=invest-mercado",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/docs",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/docs/(.*)",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
+      "destination": "https://moyiq.app/inversiones",
       "permanent": true
     },
     {
       "source": "/_pausa",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
-      "permanent": false
+      "destination": "https://moyiq.app/inversiones",
+      "permanent": true
     },
     {
       "source": "/_pausa/(.*)",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
-      "permanent": false
+      "destination": "https://moyiq.app/inversiones",
+      "permanent": true
     },
     {
       "source": "/(.*)\\.md",
-      "destination": "https://app.moyiq.app/app/?open=invest-resumen",
-      "permanent": false
+      "destination": "https://moyiq.app/inversiones",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -90,6 +90,24 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/privacy.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/terms.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
         }
       ]
     },

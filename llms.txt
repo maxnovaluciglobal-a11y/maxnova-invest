@@ -1,43 +1,13 @@
 # moyiq · Inversiones
 
-Also known as: MOY IQ Invest (former name, until Nov 2026), moyiq invest, moyiq · Investments. "Inversiones" (Investments) is the investing section of moyiq.
+> moyiq · Inversiones is the investing section of moyiq (https://moyiq.app), not a separate product. It was formerly a separate site on this host (MOY IQ Invest), until November 2026.
 
-> Educational tool for Spanish-speaking investors to track a portfolio, size each position with their own risk rule, and read technical indicators explained in plain Spanish. Free public beta since the relaunch on 2026-10-08. Not a broker, does not execute orders, does not give investment advice.
+This host (invest.moyiq.app) only serves the market-data APIs used by the moyiq app, the data sources and licenses page, and historical legal pages. Its former pages redirect to the feature page.
 
-URL: https://app.moyiq.app/app/?open=invest-resumen (since 2026-11-23 Inversiones is a section inside the moyiq app; https://invest.moyiq.app and its pages redirect there)
-Language: Spanish
-Status: free public beta (relaunch v2, 2026-10-08). No card required, no paid plans on sale. If paid plans exist in the future, users will be notified in advance and what they use today is kept.
-
-## What it does
-
-- Portfolio tracking with result per position, watchlist, price alerts, dividend calendar and a trade journal. Positions are entered manually; there is no broker connection.
-- Technical indicators (moving averages, RSI, MACD, volume, Bollinger bands) shown one by one, each with its value, its reference range and a plain-language reading. Example: "RSI 58 — neutral zone (30–70), neither overbought nor oversold".
-- No aggregate rating: the tool does not grade assets with a single 0-100 number.
-- Position-size calculator based on the user's own risk rule (max % of capital at risk per trade), with a per-position concentration limit and risk-at-stop per position and in total. Rebalancing toward target weights the user defines.
-- Asset comparison, market news and market context (indices, volatility, USD exchange rates).
-- Chile first: values in CLP using the "dólar observado" exchange rate.
-
-## Data sources and freshness
-
-Stock and ETF prices come from Yahoo Finance, crypto from CoinGecko and the Chilean "dólar observado" from mindicador.cl. These are free sources and can be delayed. Each price in the app shows its state ("Al día · hh:mm", "Retraso N min · hh:mm", "Mercado cerrado · hh:mm" or "Sin conexión · hh:mm"), computed from the timestamp the source reports.
-
-## Pages on invest.moyiq.app
-
-The former landing, FAQ, investor profile quiz and market status pages redirect to the Inversiones section of the app (market status: https://app.moyiq.app/app/?open=invest-mercado). Still published here:
-
+- Feature page: https://moyiq.app/inversiones (English: https://moyiq.app/en/investments · German: https://moyiq.app/de/investments)
+- Current facts about moyiq and its Inversiones section: https://moyiq.app/llms.txt
+- Open Inversiones in the app: https://app.moyiq.app/app/?open=invest-resumen
 - Data sources and licenses: https://invest.moyiq.app/datos-y-licencias.html
-- Terms: https://invest.moyiq.app/terms.html
-- Privacy: https://invest.moyiq.app/privacy.html
+- Current privacy policy and terms: https://moyiq.app/privacy · https://moyiq.app/terms
 
-## Data and accounts
-
-Investment positions are stored on our server, in the user's account (Supabase), to fetch prices and show them on any device. Login is shared with moyiq (same email and password); each app keeps its data separately. Deleting the Inversiones data is self-service and immediate (Settings → "Eliminar mis datos de Inversiones"); the shared login is kept and can be deleted through moyiq (support@moyiq.app).
-
-## Disclaimer
-
-Educational tool. It does not constitute financial or tax advice, nor a recommendation to buy or sell. Investing involves risk of loss. It is not a broker and does not execute orders.
-
-## Company
-
-MAXNOVA & LUCI Global LLC. Support: invest@moyiq.app
-Main product: moyiq, a personal finance app whose data lives on the user's device — https://moyiq.app
+Free, in beta. Educational tool: not a broker, does not execute orders, gives no buy or sell recommendations.
