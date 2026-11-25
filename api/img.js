@@ -27,7 +27,9 @@ export function allowedImageUrl(raw) {
   try { url = new URL(raw); } catch { return null; }
   if (url.protocol !== 'https:' || url.username || url.password || url.port) return null;
   if (!IMG_HOSTS.includes(url.hostname)) return null;
-  url.hash = '';
+  // Forma canónica y sin query ni fragmento: las miniaturas reales no los traen,
+  // y así nadie puede saltarse la caché con variantes de la misma URL.
+  if (url.search || url.hash || raw !== url.href) return null;
   return url.href;
 }
 
@@ -55,7 +57,11 @@ async function readCapped(body, max) {
 }
 
 export default async function handler(req) {
-  if (req.method !== 'GET' && req.method !== 'HEAD') return fail(405);
+  if (req.method !== 'GET') {
+    const r = fail(405);
+    r.headers.set('Allow', 'GET');
+    return r;
+  }
   const blocked = rejectForeignOrigin(req);
   if (blocked) return blocked;
 
@@ -90,7 +96,7 @@ export default async function handler(req) {
   try { bytes = await readCapped(res.body, MAX_IMG_BYTES); } catch { return fail(502); }
   if (!bytes) return fail(502);
 
-  return new Response(req.method === 'HEAD' ? null : bytes, {
+  return new Response(bytes, {
     status: 200,
     headers: {
       'Content-Type': type,

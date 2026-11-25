@@ -143,3 +143,14 @@ describe('vercel.json: /api/img', () => {
     expect(get('Cross-Origin-Resource-Policy')).toBe('cross-origin');
   });
 });
+
+import { allowedImageUrl as canon } from '../api/img.js'
+describe('allowedImageUrl canónica', () => {
+  it('rechaza query, fragmento y variantes no canónicas', () => {
+    expect(canon('https://media.zenfs.com/a.jpg')).toBe('https://media.zenfs.com/a.jpg')
+    expect(canon('https://media.zenfs.com/a.jpg?r=1')).toBe(null)
+    expect(canon('https://media.zenfs.com/a.jpg#x')).toBe(null)
+    expect(canon('https://MEDIA.zenfs.com/a.jpg')).toBe(null)
+    expect(canon('https://media.zenfs.com/./a.jpg')).toBe(null)
+  })
+})
